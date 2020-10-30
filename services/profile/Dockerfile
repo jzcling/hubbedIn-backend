@@ -8,10 +8,12 @@ RUN go mod download
 
 COPY . .
 COPY . /usr/local/go/src/in-backend/services/profile
-RUN go build -o /build/main .
+RUN CGO_ENABLED=0 && \
+    GOOS=linux && \
+    go build -a -installsuffix cgo -o /build/main .
 
 FROM alpine as release
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /build/main /profile
-RUN chmod +x /profile
-ENTRYPOINT ["/profile"]
+COPY --from=builder /build/main .
+RUN chmod +x ./main
+ENTRYPOINT ["./main"]
