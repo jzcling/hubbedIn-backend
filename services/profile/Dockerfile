@@ -1,19 +1,17 @@
 FROM golang:1.15-alpine as builder
 RUN apk add --no-cache ca-certificates git
-WORKDIR /cmd
+WORKDIR /build
 
 # restore dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN go build -gcflags='-N -l' -o /profileservice .
+COPY . /usr/local/go/src/in-backend/services/profile
+RUN go build -o /build/main .
 
 FROM alpine as release
 RUN apk add --no-cache ca-certificates
-RUN GRPC_HEALTH_PROBE_VERSION=v0.2.0 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe
-COPY --from=builder /profileservice /profileservice
-EXPOSE 5050
-ENTRYPOINT ["/profileservice"]
+COPY --from=builder /build/main /profile
+RUN chmod +x /profile
+ENTRYPOINT ["/profile"]
