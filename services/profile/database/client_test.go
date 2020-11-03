@@ -1,12 +1,13 @@
 // +build integration
 
-package db
+package database
 
 import (
 	"in-backend/services/profile/configs"
+	"in-backend/services/profile/tests"
 	"testing"
 
-	"github.com/go-pg/pg/v10"
+	pg "github.com/go-pg/pg/v10"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,7 +18,7 @@ func TestPgClientIsWorking(t *testing.T) {
 	setup, err := tests.SetupTestDB(GetPgConnectionOptions(testConfig), "./scripts/migrations/")
 	require.NoError(t, err)
 
-	client := New(setup.DB)
+	client := NewClient(setup.DB)
 	require.NotNil(t, client)
 	db := client.GetConnection()
 

@@ -2,6 +2,8 @@ package transport
 
 import (
 	"context"
+	"in-backend/services/profile/endpoints"
+	"in-backend/services/profile/pb"
 
 	"github.com/go-kit/kit/log"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
@@ -21,10 +23,10 @@ type grpcServer struct {
 
 // NewGRPCServer returns a new gRPC service for the provided Go kit endpoints
 func NewGRPCServer(
-	endpoints transport.Endpoints,
+	endpoints endpoints.Endpoints,
 	options []kitgrpc.ServerOption,
 	logger log.Logger,
-) pb.ProfileServer {
+) pb.ProfileServiceServer {
 	errorLogger := kitgrpc.ServerErrorLogger(logger)
 	options = append(options, errorLogger)
 
@@ -75,7 +77,7 @@ func (s *grpcServer) CreateCandidate(ctx context.Context, req *pb.CreateCandidat
 // decodeCreateCandidateRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateCandidateRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateCandidateRequest)
-	return endpoints.CreateCandidateRequest{Candidate: req.Candidate}, nil
+	return endpoints.CreateCandidateRequest{Candidate: req.Candidate.ToORM()}, nil
 }
 
 // encodeCreateCandidateResponse encodes the outgoing go kit payload to the grpc payload
@@ -89,12 +91,18 @@ func encodeCreateCandidateResponse(_ context.Context, response interface{}) (int
 }
 
 // GetAllCandidates returns all Candidates
-func (s *grpcServer) GetAllCandidates(ctx context.Context) (*pb.GetAllCandidatesResponse, error) {
+func (s *grpcServer) GetAllCandidates(ctx context.Context, req *pb.GetAllCandidatesRequest) (*pb.GetAllCandidatesResponse, error) {
 	_, rep, err := s.getAllCandidates.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 	return rep.(*pb.GetAllCandidatesResponse), nil
+}
+
+// decodeGetAllCandidatesRequest decodes the incoming grpc payload to our go kit payload
+func decodeGetAllCandidatesRequest(_ context.Context, request interface{}) (interface{}, error) {
+	_ = request.(*pb.GetAllCandidatesRequest)
+	return endpoints.GetAllCandidatesRequest{}, nil
 }
 
 // encodeGetAllCandidatesResponse encodes the outgoing go kit payload to the grpc payload
@@ -144,7 +152,7 @@ func (s *grpcServer) UpdateCandidate(ctx context.Context, req *pb.UpdateCandidat
 // decodeUpdateCandidateRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateCandidateRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.UpdateCandidateRequest)
-	return endpoints.UpdateCandidateRequest{Candidate: req.Candidate}, nil
+	return endpoints.UpdateCandidateRequest{Candidate: req.Candidate.ToORM()}, nil
 }
 
 // encodeUpdateCandidateResponse encodes the outgoing go kit payload to the grpc payload
@@ -158,12 +166,12 @@ func encodeUpdateCandidateResponse(_ context.Context, response interface{}) (int
 }
 
 // DeleteCandidate deletes a Candidate by ID
-func (s *grpcServer) DeleteCandidate(ctx context.Context, req *pb.DeleteCandidateRequest) error {
+func (s *grpcServer) DeleteCandidate(ctx context.Context, req *pb.DeleteCandidateRequest) (*pb.DeleteCandidateResponse, error) {
 	_, rep, err := s.deleteCandidate.ServeGRPC(ctx, req)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return rep.(*pb.DeleteCandidateResponse), nil
 }
 
 // decodeDeleteCandidateRequest decodes the incoming grpc payload to our go kit payload
@@ -175,7 +183,11 @@ func decodeDeleteCandidateRequest(_ context.Context, request interface{}) (inter
 // encodeDeleteCandidateResponse encodes the outgoing go kit payload to the grpc payload
 func encodeDeleteCandidateResponse(_ context.Context, response interface{}) (interface{}, error) {
 	res := response.(endpoints.DeleteCandidateResponse)
-	return getError(res.Err)
+	err := getError(res.Err)
+	if err == nil {
+		return &pb.DeleteCandidateResponse{}, nil
+	}
+	return nil, err
 }
 
 func getError(err error) error {

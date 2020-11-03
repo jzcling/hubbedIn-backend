@@ -4,22 +4,25 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/go-pg/migrations/v8"
-	"github.com/go-pg/pg/v10"
-	"github.com/ory/dockertest/v3"
+	migrations "github.com/go-pg/migrations/v8"
+	pg "github.com/go-pg/pg/v10"
+	dockertest "github.com/ory/dockertest/v3"
 	"github.com/pkg/errors"
+
+	"in-backend/services/profile/models"
 )
 
 // GetTestUser returns the new random test User
 func GetTestUser() *models.Candidate {
 	user := &models.Candidate{
-		ID:        rand.Int64(),
+		ID:        rand.Uint64(),
 		FirstName: "First",
 		LastName:  "Last"}
 
 	return user
 }
 
+// DBSetup declares the model for the mock db for testing
 type DBSetup struct {
 	DB        *pg.DB
 	PgOptions pg.Options

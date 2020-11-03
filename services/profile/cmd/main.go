@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -63,7 +62,7 @@ func main() {
 		ocTracing       = kitoc.GRPCServerTrace()
 		serverOptions   = []kitgrpc.ServerOption{ocTracing}
 		profileService  = transport.NewGRPCServer(endpoints, serverOptions, logger)
-		grpcListener, _ = net.Listen("tcp", cfg.server.port)
+		grpcListener, _ = net.Listen("tcp", cfg.Server.Port)
 		grpcServer      = grpc.NewServer()
 	)
 
@@ -78,7 +77,7 @@ func main() {
 			The error is passed to the interrupt functions, and is returned by Run.
 		*/
 		g.Add(func() error {
-			logger.Log("transport", "gRPC", "addr", port)
+			logger.Log("transport", "gRPC", "addr", cfg.Server.Port)
 			pb.RegisterProfileServiceServer(grpcServer, profileService)
 			return grpcServer.Serve(grpcListener)
 		}, func(error) {

@@ -3,7 +3,7 @@ package migrations
 import (
 	"fmt"
 
-	"github.com/go-pg/migrations/v8"
+	migrations "github.com/go-pg/migrations/v8"
 )
 
 func init() {

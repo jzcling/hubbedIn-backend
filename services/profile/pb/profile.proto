@@ -1,7 +1,7 @@
 syntax = "proto3";
 package pb;
 
-option go_package = "in-backend/services/profile/pb";
+option go_package = "pb";
 
 import "google/protobuf/timestamp.proto";
 
@@ -11,40 +11,40 @@ message Empty {}
 
 service ProfileService {
     rpc CreateCandidate(CreateCandidateRequest) returns (Candidate) {};
-    rpc GetAllCandidates(Empty) returns (GetAllCandidatesResponse) {};
+    rpc GetAllCandidates(GetAllCandidatesRequest) returns (GetAllCandidatesResponse) {};
     rpc GetCandidateByID(GetCandidateByIDRequest) returns (Candidate) {};
     rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {};
-    rpc DeleteCandidate(DeleteCandidateRequest) returns (Empty) {};
+    rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {};
 
-    rpc CreateSkill(CreateSkillRequest) returns (Skill) {};
-    rpc GetSkill(GetSkillRequest) returns (Skill) {};
-    rpc GetAllSkills(Empty) returns (GetAllSkillsResponse) {};
+    // rpc CreateSkill(CreateSkillRequest) returns (Skill) {};
+    // rpc GetSkill(GetSkillRequest) returns (Skill) {};
+    // rpc GetAllSkills(Empty) returns (GetAllSkillsResponse) {};
 
-    rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {};
-    rpc GetInstitution(GetInstitutionRequest) returns (Institution) {};
-    rpc GetAllInstitutions(Empty) returns (GetAllInstitutionsResponse) {};
+    // rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {};
+    // rpc GetInstitution(GetInstitutionRequest) returns (Institution) {};
+    // rpc GetAllInstitutions(Empty) returns (GetAllInstitutionsResponse) {};
 
-    rpc CreateCourse(CreateCourseRequest) returns (Course) {};
-    rpc GetCourse(GetCourseRequest) returns (Course) {};
-    rpc GetAllCourses(Empty) returns (GetAllCoursesResponse) {};
+    // rpc CreateCourse(CreateCourseRequest) returns (Course) {};
+    // rpc GetCourse(GetCourseRequest) returns (Course) {};
+    // rpc GetAllCourses(Empty) returns (GetAllCoursesResponse) {};
 
-    rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (Empty) {};
+    // rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {};
+    // rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {};
+    // rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {};
+    // rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (Empty) {};
 
-    rpc CreateCompany(CreateCompanyRequest) returns (Company) {};
-    rpc GetCompany(GetCompanyRequest) returns (Company) {};
-    rpc GetAllCompanies(Empty) returns (GetAllCompaniesResponse) {};
+    // rpc CreateCompany(CreateCompanyRequest) returns (Company) {};
+    // rpc GetCompany(GetCompanyRequest) returns (Company) {};
+    // rpc GetAllCompanies(Empty) returns (GetAllCompaniesResponse) {};
 
-    rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {};
-    rpc GetDepartment(GetDepartmentRequest) returns (Department) {};
-    rpc GetAllDepartments(Empty) returns (GetAllDepartmentsResponse) {};
+    // rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {};
+    // rpc GetDepartment(GetDepartmentRequest) returns (Department) {};
+    // rpc GetAllDepartments(Empty) returns (GetAllDepartmentsResponse) {};
 
-    rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {};
-    rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {};
-    rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {};
-    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (Empty) {};
+    // rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {};
+    // rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {};
+    // rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {};
+    // rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (Empty) {};
 } 
 
 message Candidate {
@@ -60,7 +60,7 @@ message Candidate {
     uint32 expected_salary = 10;
     string linked_in_url = 11;
     string scm_url = 12;
-    string educational_level = 13;
+    string education_level = 13;
     google.protobuf.Timestamp birthday = 14;
     uint32 notice_period = 15;
     repeated Skill skills = 16;
@@ -73,6 +73,10 @@ message Candidate {
 
 message CreateCandidateRequest {
     Candidate candidate = 1;
+}
+
+message GetAllCandidatesRequest {
+    // TODO
 }
 
 message GetAllCandidatesResponse {
@@ -90,6 +94,10 @@ message UpdateCandidateRequest {
 
 message DeleteCandidateRequest {
     uint64 id = 1;
+}
+
+message DeleteCandidateResponse {
+    // Empty
 }
 
 message Skill {
@@ -154,9 +162,9 @@ message GetAllCoursesResponse {
 
 message AcademicHistory {
     uint64 id = 1;
-    string candidate_id = 2;
-    string institution_id = 3;
-    string course_id = 4;
+    uint64 candidate_id = 2;
+    uint64 institution_id = 3;
+    uint64 course_id = 4;
     uint32 year_obtained = 5;
     google.protobuf.Timestamp created_at = 6;
     google.protobuf.Timestamp updated_at = 7;
@@ -217,9 +225,9 @@ message GetAllDepartmentsResponse {
 
 message JobHistory {
     uint64 id = 1;
-    string candidate_id = 2;
-    string company_id = 3;
-    string department_id = 4;
+    uint64 candidate_id = 2;
+    uint64 company_id = 3;
+    uint64 department_id = 4;
     string country = 5;
     string city = 6;
     string title = 7;

@@ -3,7 +3,7 @@ package profile
 import (
 	"context"
 
-	pg "github.com/go-pg/pg/v10"
+	"in-backend/services/profile/models"
 )
 
 // Service describes the Profile Service.
@@ -15,11 +15,11 @@ type Service interface {
 	GetAllCandidates(ctx context.Context) ([]models.Candidate, error)
 
 	// GetCandidateByID finds and returns a candidate by ID
-	GetCandidateByID(ctx context.Context, id string) (models.Candidate, error)
+	GetCandidateByID(ctx context.Context, id uint64) (models.Candidate, error)
 
 	// UpdateCandidate candidate
-	UpdateCandidate(ctx context.Context, candidate *models.Candidate) error
+	UpdateCandidate(ctx context.Context, candidate *models.Candidate) (models.Candidate, error)
 
 	// DeleteCandidate deletes a candidate by ID
-	DeleteCandidate(ctx context.Context, id string) error
+	DeleteCandidate(ctx context.Context, id uint64) error
 }

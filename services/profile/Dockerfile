@@ -1,5 +1,5 @@
 FROM golang:1.15-alpine as builder
-RUN apk add --no-cache ca-certificates git
+RUN apk add --no-cache ca-certificates git build-base
 WORKDIR /build
 
 # restore dependencies
@@ -7,10 +7,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-COPY . /usr/local/go/src/in-backend/services/profile
-RUN CGO_ENABLED=0 && \
+RUN CGO_ENABLED=1 && \
     GOOS=linux && \
-    go build -a -installsuffix cgo -o /build/main .
+    GOARCH=amd64 && \
+    go build -a -o /build/main .
 
 FROM alpine as release
 RUN apk add --no-cache ca-certificates

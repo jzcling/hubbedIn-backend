@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Candidate declares model for Candidate
 type Candidate struct {
 	ID                     uint64             `json:"id"`
 	FirstName              string             `json:"first_name"`
@@ -12,7 +13,7 @@ type Candidate struct {
 	ContactNumber          string             `json:"contact_number"`
 	Gender                 string             `json:"gender"`
 	Nationality            string             `json:"nationality"`
-	ResidenceCity          string             `json:"residence_city`
+	ResidenceCity          string             `json:"residence_city"`
 	ExpectedSalaryCurrency string             `json:"expected_salary_currency"`
 	ExpectedSalary         uint32             `json:"expected_salary"`
 	LinkedInURL            string             `json:"linked_in_url"`
@@ -28,11 +29,13 @@ type Candidate struct {
 	DeletedAt              time.Time          `json:"deleted_at" pg:",soft_delete"`
 }
 
+// Skill declares model for Skill
 type Skill struct {
 	ID   uint64 `json:"id"`
 	Name string `json:"string"`
 }
 
+// UserSkill declares model for UserSkill
 type UserSkill struct {
 	ID          uint64
 	CandidateID uint64
@@ -42,6 +45,7 @@ type UserSkill struct {
 	DeletedAt   time.Time `json:"deleted_at" pg:",soft_delete"`
 }
 
+// Institution declares model for Institution
 type Institution struct {
 	ID      uint64    `json:"id"`
 	Country string    `json:"country"`
@@ -49,6 +53,7 @@ type Institution struct {
 	Courses []*Course `json:"courses" pg:"rel:has-many"`
 }
 
+// Course declares model for Course
 type Course struct {
 	ID            uint64 `json:"id"`
 	InstitutionID uint64 `json:"institution_id"`
@@ -56,6 +61,7 @@ type Course struct {
 	Name          string `json:"name"`
 }
 
+// AcademicHistory declares model for AcademicHistory
 type AcademicHistory struct {
 	ID            uint64       `json:"id"`
 	CandidateID   uint64       `json:"-"`
@@ -70,18 +76,21 @@ type AcademicHistory struct {
 	DeletedAt     time.Time    `json:"deleted_at" pg:",soft_delete"`
 }
 
+// Company declares model for Company
 type Company struct {
 	ID          uint64        `json:"id"`
 	Name        string        `json:"name"`
 	Departments []*Department `json:"departments" pg:"rel:has-many"`
 }
 
+// Department declares model for Department
 type Department struct {
 	ID        uint64 `json:"id"`
 	CompanyID uint64 `json:"company_id"`
 	Name      string `json:"name"`
 }
 
+// JobHistory declares model for JobHistory
 type JobHistory struct {
 	ID             uint64      `json:"id"`
 	CandidateID    uint64      `json:"-"`
@@ -95,7 +104,7 @@ type JobHistory struct {
 	Title          string      `json:"title"`
 	StartDate      time.Time   `json:"start_date"`
 	EndDate        time.Time   `json:"end_date"`
-	SalaryCurrency string      `json:'salary_currency"`
+	SalaryCurrency string      `json:"salary_currency"`
 	Salary         uint32      `json:"salary"`
 	Description    string      `json:"description"`
 	CreatedAt      time.Time   `json:"created_at"`

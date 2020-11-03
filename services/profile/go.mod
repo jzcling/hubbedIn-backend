@@ -1,4 +1,4 @@
-module profile
+module in-backend/services/profile
 
 go 1.15
 
@@ -10,9 +10,9 @@ require (
 	github.com/oklog/oklog v0.3.2
 	github.com/ory/dockertest/v3 v3.6.2
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	google.golang.org/grpc v1.27.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1 // indirect
 	google.golang.org/protobuf v1.25.0
 )

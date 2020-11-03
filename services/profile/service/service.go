@@ -5,6 +5,9 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+
+	"in-backend/services/profile"
+	"in-backend/services/profile/models"
 )
 
 // service implements the Profile Service
@@ -22,7 +25,7 @@ func New(r profile.Repository, l log.Logger) profile.Service {
 }
 
 // CreateCandidate creates a new candidate
-func (s *service) CreateCandidate(ctx context.Context, candidate models.Candidate) (models.Candidate, error) {
+func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candidate) (models.Candidate, error) {
 	logger := log.With(s.logger, "method", "CreateCandidate")
 
 	c, err := s.repository.CreateCandidate(ctx, candidate)
@@ -44,7 +47,7 @@ func (s *service) GetAllCandidates(ctx context.Context) ([]models.Candidate, err
 }
 
 // GetCandidateByID returns a candidate by ID
-func (s *service) GetCandidateByID(ctx context.Context, id string) (models.Candidate, error) {
+func (s *service) GetCandidateByID(ctx context.Context, id uint64) (models.Candidate, error) {
 	logger := log.With(s.logger, "method", "GetCandidateByID")
 
 	c, err := s.repository.GetCandidateByID(ctx, id)
@@ -55,7 +58,7 @@ func (s *service) GetCandidateByID(ctx context.Context, id string) (models.Candi
 }
 
 // UpdateCandidate updates a candidate
-func (s *service) UpdateCandidate(ctx context.Context, candidate models.Candidate) (models.Candidate, error) {
+func (s *service) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (models.Candidate, error) {
 	logger := log.With(s.logger, "method", "UpdateCandidate")
 
 	c, err := s.repository.UpdateCandidate(ctx, candidate)
@@ -66,7 +69,7 @@ func (s *service) UpdateCandidate(ctx context.Context, candidate models.Candidat
 }
 
 // DeleteCandidate deletes a candidate by ID
-func (s *service) DeleteCandidate(ctx context.Context, id string) error {
+func (s *service) DeleteCandidate(ctx context.Context, id uint64) error {
 	logger := log.With(s.logger, "method", "DeleteCandidate")
 
 	err := s.repository.DeleteCandidate(ctx, id)

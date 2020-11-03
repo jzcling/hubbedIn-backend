@@ -3,13 +3,13 @@ package database
 import (
 	"time"
 
-	"github.com/go-kit/kit/log/logrus"
-
 	pg "github.com/go-pg/pg/v10"
 
+	"in-backend/services/profile"
 	"in-backend/services/profile/configs"
 )
 
+// constants for db client config
 const (
 	ReadTimeout  = 30 * time.Second
 	WriteTimeout = 30 * time.Second
@@ -29,8 +29,8 @@ func (p postgresClient) Close() error {
 	return p.DB.Close()
 }
 
-// New returns a new PostgresClient
-func NewClient(cfg configs.Config) PostgresClient {
+// NewClient returns a new PostgresClient
+func NewClient(cfg configs.Config) profile.PostgresClient {
 	opt := GetPgConnectionOptions(cfg)
 	db := pg.Connect(opt)
 	return postgresClient{

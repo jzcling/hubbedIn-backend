@@ -1,12 +1,12 @@
-package main
+package migrations
 
 import (
 	"flag"
 	"fmt"
 	"os"
 
-	"github.com/go-pg/migrations/v8"
-	"github.com/go-pg/pg/v10"
+	migrations "github.com/go-pg/migrations/v8"
+	pg "github.com/go-pg/pg/v10"
 
 	"in-backend/services/profile/configs"
 )
