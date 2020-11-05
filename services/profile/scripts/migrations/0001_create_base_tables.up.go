@@ -31,15 +31,15 @@ func init() {
                 deleted_at timestamptz
             );
 
-            create index idx_id_deleted_at on candidates (id, deleted_at);
-            create index idx_email_deleted_at on candidates (email, deleted_at);
+            create index on candidates (id, deleted_at);
+            create index on candidates (email, deleted_at);
 
             create table if not exists skills (
                 id bigserial not null primary key,
                 name text not null
             );
 
-            create index idx_name on skills (name);
+            create index on skills (name);
 
             create table if not exists users_skills (
                 id bigserial not null primary key,
@@ -52,7 +52,7 @@ func init() {
                 constraint fk_skills foreign key(skill_id) references skills(id)
             );
 
-            create index idx_cid_sid_deleted_at on users_skills (candidate_id, skill_id, deleted_at);
+            create index on users_skills (candidate_id, skill_id, deleted_at);
 
             create table if not exists institutions (
                 id bigserial not null primary key,
@@ -60,7 +60,7 @@ func init() {
                 name text not null
             );
 
-            create index idx_name on institutions (name);
+            create index on institutions (name);
 
             create table if not exists courses (
                 id bigserial not null primary key,
@@ -70,7 +70,7 @@ func init() {
                 constraint fk_institutions foreign key(institution_id) references institutions(id)
             );
 
-            create index idx_name on courses (name);
+            create index on courses (name);
 
             create table if not exists academic_histories (
                 id bigserial not null primary key,
@@ -86,14 +86,14 @@ func init() {
                 constraint fk_courses foreign key(course_id) references courses(id)
             );
 
-            create index idx_cid_iid_cid_deleted_at on academic_histories (candidate_id, institution_id, course_id, deleted_at);
+            create index on academic_histories (candidate_id, institution_id, course_id, deleted_at);
 
             create table if not exists companies (
                 id bigserial not null primary key,
                 name text not null
             );
 
-            create index idx_name on companies (name);
+            create index on companies (name);
 
             create table if not exists departments (
                 id bigserial not null primary key,
@@ -102,7 +102,7 @@ func init() {
                 constraint fk_companies foreign key(company_id) references companies(id)
             );
 
-            create index idx_name on departments (name);
+            create index on departments (name);
 
             create table if not exists job_histories (
                 id bigserial not null primary key,
@@ -122,8 +122,8 @@ func init() {
                 deleted_at timestamptz
             );
 
-            create index idx_cid_coid_did_deleted_at on job_histories (candidate_id, company_id, department_id, deleted_at);
-            create index idx_cid_title_deleted_at on job_histories (candidate_id, title, deleted_at);
+            create index on job_histories (candidate_id, company_id, department_id, deleted_at);
+            create index on job_histories (candidate_id, title, deleted_at);
         `)
 		return err
 	}, func(db migrations.DB) error {
