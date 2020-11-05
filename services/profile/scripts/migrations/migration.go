@@ -1,4 +1,4 @@
-package migrations
+package main
 
 import (
 	"flag"
@@ -34,7 +34,9 @@ func main() {
 	}
 
 	db := pg.Connect(&pg.Options{
+		Addr:     cfg.Database.Address,
 		User:     cfg.Database.Username,
+		Password: cfg.Database.Password,
 		Database: cfg.Database.Database,
 	})
 

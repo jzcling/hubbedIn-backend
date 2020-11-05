@@ -39,6 +39,8 @@ func LoadConfig() (Config, error) {
 	v.SetEnvPrefix("api")
 	v.SetConfigType("yaml")
 	v.AddConfigPath(".")
+	v.AddConfigPath("../configs")
+	v.AddConfigPath("../../configs")
 
 	replacer := strings.NewReplacer(".", "_")
 	v.SetEnvKeyReplacer(replacer)

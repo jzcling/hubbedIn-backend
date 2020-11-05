@@ -6,6 +6,8 @@ import (
 
 // Candidate declares model for Candidate
 type Candidate struct {
+	tableName struct{} `pg:"candidates,alias:c"`
+
 	ID                     uint64             `json:"id"`
 	FirstName              string             `json:"first_name"`
 	LastName               string             `json:"last_name"`
@@ -31,12 +33,16 @@ type Candidate struct {
 
 // Skill declares model for Skill
 type Skill struct {
+	tableName struct{} `pg:"skills,alias:s"`
+
 	ID   uint64 `json:"id"`
 	Name string `json:"string"`
 }
 
 // UserSkill declares model for UserSkill
 type UserSkill struct {
+	tableName struct{} `pg:"users_skills,alias:us"`
+
 	ID          uint64
 	CandidateID uint64
 	SkillID     uint64
@@ -47,6 +53,8 @@ type UserSkill struct {
 
 // Institution declares model for Institution
 type Institution struct {
+	tableName struct{} `pg:"institutions,alias:i"`
+
 	ID      uint64    `json:"id"`
 	Country string    `json:"country"`
 	Name    string    `json:"name"`
@@ -55,6 +63,8 @@ type Institution struct {
 
 // Course declares model for Course
 type Course struct {
+	tableName struct{} `pg:"courses,alias:cr"`
+
 	ID            uint64 `json:"id"`
 	InstitutionID uint64 `json:"institution_id"`
 	Level         string `json:"level"`
@@ -63,6 +73,8 @@ type Course struct {
 
 // AcademicHistory declares model for AcademicHistory
 type AcademicHistory struct {
+	tableName struct{} `pg:"academic_histories,alias:ah"`
+
 	ID            uint64       `json:"id"`
 	CandidateID   uint64       `json:"-"`
 	Candidate     *Candidate   `json:"candidate" pg:"rel:has-one"`
@@ -78,6 +90,8 @@ type AcademicHistory struct {
 
 // Company declares model for Company
 type Company struct {
+	tableName struct{} `pg:"companies,alias:co"`
+
 	ID          uint64        `json:"id"`
 	Name        string        `json:"name"`
 	Departments []*Department `json:"departments" pg:"rel:has-many"`
@@ -85,6 +99,8 @@ type Company struct {
 
 // Department declares model for Department
 type Department struct {
+	tableName struct{} `pg:"departments,alias:d"`
+
 	ID        uint64 `json:"id"`
 	CompanyID uint64 `json:"company_id"`
 	Name      string `json:"name"`
@@ -92,6 +108,8 @@ type Department struct {
 
 // JobHistory declares model for JobHistory
 type JobHistory struct {
+	tableName struct{} `pg:"job_histories,alias:jh"`
+
 	ID             uint64      `json:"id"`
 	CandidateID    uint64      `json:"-"`
 	Candidate      *Candidate  `json:"candidate" pg:"rel:has-one"`

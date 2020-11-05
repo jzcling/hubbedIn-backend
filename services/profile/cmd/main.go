@@ -59,12 +59,16 @@ func main() {
 
 	// set-up grpc transport
 	var (
-		ocTracing       = kitoc.GRPCServerTrace()
-		serverOptions   = []kitgrpc.ServerOption{ocTracing}
-		profileService  = transport.NewGRPCServer(endpoints, serverOptions, logger)
-		grpcListener, _ = net.Listen("tcp", cfg.Server.Port)
-		grpcServer      = grpc.NewServer()
+		ocTracing               = kitoc.GRPCServerTrace()
+		serverOptions           = []kitgrpc.ServerOption{ocTracing}
+		profileService          = transport.NewGRPCServer(endpoints, serverOptions, logger)
+		grpcListener, listenErr = net.Listen("tcp", fmt.Sprintf("%s:%s", cfg.Server.Address, cfg.Server.Port))
+		grpcServer              = grpc.NewServer()
 	)
+
+	if listenErr != nil {
+		level.Error(logger).Log("GRPCListener", listenErr)
+	}
 
 	var g group.Group
 	{
