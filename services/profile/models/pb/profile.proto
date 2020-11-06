@@ -1,7 +1,7 @@
 syntax = "proto3";
 package pb;
 
-option go_package = "pb";
+option go_package = "models/pb";
 
 import "google/protobuf/timestamp.proto";
 
@@ -16,35 +16,35 @@ service ProfileService {
     rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {};
     rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {};
 
-    // rpc CreateSkill(CreateSkillRequest) returns (Skill) {};
-    // rpc GetSkill(GetSkillRequest) returns (Skill) {};
-    // rpc GetAllSkills(Empty) returns (GetAllSkillsResponse) {};
+    rpc CreateSkill(CreateSkillRequest) returns (Skill) {};
+    rpc GetSkill(GetSkillRequest) returns (Skill) {};
+    rpc GetAllSkills(GetAllSkillsRequest) returns (GetAllSkillsResponse) {};
 
-    // rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {};
-    // rpc GetInstitution(GetInstitutionRequest) returns (Institution) {};
-    // rpc GetAllInstitutions(Empty) returns (GetAllInstitutionsResponse) {};
+    rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {};
+    rpc GetInstitution(GetInstitutionRequest) returns (Institution) {};
+    rpc GetAllInstitutions(GetAllInstitutionsRequest) returns (GetAllInstitutionsResponse) {};
 
-    // rpc CreateCourse(CreateCourseRequest) returns (Course) {};
-    // rpc GetCourse(GetCourseRequest) returns (Course) {};
-    // rpc GetAllCourses(Empty) returns (GetAllCoursesResponse) {};
+    rpc CreateCourse(CreateCourseRequest) returns (Course) {};
+    rpc GetCourse(GetCourseRequest) returns (Course) {};
+    rpc GetAllCourses(GetAllCoursesRequest) returns (GetAllCoursesResponse) {};
 
-    // rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {};
-    // rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {};
-    // rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {};
-    // rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (Empty) {};
+    rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {};
+    rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {};
+    rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {};
+    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (Empty) {};
 
-    // rpc CreateCompany(CreateCompanyRequest) returns (Company) {};
-    // rpc GetCompany(GetCompanyRequest) returns (Company) {};
-    // rpc GetAllCompanies(Empty) returns (GetAllCompaniesResponse) {};
+    rpc CreateCompany(CreateCompanyRequest) returns (Company) {};
+    rpc GetCompany(GetCompanyRequest) returns (Company) {};
+    rpc GetAllCompanies(GetAllCompaniesRequest) returns (GetAllCompaniesResponse) {};
 
-    // rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {};
-    // rpc GetDepartment(GetDepartmentRequest) returns (Department) {};
-    // rpc GetAllDepartments(Empty) returns (GetAllDepartmentsResponse) {};
+    rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {};
+    rpc GetDepartment(GetDepartmentRequest) returns (Department) {};
+    rpc GetAllDepartments(GetAllDepartmentsRequest) returns (GetAllDepartmentsResponse) {};
 
-    // rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {};
-    // rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {};
-    // rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {};
-    // rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (Empty) {};
+    rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {};
+    rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {};
+    rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {};
+    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (Empty) {};
 } 
 
 message Candidate {
@@ -119,6 +119,10 @@ message GetSkillRequest {
     uint64 id = 1;
 }
 
+message GetAllSkillsRequest {
+    // TODO
+}
+
 message GetAllSkillsResponse {
     repeated Skill skills = 1;
 }
@@ -135,6 +139,10 @@ message CreateInstitutionRequest {
 
 message GetInstitutionRequest {
     uint64 id = 1;
+}
+
+message GetAllInstitutionsRequest {
+    // TODO
 }
 
 message GetAllInstitutionsResponse {
@@ -154,6 +162,10 @@ message CreateCourseRequest {
 
 message GetCourseRequest {
     uint64 id = 1;
+}
+
+message GetAllCoursesRequest {
+    // TODO
 }
 
 message GetAllCoursesResponse {
@@ -201,6 +213,10 @@ message GetCompanyRequest {
     uint64 id = 1;
 }
 
+message GetAllCompaniesRequest {
+    // TODO
+}
+
 message GetAllCompaniesResponse {
     repeated Company companies = 1;
 }
@@ -217,6 +233,10 @@ message CreateDepartmentRequest {
 
 message GetDepartmentRequest {
     uint64 id = 1;
+}
+
+message GetAllDepartmentsRequest {
+    // TODO
 }
 
 message GetAllDepartmentsResponse {

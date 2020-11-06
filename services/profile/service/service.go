@@ -7,7 +7,6 @@ import (
 	"github.com/go-kit/kit/log/level"
 
 	"in-backend/services/profile"
-	"in-backend/services/profile/models"
 )
 
 // service implements the Profile Service
@@ -25,7 +24,7 @@ func New(r profile.Repository, l log.Logger) profile.Service {
 }
 
 // CreateCandidate creates a new candidate
-func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candidate) (models.Candidate, error) {
+func (s *service) CreateCandidate(ctx context.Context, candidate *orm.Candidate) (*orm.Candidate, error) {
 	logger := log.With(s.logger, "method", "CreateCandidate")
 
 	c, err := s.repository.CreateCandidate(ctx, candidate)
@@ -36,7 +35,7 @@ func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candida
 }
 
 // GetAllCandidates returns all candidates
-func (s *service) GetAllCandidates(ctx context.Context) ([]models.Candidate, error) {
+func (s *service) GetAllCandidates(ctx context.Context) ([]*orm.Candidate, error) {
 	logger := log.With(s.logger, "method", "GetAllCandidates")
 
 	c, err := s.repository.GetAllCandidates(ctx)
@@ -47,7 +46,7 @@ func (s *service) GetAllCandidates(ctx context.Context) ([]models.Candidate, err
 }
 
 // GetCandidateByID returns a candidate by ID
-func (s *service) GetCandidateByID(ctx context.Context, id uint64) (models.Candidate, error) {
+func (s *service) GetCandidateByID(ctx context.Context, id uint64) (*orm.Candidate, error) {
 	logger := log.With(s.logger, "method", "GetCandidateByID")
 
 	c, err := s.repository.GetCandidateByID(ctx, id)
@@ -58,7 +57,7 @@ func (s *service) GetCandidateByID(ctx context.Context, id uint64) (models.Candi
 }
 
 // UpdateCandidate updates a candidate
-func (s *service) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (models.Candidate, error) {
+func (s *service) UpdateCandidate(ctx context.Context, candidate *orm.Candidate) (*orm.Candidate, error) {
 	logger := log.With(s.logger, "method", "UpdateCandidate")
 
 	c, err := s.repository.UpdateCandidate(ctx, candidate)

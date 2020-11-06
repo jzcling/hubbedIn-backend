@@ -13,11 +13,12 @@ import (
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/database"
 	"in-backend/services/profile/endpoints"
-	"in-backend/services/profile/pb"
+	"in-backend/services/profile/models/pb"
 	"in-backend/services/profile/service"
 	"in-backend/services/profile/transport"
 )
@@ -62,7 +63,7 @@ func main() {
 		ocTracing               = kitoc.GRPCServerTrace()
 		serverOptions           = []kitgrpc.ServerOption{ocTracing}
 		profileService          = transport.NewGRPCServer(endpoints, serverOptions, logger)
-		grpcListener, listenErr = net.Listen("tcp", fmt.Sprintf("%s:%s", cfg.Server.Address, cfg.Server.Port))
+		grpcListener, listenErr = net.Listen("tcp", fmt.Sprintf(":%s", cfg.Server.Port))
 		grpcServer              = grpc.NewServer()
 	)
 
@@ -83,6 +84,8 @@ func main() {
 		g.Add(func() error {
 			logger.Log("transport", "gRPC", "addr", cfg.Server.Port)
 			pb.RegisterProfileServiceServer(grpcServer, profileService)
+			// Register reflection service on gRPC server.
+			reflection.Register(grpcServer)
 			return grpcServer.Serve(grpcListener)
 		}, func(error) {
 			grpcListener.Close()

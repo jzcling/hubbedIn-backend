@@ -1,13 +1,14 @@
 package configs
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
-const configFileName = "env"
+const configFileName = "config"
 
 // Config declares the application configuration variables
 type Config struct {
@@ -36,8 +37,7 @@ type serverConfig struct {
 func LoadConfig() (Config, error) {
 	v := viper.New()
 	v.SetConfigName(configFileName)
-	v.SetEnvPrefix("api")
-	v.SetConfigType("yaml")
+	v.SetConfigType("env")
 	v.AddConfigPath(".")
 	v.AddConfigPath("../configs")
 	v.AddConfigPath("../../configs")
@@ -51,10 +51,14 @@ func LoadConfig() (Config, error) {
 		return Config{}, errors.Wrap(err, "Failed to read config")
 	}
 
+	fmt.Printf("%+v", v)
+
 	err := v.Unmarshal(&cfg)
 	if err != nil {
 		return Config{}, errors.Wrap(err, "Unable to decode into struct")
 	}
+
+	fmt.Printf("%+v", cfg)
 
 	return cfg, nil
 }

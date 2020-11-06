@@ -1,27 +1,28 @@
-package pb
+package models/maps
 
 import (
-	"in-backend/services/profile/models"
+	"in-backend/services/profile/models/orm"
+	"in-backend/services/profile/models/pb"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
 )
 
-// ToORM maps the grpc Candidate model to the ORM model
-func (c *Candidate) ToORM() models.Candidate {
-	var skills []*models.Skill
+// ToORM maps the proto Candidate model to the ORM model
+func (c *pb.Candidate) ToORM() *orm.Candidate {
+	var skills []*orm.Skill
 	s := c.Skills
 	for _, skill := range s {
 		skills = append(skills, skill.ToORM())
 	}
 
-	var academics []*models.AcademicHistory
+	var academics []*orm.AcademicHistory
 	a := c.Academics
 	for _, academic := range a {
 		academics = append(academics, academic.ToORM())
 	}
 
-	var jobs []*models.JobHistory
+	var jobs []*orm.JobHistory
 	j := c.Jobs
 	for _, job := range j {
 		jobs = append(jobs, job.ToORM())
@@ -47,7 +48,7 @@ func (c *Candidate) ToORM() models.Candidate {
 		deletedAt = time.Time{}
 	}
 
-	return models.Candidate{
+	return &orm.Candidate{
 		ID:                     c.Id,
 		FirstName:              c.FirstName,
 		LastName:               c.LastName,
@@ -61,27 +62,46 @@ func (c *Candidate) ToORM() models.Candidate {
 		LinkedInURL:            c.LinkedInUrl,
 		SCMURL:                 c.ScmUrl,
 		EducationLevel:         c.EducationLevel,
-		Birthday:               birthday,
+		Birthday:               &birthday,
 		NoticePeriod:           c.NoticePeriod,
 		Skills:                 skills,
 		Academics:              academics,
 		Jobs:                   jobs,
-		CreatedAt:              createdAt,
-		UpdatedAt:              updatedAt,
-		DeletedAt:              deletedAt,
+		CreatedAt:              &createdAt,
+		UpdatedAt:              &updatedAt,
+		DeletedAt:              &deletedAt,
 	}
 }
 
-// ToORM maps the grpc Skill model to the ORM model
-func (s *Skill) ToORM() *models.Skill {
-	return &models.Skill{
+// ToORM maps the proto Skill model to the ORM model
+func (s *pb.Skill) ToORM() *orm.Skill {
+	return &orm.Skill{
 		ID:   s.Id,
 		Name: s.Name,
 	}
 }
 
-// ToORM maps the grpc AcademicHistory model to the ORM model
-func (a *AcademicHistory) ToORM() *models.AcademicHistory {
+// ToORM maps the proto Institution model to the ORM model
+func (i *pb.Institution) ToORM() *orm.Institution {
+	return &orm.Institution{
+		ID:   i.Id,
+		Country: i.Country
+		Name: i.Name,
+	}
+}
+
+// ToORM maps the proto Course model to the ORM model
+func (c *pb.Course) ToORM() *orm.Course {
+	return &orm.Course{
+		ID:   c.Id,
+		InstitutionID: c.InstitutionId
+		Level: c.Level
+		Name: c.Name,
+	}
+}
+
+// ToORM maps the proto AcademicHistory model to the ORM model
+func (a *pb.AcademicHistory) ToORM() *orm.AcademicHistory {
 	createdAt, err := ptypes.Timestamp(a.CreatedAt)
 	if err != nil {
 		createdAt = time.Time{}
@@ -97,20 +117,37 @@ func (a *AcademicHistory) ToORM() *models.AcademicHistory {
 		deletedAt = time.Time{}
 	}
 
-	return &models.AcademicHistory{
+	return &orm.AcademicHistory{
 		ID:            a.Id,
 		CandidateID:   a.CandidateId,
 		InstitutionID: a.InstitutionId,
 		CourseID:      a.CourseId,
 		YearObtained:  a.YearObtained,
-		CreatedAt:     createdAt,
-		UpdatedAt:     updatedAt,
-		DeletedAt:     deletedAt,
+		CreatedAt:     &createdAt,
+		UpdatedAt:     &updatedAt,
+		DeletedAt:     &deletedAt,
 	}
 }
 
-// ToORM maps the grpc JobHistory model to the ORM model
-func (j *JobHistory) ToORM() *models.JobHistory {
+// ToORM maps the proto Company model to the ORM model
+func (c *pb.Company) ToORM() *orm.Company {
+	return &orm.Company{
+		ID:   c.Id,
+		Name: c.Name,
+	}
+}
+
+// ToORM maps the proto Department model to the ORM model
+func (d *pb.Department) ToORM() *orm.Department {
+	return &orm.Department{
+		ID:   d.Id,
+		CompanyID: d.CompanyId
+		Name: d.Name,
+	}
+}
+
+// ToORM maps the proto JobHistory model to the ORM model
+func (j *pb.JobHistory) ToORM() *orm.JobHistory {
 	startDate, err := ptypes.Timestamp(j.StartDate)
 	if err != nil {
 		startDate = time.Time{}
@@ -135,7 +172,7 @@ func (j *JobHistory) ToORM() *models.JobHistory {
 	if err != nil {
 		deletedAt = time.Time{}
 	}
-	return &models.JobHistory{
+	return &orm.JobHistory{
 		ID:             j.Id,
 		CandidateID:    j.CandidateId,
 		CompanyID:      j.CompanyId,
@@ -143,13 +180,13 @@ func (j *JobHistory) ToORM() *models.JobHistory {
 		Country:        j.Country,
 		City:           j.City,
 		Title:          j.Title,
-		StartDate:      startDate,
-		EndDate:        endDate,
+		StartDate:      &startDate,
+		EndDate:        &endDate,
 		SalaryCurrency: j.SalaryCurrency,
 		Salary:         j.Salary,
 		Description:    j.Description,
-		CreatedAt:      createdAt,
-		UpdatedAt:      updatedAt,
-		DeletedAt:      deletedAt,
+		CreatedAt:      &createdAt,
+		UpdatedAt:      &updatedAt,
+		DeletedAt:      &deletedAt,
 	}
 }

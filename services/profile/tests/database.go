@@ -8,13 +8,11 @@ import (
 	pg "github.com/go-pg/pg/v10"
 	dockertest "github.com/ory/dockertest/v3"
 	"github.com/pkg/errors"
-
-	"in-backend/services/profile/models"
 )
 
 // GetTestUser returns the new random test User
-func GetTestUser() *models.Candidate {
-	user := &models.Candidate{
+func GetTestUser() *orm.Candidate {
+	user := &orm.Candidate{
 		ID:        rand.Uint64(),
 		FirstName: "First",
 		LastName:  "Last"}

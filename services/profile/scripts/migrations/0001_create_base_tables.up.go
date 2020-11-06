@@ -14,8 +14,8 @@ func init() {
                 id bigserial not null primary key,
                 first_name text not null,
                 last_name text not null,
-                email text not null,
-                contact_number text not null,
+                email text not null unique,
+                contact_number text not null unique,
                 gender text,
                 nationality text,
                 residence_city text,
@@ -36,7 +36,7 @@ func init() {
 
             create table if not exists skills (
                 id bigserial not null primary key,
-                name text not null
+                name text not null unique
             );
 
             create index on skills (name);
@@ -57,7 +57,7 @@ func init() {
             create table if not exists institutions (
                 id bigserial not null primary key,
                 country text,
-                name text not null
+                name text not null unique
             );
 
             create index on institutions (name);
@@ -66,7 +66,7 @@ func init() {
                 id bigserial not null primary key,
                 institution_id bigint,
                 level text,
-                name text not null,
+                name text not null unique,
                 constraint fk_institutions foreign key(institution_id) references institutions(id)
             );
 
@@ -90,7 +90,7 @@ func init() {
 
             create table if not exists companies (
                 id bigserial not null primary key,
-                name text not null
+                name text not null unique
             );
 
             create index on companies (name);
@@ -98,7 +98,7 @@ func init() {
             create table if not exists departments (
                 id bigserial not null primary key,
                 company_id bigint,
-                name text not null,
+                name text not null unique,
                 constraint fk_companies foreign key(company_id) references companies(id)
             );
 
