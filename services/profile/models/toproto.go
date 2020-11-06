@@ -1,15 +1,14 @@
-package models/maps
+package models
 
 import (
-	"in-backend/services/profile/models/orm"
-	"in-backend/services/profile/models/pb"
+	"in-backend/services/profile/pb"
 
 	"github.com/golang/protobuf/ptypes"
 	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 // ToProto maps the ORM Candidate model to the proto model
-func (c *orm.Candidate) ToProto() *pb.Candidate {
+func (c *Candidate) ToProto() *pb.Candidate {
 	var skills []*pb.Skill
 	s := c.Skills
 	for _, skill := range s {
@@ -87,7 +86,7 @@ func (c *orm.Candidate) ToProto() *pb.Candidate {
 }
 
 // ToProto maps the ORM Skill model to the proto model
-func (s *orm.Skill) ToProto() *pb.Skill {
+func (s *Skill) ToProto() *pb.Skill {
 	return &pb.Skill{
 		Id:   s.ID,
 		Name: s.Name,
@@ -95,7 +94,7 @@ func (s *orm.Skill) ToProto() *pb.Skill {
 }
 
 // ToProto maps the ORM Institution model to the proto model
-func (i *orm.Institution) ToProto() *pb.Institution {
+func (i *Institution) ToProto() *pb.Institution {
 	return &pb.Institution{
 		Id:   i.ID,
 		Country: i.Country,
@@ -104,7 +103,7 @@ func (i *orm.Institution) ToProto() *pb.Institution {
 }
 
 // ToProto maps the ORM Course model to the proto model
-func (c *orm.Course) ToProto() *pb.Course {
+func (c *Course) ToProto() *pb.Course {
 	return &pb.Course{
 		Id:   c.ID,
 		InstitutionId: c.InstitutionID,
@@ -114,7 +113,7 @@ func (c *orm.Course) ToProto() *pb.Course {
 }
 
 // ToProto maps the ORM AcademicHistory model to the proto model
-func (a *orm.AcademicHistory) ToProto() *pb.AcademicHistory {
+func (a *AcademicHistory) ToProto() *pb.AcademicHistory {
 	var err error
 	var createdAt *timestamppb.Timestamp
 	if a.CreatedAt != nil {
@@ -153,7 +152,7 @@ func (a *orm.AcademicHistory) ToProto() *pb.AcademicHistory {
 }
 
 // ToProto maps the ORM Company model to the proto model
-func (c *orm.Company) ToProto() *pb.Company {
+func (c *Company) ToProto() *pb.Company {
 	return &pb.Company{
 		Id:   c.ID,
 		Name: c.Name,
@@ -161,7 +160,7 @@ func (c *orm.Company) ToProto() *pb.Company {
 }
 
 // ToProto maps the ORM Department model to the proto model
-func (d *orm.Department) ToProto() *pb.Department {
+func (d *Department) ToProto() *pb.Department {
 	return &pb.Department{
 		Id:   d.ID,
 		CompanyId: d.CompanyID,
@@ -170,7 +169,7 @@ func (d *orm.Department) ToProto() *pb.Department {
 }
 
 // ToProto maps the ORM JobHistory model to the proto model
-func (j *orm.JobHistory) ToProto() *pb.JobHistory {
+func (j *JobHistory) ToProto() *pb.JobHistory {
 	var err error
 	var startDate *timestamppb.Timestamp
 	if j.StartDate != nil {

@@ -18,7 +18,7 @@ import (
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/database"
 	"in-backend/services/profile/endpoints"
-	"in-backend/services/profile/models/pb"
+	"in-backend/services/profile/pb"
 	"in-backend/services/profile/service"
 	"in-backend/services/profile/transport"
 )

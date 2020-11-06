@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"in-backend/services/profile/models"
 	"context"
 )
 
@@ -9,16 +10,16 @@ type Repository interface {
 	/* --------------- Candidate --------------- */
 
 	// CreateCandidate creates a new candidate
-	CreateCandidate(ctx context.Context, c *orm.Candidate) (*orm.Candidate, error)
+	CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)
 
 	// GetAllCandidates returns all candidates
-	GetAllCandidates(ctx context.Context) ([]*orm.Candidate, error)
+	GetAllCandidates(ctx context.Context) ([]*models.Candidate, error)
 
 	// GetCandidateByID finds and returns a candidate by ID
-	GetCandidateByID(ctx context.Context, id uint64) (*orm.Candidate, error)
+	GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error)
 
 	// UpdateCandidate updates a candidate
-	UpdateCandidate(ctx context.Context, c *orm.Candidate) (*orm.Candidate, error)
+	UpdateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)
 
 	// DeleteCandidate deletes a candidate by ID
 	DeleteCandidate(ctx context.Context, id uint64) error
@@ -26,46 +27,46 @@ type Repository interface {
 	/* --------------- Skill --------------- */
 
 	// CreateSkill creates a new Skill
-	CreateSkill(ctx context.Context, s *orm.Skill) (*orm.Skill, error)
+	CreateSkill(ctx context.Context, s *models.Skill) (*models.Skill, error)
 
 	// GetSkill returns a Skill by ID
-	GetSkill(ctx context.Context, id uint64) (*orm.Skill, error)
+	GetSkill(ctx context.Context, id uint64) (*models.Skill, error)
 
 	// GetAllSkills returns all Skills
-	GetAllSkills(ctx context.Context) (*orm.Skill, error)
+	GetAllSkills(ctx context.Context) ([]*models.Skill, error)
 
 	/* --------------- Institution --------------- */
 
 	// CreateInstitution creates a new Institution
-	CreateInstitution(ctx context.Context, i *orm.Institution) (*orm.Institution, error)
+	CreateInstitution(ctx context.Context, i *models.Institution) (*models.Institution, error)
 
 	// GetInstitution returns a Institution by ID
-	GetInstitution(ctx context.Context, id uint64) (*orm.Institution, error)
+	GetInstitution(ctx context.Context, id uint64) (*models.Institution, error)
 
 	// GetAllInstitutions returns all Institutions
-	GetAllInstitutions(ctx context.Context) (*orm.Institution, error)
+	GetAllInstitutions(ctx context.Context) ([]*models.Institution, error)
 
 	/* --------------- Course --------------- */
 
 	// CreateCourse creates a new Course
-	CreateCourse(ctx context.Context, c *orm.Course) (*orm.Course, error)
+	CreateCourse(ctx context.Context, c *models.Course) (*models.Course, error)
 
 	// GetCourse returns a Course by ID
-	GetCourse(ctx context.Context, id uint64) (*orm.Course, error)
+	GetCourse(ctx context.Context, id uint64) (*models.Course, error)
 
 	// GetAllCourses returns all Courses
-	GetAllCourses(ctx context.Context) (*orm.Course, error)
+	GetAllCourses(ctx context.Context) ([]*models.Course, error)
 
 	/* --------------- Academic History --------------- */
 
 	// CreateAcademicHistory creates a new AcademicHistory
-	CreateAcademicHistory(ctx context.Context, a *orm.AcademicHistory) (*orm.AcademicHistory, error)
+	CreateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error)
 
 	// GetAcademicHistory returns a AcademicHistory by ID
-	GetAcademicHistory(ctx context.Context, id uint64) (*orm.AcademicHistory, error)
+	GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error)
 
 	// UpdateAcademicHistory updates a AcademicHistory
-	UpdateAcademicHistory(ctx context.Context, a *orm.AcademicHistory) (*orm.AcademicHistory, error)
+	UpdateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error)
 
 	// DeleteAcademicHistory deletes a AcademicHistory by ID
 	DeleteAcademicHistory(ctx context.Context, id uint64) error
@@ -73,35 +74,35 @@ type Repository interface {
 	/* --------------- Company --------------- */
 
 	// CreateCompany creates a new Company
-	CreateCompany(ctx context.Context, c *orm.Company) (*orm.Company, error)
+	CreateCompany(ctx context.Context, c *models.Company) (*models.Company, error)
 
 	// GetCompany returns a Company by ID
-	GetCompany(ctx context.Context, id uint64) (*orm.Company, error)
+	GetCompany(ctx context.Context, id uint64) (*models.Company, error)
 
 	// GetAllCompanies returns all Companies
-	GetAllCompanies(ctx context.Context) (*orm.Company, error)
+	GetAllCompanies(ctx context.Context) ([]*models.Company, error)
 
 	/* --------------- Department --------------- */
 
 	// CreateDepartment creates a new Department
-	CreateDepartment(ctx context.Context, c *orm.Department) (*orm.Department, error)
+	CreateDepartment(ctx context.Context, c *models.Department) (*models.Department, error)
 
 	// GetDepartment returns a Department by ID
-	GetDepartment(ctx context.Context, id uint64) (*orm.Department, error)
+	GetDepartment(ctx context.Context, id uint64) (*models.Department, error)
 
 	// GetAllDepartments returns all Departments
-	GetAllDepartments(ctx context.Context) (*orm.Department, error)
+	GetAllDepartments(ctx context.Context) ([]*models.Department, error)
 
 	/* --------------- Job History --------------- */
 
 	// CreateJobHistory creates a new JobHistory
-	CreateJobHistory(ctx context.Context, a *orm.JobHistory) (*orm.JobHistory, error)
+	CreateJobHistory(ctx context.Context, a *models.JobHistory) (*models.JobHistory, error)
 
 	// GetJobHistory returns a JobHistory by ID
-	GetJobHistory(ctx context.Context, id uint64) (*orm.JobHistory, error)
+	GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error)
 
 	// UpdateJobHistory updates a JobHistory
-	UpdateJobHistory(ctx context.Context, j *orm.JobHistory) (*orm.JobHistory, error)
+	UpdateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error)
 
 	// DeleteJobHistory deletes a JobHistory by ID
 	DeleteJobHistory(ctx context.Context, id uint64) error

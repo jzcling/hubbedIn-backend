@@ -1,4 +1,4 @@
-package models/orm
+package models
 
 import (
 	"time"
@@ -19,7 +19,7 @@ type Candidate struct {
 	ID                     uint64             `json:"id"`
 	FirstName              string             `json:"first_name"`
 	LastName               string             `json:"last_name"`
-	Email                  string             `json:"email", pg:",unique"`
+	Email                  string             `json:"email" pg:",unique"`
 	ContactNumber          string             `json:"contact_number"`
 	Gender                 string             `json:"gender,omitempty"`
 	Nationality            string             `json:"nationality,omitempty"`
@@ -35,7 +35,7 @@ type Candidate struct {
 	Academics              []*AcademicHistory `json:"academics,omitempty" pg:"rel:has-many"`
 	Jobs                   []*JobHistory      `json:"jobs,omitempty" pg:"rel:has-many"`
 	CreatedAt              *time.Time         `json:"created_at,omitempty"`
-	UpdatedAt              *time.Time         `json:"updated_at,omitempty", pg:"default:now()"`
+	UpdatedAt              *time.Time         `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt              *time.Time         `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
@@ -56,7 +56,7 @@ type UserSkill struct {
 	CandidateID uint64
 	SkillID     uint64
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
-	UpdatedAt   *time.Time `json:"updated_at,omitempty", pg:"default:now()"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt   *time.Time `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
@@ -93,7 +93,7 @@ type AcademicHistory struct {
 	Course        *Course      `json:"course,omitempty" pg:"rel:has-one"`
 	YearObtained  uint32       `json:"year_obtained,omitempty"`
 	CreatedAt     *time.Time   `json:"created_at,omitempty"`
-	UpdatedAt     *time.Time   `json:"updated_at,omitempty", pg:"default:now()"`
+	UpdatedAt     *time.Time   `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
@@ -135,6 +135,6 @@ type JobHistory struct {
 	Salary         uint32      `json:"salary,omitempty"`
 	Description    string      `json:"description,omitempty"`
 	CreatedAt      *time.Time  `json:"created_at,omitempty"`
-	UpdatedAt      *time.Time  `json:"updated_at,omitempty", pg:"default:now()"`
+	UpdatedAt      *time.Time  `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt      *time.Time  `json:"deleted_at,omitempty" pg:",soft_delete"`
 }

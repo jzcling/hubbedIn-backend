@@ -31,7 +31,7 @@ service ProfileService {
     rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {};
     rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {};
     rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (Empty) {};
+    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {};
 
     rpc CreateCompany(CreateCompanyRequest) returns (Company) {};
     rpc GetCompany(GetCompanyRequest) returns (Company) {};
@@ -44,7 +44,7 @@ service ProfileService {
     rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {};
     rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {};
     rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {};
-    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (Empty) {};
+    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {};
 } 
 
 message Candidate {
@@ -151,7 +151,7 @@ message GetAllInstitutionsResponse {
 
 message Course {
     uint64 id = 1;
-    string institution_id = 2;
+    uint64 institution_id = 2;
     string level = 3;
     string name = 4;
 }
@@ -200,6 +200,10 @@ message DeleteAcademicHistoryRequest {
     uint64 id = 1;
 }
 
+message DeleteAcademicHistoryResponse {
+    // Empty
+}
+
 message Company {
     uint64 id = 1;
     string name = 2;
@@ -223,7 +227,7 @@ message GetAllCompaniesResponse {
 
 message Department {
     uint64 id = 1;
-    string company_id = 2;
+    uint64 company_id = 2;
     string name = 3;
 }
 
@@ -276,4 +280,8 @@ message UpdateJobHistoryRequest {
 
 message DeleteJobHistoryRequest {
     uint64 id = 1;
+}
+
+message DeleteJobHistoryResponse {
+    // Empty
 }

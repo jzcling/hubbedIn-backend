@@ -6,6 +6,7 @@ import (
 	"github.com/go-kit/kit/endpoint"
 
 	"in-backend/services/profile"
+	"in-backend/services/profile/models"
 )
 
 // Endpoints holds all Go kit endpoints for the Profile Service.
@@ -56,35 +57,35 @@ func MakeEndpoints(s profile.Service) Endpoints {
 		UpdateCandidate:  makeUpdateCandidateEndpoint(s),
 		DeleteCandidate:  makeDeleteCandidateEndpoint(s),
 
-		CreateSkill:  makeCreateSkillEndpoints(s),
-		GetSkill:     makeGetSkillEndpoints(s),
-		GetAllSkills: makeGetAllSkillsEndpoints(s),
+		CreateSkill:  makeCreateSkillEndpoint(s),
+		GetSkill:     makeGetSkillEndpoint(s),
+		GetAllSkills: makeGetAllSkillsEndpoint(s),
 
-		CreateInstitution:  makeCreateInstitutionEndpoints(s),
-		GetInstitution:     makeGetInstitutionEndpoints(s),
-		GetAllInstitutions: makeGetAllInstitutionsEndpoints(s),
+		CreateInstitution:  makeCreateInstitutionEndpoint(s),
+		GetInstitution:     makeGetInstitutionEndpoint(s),
+		GetAllInstitutions: makeGetAllInstitutionsEndpoint(s),
 
-		CreateCourse:  makeCreateCourseEndpoints(s),
-		GetCourse:     makeGetCourseEndpoints(s),
-		GetAllCourses: makeGetAllCoursesEndpoints(s),
+		CreateCourse:  makeCreateCourseEndpoint(s),
+		GetCourse:     makeGetCourseEndpoint(s),
+		GetAllCourses: makeGetAllCoursesEndpoint(s),
 
-		CreateAcademicHistory: makeCreateAcademicHistoryEndpoints(s),
-		GetAcademicHistory:    makeGetAcademicHistoryEndpoints(s),
-		UpdateAcademicHistory: makeUpdateAcademicHistoryEndpoints(s),
-		DeleteAcademicHistory: makeDeleteAcademicHistoryEndpoints(s),
+		CreateAcademicHistory: makeCreateAcademicHistoryEndpoint(s),
+		GetAcademicHistory:    makeGetAcademicHistoryEndpoint(s),
+		UpdateAcademicHistory: makeUpdateAcademicHistoryEndpoint(s),
+		DeleteAcademicHistory: makeDeleteAcademicHistoryEndpoint(s),
 
-		CreateCompany:   makeCreateCompanyEndpoints(s),
-		GetCompany:      makeGetCompanyEndpoints(s),
-		GetAllCompanies: makeGetAllCompaniesEndpoints(s),
+		CreateCompany:   makeCreateCompanyEndpoint(s),
+		GetCompany:      makeGetCompanyEndpoint(s),
+		GetAllCompanies: makeGetAllCompaniesEndpoint(s),
 
-		CreateDepartment:  makeCreateDepartmentEndpoints(s),
-		GetDepartment:     makeGetDepartmentEndpoints(s),
-		GetAllDepartments: makeGetAllDepartmentsEndpoints(s),
+		CreateDepartment:  makeCreateDepartmentEndpoint(s),
+		GetDepartment:     makeGetDepartmentEndpoint(s),
+		GetAllDepartments: makeGetAllDepartmentsEndpoint(s),
 
-		CreateJobHistory: makeCreateJobHistoryEndpoints(s),
-		GetJobHistory:    makeGetJobHistoryEndpoints(s),
-		UpdateJobHistory: makeUpdateJobHistoryEndpoints(s),
-		DeleteJobHistory: makeDeleteJobHistoryEndpoints(s),
+		CreateJobHistory: makeCreateJobHistoryEndpoint(s),
+		GetJobHistory:    makeGetJobHistoryEndpoint(s),
+		UpdateJobHistory: makeUpdateJobHistoryEndpoint(s),
+		DeleteJobHistory: makeDeleteJobHistoryEndpoint(s),
 	}
 }
 
@@ -100,12 +101,12 @@ func makeCreateCandidateEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateCandidateRequest declares the inputs required for creating a candidate
 type CreateCandidateRequest struct {
-	Candidate *orm.Candidate
+	Candidate *models.Candidate
 }
 
 // CreateCandidateResponse declares the outputs after attempting to create a candidate
 type CreateCandidateResponse struct {
-	Candidate *orm.Candidate
+	Candidate *models.Candidate
 	Err       error
 }
 
@@ -123,7 +124,7 @@ type GetAllCandidatesRequest struct {
 
 // GetAllCandidatesResponse declares the outputs after attempting to get all candidates
 type GetAllCandidatesResponse struct {
-	Candidates []*orm.Candidate
+	Candidates []*models.Candidate
 	Err        error
 }
 
@@ -142,7 +143,7 @@ type GetCandidateByIDRequest struct {
 
 // GetCandidateByIDResponse declares the outputs after attempting to get a single candidate by ID
 type GetCandidateByIDResponse struct {
-	Candidate *orm.Candidate
+	Candidate *models.Candidate
 	Err       error
 }
 
@@ -156,12 +157,12 @@ func makeUpdateCandidateEndpoint(s profile.Service) endpoint.Endpoint {
 
 // UpdateCandidateRequest declares the inputs required for updating a candidate
 type UpdateCandidateRequest struct {
-	Candidate *orm.Candidate
+	Candidate *models.Candidate
 }
 
 // UpdateCandidateResponse declares the outputs after attempting to update a candidate
 type UpdateCandidateResponse struct {
-	Candidate *orm.Candidate
+	Candidate *models.Candidate
 	Err       error
 }
 
@@ -195,12 +196,12 @@ func makeCreateSkillEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateSkillRequest declares the inputs required for creating a skill
 type CreateSkillRequest struct {
-	Skill *orm.Skill
+	Skill *models.Skill
 }
 
 // CreateSkillResponse declares the outputs after attempting to create a skill
 type CreateSkillResponse struct {
-	Skill *orm.Skill
+	Skill *models.Skill
 	Err   error
 }
 
@@ -219,7 +220,7 @@ type GetSkillRequest struct {
 
 // GetSkillResponse declares the outputs after attempting to get a single skill by ID
 type GetSkillResponse struct {
-	Skill *orm.Skill
+	Skill *models.Skill
 	Err   error
 }
 
@@ -237,7 +238,7 @@ type GetAllSkillsRequest struct {
 
 // GetAllSkillsResponse declares the outputs after attempting to get all skills
 type GetAllSkillsResponse struct {
-	Skills []*orm.Skill
+	Skills []*models.Skill
 	Err    error
 }
 
@@ -253,12 +254,12 @@ func makeCreateInstitutionEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateInstitutionRequest declares the inputs required for creating a Institution
 type CreateInstitutionRequest struct {
-	Institution *orm.Institution
+	Institution *models.Institution
 }
 
 // CreateInstitutionResponse declares the outputs after attempting to create a Institution
 type CreateInstitutionResponse struct {
-	Institution *orm.Institution
+	Institution *models.Institution
 	Err         error
 }
 
@@ -277,7 +278,7 @@ type GetInstitutionRequest struct {
 
 // GetInstitutionResponse declares the outputs after attempting to get a single Institution by ID
 type GetInstitutionResponse struct {
-	Institution *orm.Institution
+	Institution *models.Institution
 	Err         error
 }
 
@@ -295,7 +296,7 @@ type GetAllInstitutionsRequest struct {
 
 // GetAllInstitutionsResponse declares the outputs after attempting to get all Institutions
 type GetAllInstitutionsResponse struct {
-	Institutions []*orm.Institution
+	Institutions []*models.Institution
 	Err          error
 }
 
@@ -311,12 +312,12 @@ func makeCreateCourseEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateCourseRequest declares the inputs required for creating a Course
 type CreateCourseRequest struct {
-	Course *orm.Course
+	Course *models.Course
 }
 
 // CreateCourseResponse declares the outputs after attempting to create a Course
 type CreateCourseResponse struct {
-	Course *orm.Course
+	Course *models.Course
 	Err    error
 }
 
@@ -335,7 +336,7 @@ type GetCourseRequest struct {
 
 // GetCourseResponse declares the outputs after attempting to get a single Course by ID
 type GetCourseResponse struct {
-	Course *orm.Course
+	Course *models.Course
 	Err    error
 }
 
@@ -353,7 +354,7 @@ type GetAllCoursesRequest struct {
 
 // GetAllCoursesResponse declares the outputs after attempting to get all Courses
 type GetAllCoursesResponse struct {
-	Courses []*orm.Course
+	Courses []*models.Course
 	Err     error
 }
 
@@ -369,12 +370,12 @@ func makeCreateAcademicHistoryEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateAcademicHistoryRequest declares the inputs required for creating a AcademicHistory
 type CreateAcademicHistoryRequest struct {
-	AcademicHistory *orm.AcademicHistory
+	AcademicHistory *models.AcademicHistory
 }
 
 // CreateAcademicHistoryResponse declares the outputs after attempting to create a AcademicHistory
 type CreateAcademicHistoryResponse struct {
-	AcademicHistory *orm.AcademicHistory
+	AcademicHistory *models.AcademicHistory
 	Err             error
 }
 
@@ -393,7 +394,7 @@ type GetAcademicHistoryRequest struct {
 
 // GetAcademicHistoryResponse declares the outputs after attempting to get a single AcademicHistory by ID
 type GetAcademicHistoryResponse struct {
-	AcademicHistory *orm.AcademicHistory
+	AcademicHistory *models.AcademicHistory
 	Err             error
 }
 
@@ -407,12 +408,12 @@ func makeUpdateAcademicHistoryEndpoint(s profile.Service) endpoint.Endpoint {
 
 // UpdateAcademicHistoryRequest declares the inputs required for updating a AcademicHistory
 type UpdateAcademicHistoryRequest struct {
-	AcademicHistory *orm.AcademicHistory
+	AcademicHistory *models.AcademicHistory
 }
 
 // UpdateAcademicHistoryResponse declares the outputs after attempting to update a AcademicHistory
 type UpdateAcademicHistoryResponse struct {
-	AcademicHistory *orm.AcademicHistory
+	AcademicHistory *models.AcademicHistory
 	Err             error
 }
 
@@ -446,12 +447,12 @@ func makeCreateCompanyEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateCompanyRequest declares the inputs required for creating a Company
 type CreateCompanyRequest struct {
-	Company *orm.Company
+	Company *models.Company
 }
 
 // CreateCompanyResponse declares the outputs after attempting to create a Company
 type CreateCompanyResponse struct {
-	Company *orm.Company
+	Company *models.Company
 	Err     error
 }
 
@@ -470,7 +471,7 @@ type GetCompanyRequest struct {
 
 // GetCompanyResponse declares the outputs after attempting to get a single Company by ID
 type GetCompanyResponse struct {
-	Company *orm.Company
+	Company *models.Company
 	Err     error
 }
 
@@ -488,7 +489,7 @@ type GetAllCompaniesRequest struct {
 
 // GetAllCompaniesResponse declares the outputs after attempting to get all Companies
 type GetAllCompaniesResponse struct {
-	Companies []*orm.Company
+	Companies []*models.Company
 	Err       error
 }
 
@@ -504,12 +505,12 @@ func makeCreateDepartmentEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateDepartmentRequest declares the inputs required for creating a Department
 type CreateDepartmentRequest struct {
-	Department *orm.Department
+	Department *models.Department
 }
 
 // CreateDepartmentResponse declares the outputs after attempting to create a Department
 type CreateDepartmentResponse struct {
-	Department *orm.Department
+	Department *models.Department
 	Err        error
 }
 
@@ -528,7 +529,7 @@ type GetDepartmentRequest struct {
 
 // GetDepartmentResponse declares the outputs after attempting to get a single Department by ID
 type GetDepartmentResponse struct {
-	Department *orm.Department
+	Department *models.Department
 	Err        error
 }
 
@@ -546,7 +547,7 @@ type GetAllDepartmentsRequest struct {
 
 // GetAllDepartmentsResponse declares the outputs after attempting to get all Departments
 type GetAllDepartmentsResponse struct {
-	Departments []*orm.Department
+	Departments []*models.Department
 	Err         error
 }
 
@@ -562,12 +563,12 @@ func makeCreateJobHistoryEndpoint(s profile.Service) endpoint.Endpoint {
 
 // CreateJobHistoryRequest declares the inputs required for creating a JobHistory
 type CreateJobHistoryRequest struct {
-	JobHistory *orm.JobHistory
+	JobHistory *models.JobHistory
 }
 
 // CreateJobHistoryResponse declares the outputs after attempting to create a JobHistory
 type CreateJobHistoryResponse struct {
-	JobHistory *orm.JobHistory
+	JobHistory *models.JobHistory
 	Err        error
 }
 
@@ -586,7 +587,7 @@ type GetJobHistoryRequest struct {
 
 // GetJobHistoryResponse declares the outputs after attempting to get a single JobHistory by ID
 type GetJobHistoryResponse struct {
-	JobHistory *orm.JobHistory
+	JobHistory *models.JobHistory
 	Err        error
 }
 
@@ -600,12 +601,12 @@ func makeUpdateJobHistoryEndpoint(s profile.Service) endpoint.Endpoint {
 
 // UpdateJobHistoryRequest declares the inputs required for updating a JobHistory
 type UpdateJobHistoryRequest struct {
-	JobHistory *orm.JobHistory
+	JobHistory *models.JobHistory
 }
 
 // UpdateJobHistoryResponse declares the outputs after attempting to update a JobHistory
 type UpdateJobHistoryResponse struct {
-	JobHistory *orm.JobHistory
+	JobHistory *models.JobHistory
 	Err        error
 }
 

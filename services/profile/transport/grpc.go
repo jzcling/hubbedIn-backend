@@ -3,7 +3,8 @@ package transport
 import (
 	"context"
 	"in-backend/services/profile/endpoints"
-	"in-backend/services/profile/models/pb"
+	"in-backend/services/profile/pb"
+	"in-backend/services/profile/models"
 
 	"github.com/go-kit/kit/log"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
@@ -256,7 +257,7 @@ func (s *grpcServer) CreateCandidate(ctx context.Context, req *pb.CreateCandidat
 // decodeCreateCandidateRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateCandidateRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateCandidateRequest)
-	return endpoints.CreateCandidateRequest{Candidate: req.Candidate.ToORM()}, nil
+	return endpoints.CreateCandidateRequest{Candidate: models.CandidateToORM(req.Candidate)}, nil
 }
 
 // encodeCreateCandidateResponse encodes the outgoing go kit payload to the grpc payload
@@ -264,7 +265,7 @@ func encodeCreateCandidateResponse(_ context.Context, response interface{}) (int
 	res := response.(endpoints.CreateCandidateResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CandidateToProto(res.Candidate), nil
+		return res.Candidate.ToProto(), nil
 	}
 	return nil, err
 }
@@ -291,7 +292,7 @@ func encodeGetAllCandidatesResponse(_ context.Context, response interface{}) (in
 	if err == nil {
 		var candidates []*pb.Candidate
 		for _, candidate := range res.Candidates {
-			candidates = append(candidates, pb.CandidateToProto(candidate))
+			candidates = append(candidates, candidate.ToProto())
 		}
 		return &pb.GetAllCandidatesResponse{Candidates: candidates}, nil
 	}
@@ -318,7 +319,7 @@ func encodeGetCandidateByIDResponse(_ context.Context, response interface{}) (in
 	res := response.(endpoints.GetCandidateByIDResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CandidateToProto(res.Candidate), nil
+		return res.Candidate.ToProto(), nil
 	}
 	return nil, err
 }
@@ -335,7 +336,7 @@ func (s *grpcServer) UpdateCandidate(ctx context.Context, req *pb.UpdateCandidat
 // decodeUpdateCandidateRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateCandidateRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.UpdateCandidateRequest)
-	return endpoints.UpdateCandidateRequest{Candidate: req.Candidate.ToORM()}, nil
+	return endpoints.UpdateCandidateRequest{Candidate: models.CandidateToORM(req.Candidate)}, nil
 }
 
 // encodeUpdateCandidateResponse encodes the outgoing go kit payload to the grpc payload
@@ -343,7 +344,7 @@ func encodeUpdateCandidateResponse(_ context.Context, response interface{}) (int
 	res := response.(endpoints.UpdateCandidateResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CandidateToProto(res.Candidate), nil
+		return res.Candidate.ToProto(), nil
 	}
 	return nil, err
 }
@@ -387,7 +388,7 @@ func (s *grpcServer) CreateSkill(ctx context.Context, req *pb.CreateSkillRequest
 // decodeCreateSkillRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateSkillRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateSkillRequest)
-	return endpoints.CreateSkillRequest{Skill: req.Skill.ToORM()}, nil
+	return endpoints.CreateSkillRequest{Skill: models.SkillToORM(req.Skill)}, nil
 }
 
 // encodeCreateSkillResponse encodes the outgoing go kit payload to the grpc payload
@@ -395,18 +396,18 @@ func encodeCreateSkillResponse(_ context.Context, response interface{}) (interfa
 	res := response.(endpoints.CreateSkillResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.SkillToProto(res.Skill), nil
+		return res.Skill.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetSkill returns a Skill by ID
-func (s *grpcServer) GetSkill(ctx context.Context, req *pb.GetSkillRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetSkill(ctx context.Context, req *pb.GetSkillRequest) (*pb.Skill, error) {
 	_, rep, err := s.getSkill.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.Skill), nil
 }
 
 // decodeGetSkillRequest decodes the incoming grpc payload to our go kit payload
@@ -420,7 +421,7 @@ func encodeGetSkillResponse(_ context.Context, response interface{}) (interface{
 	res := response.(endpoints.GetSkillResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.SkillToProto(res.Skill), nil
+		return res.Skill.ToProto(), nil
 	}
 	return nil, err
 }
@@ -447,7 +448,7 @@ func encodeGetAllSkillsResponse(_ context.Context, response interface{}) (interf
 	if err == nil {
 		var skills []*pb.Skill
 		for _, skill := range res.Skills {
-			skills = append(skills, pb.SkillToProto(skill))
+			skills = append(skills, skill.ToProto())
 		}
 		return &pb.GetAllSkillsResponse{Skills: skills}, nil
 	}
@@ -468,7 +469,7 @@ func (s *grpcServer) CreateInstitution(ctx context.Context, req *pb.CreateInstit
 // decodeCreateInstitutionRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateInstitutionRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateInstitutionRequest)
-	return endpoints.CreateInstitutionRequest{Institution: req.Institution.ToORM()}, nil
+	return endpoints.CreateInstitutionRequest{Institution: models.InstitutionToORM(req.Institution)}, nil
 }
 
 // encodeCreateInstitutionResponse encodes the outgoing go kit payload to the grpc payload
@@ -476,18 +477,18 @@ func encodeCreateInstitutionResponse(_ context.Context, response interface{}) (i
 	res := response.(endpoints.CreateInstitutionResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.InstitutionToProto(res.Institution), nil
+		return res.Institution.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetInstitution returns a Institution by ID
-func (s *grpcServer) GetInstitution(ctx context.Context, req *pb.GetInstitutionRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetInstitution(ctx context.Context, req *pb.GetInstitutionRequest) (*pb.Institution, error) {
 	_, rep, err := s.getInstitution.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.Institution), nil
 }
 
 // decodeGetInstitutionRequest decodes the incoming grpc payload to our go kit payload
@@ -501,7 +502,7 @@ func encodeGetInstitutionResponse(_ context.Context, response interface{}) (inte
 	res := response.(endpoints.GetInstitutionResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.InstitutionToProto(res.Institution), nil
+		return res.Institution.ToProto(), nil
 	}
 	return nil, err
 }
@@ -527,8 +528,8 @@ func encodeGetAllInstitutionsResponse(_ context.Context, response interface{}) (
 	err := getError(res.Err)
 	if err == nil {
 		var institutions []*pb.Institution
-		for _, institution := range res.institutions {
-			institutions = append(institutions, pb.InstitutionToProto(institution))
+		for _, institution := range res.Institutions {
+			institutions = append(institutions, institution.ToProto())
 		}
 		return &pb.GetAllInstitutionsResponse{Institutions: institutions}, nil
 	}
@@ -549,7 +550,7 @@ func (s *grpcServer) CreateCourse(ctx context.Context, req *pb.CreateCourseReque
 // decodeCreateCourseRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateCourseRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateCourseRequest)
-	return endpoints.CreateCourseRequest{Course: req.Course.ToORM()}, nil
+	return endpoints.CreateCourseRequest{Course: models.CourseToORM(req.Course)}, nil
 }
 
 // encodeCreateCourseResponse encodes the outgoing go kit payload to the grpc payload
@@ -557,18 +558,18 @@ func encodeCreateCourseResponse(_ context.Context, response interface{}) (interf
 	res := response.(endpoints.CreateCourseResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CourseToProto(res.Course), nil
+		return res.Course.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetCourse returns a Course by ID
-func (s *grpcServer) GetCourse(ctx context.Context, req *pb.GetCourseRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetCourse(ctx context.Context, req *pb.GetCourseRequest) (*pb.Course, error) {
 	_, rep, err := s.getCourse.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.Course), nil
 }
 
 // decodeGetCourseRequest decodes the incoming grpc payload to our go kit payload
@@ -582,7 +583,7 @@ func encodeGetCourseResponse(_ context.Context, response interface{}) (interface
 	res := response.(endpoints.GetCourseResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CourseToProto(res.Course), nil
+		return res.Course.ToProto(), nil
 	}
 	return nil, err
 }
@@ -609,7 +610,7 @@ func encodeGetAllCoursesResponse(_ context.Context, response interface{}) (inter
 	if err == nil {
 		var courses []*pb.Course
 		for _, course := range res.Courses {
-			courses = append(courses, pb.CourseToProto(course))
+			courses = append(courses, course.ToProto())
 		}
 		return &pb.GetAllCoursesResponse{Courses: courses}, nil
 	}
@@ -630,7 +631,7 @@ func (s *grpcServer) CreateAcademicHistory(ctx context.Context, req *pb.CreateAc
 // decodeCreateAcademicHistoryRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateAcademicHistoryRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateAcademicHistoryRequest)
-	return endpoints.CreateAcademicHistoryRequest{AcademicHistory: req.AcademicHistory.ToORM()}, nil
+	return endpoints.CreateAcademicHistoryRequest{AcademicHistory: models.AcademicHistoryToORM(req.AcademicHistory)}, nil
 }
 
 // encodeCreateAcademicHistoryResponse encodes the outgoing go kit payload to the grpc payload
@@ -638,18 +639,18 @@ func encodeCreateAcademicHistoryResponse(_ context.Context, response interface{}
 	res := response.(endpoints.CreateAcademicHistoryResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.AcademicHistoryToProto(res.AcademicHistory), nil
+		return res.AcademicHistory.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetAcademicHistory returns a AcademicHistory by ID
-func (s *grpcServer) GetAcademicHistory(ctx context.Context, req *pb.GetAcademicHistoryRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetAcademicHistory(ctx context.Context, req *pb.GetAcademicHistoryRequest) (*pb.AcademicHistory, error) {
 	_, rep, err := s.getAcademicHistory.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.AcademicHistory), nil
 }
 
 // decodeGetAcademicHistoryRequest decodes the incoming grpc payload to our go kit payload
@@ -663,7 +664,7 @@ func encodeGetAcademicHistoryResponse(_ context.Context, response interface{}) (
 	res := response.(endpoints.GetAcademicHistoryResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.AcademicHistoryToProto(res.AcademicHistory), nil
+		return res.AcademicHistory.ToProto(), nil
 	}
 	return nil, err
 }
@@ -680,7 +681,7 @@ func (s *grpcServer) UpdateAcademicHistory(ctx context.Context, req *pb.UpdateAc
 // decodeUpdateAcademicHistoryRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateAcademicHistoryRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.UpdateAcademicHistoryRequest)
-	return endpoints.UpdateAcademicHistoryRequest{AcademicHistory: req.AcademicHistory.ToORM()}, nil
+	return endpoints.UpdateAcademicHistoryRequest{AcademicHistory: models.AcademicHistoryToORM(req.AcademicHistory)}, nil
 }
 
 // encodeUpdateAcademicHistoryResponse encodes the outgoing go kit payload to the grpc payload
@@ -688,7 +689,7 @@ func encodeUpdateAcademicHistoryResponse(_ context.Context, response interface{}
 	res := response.(endpoints.UpdateAcademicHistoryResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.AcademicHistoryToProto(res.AcademicHistory), nil
+		return res.AcademicHistory.ToProto(), nil
 	}
 	return nil, err
 }
@@ -732,7 +733,7 @@ func (s *grpcServer) CreateCompany(ctx context.Context, req *pb.CreateCompanyReq
 // decodeCreateCompanyRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateCompanyRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateCompanyRequest)
-	return endpoints.CreateCompanyRequest{Company: req.Company.ToORM()}, nil
+	return endpoints.CreateCompanyRequest{Company: models.CompanyToORM(req.Company)}, nil
 }
 
 // encodeCreateCompanyResponse encodes the outgoing go kit payload to the grpc payload
@@ -740,18 +741,18 @@ func encodeCreateCompanyResponse(_ context.Context, response interface{}) (inter
 	res := response.(endpoints.CreateCompanyResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CompanyToProto(res.Company), nil
+		return res.Company.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetCompany returns a Company by ID
-func (s *grpcServer) GetCompany(ctx context.Context, req *pb.GetCompanyRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetCompany(ctx context.Context, req *pb.GetCompanyRequest) (*pb.Company, error) {
 	_, rep, err := s.getCompany.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.Company), nil
 }
 
 // decodeGetCompanyRequest decodes the incoming grpc payload to our go kit payload
@@ -765,7 +766,7 @@ func encodeGetCompanyResponse(_ context.Context, response interface{}) (interfac
 	res := response.(endpoints.GetCompanyResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.CompanyToProto(res.Company), nil
+		return res.Company.ToProto(), nil
 	}
 	return nil, err
 }
@@ -792,7 +793,7 @@ func encodeGetAllCompaniesResponse(_ context.Context, response interface{}) (int
 	if err == nil {
 		var companies []*pb.Company
 		for _, company := range res.Companies {
-			companies = append(companies, pb.CompanyToProto(company))
+			companies = append(companies, company.ToProto())
 		}
 		return &pb.GetAllCompaniesResponse{Companies: companies}, nil
 	}
@@ -813,7 +814,7 @@ func (s *grpcServer) CreateDepartment(ctx context.Context, req *pb.CreateDepartm
 // decodeCreateDepartmentRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateDepartmentRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateDepartmentRequest)
-	return endpoints.CreateDepartmentRequest{Department: req.Department.ToORM()}, nil
+	return endpoints.CreateDepartmentRequest{Department: models.DepartmentToORM(req.Department)}, nil
 }
 
 // encodeCreateDepartmentResponse encodes the outgoing go kit payload to the grpc payload
@@ -821,18 +822,18 @@ func encodeCreateDepartmentResponse(_ context.Context, response interface{}) (in
 	res := response.(endpoints.CreateDepartmentResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.DepartmentToProto(res.Department), nil
+		return res.Department.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetDepartment returns a Department by ID
-func (s *grpcServer) GetDepartment(ctx context.Context, req *pb.GetDepartmentRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetDepartment(ctx context.Context, req *pb.GetDepartmentRequest) (*pb.Department, error) {
 	_, rep, err := s.getDepartment.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.Department), nil
 }
 
 // decodeGetDepartmentRequest decodes the incoming grpc payload to our go kit payload
@@ -846,7 +847,7 @@ func encodeGetDepartmentResponse(_ context.Context, response interface{}) (inter
 	res := response.(endpoints.GetDepartmentResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.DepartmentToProto(res.Department), nil
+		return res.Department.ToProto(), nil
 	}
 	return nil, err
 }
@@ -873,7 +874,7 @@ func encodeGetAllDepartmentsResponse(_ context.Context, response interface{}) (i
 	if err == nil {
 		var departments []*pb.Department
 		for _, department := range res.Departments {
-			departments = append(departments, pb.DepartmentToProto(department))
+			departments = append(departments, department.ToProto())
 		}
 		return &pb.GetAllDepartmentsResponse{Departments: departments}, nil
 	}
@@ -894,7 +895,7 @@ func (s *grpcServer) CreateJobHistory(ctx context.Context, req *pb.CreateJobHist
 // decodeCreateJobHistoryRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateJobHistoryRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateJobHistoryRequest)
-	return endpoints.CreateJobHistoryRequest{JobHistory: req.JobHistory.ToORM()}, nil
+	return endpoints.CreateJobHistoryRequest{JobHistory: models.JobHistoryToORM(req.JobHistory)}, nil
 }
 
 // encodeCreateJobHistoryResponse encodes the outgoing go kit payload to the grpc payload
@@ -902,18 +903,18 @@ func encodeCreateJobHistoryResponse(_ context.Context, response interface{}) (in
 	res := response.(endpoints.CreateJobHistoryResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.JobHistoryToProto(res.JobHistory), nil
+		return res.JobHistory.ToProto(), nil
 	}
 	return nil, err
 }
 
 // GetJobHistory returns a JobHistory by ID
-func (s *grpcServer) GetJobHistory(ctx context.Context, req *pb.GetJobHistoryRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetJobHistory(ctx context.Context, req *pb.GetJobHistoryRequest) (*pb.JobHistory, error) {
 	_, rep, err := s.getJobHistory.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.JobHistory), nil
 }
 
 // decodeGetJobHistoryRequest decodes the incoming grpc payload to our go kit payload
@@ -927,7 +928,7 @@ func encodeGetJobHistoryResponse(_ context.Context, response interface{}) (inter
 	res := response.(endpoints.GetJobHistoryResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.JobHistoryToProto(res.JobHistory), nil
+		return res.JobHistory.ToProto(), nil
 	}
 	return nil, err
 }
@@ -944,7 +945,7 @@ func (s *grpcServer) UpdateJobHistory(ctx context.Context, req *pb.UpdateJobHist
 // decodeUpdateJobHistoryRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateJobHistoryRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.UpdateJobHistoryRequest)
-	return endpoints.UpdateJobHistoryRequest{JobHistory: req.JobHistory.ToORM()}, nil
+	return endpoints.UpdateJobHistoryRequest{JobHistory: models.JobHistoryToORM(req.JobHistory)}, nil
 }
 
 // encodeUpdateJobHistoryResponse encodes the outgoing go kit payload to the grpc payload
@@ -952,7 +953,7 @@ func encodeUpdateJobHistoryResponse(_ context.Context, response interface{}) (in
 	res := response.(endpoints.UpdateJobHistoryResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return pb.JobHistoryToProto(res.JobHistory), nil
+		return res.JobHistory.ToProto(), nil
 	}
 	return nil, err
 }

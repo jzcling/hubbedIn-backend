@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 
 	"in-backend/services/profile"
+	"in-backend/services/profile/models"
 )
 
 type repository struct {
@@ -23,7 +24,7 @@ func NewRepository(db *pg.DB) profile.Repository {
 
 /* --------------- Candidate --------------- */
 
-func (r repository) CreateCandidate(ctx context.Context, c *orm.Candidate) (*orm.Candidate, error) {
+func (r repository) CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
 	if c == nil {
 		return nil, errors.New("Input parameter skill is nil")
 	}
@@ -42,14 +43,14 @@ func (r repository) CreateCandidate(ctx context.Context, c *orm.Candidate) (*orm
 	return c, nil
 }
 
-func (r repository) GetAllCandidates(ctx context.Context) ([]*orm.Candidate, error) {
-	var c []*orm.Candidate
+func (r repository) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
+	var c []*models.Candidate
 	err := r.DB.WithContext(ctx).Model(&c).Select()
 	return c, err
 }
 
-func (r repository) GetCandidateByID(ctx context.Context, id uint64) (*orm.Candidate, error) {
-	c := orm.Candidate{ID: id}
+func (r repository) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
+	c := models.Candidate{ID: id}
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -59,7 +60,7 @@ func (r repository) GetCandidateByID(ctx context.Context, id uint64) (*orm.Candi
 	return &c, err
 }
 
-func (r repository) UpdateCandidate(ctx context.Context, c *orm.Candidate) (*orm.Candidate, error) {
+func (r repository) UpdateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
 	if c == nil {
 		return nil, errors.New("Candidate is nil")
 	}
@@ -73,7 +74,7 @@ func (r repository) UpdateCandidate(ctx context.Context, c *orm.Candidate) (*orm
 }
 
 func (r repository) DeleteCandidate(ctx context.Context, id uint64) error {
-	c := &orm.Candidate{ID: id}
+	c := &models.Candidate{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(c).WherePK().Delete()
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Cannot delete candidate with id %v", id))
@@ -83,7 +84,7 @@ func (r repository) DeleteCandidate(ctx context.Context, id uint64) error {
 
 /* --------------- Skill --------------- */
 
-func (r repository) CreateSkill(ctx context.Context, s *orm.Skill) (*orm.Skill, error) {
+func (r repository) CreateSkill(ctx context.Context, s *models.Skill) (*models.Skill, error) {
 	if s == nil {
 		return nil, errors.New("Input parameter skill is nil")
 	}
@@ -102,8 +103,8 @@ func (r repository) CreateSkill(ctx context.Context, s *orm.Skill) (*orm.Skill, 
 	return s, nil
 }
 
-func (r repository) GetSkill(ctx context.Context, id uint64) (*orm.Skill, error) {
-	s := orm.Skill{ID: id}
+func (r repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
+	s := models.Skill{ID: id}
 	err := r.DB.WithContext(ctx).Model(&s).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -113,15 +114,15 @@ func (r repository) GetSkill(ctx context.Context, id uint64) (*orm.Skill, error)
 	return &s, err
 }
 
-func (r repository) GetAllSkills(ctx context.Context) ([]*orm.Skill, error) {
-	var s []*orm.Skill
+func (r repository) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
+	var s []*models.Skill
 	err := r.DB.WithContext(ctx).Model(&s).Select()
 	return s, err
 }
 
 /* --------------- Institution --------------- */
 
-func (r repository) CreateInstitution(ctx context.Context, i *orm.Institution) (*orm.Institution, error) {
+func (r repository) CreateInstitution(ctx context.Context, i *models.Institution) (*models.Institution, error) {
 	if i == nil {
 		return nil, errors.New("Input parameter institution is nil")
 	}
@@ -140,8 +141,8 @@ func (r repository) CreateInstitution(ctx context.Context, i *orm.Institution) (
 	return i, nil
 }
 
-func (r repository) GetInstitution(ctx context.Context, id uint64) (*orm.Institution, error) {
-	i := orm.Institution{ID: id}
+func (r repository) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
+	i := models.Institution{ID: id}
 	err := r.DB.WithContext(ctx).Model(&i).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -151,15 +152,15 @@ func (r repository) GetInstitution(ctx context.Context, id uint64) (*orm.Institu
 	return &i, err
 }
 
-func (r repository) GetAllInstitutions(ctx context.Context) ([]*orm.Institution, error) {
-	var i []*orm.Institution
+func (r repository) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
+	var i []*models.Institution
 	err := r.DB.WithContext(ctx).Model(&i).Select()
 	return i, err
 }
 
 /* --------------- Course --------------- */
 
-func (r repository) CreateCourse(ctx context.Context, c *orm.Course) (*orm.Course, error) {
+func (r repository) CreateCourse(ctx context.Context, c *models.Course) (*models.Course, error) {
 	if c == nil {
 		return nil, errors.New("Input parameter course is nil")
 	}
@@ -178,8 +179,8 @@ func (r repository) CreateCourse(ctx context.Context, c *orm.Course) (*orm.Cours
 	return c, nil
 }
 
-func (r repository) GetCourse(ctx context.Context, id uint64) (*orm.Course, error) {
-	c := orm.Course{ID: id}
+func (r repository) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
+	c := models.Course{ID: id}
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -189,22 +190,22 @@ func (r repository) GetCourse(ctx context.Context, id uint64) (*orm.Course, erro
 	return &c, err
 }
 
-func (r repository) GetAllCourses(ctx context.Context) ([]*orm.Course, error) {
-	var c []*orm.Course
+func (r repository) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
+	var c []*models.Course
 	err := r.DB.WithContext(ctx).Model(&c).Select()
 	return c, err
 }
 
 /* --------------- Academic History --------------- */
 
-func (r repository) CreateAcademicHistory(ctx context.Context, a *orm.AcademicHistory) (*orm.AcademicHistory, error) {
+func (r repository) CreateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error) {
 	if a == nil {
-		return nil, errors.New("Input parameter skill is nil")
+		return nil, errors.New("Input parameter academic history is nil")
 	}
 
 	result, err := r.DB.WithContext(ctx).Model(a).Returning("*").Insert()
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to insert skill %v", a)
+		return nil, errors.Wrapf(err, "Failed to insert academic history %v", a)
 	}
 
 	if result != nil {
@@ -216,8 +217,8 @@ func (r repository) CreateAcademicHistory(ctx context.Context, a *orm.AcademicHi
 	return a, nil
 }
 
-func (r repository) GetAcademicHistoryByID(ctx context.Context, id uint64) (*orm.AcademicHistory, error) {
-	a := orm.AcademicHistory{ID: id}
+func (r repository) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
+	a := models.AcademicHistory{ID: id}
 	err := r.DB.WithContext(ctx).Model(&a).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -227,7 +228,7 @@ func (r repository) GetAcademicHistoryByID(ctx context.Context, id uint64) (*orm
 	return &a, err
 }
 
-func (r repository) UpdateAcademicHistory(ctx context.Context, a *orm.AcademicHistory) (*orm.AcademicHistory, error) {
+func (r repository) UpdateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error) {
 	if a == nil {
 		return nil, errors.New("AcademicHistory is nil")
 	}
@@ -241,7 +242,7 @@ func (r repository) UpdateAcademicHistory(ctx context.Context, a *orm.AcademicHi
 }
 
 func (r repository) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	a := &orm.AcademicHistory{ID: id}
+	a := &models.AcademicHistory{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(a).WherePK().Delete()
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Cannot delete academic history with id %v", id))
@@ -251,7 +252,7 @@ func (r repository) DeleteAcademicHistory(ctx context.Context, id uint64) error 
 
 /* --------------- Company --------------- */
 
-func (r repository) CreateCompany(ctx context.Context, c *orm.Company) (*orm.Company, error) {
+func (r repository) CreateCompany(ctx context.Context, c *models.Company) (*models.Company, error) {
 	if c == nil {
 		return nil, errors.New("Input parameter company is nil")
 	}
@@ -270,8 +271,8 @@ func (r repository) CreateCompany(ctx context.Context, c *orm.Company) (*orm.Com
 	return c, nil
 }
 
-func (r repository) GetCompany(ctx context.Context, id uint64) (*orm.Company, error) {
-	c := orm.Company{ID: id}
+func (r repository) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
+	c := models.Company{ID: id}
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -281,15 +282,15 @@ func (r repository) GetCompany(ctx context.Context, id uint64) (*orm.Company, er
 	return &c, err
 }
 
-func (r repository) GetAllCompanies(ctx context.Context) ([]*orm.Company, error) {
-	var c []*orm.Company
+func (r repository) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
+	var c []*models.Company
 	err := r.DB.WithContext(ctx).Model(&c).Select()
 	return c, err
 }
 
 /* --------------- Department --------------- */
 
-func (r repository) CreateDepartment(ctx context.Context, d *orm.Department) (*orm.Department, error) {
+func (r repository) CreateDepartment(ctx context.Context, d *models.Department) (*models.Department, error) {
 	if d == nil {
 		return nil, errors.New("Input parameter department is nil")
 	}
@@ -308,8 +309,8 @@ func (r repository) CreateDepartment(ctx context.Context, d *orm.Department) (*o
 	return d, nil
 }
 
-func (r repository) GetDepartment(ctx context.Context, id uint64) (*orm.Department, error) {
-	d := orm.Department{ID: id}
+func (r repository) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
+	d := models.Department{ID: id}
 	err := r.DB.WithContext(ctx).Model(&d).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
@@ -319,8 +320,62 @@ func (r repository) GetDepartment(ctx context.Context, id uint64) (*orm.Departme
 	return &d, err
 }
 
-func (r repository) GetAllDepartments(ctx context.Context) ([]*orm.Department, error) {
-	var d []*orm.Department
+func (r repository) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
+	var d []*models.Department
 	err := r.DB.WithContext(ctx).Model(&d).Select()
 	return d, err
+}
+
+/* --------------- Job History --------------- */
+
+func (r repository) CreateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error) {
+	if j == nil {
+		return nil, errors.New("Input parameter job history is nil")
+	}
+
+	result, err := r.DB.WithContext(ctx).Model(j).Returning("*").Insert()
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to insert job history %v", j)
+	}
+
+	if result != nil {
+		if result.RowsAffected() == 0 {
+			return nil, errors.New("Failed to insert, affected is 0")
+		}
+	}
+
+	return j, nil
+}
+
+func (r repository) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
+	j := models.JobHistory{ID: id}
+	err := r.DB.WithContext(ctx).Model(&j).Where("id = ?", id).Select()
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		// if row is empty than return empty model
+		return &j, nil
+	}
+	return &j, err
+}
+
+func (r repository) UpdateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error) {
+	if j == nil {
+		return nil, errors.New("JobHistory is nil")
+	}
+
+	_, err := r.DB.WithContext(ctx).Model(j).Returning("*").Update()
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Cannot update Job history with id %v", j.ID))
+	}
+
+	return j, nil
+}
+
+func (r repository) DeleteJobHistory(ctx context.Context, id uint64) error {
+	j := &models.JobHistory{ID: id}
+	_, err := r.DB.WithContext(ctx).Model(j).WherePK().Delete()
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Cannot delete Job history with id %v", id))
+	}
+	return nil
 }

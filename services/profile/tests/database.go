@@ -11,8 +11,8 @@ import (
 )
 
 // GetTestUser returns the new random test User
-func GetTestUser() *orm.Candidate {
-	user := &orm.Candidate{
+func GetTestUser() *models.Candidate {
+	user := &models.Candidate{
 		ID:        rand.Uint64(),
 		FirstName: "First",
 		LastName:  "Last"}
