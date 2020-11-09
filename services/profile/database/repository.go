@@ -26,18 +26,12 @@ func NewRepository(db *pg.DB) profile.Repository {
 
 func (r repository) CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
 	if c == nil {
-		return nil, errors.New("Input parameter skill is nil")
+		return nil, errors.New("Input parameter candidate is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(c).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(c).Returning("*").Insert()
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to insert skill %v", c)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
+		return nil, errors.Wrapf(err, "Failed to insert candidate %v", c)
 	}
 
 	return c, nil
@@ -54,7 +48,6 @@ func (r repository) GetCandidateByID(ctx context.Context, id uint64) (*models.Ca
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &c, nil
 	}
 	return &c, err
@@ -89,15 +82,9 @@ func (r repository) CreateSkill(ctx context.Context, s *models.Skill) (*models.S
 		return nil, errors.New("Input parameter skill is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(s).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(s).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert skill %v", s)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return s, nil
@@ -108,7 +95,6 @@ func (r repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, err
 	err := r.DB.WithContext(ctx).Model(&s).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &s, nil
 	}
 	return &s, err
@@ -127,15 +113,9 @@ func (r repository) CreateInstitution(ctx context.Context, i *models.Institution
 		return nil, errors.New("Input parameter institution is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(i).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(i).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert institution %v", i)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return i, nil
@@ -146,7 +126,6 @@ func (r repository) GetInstitution(ctx context.Context, id uint64) (*models.Inst
 	err := r.DB.WithContext(ctx).Model(&i).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &i, nil
 	}
 	return &i, err
@@ -165,15 +144,9 @@ func (r repository) CreateCourse(ctx context.Context, c *models.Course) (*models
 		return nil, errors.New("Input parameter course is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(c).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(c).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert course %v", c)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return c, nil
@@ -184,7 +157,6 @@ func (r repository) GetCourse(ctx context.Context, id uint64) (*models.Course, e
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &c, nil
 	}
 	return &c, err
@@ -203,15 +175,9 @@ func (r repository) CreateAcademicHistory(ctx context.Context, a *models.Academi
 		return nil, errors.New("Input parameter academic history is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(a).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(a).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert academic history %v", a)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return a, nil
@@ -222,7 +188,6 @@ func (r repository) GetAcademicHistory(ctx context.Context, id uint64) (*models.
 	err := r.DB.WithContext(ctx).Model(&a).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &a, nil
 	}
 	return &a, err
@@ -257,15 +222,9 @@ func (r repository) CreateCompany(ctx context.Context, c *models.Company) (*mode
 		return nil, errors.New("Input parameter company is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(c).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(c).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert company %v", c)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return c, nil
@@ -276,7 +235,6 @@ func (r repository) GetCompany(ctx context.Context, id uint64) (*models.Company,
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &c, nil
 	}
 	return &c, err
@@ -295,15 +253,9 @@ func (r repository) CreateDepartment(ctx context.Context, d *models.Department) 
 		return nil, errors.New("Input parameter department is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(d).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(d).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert department %v", d)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return d, nil
@@ -314,7 +266,6 @@ func (r repository) GetDepartment(ctx context.Context, id uint64) (*models.Depar
 	err := r.DB.WithContext(ctx).Model(&d).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &d, nil
 	}
 	return &d, err
@@ -333,15 +284,9 @@ func (r repository) CreateJobHistory(ctx context.Context, j *models.JobHistory) 
 		return nil, errors.New("Input parameter job history is nil")
 	}
 
-	result, err := r.DB.WithContext(ctx).Model(j).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(j).Returning("*").Insert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert job history %v", j)
-	}
-
-	if result != nil {
-		if result.RowsAffected() == 0 {
-			return nil, errors.New("Failed to insert, affected is 0")
-		}
 	}
 
 	return j, nil
@@ -352,7 +297,6 @@ func (r repository) GetJobHistory(ctx context.Context, id uint64) (*models.JobHi
 	err := r.DB.WithContext(ctx).Model(&j).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
-		// if row is empty than return empty model
 		return &j, nil
 	}
 	return &j, err
