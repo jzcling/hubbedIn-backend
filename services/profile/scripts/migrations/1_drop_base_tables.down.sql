@@ -1,0 +1,9 @@
+drop table if exists job_histories;
+drop table if exists departments;
+drop table if exists companies;
+drop table if exists academic_histories;
+drop table if exists courses;
+drop table if exists institutions;
+drop table if exists users_skills;
+drop table if exists skills;
+drop table if exists candidates;
