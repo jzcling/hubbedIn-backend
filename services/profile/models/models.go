@@ -17,10 +17,10 @@ type Candidate struct {
 	tableName struct{} `pg:"candidates,alias:c"`
 
 	ID                     uint64             `json:"id"`
-	FirstName              string             `json:"first_name"`
-	LastName               string             `json:"last_name"`
-	Email                  string             `json:"email" pg:",unique"`
-	ContactNumber          string             `json:"contact_number"`
+	FirstName              string             `json:"first_name" pg:",notnull"`
+	LastName               string             `json:"last_name" pg:",notnull"`
+	Email                  string             `json:"email" pg:",unique,notnull"`
+	ContactNumber          string             `json:"contact_number" pg:",notnull"`
 	Gender                 string             `json:"gender,omitempty"`
 	Nationality            string             `json:"nationality,omitempty"`
 	ResidenceCity          string             `json:"residence_city,omitempty"`
@@ -44,7 +44,7 @@ type Skill struct {
 	tableName struct{} `pg:"skills,alias:s"`
 
 	ID         uint64       `json:"id"`
-	Name       string       `json:"string"`
+	Name       string       `json:"string" pg:",notnull"`
 	Candidates []*Candidate `json:"candidates,omitempty" pg:"many2many:users_skills"`
 }
 
@@ -52,9 +52,9 @@ type Skill struct {
 type UserSkill struct {
 	tableName struct{} `pg:"users_skills,alias:us"`
 
-	ID          uint64
-	CandidateID uint64
-	SkillID     uint64
+	ID          uint64     `json:"id"`
+	CandidateID uint64     `json:"candidate_id" pg:",notnull"`
+	SkillID     uint64     `json:"skill_id" pg:",notnull"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt   *time.Time `json:"deleted_at,omitempty" pg:",soft_delete"`
@@ -66,7 +66,7 @@ type Institution struct {
 
 	ID      uint64    `json:"id"`
 	Country string    `json:"country,omitempty"`
-	Name    string    `json:"name"`
+	Name    string    `json:"name" pg:",notnull"`
 	Courses []*Course `json:"courses,omitempty" pg:"rel:has-many"`
 }
 
@@ -77,7 +77,7 @@ type Course struct {
 	ID            uint64 `json:"id"`
 	InstitutionID uint64 `json:"institution_id,omitempty"`
 	Level         string `json:"level,omitempty"`
-	Name          string `json:"name"`
+	Name          string `json:"name" pg:",notnull"`
 }
 
 // AcademicHistory declares model for AcademicHistory
@@ -85,11 +85,11 @@ type AcademicHistory struct {
 	tableName struct{} `pg:"academic_histories,alias:ah"`
 
 	ID            uint64       `json:"id"`
-	CandidateID   uint64       `json:"-"`
+	CandidateID   uint64       `json:"-" pg:",notnull"`
 	Candidate     *Candidate   `json:"candidate,omitempty" pg:"rel:has-one"`
-	InstitutionID uint64       `json:"-"`
+	InstitutionID uint64       `json:"-" pg:",notnull"`
 	Institution   *Institution `json:"institution,omitempty" pg:"rel:has-one"`
-	CourseID      uint64       `json:"-"`
+	CourseID      uint64       `json:"-" pg:",notnull"`
 	Course        *Course      `json:"course,omitempty" pg:"rel:has-one"`
 	YearObtained  uint32       `json:"year_obtained,omitempty"`
 	CreatedAt     *time.Time   `json:"created_at,omitempty"`
@@ -102,7 +102,7 @@ type Company struct {
 	tableName struct{} `pg:"companies,alias:co"`
 
 	ID          uint64        `json:"id"`
-	Name        string        `json:"name"`
+	Name        string        `json:"name" pg:",notnull"`
 	Departments []*Department `json:"departments,omitempty" pg:"rel:has-many"`
 }
 
@@ -112,7 +112,7 @@ type Department struct {
 
 	ID        uint64 `json:"id"`
 	CompanyID uint64 `json:"company_id,omitempty"`
-	Name      string `json:"name"`
+	Name      string `json:"name" pg:",notnull"`
 }
 
 // JobHistory declares model for JobHistory
@@ -120,16 +120,16 @@ type JobHistory struct {
 	tableName struct{} `pg:"job_histories,alias:jh"`
 
 	ID             uint64      `json:"id"`
-	CandidateID    uint64      `json:"-"`
+	CandidateID    uint64      `json:"-" pg:",notnull"`
 	Candidate      *Candidate  `json:"candidate,omitempty" pg:"rel:has-one"`
-	CompanyID      uint64      `json:"-"`
+	CompanyID      uint64      `json:"-" pg:",notnull"`
 	Company        *Company    `json:"company,omitempty" pg:"rel:has-one"`
-	DepartmentID   uint64      `json:"-"`
+	DepartmentID   uint64      `json:"-" pg:",notnull"`
 	Department     *Department `json:"department,omitempty" pg:"rel:has-one"`
-	Country        string      `json:"country"`
+	Country        string      `json:"country" pg:",notnull"`
 	City           string      `json:"city,omitempty"`
-	Title          string      `json:"title"`
-	StartDate      *time.Time  `json:"start_date,omitempty"`
+	Title          string      `json:"title" pg:",notnull"`
+	StartDate      *time.Time  `json:"start_date,omitempty" pg:",notnull"`
 	EndDate        *time.Time  `json:"end_date,omitempty"`
 	SalaryCurrency string      `json:"salary_currency,omitempty"`
 	Salary         uint32      `json:"salary,omitempty"`
