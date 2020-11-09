@@ -24,6 +24,6 @@ FROM alpine as release
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /build/dist/ .
-COPY --from=builder /build/configs/env.yaml .
+COPY --from=builder /build/configs/config.env .
 RUN chmod +x ./main
 ENTRYPOINT ["./main"]

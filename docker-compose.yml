@@ -16,10 +16,8 @@ services:
     image: postgres:13-alpine
     container_name: profile-db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: profile
+    env_file:
+      - ./services/profile/configs/config.env
     healthcheck:
         test: ["CMD-SHELL", "pg_isready -U postgres"]
         interval: 10s

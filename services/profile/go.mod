@@ -9,6 +9,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/lib/pq v1.1.1 // indirect
+	github.com/mitchellh/mapstructure v1.3.3
 	github.com/oklog/oklog v0.3.2
 	github.com/ory/dockertest/v3 v3.6.2
 	github.com/pkg/errors v0.9.1

@@ -4,39 +4,41 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
-const configFileName = "config"
-
 // Config declares the application configuration variables
 type Config struct {
-	AppName  string
-	Server   serverConfig
-	Database dbConfig
+	AppName  string       `mapstructure:"appname"`
+	Server   serverConfig `mapstructure:",squash"`
+	Database dbConfig     `mapstructure:",squash"`
 }
 
 // dbConfig declares database variables
 type dbConfig struct {
-	Address    string
-	Username   string
-	Password   string
-	Database   string
-	Sslmode    string
-	Drivername string
+	Address    string `mapstructure:"database_address"`
+	Username   string `mapstructure:"database_username"`
+	Password   string `mapstructure:"database_password"`
+	Database   string `mapstructure:"database_database"`
+	Sslmode    string `mapstructure:"database_sslmode"`
+	Drivername string `mapstructure:"database_drivername"`
 }
 
 // serverConfig declares server variables
 type serverConfig struct {
-	Address string
-	Port    string
+	Address string `mapstructure:"server_address"`
+	Port    string `mapstructure:"server_port"`
 }
 
 // LoadConfig load config from file
 func LoadConfig() (Config, error) {
+	var result map[string]interface{}
+	var cfg Config
+
 	v := viper.New()
-	v.SetConfigName(configFileName)
+	v.SetConfigName("config")
 	v.SetConfigType("env")
 	v.AddConfigPath(".")
 	v.AddConfigPath("../configs")
@@ -46,19 +48,19 @@ func LoadConfig() (Config, error) {
 	v.SetEnvKeyReplacer(replacer)
 	v.AutomaticEnv()
 
-	var cfg Config
 	if err := v.ReadInConfig(); err != nil {
 		return Config{}, errors.Wrap(err, "Failed to read config")
 	}
-
-	fmt.Printf("%+v", v)
 
 	err := v.Unmarshal(&cfg)
 	if err != nil {
 		return Config{}, errors.Wrap(err, "Unable to decode into struct")
 	}
 
-	fmt.Printf("%+v", cfg)
+	err = mapstructure.Decode(result, &cfg)
+	if err != nil {
+		fmt.Println("error decoding")
+	}
 
 	return cfg, nil
 }
