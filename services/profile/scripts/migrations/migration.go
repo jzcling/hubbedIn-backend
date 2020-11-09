@@ -27,7 +27,7 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
-	cfg, err := configs.LoadConfig()
+	cfg, err := configs.LoadConfig(configs.FileName)
 	if err != nil {
 		println(err.Error())
 		os.Exit(-1)

@@ -24,7 +24,7 @@ import (
 )
 
 func main() {
-	cfg, err := configs.LoadConfig()
+	cfg, err := configs.LoadConfig(configs.FileName)
 	if err != nil {
 		println(err.Error())
 		os.Exit(-1)
@@ -46,15 +46,15 @@ func main() {
 	level.Info(logger).Log("msg", "service started")
 	defer level.Info(logger).Log("msg", "service ended")
 
-	dbClient := database.NewClient(cfg)
-	conn := dbClient.GetConnection()
-	defer conn.Close()
+	opt := database.GetPgConnectionOptions(cfg)
+	db := database.NewDatabase(opt)
+	defer db.Close()
 
 	// Build the layers of the service "onion" from the inside out. First, the
 	// business logic service; then, the set of endpoints that wrap the service;
 	// and finally, a series of concrete transport adapters
 
-	repo := database.NewRepository(conn)
+	repo := database.NewRepository(db)
 	svc := service.New(repo, logger)
 	endpoints := endpoints.MakeEndpoints(svc)
 
