@@ -105,12 +105,6 @@ message Skill {
     string name = 2;
 }
 
-message UserSkill {
-    uint64 id = 1;
-    uint64 candidate_id = 2;
-    uint64 skill_id = 3;
-}
-
 message CreateSkillRequest {
     Skill skill = 1;
 }
@@ -125,6 +119,15 @@ message GetAllSkillsRequest {
 
 message GetAllSkillsResponse {
     repeated Skill skills = 1;
+}
+
+message UserSkill {
+    uint64 id = 1;
+    uint64 candidate_id = 2;
+    uint64 skill_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+    google.protobuf.Timestamp deleted_at = 6;
 }
 
 message Institution {
@@ -151,7 +154,6 @@ message GetAllInstitutionsResponse {
 
 message Course {
     uint64 id = 1;
-    uint64 institution_id = 2;
     string level = 3;
     string name = 4;
 }
@@ -170,6 +172,11 @@ message GetAllCoursesRequest {
 
 message GetAllCoursesResponse {
     repeated Course courses = 1;
+}
+
+message CourseInstitution {
+    uint64 id = 1;
+    uint64 course_id = 2;
 }
 
 message AcademicHistory {
@@ -227,8 +234,7 @@ message GetAllCompaniesResponse {
 
 message Department {
     uint64 id = 1;
-    uint64 company_id = 2;
-    string name = 3;
+    string name = 2;
 }
 
 message CreateDepartmentRequest {
@@ -245,6 +251,12 @@ message GetAllDepartmentsRequest {
 
 message GetAllDepartmentsResponse {
     repeated Department departments = 1;
+}
+
+message CompanyDepartment {
+    uint64 id = 1;
+    uint64 company_id = 2;
+    uint64 department_id = 3;
 }
 
 message JobHistory {

@@ -159,6 +159,7 @@ func (j1 *JobHistory) IsEqual(j2 *JobHistory) bool {
 		j1.DepartmentID != j2.DepartmentID ||
 		j1.Country != j2.Country ||
 		j1.City != j2.City ||
+		j1.Title != j2.Title ||
 		j1.StartDate != j2.StartDate ||
 		j1.EndDate != j2.EndDate ||
 		j1.SalaryCurrency != j2.SalaryCurrency ||

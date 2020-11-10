@@ -36,8 +36,8 @@ create table if not exists users_skills (
     created_at timestamptz,
     updated_at timestamptz,
     deleted_at timestamptz,
-    constraint fk_candidates foreign key(candidate_id) references candidates(id),
-    constraint fk_skills foreign key(skill_id) references skills(id)
+    constraint fk_candidates foreign key(candidate_id) references candidates(id) on delete cascade on update cascade,
+    constraint fk_skills foreign key(skill_id) references skills(id) on delete cascade on update cascade
 );
 
 create index on users_skills (candidate_id, skill_id, deleted_at);
@@ -52,10 +52,8 @@ create index on institutions (name);
 
 create table if not exists courses (
     id bigserial not null primary key,
-    institution_id bigint,
     level text,
-    name text not null unique,
-    constraint fk_institutions foreign key(institution_id) references institutions(id)
+    name text not null unique
 );
 
 create index on courses (name);
@@ -64,8 +62,8 @@ create table if not exists courses_institutions (
     id bigserial not null primary key,
     course_id bigint not null,
     institution_id bigint not null,
-    constraint fk_courses foreign key(course_id) references courses(id),
-    constraint fk_institutions foreign key(institution_id) references institutions(id)
+    constraint fk_courses foreign key(course_id) references courses(id) on delete cascade on update cascade,
+    constraint fk_institutions foreign key(institution_id) references institutions(id) on delete cascade on update cascade
 );
 
 create index on courses_institutions (course_id, institution_id);
@@ -79,9 +77,9 @@ create table if not exists academic_histories (
     created_at timestamptz,
     updated_at timestamptz,
     deleted_at timestamptz,
-    constraint fk_candidates foreign key(candidate_id) references candidates(id),
-    constraint fk_institutions foreign key(institution_id) references institutions(id),
-    constraint fk_courses foreign key(course_id) references courses(id)
+    constraint fk_candidates foreign key(candidate_id) references candidates(id) on delete cascade on update cascade,
+    constraint fk_institutions foreign key(institution_id) references institutions(id) on delete cascade on update cascade,
+    constraint fk_courses foreign key(course_id) references courses(id) on delete cascade on update cascade
 );
 
 create index on academic_histories (candidate_id, institution_id, course_id, deleted_at);
@@ -95,9 +93,7 @@ create index on companies (name);
 
 create table if not exists departments (
     id bigserial not null primary key,
-    company_id bigint,
-    name text not null unique,
-    constraint fk_companies foreign key(company_id) references companies(id)
+    name text not null unique
 );
 
 create index on departments (name);
@@ -106,8 +102,8 @@ create table if not exists companies_departments (
     id bigserial not null primary key,
     company_id bigint not null,
     department_id bigint not null,
-    constraint fk_companies foreign key(company_id) references companies(id),
-    constraint fk_departments foreign key(department_id) references departments(id)
+    constraint fk_companies foreign key(company_id) references companies(id) on delete cascade on update cascade,
+    constraint fk_departments foreign key(department_id) references departments(id) on delete cascade on update cascade
 );
 
 create index on companies_departments (company_id, department_id);
@@ -127,7 +123,10 @@ create table if not exists job_histories (
     description text,
     created_at timestamptz,
     updated_at timestamptz,
-    deleted_at timestamptz
+    deleted_at timestamptz,
+    constraint fk_candidates foreign key(candidate_id) references candidates(id) on delete cascade on update cascade,
+    constraint fk_companies foreign key(company_id) references companies(id) on delete cascade on update cascade,
+    constraint fk_departments foreign key(department_id) references departments(id) on delete cascade on update cascade
 );
 
 create index on job_histories (candidate_id, company_id, department_id, deleted_at);

@@ -83,19 +83,18 @@ func SkillToORM(s *pb.Skill) *Skill {
 // InstitutionToORM maps the proto Institution model to the ORM model
 func InstitutionToORM(i *pb.Institution) *Institution {
 	return &Institution{
-		ID:   i.Id,
+		ID:      i.Id,
 		Country: i.Country,
-		Name: i.Name,
+		Name:    i.Name,
 	}
 }
 
 // CourseToORM maps the proto Course model to the ORM model
 func CourseToORM(c *pb.Course) *Course {
 	return &Course{
-		ID:   c.Id,
-		InstitutionID: c.InstitutionId,
+		ID:    c.Id,
 		Level: c.Level,
-		Name: c.Name,
+		Name:  c.Name,
 	}
 }
 
@@ -140,7 +139,6 @@ func CompanyToORM(c *pb.Company) *Company {
 func DepartmentToORM(d *pb.Department) *Department {
 	return &Department{
 		ID:   d.Id,
-		CompanyID: d.CompanyId,
 		Name: d.Name,
 	}
 }

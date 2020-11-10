@@ -96,19 +96,18 @@ func (s *Skill) ToProto() *pb.Skill {
 // ToProto maps the ORM Institution model to the proto model
 func (i *Institution) ToProto() *pb.Institution {
 	return &pb.Institution{
-		Id:   i.ID,
+		Id:      i.ID,
 		Country: i.Country,
-		Name: i.Name,
+		Name:    i.Name,
 	}
 }
 
 // ToProto maps the ORM Course model to the proto model
 func (c *Course) ToProto() *pb.Course {
 	return &pb.Course{
-		Id:   c.ID,
-		InstitutionId: c.InstitutionID,
+		Id:    c.ID,
 		Level: c.Level,
-		Name: c.Name,
+		Name:  c.Name,
 	}
 }
 
@@ -163,7 +162,6 @@ func (c *Company) ToProto() *pb.Company {
 func (d *Department) ToProto() *pb.Department {
 	return &pb.Department{
 		Id:   d.ID,
-		CompanyId: d.CompanyID,
 		Name: d.Name,
 	}
 }

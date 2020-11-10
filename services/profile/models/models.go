@@ -10,6 +10,8 @@ func init() {
 	// Register many to many model so ORM can better recognize m2m relation.
 	// This should be done before dependant models are used.
 	orm.RegisterTable((*UserSkill)(nil))
+	orm.RegisterTable((*CourseInstitution)(nil))
+	orm.RegisterTable((*CompanyDepartment)(nil))
 }
 
 // Candidate declares model for Candidate
@@ -34,7 +36,7 @@ type Candidate struct {
 	Skills                 []*Skill           `json:"skills,omitempty" pg:"many2many:users_skills"`
 	Academics              []*AcademicHistory `json:"academics,omitempty" pg:"rel:has-many"`
 	Jobs                   []*JobHistory      `json:"jobs,omitempty" pg:"rel:has-many"`
-	CreatedAt              *time.Time         `json:"created_at,omitempty"`
+	CreatedAt              *time.Time         `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt              *time.Time         `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt              *time.Time         `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
@@ -55,7 +57,7 @@ type UserSkill struct {
 	ID          uint64     `json:"id"`
 	CandidateID uint64     `json:"candidate_id" pg:",notnull"`
 	SkillID     uint64     `json:"skill_id" pg:",notnull"`
-	CreatedAt   *time.Time `json:"created_at,omitempty"`
+	CreatedAt   *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt   *time.Time `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
@@ -101,7 +103,7 @@ type AcademicHistory struct {
 	CourseID      uint64       `json:"-" pg:",notnull"`
 	Course        *Course      `json:"course,omitempty" pg:"rel:has-one"`
 	YearObtained  uint32       `json:"year_obtained,omitempty"`
-	CreatedAt     *time.Time   `json:"created_at,omitempty"`
+	CreatedAt     *time.Time   `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt     *time.Time   `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
@@ -152,7 +154,7 @@ type JobHistory struct {
 	SalaryCurrency string      `json:"salary_currency,omitempty"`
 	Salary         uint32      `json:"salary,omitempty"`
 	Description    string      `json:"description,omitempty"`
-	CreatedAt      *time.Time  `json:"created_at,omitempty"`
+	CreatedAt      *time.Time  `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt      *time.Time  `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt      *time.Time  `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
