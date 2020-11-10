@@ -60,6 +60,16 @@ create table if not exists courses (
 
 create index on courses (name);
 
+create table if not exists courses_institutions (
+    id bigserial not null primary key,
+    course_id bigint not null,
+    institution_id bigint not null,
+    constraint fk_courses foreign key(course_id) references courses(id),
+    constraint fk_institutions foreign key(institution_id) references institutions(id)
+);
+
+create index on courses_institutions (course_id, institution_id);
+
 create table if not exists academic_histories (
     id bigserial not null primary key,
     candidate_id bigint not null,
@@ -91,6 +101,16 @@ create table if not exists departments (
 );
 
 create index on departments (name);
+
+create table if not exists companies_departments (
+    id bigserial not null primary key,
+    company_id bigint not null,
+    department_id bigint not null,
+    constraint fk_companies foreign key(company_id) references companies(id),
+    constraint fk_departments foreign key(department_id) references departments(id)
+);
+
+create index on companies_departments (company_id, department_id);
 
 create table if not exists job_histories (
     id bigserial not null primary key,

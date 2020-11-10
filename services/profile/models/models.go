@@ -67,17 +67,26 @@ type Institution struct {
 	ID      uint64    `json:"id"`
 	Country string    `json:"country,omitempty"`
 	Name    string    `json:"name" pg:",notnull"`
-	Courses []*Course `json:"courses,omitempty" pg:"rel:has-many"`
+	Courses []*Course `json:"courses,omitempty" pg:"many2many:courses_institutions"`
 }
 
 // Course declares model for Course
 type Course struct {
 	tableName struct{} `pg:"courses,alias:cr"`
 
+	ID           uint64         `json:"id"`
+	Level        string         `json:"level,omitempty"`
+	Name         string         `json:"name" pg:",notnull"`
+	Institutions []*Institution `json:"institutions,omitempty" pg:"many2many:courses_institutions"`
+}
+
+// CourseInstitution declares model for CourseInstitution
+type CourseInstitution struct {
+	tableName struct{} `pg:"courses_institutions,alias:ci"`
+
 	ID            uint64 `json:"id"`
-	InstitutionID uint64 `json:"institution_id,omitempty"`
-	Level         string `json:"level,omitempty"`
-	Name          string `json:"name" pg:",notnull"`
+	CourseID      uint64 `json:"course_id" pg:",notnull"`
+	InstitutionID uint64 `json:"institution_id" pg:",notnull"`
 }
 
 // AcademicHistory declares model for AcademicHistory
@@ -103,16 +112,25 @@ type Company struct {
 
 	ID          uint64        `json:"id"`
 	Name        string        `json:"name" pg:",notnull"`
-	Departments []*Department `json:"departments,omitempty" pg:"rel:has-many"`
+	Departments []*Department `json:"departments,omitempty" pg:"many2many:companies_departments"`
 }
 
 // Department declares model for Department
 type Department struct {
 	tableName struct{} `pg:"departments,alias:d"`
 
-	ID        uint64 `json:"id"`
-	CompanyID uint64 `json:"company_id,omitempty"`
-	Name      string `json:"name" pg:",notnull"`
+	ID        uint64     `json:"id"`
+	Name      string     `json:"name" pg:",notnull"`
+	Companies []*Company `json:"companies,omitempty" pg:"many2many:companies_departments"`
+}
+
+// CompanyDepartment declares model for CourseInstitution
+type CompanyDepartment struct {
+	tableName struct{} `pg:"companies_departments,alias:cd"`
+
+	ID           uint64 `json:"id"`
+	CompanyID    uint64 `json:"company_id" pg:",notnull"`
+	DepartmentID uint64 `json:"department_id" pg:",notnull"`
 }
 
 // JobHistory declares model for JobHistory
