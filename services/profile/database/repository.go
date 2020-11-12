@@ -7,17 +7,18 @@ import (
 	pg "github.com/go-pg/pg/v10"
 	"github.com/pkg/errors"
 
+	"in-backend/services/profile"
 	"in-backend/services/profile/models"
 )
 
 // Repository implements the profile Repository interface
-type Repository struct {
+type repository struct {
 	DB *pg.DB
 }
 
 // NewRepository declares a new Repository that implements profile Repository
-func NewRepository(db *pg.DB) *Repository {
-	return &Repository{
+func NewRepository(db *pg.DB) profile.Repository {
+	return &repository{
 		DB: db,
 	}
 }
@@ -25,7 +26,7 @@ func NewRepository(db *pg.DB) *Repository {
 /* --------------- Candidate --------------- */
 
 // CreateCandidate creates a new Candidate
-func (r Repository) CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
+func (r *repository) CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
 	if c == nil {
 		return nil, errors.New("Input parameter candidate is nil")
 	}
@@ -39,14 +40,14 @@ func (r Repository) CreateCandidate(ctx context.Context, c *models.Candidate) (*
 }
 
 // GetAllCandidates returns all Candidates
-func (r Repository) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
+func (r *repository) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
 	var c []*models.Candidate
 	err := r.DB.WithContext(ctx).Model(&c).Select()
 	return c, err
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (r Repository) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
+func (r *repository) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
 	c := models.Candidate{ID: id}
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -57,7 +58,7 @@ func (r Repository) GetCandidateByID(ctx context.Context, id uint64) (*models.Ca
 }
 
 // UpdateCandidate updates a Candidate
-func (r Repository) UpdateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
+func (r *repository) UpdateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error) {
 	if c == nil {
 		return nil, errors.New("Candidate is nil")
 	}
@@ -71,7 +72,7 @@ func (r Repository) UpdateCandidate(ctx context.Context, c *models.Candidate) (*
 }
 
 // DeleteCandidate deletes a Candidate by ID
-func (r Repository) DeleteCandidate(ctx context.Context, id uint64) error {
+func (r *repository) DeleteCandidate(ctx context.Context, id uint64) error {
 	c := &models.Candidate{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(c).WherePK().Delete()
 	if err != nil {
@@ -83,7 +84,7 @@ func (r Repository) DeleteCandidate(ctx context.Context, id uint64) error {
 /* --------------- Skill --------------- */
 
 // CreateSkill creates a new Skill
-func (r Repository) CreateSkill(ctx context.Context, s *models.Skill) (*models.Skill, error) {
+func (r *repository) CreateSkill(ctx context.Context, s *models.Skill) (*models.Skill, error) {
 	if s == nil {
 		return nil, errors.New("Input parameter skill is nil")
 	}
@@ -97,7 +98,7 @@ func (r Repository) CreateSkill(ctx context.Context, s *models.Skill) (*models.S
 }
 
 // GetSkill returns a Skill by ID
-func (r Repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
+func (r *repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
 	s := models.Skill{ID: id}
 	err := r.DB.WithContext(ctx).Model(&s).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -108,7 +109,7 @@ func (r Repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, err
 }
 
 // GetAllSkills returns all Skills
-func (r Repository) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
+func (r *repository) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
 	var s []*models.Skill
 	err := r.DB.WithContext(ctx).Model(&s).Select()
 	return s, err
@@ -117,7 +118,7 @@ func (r Repository) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
 /* --------------- Institution --------------- */
 
 // CreateInstitution creates a new Institution
-func (r Repository) CreateInstitution(ctx context.Context, i *models.Institution) (*models.Institution, error) {
+func (r *repository) CreateInstitution(ctx context.Context, i *models.Institution) (*models.Institution, error) {
 	if i == nil {
 		return nil, errors.New("Input parameter institution is nil")
 	}
@@ -131,7 +132,7 @@ func (r Repository) CreateInstitution(ctx context.Context, i *models.Institution
 }
 
 // GetInstitution returns a Institution by ID
-func (r Repository) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
+func (r *repository) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
 	i := models.Institution{ID: id}
 	err := r.DB.WithContext(ctx).Model(&i).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -142,7 +143,7 @@ func (r Repository) GetInstitution(ctx context.Context, id uint64) (*models.Inst
 }
 
 // GetAllInstitutions returns all Institutions
-func (r Repository) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
+func (r *repository) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
 	var i []*models.Institution
 	err := r.DB.WithContext(ctx).Model(&i).Select()
 	return i, err
@@ -151,7 +152,7 @@ func (r Repository) GetAllInstitutions(ctx context.Context) ([]*models.Instituti
 /* --------------- Course --------------- */
 
 // CreateCourse creates a new Course
-func (r Repository) CreateCourse(ctx context.Context, c *models.Course) (*models.Course, error) {
+func (r *repository) CreateCourse(ctx context.Context, c *models.Course) (*models.Course, error) {
 	if c == nil {
 		return nil, errors.New("Input parameter course is nil")
 	}
@@ -165,7 +166,7 @@ func (r Repository) CreateCourse(ctx context.Context, c *models.Course) (*models
 }
 
 // GetCourse returns a Course by ID
-func (r Repository) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
+func (r *repository) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
 	c := models.Course{ID: id}
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -176,7 +177,7 @@ func (r Repository) GetCourse(ctx context.Context, id uint64) (*models.Course, e
 }
 
 // GetAllCourses returns all Courses
-func (r Repository) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
+func (r *repository) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
 	var c []*models.Course
 	err := r.DB.WithContext(ctx).Model(&c).Select()
 	return c, err
@@ -185,7 +186,7 @@ func (r Repository) GetAllCourses(ctx context.Context) ([]*models.Course, error)
 /* --------------- Academic History --------------- */
 
 // CreateAcademicHistory creates a new AcademicHistory
-func (r Repository) CreateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error) {
+func (r *repository) CreateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error) {
 	if a == nil {
 		return nil, errors.New("Input parameter academic history is nil")
 	}
@@ -199,7 +200,7 @@ func (r Repository) CreateAcademicHistory(ctx context.Context, a *models.Academi
 }
 
 // GetAcademicHistory returns a AcademicHistory by ID
-func (r Repository) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
+func (r *repository) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
 	a := models.AcademicHistory{ID: id}
 	err := r.DB.WithContext(ctx).Model(&a).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -210,7 +211,7 @@ func (r Repository) GetAcademicHistory(ctx context.Context, id uint64) (*models.
 }
 
 // UpdateAcademicHistory updates a AcademicHistory
-func (r Repository) UpdateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error) {
+func (r *repository) UpdateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error) {
 	if a == nil {
 		return nil, errors.New("AcademicHistory is nil")
 	}
@@ -224,7 +225,7 @@ func (r Repository) UpdateAcademicHistory(ctx context.Context, a *models.Academi
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (r Repository) DeleteAcademicHistory(ctx context.Context, id uint64) error {
+func (r *repository) DeleteAcademicHistory(ctx context.Context, id uint64) error {
 	a := &models.AcademicHistory{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(a).WherePK().Delete()
 	if err != nil {
@@ -236,7 +237,7 @@ func (r Repository) DeleteAcademicHistory(ctx context.Context, id uint64) error 
 /* --------------- Company --------------- */
 
 // CreateCompany creates a new Company
-func (r Repository) CreateCompany(ctx context.Context, c *models.Company) (*models.Company, error) {
+func (r *repository) CreateCompany(ctx context.Context, c *models.Company) (*models.Company, error) {
 	if c == nil {
 		return nil, errors.New("Input parameter company is nil")
 	}
@@ -250,7 +251,7 @@ func (r Repository) CreateCompany(ctx context.Context, c *models.Company) (*mode
 }
 
 // GetCompany returns a Company by ID
-func (r Repository) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
+func (r *repository) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
 	c := models.Company{ID: id}
 	err := r.DB.WithContext(ctx).Model(&c).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -261,7 +262,7 @@ func (r Repository) GetCompany(ctx context.Context, id uint64) (*models.Company,
 }
 
 // GetAllCompanies returns all Companies
-func (r Repository) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
+func (r *repository) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
 	var c []*models.Company
 	err := r.DB.WithContext(ctx).Model(&c).Select()
 	return c, err
@@ -270,7 +271,7 @@ func (r Repository) GetAllCompanies(ctx context.Context) ([]*models.Company, err
 /* --------------- Department --------------- */
 
 // CreateDepartment creates a new Department
-func (r Repository) CreateDepartment(ctx context.Context, d *models.Department) (*models.Department, error) {
+func (r *repository) CreateDepartment(ctx context.Context, d *models.Department) (*models.Department, error) {
 	if d == nil {
 		return nil, errors.New("Input parameter department is nil")
 	}
@@ -284,7 +285,7 @@ func (r Repository) CreateDepartment(ctx context.Context, d *models.Department) 
 }
 
 // GetDepartment returns a Department by ID
-func (r Repository) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
+func (r *repository) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
 	d := models.Department{ID: id}
 	err := r.DB.WithContext(ctx).Model(&d).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -295,7 +296,7 @@ func (r Repository) GetDepartment(ctx context.Context, id uint64) (*models.Depar
 }
 
 // GetAllDepartments returns all Departments
-func (r Repository) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
+func (r *repository) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
 	var d []*models.Department
 	err := r.DB.WithContext(ctx).Model(&d).Select()
 	return d, err
@@ -304,7 +305,7 @@ func (r Repository) GetAllDepartments(ctx context.Context) ([]*models.Department
 /* --------------- Job History --------------- */
 
 // CreateJobHistory creates a new JobHistory
-func (r Repository) CreateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error) {
+func (r *repository) CreateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error) {
 	if j == nil {
 		return nil, errors.New("Input parameter job history is nil")
 	}
@@ -318,7 +319,7 @@ func (r Repository) CreateJobHistory(ctx context.Context, j *models.JobHistory) 
 }
 
 // GetJobHistory returns a JobHistory by ID
-func (r Repository) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
+func (r *repository) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
 	j := models.JobHistory{ID: id}
 	err := r.DB.WithContext(ctx).Model(&j).Where("id = ?", id).Select()
 	//pg returns error when no rows in the result set
@@ -329,7 +330,7 @@ func (r Repository) GetJobHistory(ctx context.Context, id uint64) (*models.JobHi
 }
 
 // UpdateJobHistory updates a JobHistory
-func (r Repository) UpdateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error) {
+func (r *repository) UpdateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error) {
 	if j == nil {
 		return nil, errors.New("JobHistory is nil")
 	}
@@ -343,7 +344,7 @@ func (r Repository) UpdateJobHistory(ctx context.Context, j *models.JobHistory) 
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (r Repository) DeleteJobHistory(ctx context.Context, id uint64) error {
+func (r *repository) DeleteJobHistory(ctx context.Context, id uint64) error {
 	j := &models.JobHistory{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(j).WherePK().Delete()
 	if err != nil {

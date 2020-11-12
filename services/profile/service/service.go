@@ -11,14 +11,14 @@ import (
 )
 
 // Service implements the profile Service interface
-type Service struct {
+type service struct {
 	repository profile.Repository
 	logger     log.Logger
 }
 
 // New creates and returns a new Service that implements the profile Service interface
-func New(r profile.Repository, l log.Logger) *Service {
-	return &Service{
+func New(r profile.Repository, l log.Logger) profile.Service {
+	return &service{
 		repository: r,
 		logger:     l,
 	}
@@ -27,7 +27,7 @@ func New(r profile.Repository, l log.Logger) *Service {
 /* --------------- Candidate --------------- */
 
 // CreateCandidate creates a new Candidate
-func (s *Service) CreateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
+func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
 	logger := log.With(s.logger, "method", "CreateCandidate")
 
 	c, err := s.repository.CreateCandidate(ctx, candidate)
@@ -38,7 +38,7 @@ func (s *Service) CreateCandidate(ctx context.Context, candidate *models.Candida
 }
 
 // GetAllCandidates returns all Candidates
-func (s *Service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
+func (s *service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
 	logger := log.With(s.logger, "method", "GetAllCandidates")
 
 	c, err := s.repository.GetAllCandidates(ctx)
@@ -49,7 +49,7 @@ func (s *Service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, er
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (s *Service) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
+func (s *service) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
 	logger := log.With(s.logger, "method", "GetCandidateByID")
 
 	c, err := s.repository.GetCandidateByID(ctx, id)
@@ -60,7 +60,7 @@ func (s *Service) GetCandidateByID(ctx context.Context, id uint64) (*models.Cand
 }
 
 // UpdateCandidate updates a Candidate
-func (s *Service) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
+func (s *service) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
 	logger := log.With(s.logger, "method", "UpdateCandidate")
 
 	c, err := s.repository.UpdateCandidate(ctx, candidate)
@@ -71,7 +71,7 @@ func (s *Service) UpdateCandidate(ctx context.Context, candidate *models.Candida
 }
 
 // DeleteCandidate deletes a Candidate by ID
-func (s *Service) DeleteCandidate(ctx context.Context, id uint64) error {
+func (s *service) DeleteCandidate(ctx context.Context, id uint64) error {
 	logger := log.With(s.logger, "method", "DeleteCandidate")
 
 	err := s.repository.DeleteCandidate(ctx, id)
@@ -84,7 +84,7 @@ func (s *Service) DeleteCandidate(ctx context.Context, id uint64) error {
 /* --------------- Skill --------------- */
 
 // CreateSkill creates a new Skill
-func (s *Service) CreateSkill(ctx context.Context, skill *models.Skill) (*models.Skill, error) {
+func (s *service) CreateSkill(ctx context.Context, skill *models.Skill) (*models.Skill, error) {
 	logger := log.With(s.logger, "method", "CreateSkill")
 
 	sk, err := s.repository.CreateSkill(ctx, skill)
@@ -95,7 +95,7 @@ func (s *Service) CreateSkill(ctx context.Context, skill *models.Skill) (*models
 }
 
 // GetSkill returns a Skill by ID
-func (s *Service) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
+func (s *service) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
 	logger := log.With(s.logger, "method", "GetSkill")
 
 	sk, err := s.repository.GetSkill(ctx, id)
@@ -106,7 +106,7 @@ func (s *Service) GetSkill(ctx context.Context, id uint64) (*models.Skill, error
 }
 
 // GetAllSkills returns all Skills
-func (s *Service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
+func (s *service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
 	logger := log.With(s.logger, "method", "GetAllSkills")
 
 	sk, err := s.repository.GetAllSkills(ctx)
@@ -119,7 +119,7 @@ func (s *Service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
 /* --------------- Institution --------------- */
 
 // CreateInstitution creates a new Institution
-func (s *Service) CreateInstitution(ctx context.Context, institution *models.Institution) (*models.Institution, error) {
+func (s *service) CreateInstitution(ctx context.Context, institution *models.Institution) (*models.Institution, error) {
 	logger := log.With(s.logger, "method", "CreateInstitution")
 
 	i, err := s.repository.CreateInstitution(ctx, institution)
@@ -130,7 +130,7 @@ func (s *Service) CreateInstitution(ctx context.Context, institution *models.Ins
 }
 
 // GetInstitution returns a Institution by ID
-func (s *Service) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
+func (s *service) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
 	logger := log.With(s.logger, "method", "GetInstitution")
 
 	i, err := s.repository.GetInstitution(ctx, id)
@@ -141,7 +141,7 @@ func (s *Service) GetInstitution(ctx context.Context, id uint64) (*models.Instit
 }
 
 // GetAllInstitutions returns all Institutions
-func (s *Service) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
+func (s *service) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
 	logger := log.With(s.logger, "method", "GetAllInstitutions")
 
 	i, err := s.repository.GetAllInstitutions(ctx)
@@ -154,7 +154,7 @@ func (s *Service) GetAllInstitutions(ctx context.Context) ([]*models.Institution
 /* --------------- Course --------------- */
 
 // CreateCourse creates a new Course
-func (s *Service) CreateCourse(ctx context.Context, course *models.Course) (*models.Course, error) {
+func (s *service) CreateCourse(ctx context.Context, course *models.Course) (*models.Course, error) {
 	logger := log.With(s.logger, "method", "CreateCourse")
 
 	c, err := s.repository.CreateCourse(ctx, course)
@@ -165,7 +165,7 @@ func (s *Service) CreateCourse(ctx context.Context, course *models.Course) (*mod
 }
 
 // GetCourse returns a Course by ID
-func (s *Service) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
+func (s *service) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
 	logger := log.With(s.logger, "method", "GetCourse")
 
 	c, err := s.repository.GetCourse(ctx, id)
@@ -176,7 +176,7 @@ func (s *Service) GetCourse(ctx context.Context, id uint64) (*models.Course, err
 }
 
 // GetAllCourses returns all Courses
-func (s *Service) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
+func (s *service) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
 	logger := log.With(s.logger, "method", "GetAllCourses")
 
 	c, err := s.repository.GetAllCourses(ctx)
@@ -189,7 +189,7 @@ func (s *Service) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
 /* --------------- Academic History --------------- */
 
 // CreateAcademicHistory creates a new AcademicHistory
-func (s *Service) CreateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
+func (s *service) CreateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
 	logger := log.With(s.logger, "method", "CreateAcademicHistory")
 
 	a, err := s.repository.CreateAcademicHistory(ctx, academic)
@@ -200,7 +200,7 @@ func (s *Service) CreateAcademicHistory(ctx context.Context, academic *models.Ac
 }
 
 // GetAcademicHistory returns a AcademicHistory by ID
-func (s *Service) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
+func (s *service) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
 	logger := log.With(s.logger, "method", "GetAcademicHistory")
 
 	a, err := s.repository.GetAcademicHistory(ctx, id)
@@ -211,7 +211,7 @@ func (s *Service) GetAcademicHistory(ctx context.Context, id uint64) (*models.Ac
 }
 
 // UpdateAcademicHistory updates a AcademicHistory
-func (s *Service) UpdateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
+func (s *service) UpdateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
 	logger := log.With(s.logger, "method", "UpdateAcademicHistory")
 
 	a, err := s.repository.UpdateAcademicHistory(ctx, academic)
@@ -222,7 +222,7 @@ func (s *Service) UpdateAcademicHistory(ctx context.Context, academic *models.Ac
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (s *Service) DeleteAcademicHistory(ctx context.Context, id uint64) error {
+func (s *service) DeleteAcademicHistory(ctx context.Context, id uint64) error {
 	logger := log.With(s.logger, "method", "DeleteAcademicHistory")
 
 	err := s.repository.DeleteAcademicHistory(ctx, id)
@@ -235,7 +235,7 @@ func (s *Service) DeleteAcademicHistory(ctx context.Context, id uint64) error {
 /* --------------- Company --------------- */
 
 // CreateCompany creates a new Company
-func (s *Service) CreateCompany(ctx context.Context, company *models.Company) (*models.Company, error) {
+func (s *service) CreateCompany(ctx context.Context, company *models.Company) (*models.Company, error) {
 	logger := log.With(s.logger, "method", "CreateCompany")
 
 	c, err := s.repository.CreateCompany(ctx, company)
@@ -246,7 +246,7 @@ func (s *Service) CreateCompany(ctx context.Context, company *models.Company) (*
 }
 
 // GetCompany returns a Company by ID
-func (s *Service) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
+func (s *service) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
 	logger := log.With(s.logger, "method", "GetCompany")
 
 	c, err := s.repository.GetCompany(ctx, id)
@@ -257,7 +257,7 @@ func (s *Service) GetCompany(ctx context.Context, id uint64) (*models.Company, e
 }
 
 // GetAllCompanies returns all Companies
-func (s *Service) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
+func (s *service) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
 	logger := log.With(s.logger, "method", "GetAllCompanies")
 
 	c, err := s.repository.GetAllCompanies(ctx)
@@ -270,7 +270,7 @@ func (s *Service) GetAllCompanies(ctx context.Context) ([]*models.Company, error
 /* --------------- Department --------------- */
 
 // CreateDepartment creates a new Department
-func (s *Service) CreateDepartment(ctx context.Context, course *models.Department) (*models.Department, error) {
+func (s *service) CreateDepartment(ctx context.Context, course *models.Department) (*models.Department, error) {
 	logger := log.With(s.logger, "method", "CreateDepartment")
 
 	d, err := s.repository.CreateDepartment(ctx, course)
@@ -281,7 +281,7 @@ func (s *Service) CreateDepartment(ctx context.Context, course *models.Departmen
 }
 
 // GetDepartment returns a Department by ID
-func (s *Service) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
+func (s *service) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
 	logger := log.With(s.logger, "method", "GetDepartment")
 
 	d, err := s.repository.GetDepartment(ctx, id)
@@ -292,7 +292,7 @@ func (s *Service) GetDepartment(ctx context.Context, id uint64) (*models.Departm
 }
 
 // GetAllDepartments returns all Departments
-func (s *Service) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
+func (s *service) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
 	logger := log.With(s.logger, "method", "GetAllDepartments")
 
 	d, err := s.repository.GetAllDepartments(ctx)
@@ -305,7 +305,7 @@ func (s *Service) GetAllDepartments(ctx context.Context) ([]*models.Department, 
 /* --------------- Job History --------------- */
 
 // CreateJobHistory creates a new JobHistory
-func (s *Service) CreateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
+func (s *service) CreateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
 	logger := log.With(s.logger, "method", "CreateJobHistory")
 
 	j, err := s.repository.CreateJobHistory(ctx, job)
@@ -316,7 +316,7 @@ func (s *Service) CreateJobHistory(ctx context.Context, job *models.JobHistory) 
 }
 
 // GetJobHistory returns a JobHistory by ID
-func (s *Service) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
+func (s *service) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
 	logger := log.With(s.logger, "method", "GetJobHistory")
 
 	j, err := s.repository.GetJobHistory(ctx, id)
@@ -327,7 +327,7 @@ func (s *Service) GetJobHistory(ctx context.Context, id uint64) (*models.JobHist
 }
 
 // UpdateJobHistory updates a JobHistory
-func (s *Service) UpdateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
+func (s *service) UpdateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
 	logger := log.With(s.logger, "method", "UpdateJobHistory")
 
 	j, err := s.repository.UpdateJobHistory(ctx, job)
@@ -338,7 +338,7 @@ func (s *Service) UpdateJobHistory(ctx context.Context, job *models.JobHistory) 
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (s *Service) DeleteJobHistory(ctx context.Context, id uint64) error {
+func (s *service) DeleteJobHistory(ctx context.Context, id uint64) error {
 	logger := log.With(s.logger, "method", "DeleteJobHistory")
 
 	err := s.repository.DeleteJobHistory(ctx, id)

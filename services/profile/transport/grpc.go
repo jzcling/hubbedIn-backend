@@ -3,8 +3,8 @@ package transport
 import (
 	"context"
 	"in-backend/services/profile/endpoints"
-	"in-backend/services/profile/pb"
 	"in-backend/services/profile/models"
+	"in-backend/services/profile/pb"
 
 	"github.com/go-kit/kit/log"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
@@ -281,8 +281,8 @@ func (s *grpcServer) GetAllCandidates(ctx context.Context, req *pb.GetAllCandida
 
 // decodeGetAllCandidatesRequest decodes the incoming grpc payload to our go kit payload
 func decodeGetAllCandidatesRequest(_ context.Context, request interface{}) (interface{}, error) {
-	_ = request.(*pb.GetAllCandidatesRequest)
-	return endpoints.GetAllCandidatesRequest{}, nil
+	req := request.(*pb.GetAllCandidatesRequest)
+	return endpoints.GetAllCandidatesRequest{ID: req.Id}, nil
 }
 
 // encodeGetAllCandidatesResponse encodes the outgoing go kit payload to the grpc payload

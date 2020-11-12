@@ -9,6 +9,10 @@ import (
 
 // ToProto maps the ORM Candidate model to the proto model
 func (c *Candidate) ToProto() *pb.Candidate {
+	if c == nil {
+		return nil
+	}
+
 	var skills []*pb.Skill
 	s := c.Skills
 	for _, skill := range s {
@@ -87,6 +91,9 @@ func (c *Candidate) ToProto() *pb.Candidate {
 
 // ToProto maps the ORM Skill model to the proto model
 func (s *Skill) ToProto() *pb.Skill {
+	if s == nil {
+		return nil
+	}
 	return &pb.Skill{
 		Id:   s.ID,
 		Name: s.Name,
@@ -95,6 +102,9 @@ func (s *Skill) ToProto() *pb.Skill {
 
 // ToProto maps the ORM Institution model to the proto model
 func (i *Institution) ToProto() *pb.Institution {
+	if i == nil {
+		return nil
+	}
 	return &pb.Institution{
 		Id:      i.ID,
 		Country: i.Country,
@@ -104,6 +114,9 @@ func (i *Institution) ToProto() *pb.Institution {
 
 // ToProto maps the ORM Course model to the proto model
 func (c *Course) ToProto() *pb.Course {
+	if c == nil {
+		return nil
+	}
 	return &pb.Course{
 		Id:    c.ID,
 		Level: c.Level,
@@ -113,6 +126,10 @@ func (c *Course) ToProto() *pb.Course {
 
 // ToProto maps the ORM AcademicHistory model to the proto model
 func (a *AcademicHistory) ToProto() *pb.AcademicHistory {
+	if a == nil {
+		return nil
+	}
+
 	var err error
 	var createdAt *timestamppb.Timestamp
 	if a.CreatedAt != nil {
@@ -152,6 +169,9 @@ func (a *AcademicHistory) ToProto() *pb.AcademicHistory {
 
 // ToProto maps the ORM Company model to the proto model
 func (c *Company) ToProto() *pb.Company {
+	if c == nil {
+		return nil
+	}
 	return &pb.Company{
 		Id:   c.ID,
 		Name: c.Name,
@@ -160,6 +180,9 @@ func (c *Company) ToProto() *pb.Company {
 
 // ToProto maps the ORM Department model to the proto model
 func (d *Department) ToProto() *pb.Department {
+	if d == nil {
+		return nil
+	}
 	return &pb.Department{
 		Id:   d.ID,
 		Name: d.Name,
@@ -168,6 +191,9 @@ func (d *Department) ToProto() *pb.Department {
 
 // ToProto maps the ORM JobHistory model to the proto model
 func (j *JobHistory) ToProto() *pb.JobHistory {
+	if j == nil {
+		return nil
+	}
 	var err error
 	var startDate *timestamppb.Timestamp
 	if j.StartDate != nil {

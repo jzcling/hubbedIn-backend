@@ -16,3 +16,6 @@ vendor/
 
 # Env files
 *.env
+
+# vscode launch file
+launch.json

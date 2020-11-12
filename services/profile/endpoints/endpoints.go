@@ -118,8 +118,9 @@ func makeGetAllCandidatesEndpoint(s profile.Service) endpoint.Endpoint {
 }
 
 // GetAllCandidatesRequest declares the inputs required for getting all candidates
+// TODO: filters
 type GetAllCandidatesRequest struct {
-	// TODO
+	ID []uint64
 }
 
 // GetAllCandidatesResponse declares the outputs after attempting to get all candidates

@@ -5,8 +5,8 @@ $(PROTOC_GEN_GO):
 	go get -u github.com/golang/protobuf/protoc-gen-go
 	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
-profile.pb.go: models/pb/profile.proto | $(PROTOC_GEN_GO)
-	protoc --go_out=plugins=grpc:. -I models/pb models/pb/profile.proto
+profile.pb.go: pb/profile.proto | $(PROTOC_GEN_GO)
+	protoc --go_out=plugins=grpc:pb/. -I pb pb/profile.proto
 
 proto: profile.pb.go
 
@@ -15,3 +15,6 @@ migration-up:
 
 migration-down:
 	cd scripts/migrations && go run . down
+
+mocks:
+	mockery --all && mv mocks tests/

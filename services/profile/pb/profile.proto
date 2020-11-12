@@ -1,7 +1,7 @@
 syntax = "proto3";
 package pb;
 
-option go_package = "models/pb";
+option go_package = ".;pb";
 
 import "google/protobuf/timestamp.proto";
 
@@ -75,8 +75,9 @@ message CreateCandidateRequest {
     Candidate candidate = 1;
 }
 
+// TODO: filters
 message GetAllCandidatesRequest {
-    // TODO
+    repeated uint64 id = 1;
 }
 
 message GetAllCandidatesResponse {
@@ -88,8 +89,7 @@ message GetCandidateByIDRequest {
 }
 
 message UpdateCandidateRequest {
-    uint64 id = 1;
-    Candidate candidate = 2;
+    Candidate candidate = 1;
 }
 
 message DeleteCandidateRequest {
@@ -167,7 +167,7 @@ message GetCourseRequest {
 }
 
 message GetAllCoursesRequest {
-    // TODO
+    repeated uint64 id = 1;
 }
 
 message GetAllCoursesResponse {
@@ -199,8 +199,7 @@ message GetAcademicHistoryRequest {
 }
 
 message UpdateAcademicHistoryRequest {
-    uint64 id = 1;
-    AcademicHistory academic_history = 2;
+    AcademicHistory academic_history = 1;
 }
 
 message DeleteAcademicHistoryRequest {
@@ -286,8 +285,7 @@ message GetJobHistoryRequest {
 }
 
 message UpdateJobHistoryRequest {
-    uint64 id = 1;
-    JobHistory job_history = 2;
+    JobHistory job_history = 1;
 }
 
 message DeleteJobHistoryRequest {

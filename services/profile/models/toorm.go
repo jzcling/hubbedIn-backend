@@ -9,6 +9,10 @@ import (
 
 // CandidateToORM maps the proto Candidate model to the ORM model
 func CandidateToORM(c *pb.Candidate) *Candidate {
+	if c == nil {
+		return nil
+	}
+
 	var skills []*Skill
 	s := c.Skills
 	for _, skill := range s {
@@ -27,24 +31,28 @@ func CandidateToORM(c *pb.Candidate) *Candidate {
 		jobs = append(jobs, JobHistoryToORM(job))
 	}
 
-	birthday, err := ptypes.Timestamp(c.Birthday)
+	b, err := ptypes.Timestamp(c.Birthday)
+	birthday := &b
 	if err != nil {
-		birthday = time.Time{}
+		birthday = (*time.Time)(nil)
 	}
 
-	createdAt, err := ptypes.Timestamp(c.CreatedAt)
+	ca, err := ptypes.Timestamp(c.CreatedAt)
+	createdAt := &ca
 	if err != nil {
-		createdAt = time.Time{}
+		createdAt = (*time.Time)(nil)
 	}
 
-	updatedAt, err := ptypes.Timestamp(c.UpdatedAt)
+	ua, err := ptypes.Timestamp(c.UpdatedAt)
+	updatedAt := &ua
 	if err != nil {
-		updatedAt = time.Time{}
+		updatedAt = (*time.Time)(nil)
 	}
 
-	deletedAt, err := ptypes.Timestamp(c.DeletedAt)
+	da, err := ptypes.Timestamp(c.DeletedAt)
+	deletedAt := &da
 	if err != nil {
-		deletedAt = time.Time{}
+		deletedAt = (*time.Time)(nil)
 	}
 
 	return &Candidate{
@@ -61,19 +69,22 @@ func CandidateToORM(c *pb.Candidate) *Candidate {
 		LinkedInURL:            c.LinkedInUrl,
 		SCMURL:                 c.ScmUrl,
 		EducationLevel:         c.EducationLevel,
-		Birthday:               &birthday,
+		Birthday:               birthday,
 		NoticePeriod:           c.NoticePeriod,
 		Skills:                 skills,
 		Academics:              academics,
 		Jobs:                   jobs,
-		CreatedAt:              &createdAt,
-		UpdatedAt:              &updatedAt,
-		DeletedAt:              &deletedAt,
+		CreatedAt:              createdAt,
+		UpdatedAt:              updatedAt,
+		DeletedAt:              deletedAt,
 	}
 }
 
 // SkillToORM maps the proto Skill model to the ORM model
 func SkillToORM(s *pb.Skill) *Skill {
+	if s == nil {
+		return nil
+	}
 	return &Skill{
 		ID:   s.Id,
 		Name: s.Name,
@@ -82,6 +93,9 @@ func SkillToORM(s *pb.Skill) *Skill {
 
 // InstitutionToORM maps the proto Institution model to the ORM model
 func InstitutionToORM(i *pb.Institution) *Institution {
+	if i == nil {
+		return nil
+	}
 	return &Institution{
 		ID:      i.Id,
 		Country: i.Country,
@@ -91,6 +105,9 @@ func InstitutionToORM(i *pb.Institution) *Institution {
 
 // CourseToORM maps the proto Course model to the ORM model
 func CourseToORM(c *pb.Course) *Course {
+	if c == nil {
+		return nil
+	}
 	return &Course{
 		ID:    c.Id,
 		Level: c.Level,
@@ -100,19 +117,26 @@ func CourseToORM(c *pb.Course) *Course {
 
 // AcademicHistoryToORM maps the proto AcademicHistory model to the ORM model
 func AcademicHistoryToORM(a *pb.AcademicHistory) *AcademicHistory {
-	createdAt, err := ptypes.Timestamp(a.CreatedAt)
-	if err != nil {
-		createdAt = time.Time{}
+	if a == nil {
+		return nil
 	}
 
-	updatedAt, err := ptypes.Timestamp(a.UpdatedAt)
+	ca, err := ptypes.Timestamp(a.CreatedAt)
+	createdAt := &ca
 	if err != nil {
-		updatedAt = time.Time{}
+		createdAt = (*time.Time)(nil)
 	}
 
-	deletedAt, err := ptypes.Timestamp(a.DeletedAt)
+	ua, err := ptypes.Timestamp(a.UpdatedAt)
+	updatedAt := &ua
 	if err != nil {
-		deletedAt = time.Time{}
+		updatedAt = (*time.Time)(nil)
+	}
+
+	da, err := ptypes.Timestamp(a.DeletedAt)
+	deletedAt := &da
+	if err != nil {
+		deletedAt = (*time.Time)(nil)
 	}
 
 	return &AcademicHistory{
@@ -121,14 +145,17 @@ func AcademicHistoryToORM(a *pb.AcademicHistory) *AcademicHistory {
 		InstitutionID: a.InstitutionId,
 		CourseID:      a.CourseId,
 		YearObtained:  a.YearObtained,
-		CreatedAt:     &createdAt,
-		UpdatedAt:     &updatedAt,
-		DeletedAt:     &deletedAt,
+		CreatedAt:     createdAt,
+		UpdatedAt:     updatedAt,
+		DeletedAt:     deletedAt,
 	}
 }
 
 // CompanyToORM maps the proto Company model to the ORM model
 func CompanyToORM(c *pb.Company) *Company {
+	if c == nil {
+		return nil
+	}
 	return &Company{
 		ID:   c.Id,
 		Name: c.Name,
@@ -137,6 +164,9 @@ func CompanyToORM(c *pb.Company) *Company {
 
 // DepartmentToORM maps the proto Department model to the ORM model
 func DepartmentToORM(d *pb.Department) *Department {
+	if d == nil {
+		return nil
+	}
 	return &Department{
 		ID:   d.Id,
 		Name: d.Name,
@@ -145,30 +175,40 @@ func DepartmentToORM(d *pb.Department) *Department {
 
 // JobHistoryToORM maps the proto JobHistory model to the ORM model
 func JobHistoryToORM(j *pb.JobHistory) *JobHistory {
-	startDate, err := ptypes.Timestamp(j.StartDate)
-	if err != nil {
-		startDate = time.Time{}
+	if j == nil {
+		return nil
 	}
 
-	endDate, err := ptypes.Timestamp(j.EndDate)
+	sd, err := ptypes.Timestamp(j.StartDate)
+	startDate := &sd
 	if err != nil {
-		endDate = time.Time{}
+		startDate = (*time.Time)(nil)
 	}
 
-	createdAt, err := ptypes.Timestamp(j.CreatedAt)
+	ed, err := ptypes.Timestamp(j.EndDate)
+	endDate := &ed
 	if err != nil {
-		createdAt = time.Time{}
+		endDate = (*time.Time)(nil)
 	}
 
-	updatedAt, err := ptypes.Timestamp(j.UpdatedAt)
+	ca, err := ptypes.Timestamp(j.CreatedAt)
+	createdAt := &ca
 	if err != nil {
-		updatedAt = time.Time{}
+		createdAt = (*time.Time)(nil)
 	}
 
-	deletedAt, err := ptypes.Timestamp(j.DeletedAt)
+	ua, err := ptypes.Timestamp(j.UpdatedAt)
+	updatedAt := &ua
 	if err != nil {
-		deletedAt = time.Time{}
+		updatedAt = (*time.Time)(nil)
 	}
+
+	da, err := ptypes.Timestamp(j.DeletedAt)
+	deletedAt := &da
+	if err != nil {
+		deletedAt = (*time.Time)(nil)
+	}
+
 	return &JobHistory{
 		ID:             j.Id,
 		CandidateID:    j.CandidateId,
@@ -177,13 +217,13 @@ func JobHistoryToORM(j *pb.JobHistory) *JobHistory {
 		Country:        j.Country,
 		City:           j.City,
 		Title:          j.Title,
-		StartDate:      &startDate,
-		EndDate:        &endDate,
+		StartDate:      startDate,
+		EndDate:        endDate,
 		SalaryCurrency: j.SalaryCurrency,
 		Salary:         j.Salary,
 		Description:    j.Description,
-		CreatedAt:      &createdAt,
-		UpdatedAt:      &updatedAt,
-		DeletedAt:      &deletedAt,
+		CreatedAt:      createdAt,
+		UpdatedAt:      updatedAt,
+		DeletedAt:      deletedAt,
 	}
 }
