@@ -1,20 +1,35 @@
 syntax = "proto3";
 package pb;
 
-option go_package = ".;pb";
+option go_package = "services/profile/pb";
 
 import "google/protobuf/timestamp.proto";
-
-message Empty {}
+import "google/api/annotations.proto";
 
 // ------------ Profile Service ------------
 
 service ProfileService {
-    rpc CreateCandidate(CreateCandidateRequest) returns (Candidate) {};
-    rpc GetAllCandidates(GetAllCandidatesRequest) returns (GetAllCandidatesResponse) {};
-    rpc GetCandidateByID(GetCandidateByIDRequest) returns (Candidate) {};
-    rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {};
-    rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {};
+    rpc CreateCandidate(CreateCandidateRequest) returns (Candidate) {
+        option (google.api.http) = { 
+            post: "/v1/candidates" 
+            body: "candidate"
+        };
+    };
+    rpc GetAllCandidates(GetAllCandidatesRequest) returns (GetAllCandidatesResponse) {
+        option (google.api.http) = { get: "/v1/candidates" };
+    };
+    rpc GetCandidateByID(GetCandidateByIDRequest) returns (Candidate) {
+        option (google.api.http) = { get: "/v1/candidates/{id}" };
+    };
+    rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {
+        option (google.api.http) = { 
+            put: "/v1/candidates/{id}"
+            body: "candidate"
+        };
+    };
+    rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {
+        option (google.api.http) = { get: "/v1/candidates/{id}" };
+    };
 
     rpc CreateSkill(CreateSkillRequest) returns (Skill) {};
     rpc GetSkill(GetSkillRequest) returns (Skill) {};
@@ -53,22 +68,24 @@ message Candidate {
     string last_name = 3;
     string email = 4;
     string contact_number = 5;
-    string gender = 6;
-    string nationality = 7;
-    string residence_city = 8;
-    string expected_salary_currency = 9;
-    uint32 expected_salary = 10;
-    string linked_in_url = 11;
-    string scm_url = 12;
-    string education_level = 13;
-    google.protobuf.Timestamp birthday = 14;
-    uint32 notice_period = 15;
-    repeated Skill skills = 16;
-    repeated AcademicHistory academics = 17;
-    repeated JobHistory jobs = 18;
-    google.protobuf.Timestamp created_at = 19;
-    google.protobuf.Timestamp updated_at = 20;
-    google.protobuf.Timestamp deleted_at = 21;
+    string picture = 6;
+    string gender = 7;
+    string nationality = 8;
+    string residence_city = 9;
+    string expected_salary_currency = 10;
+    uint32 expected_salary = 11;
+    string linked_in_url = 12;
+    string scm_url = 13;
+    string website_url = 14;
+    string education_level = 15;
+    google.protobuf.Timestamp birthday = 16;
+    uint32 notice_period = 17;
+    repeated Skill skills = 18;
+    repeated AcademicHistory academics = 19;
+    repeated JobHistory jobs = 20;
+    google.protobuf.Timestamp created_at = 21;
+    google.protobuf.Timestamp updated_at = 22;
+    google.protobuf.Timestamp deleted_at = 23;
 }
 
 message CreateCandidateRequest {
@@ -89,7 +106,8 @@ message GetCandidateByIDRequest {
 }
 
 message UpdateCandidateRequest {
-    Candidate candidate = 1;
+    uint64 id = 1;
+    Candidate candidate = 2;
 }
 
 message DeleteCandidateRequest {

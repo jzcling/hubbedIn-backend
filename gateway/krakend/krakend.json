@@ -1,0 +1,66 @@
+{
+    "version": 2,
+    "name": "HubbedIn API",
+    "port": 8080,
+    "cache_ttl": "300s",
+    "timeout": "3s",
+    "plugin": {
+        "pattern":".so",
+        "folder": "./"
+    },
+    "extra_config": {
+      "github_com/devopsfaith/krakend-gologging": {
+        "level":  "DEBUG",
+        "prefix": "[KRAKEND]",
+        "syslog": false,
+        "stdout": true
+      },
+      "github_com/devopsfaith/krakend-cors": {
+        "allow_origins": [
+          "*"
+        ],
+        "expose_headers": [
+          "Content-Length"
+        ],
+        "max_age": "12h",
+        "allow_methods": [
+          "GET",
+          "HEAD",
+          "POST",
+          "PUT",
+          "DELETE",
+          "OPTIONS"
+        ],
+        "allow_headers": [
+          "Authorization"
+        ],
+        "allow_credentials": false
+      }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/v1/candidates",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "http://ignore.this" ],
+                    "url_pattern": "/v1/candidates",
+                    "extra_config": {
+                        "github.com/devopsfaith/krakend/transport/http/client/executor": {
+                            "name": "grpc-gateway",
+                            "endpoints": [ "profile-service:50051" ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
