@@ -40,7 +40,14 @@ func main() {
 		Database: cfg.Database.Database,
 	})
 
-	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
+	mc := migrations.NewCollection()
+
+	err = mc.DiscoverSQLMigrations(".")
+	if err != nil {
+		exitf(err.Error())
+	}
+
+	oldVersion, newVersion, err := mc.Run(db, flag.Args()...)
 	if err != nil {
 		exitf(err.Error())
 	}
