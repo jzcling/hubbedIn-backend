@@ -1,8 +1,8 @@
 package profile
 
 import (
-	"in-backend/services/profile/models"
 	"context"
+	"in-backend/services/profile/models"
 )
 
 // Repository declares the repository for candidate profiles

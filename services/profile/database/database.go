@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"in-backend/services/profile/configs"
 	"time"
 
@@ -23,7 +24,7 @@ func NewDatabase(opt *pg.Options) *pg.DB {
 // GetPgConnectionOptions returns pg Options based on config
 func GetPgConnectionOptions(cfg configs.Config) *pg.Options {
 	return &pg.Options{
-		Addr:            cfg.Database.Address,
+		Addr:            fmt.Sprintf("%s:%s", cfg.Database.Address, cfg.Database.Port),
 		User:            cfg.Database.Username,
 		Password:        cfg.Database.Password,
 		Database:        cfg.Database.Database,

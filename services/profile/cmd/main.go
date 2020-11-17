@@ -2,6 +2,12 @@ package main
 
 import (
 	"fmt"
+	"in-backend/services/profile/configs"
+	"in-backend/services/profile/database"
+	"in-backend/services/profile/endpoints"
+	"in-backend/services/profile/pb"
+	"in-backend/services/profile/service"
+	"in-backend/services/profile/transport"
 	"net"
 	"os"
 	"os/signal"
@@ -14,16 +20,10 @@ import (
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-
-	"in-backend/services/profile/configs"
-	"in-backend/services/profile/database"
-	"in-backend/services/profile/endpoints"
-	"in-backend/services/profile/pb"
-	"in-backend/services/profile/service"
-	"in-backend/services/profile/transport"
 )
 
 func main() {
+	// load configs
 	cfg, err := configs.LoadConfig(configs.FileName)
 	if err != nil {
 		println(err.Error())
@@ -93,9 +93,14 @@ func main() {
 	}
 
 	{
-		cancelInterrupt := make(chan struct{})
+		// Set-up our signal handler.
+		var (
+			cancelInterrupt = make(chan struct{})
+			c               = make(chan os.Signal, 1)
+		)
+		defer close(c)
+
 		g.Add(func() error {
-			c := make(chan os.Signal, 1)
 			signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 			select {
 			case sig := <-c:

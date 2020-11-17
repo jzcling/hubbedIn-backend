@@ -2,7 +2,6 @@ package profile
 
 import (
 	"context"
-
 	"in-backend/services/profile/models"
 )
 

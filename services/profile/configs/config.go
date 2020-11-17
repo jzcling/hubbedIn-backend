@@ -29,6 +29,7 @@ type Config struct {
 // DbConfig declares database variables
 type DbConfig struct {
 	Address    string `mapstructure:"database_address"`
+	Port       string `mapstructure:"database_port"`
 	Username   string `mapstructure:"database_username"`
 	Password   string `mapstructure:"database_password"`
 	Database   string `mapstructure:"database_database"`
