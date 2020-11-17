@@ -9,35 +9,54 @@
         "folder": "./"
     },
     "extra_config": {
-      "github_com/devopsfaith/krakend-gologging": {
-        "level":  "DEBUG",
-        "prefix": "[KRAKEND]",
-        "syslog": false,
-        "stdout": true
-      },
-      "github_com/devopsfaith/krakend-cors": {
-        "allow_origins": [
-          "*"
-        ],
-        "expose_headers": [
-          "Content-Length"
-        ],
-        "max_age": "12h",
-        "allow_methods": [
-          "GET",
-          "HEAD",
-          "POST",
-          "PUT",
-          "DELETE",
-          "OPTIONS"
-        ],
-        "allow_headers": [
-          "Authorization"
-        ],
-        "allow_credentials": false
-      }
+        "github_com/devopsfaith/krakend-gologging": {
+            "level":  "DEBUG",
+            "prefix": "[KRAKEND]",
+            "syslog": false,
+            "stdout": true
+        },
+        "github_com/devopsfaith/krakend-cors": {
+            "allow_origins": [
+                "*"
+            ],
+            "expose_headers": [
+                "Content-Length"
+            ],
+            "max_age": "12h",
+            "allow_methods": [
+                "GET",
+                "HEAD",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+            ],
+            "allow_headers": [
+                "Authorization"
+            ],
+            "allow_credentials": false
+        }
     },
     "endpoints": [
+        {
+            "endpoint": "/v1/candidates",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/candidates"
+                }
+            ]
+        },
         {
             "endpoint": "/v1/candidates",
             "method": "GET",
@@ -51,16 +70,513 @@
             },
             "backend": [
                 {
-                    "host": [ "http://ignore.this" ],
-                    "url_pattern": "/v1/candidates",
-                    "extra_config": {
-                        "github.com/devopsfaith/krakend/transport/http/client/executor": {
-                            "name": "grpc-gateway",
-                            "endpoints": [ "profile-service:50051" ]
-                        }
-                    }
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/candidates"
                 }
             ]
-        }
+        },
+        {
+            "endpoint": "/v1/candidates/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/candidates/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/candidates/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/candidates/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/candidates/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/candidates/{id}"
+                }
+            ]
+        },
+
+
+        {
+            "endpoint": "/v1/skills",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/skills"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/skills",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/skills"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/skills/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/skills/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/institutions",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/institutions"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/institutions",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/institutions"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/institutions/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/institutions/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/courses",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/courses"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/courses",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/courses"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/courses/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/courses/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/academichistories",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/academichistories"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/academichistories/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/academichistories/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/academichistories/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/academichistories/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/academichistories/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/academichistories/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/companies",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/companies"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/companies",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/companies"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/companies/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/companies/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/departments",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/departments"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/departments",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/departments"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/departments/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/departments/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/jobhistories",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/jobhistories"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobhistories/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/jobhistories/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobhistories/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/jobhistories/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobhistories/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/jobhistories/{id}"
+                }
+            ]
+        },
     ]
 }

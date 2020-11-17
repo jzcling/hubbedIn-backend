@@ -20,6 +20,10 @@ services:
     restart: always
     env_file:
       - ./services/profile/configs/config.env
+    environment: 
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     healthcheck:
         test: ["CMD-SHELL", "pg_isready -U postgres"]
         interval: 10s
@@ -42,9 +46,21 @@ services:
       - ${GATEWAY_PORT}:${GATEWAY_PORT}
     networks:
       - backend
+  api-gateway:
+    image: devopsfaith/krakend:1.2.0
+    container_name: api-gateway
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./gateway/krakend:/etc/krakend
+    networks: 
+      - backend
+      - frontend
 
 networks:
   backend:
+  frontend:
 
 volumes:
   db-data:
