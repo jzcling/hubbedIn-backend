@@ -23,6 +23,7 @@ type Candidate struct {
 	LastName               string             `json:"last_name" pg:",notnull"`
 	Email                  string             `json:"email" pg:",unique,notnull"`
 	ContactNumber          string             `json:"contact_number" pg:",notnull"`
+	Picture                string             `json:"picture,omitempty"`
 	Gender                 string             `json:"gender,omitempty"`
 	Nationality            string             `json:"nationality,omitempty"`
 	ResidenceCity          string             `json:"residence_city,omitempty"`
@@ -30,6 +31,7 @@ type Candidate struct {
 	ExpectedSalary         uint32             `json:"expected_salary,omitempty"`
 	LinkedInURL            string             `json:"linked_in_url,omitempty"`
 	SCMURL                 string             `json:"scm_url,omitempty" pg:"scm_url"`
+	WebsiteURL             string             `json:"website_url,omitempty" pg:"website_url"`
 	EducationLevel         string             `json:"education_level,omitempty"`
 	Birthday               *time.Time         `json:"birthday,omitempty"`
 	NoticePeriod           uint32             `json:"notice_period,omitempty"`

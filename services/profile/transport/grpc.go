@@ -336,7 +336,7 @@ func (s *grpcServer) UpdateCandidate(ctx context.Context, req *pb.UpdateCandidat
 // decodeUpdateCandidateRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateCandidateRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.UpdateCandidateRequest)
-	return endpoints.UpdateCandidateRequest{Candidate: models.CandidateToORM(req.Candidate)}, nil
+	return endpoints.UpdateCandidateRequest{ID: req.Id, Candidate: models.CandidateToORM(req.Candidate)}, nil
 }
 
 // encodeUpdateCandidateResponse encodes the outgoing go kit payload to the grpc payload

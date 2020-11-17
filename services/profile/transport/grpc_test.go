@@ -245,7 +245,7 @@ func TestUpdateCandidate(t *testing.T) {
 		UpdatedAt: ptypes.TimestampNow(),
 	}
 	svcInOut := models.CandidateToORM(&updated)
-	in := &pb.UpdateCandidateRequest{Candidate: &updated}
+	in := &pb.UpdateCandidateRequest{Id: updated.Id, Candidate: &updated}
 
 	type args struct {
 		ctx      context.Context
@@ -265,7 +265,7 @@ func TestUpdateCandidate(t *testing.T) {
 		exp  expect
 	}{
 		{"id existing", args{ctx, svcInOut, in}, expect{svcInOut, &updated, nil}},
-		{"id 10000", args{ctx, &models.Candidate{ID: 10000}, &pb.UpdateCandidateRequest{Candidate: &pb.Candidate{Id: 10000}}}, expect{nil, nil, errors.New("Cannot update candidate with id")}},
+		{"id 10000", args{ctx, &models.Candidate{ID: 10000}, &pb.UpdateCandidateRequest{Id: 10000, Candidate: &pb.Candidate{Id: 10000}}}, expect{nil, nil, errors.New("Cannot update candidate with id")}},
 	}
 
 	for _, tt := range tests {

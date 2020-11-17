@@ -208,7 +208,10 @@ func TestUpdateCandidate(t *testing.T) {
 		UpdatedAt: &now,
 	}
 	svcInOut := &updated
-	in := &UpdateCandidateRequest{Candidate: &updated}
+	in := &UpdateCandidateRequest{
+		ID:        updated.ID,
+		Candidate: &updated,
+	}
 
 	type args struct {
 		ctx      context.Context
@@ -228,7 +231,7 @@ func TestUpdateCandidate(t *testing.T) {
 		exp  expect
 	}{
 		{"id existing", args{ctx, svcInOut, in}, expect{svcInOut, &updated, nil}},
-		{"id 10000", args{ctx, &models.Candidate{ID: 10000}, &UpdateCandidateRequest{Candidate: &models.Candidate{ID: 10000}}}, expect{nil, nil, errors.New("Cannot update candidate with id")}},
+		{"id 10000", args{ctx, &models.Candidate{ID: 10000}, &UpdateCandidateRequest{ID: 10000, Candidate: &models.Candidate{ID: 10000}}}, expect{nil, nil, errors.New("Cannot update candidate with id")}},
 	}
 
 	for _, tt := range tests {

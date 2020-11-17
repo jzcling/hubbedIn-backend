@@ -19,6 +19,7 @@ func TestCandidateToORM(t *testing.T) {
 		LastName:               "last",
 		Email:                  "email",
 		ContactNumber:          "contact",
+		Picture:                "picture",
 		Gender:                 "male",
 		Nationality:            "singapore",
 		ResidenceCity:          "singapore",
@@ -26,21 +27,22 @@ func TestCandidateToORM(t *testing.T) {
 		ExpectedSalary:         1000,
 		LinkedInUrl:            "linkedin",
 		ScmUrl:                 "github",
+		WebsiteUrl:             "website",
 		EducationLevel:         "bachelor",
 		Birthday:               testPbTime,
 		NoticePeriod:           1,
 		Skills: []*pb.Skill{
-			&pb.Skill{
+			{
 				Id:   1,
 				Name: "java",
 			},
-			&pb.Skill{
+			{
 				Id:   2,
 				Name: "javascript",
 			},
 		},
 		Academics: []*pb.AcademicHistory{
-			&pb.AcademicHistory{
+			{
 				Id:            1,
 				CandidateId:   1,
 				InstitutionId: 1,
@@ -50,7 +52,7 @@ func TestCandidateToORM(t *testing.T) {
 				UpdatedAt:     testPbTime,
 				DeletedAt:     testPbTime,
 			},
-			&pb.AcademicHistory{
+			{
 				Id:            2,
 				CandidateId:   1,
 				InstitutionId: 1,
@@ -62,7 +64,7 @@ func TestCandidateToORM(t *testing.T) {
 			},
 		},
 		Jobs: []*pb.JobHistory{
-			&pb.JobHistory{
+			{
 				Id:             1,
 				CandidateId:    1,
 				CompanyId:      1,
@@ -79,7 +81,7 @@ func TestCandidateToORM(t *testing.T) {
 				UpdatedAt:      testPbTime,
 				DeletedAt:      testPbTime,
 			},
-			&pb.JobHistory{
+			{
 				Id:             2,
 				CandidateId:    1,
 				CompanyId:      1,
@@ -119,17 +121,17 @@ func TestCandidateToORM(t *testing.T) {
 		Birthday:               &testTime,
 		NoticePeriod:           1,
 		Skills: []*Skill{
-			&Skill{
+			{
 				ID:   1,
 				Name: "java",
 			},
-			&Skill{
+			{
 				ID:   2,
 				Name: "javascript",
 			},
 		},
 		Academics: []*AcademicHistory{
-			&AcademicHistory{
+			{
 				ID:            1,
 				CandidateID:   1,
 				InstitutionID: 1,
@@ -139,7 +141,7 @@ func TestCandidateToORM(t *testing.T) {
 				UpdatedAt:     &testTime,
 				DeletedAt:     &testTime,
 			},
-			&AcademicHistory{
+			{
 				ID:            2,
 				CandidateID:   1,
 				InstitutionID: 1,
@@ -151,7 +153,7 @@ func TestCandidateToORM(t *testing.T) {
 			},
 		},
 		Jobs: []*JobHistory{
-			&JobHistory{
+			{
 				ID:             1,
 				CandidateID:    1,
 				CompanyID:      1,
@@ -168,7 +170,7 @@ func TestCandidateToORM(t *testing.T) {
 				UpdatedAt:      &testTime,
 				DeletedAt:      &testTime,
 			},
-			&JobHistory{
+			{
 				ID:             2,
 				CandidateID:    1,
 				CompanyID:      1,

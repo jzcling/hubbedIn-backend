@@ -15,6 +15,7 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.LastName != c2.LastName ||
 		c1.Email != c2.Email ||
 		c1.ContactNumber != c2.ContactNumber ||
+		c1.Picture != c2.Picture ||
 		c1.Gender != c2.Gender ||
 		c1.Nationality != c2.Nationality ||
 		c1.ResidenceCity != c2.ResidenceCity ||
@@ -22,6 +23,7 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.ExpectedSalary != c2.ExpectedSalary ||
 		c1.LinkedInUrl != c2.LinkedInUrl ||
 		c1.ScmUrl != c2.ScmUrl ||
+		c1.WebsiteUrl != c2.WebsiteUrl ||
 		c1.EducationLevel != c2.EducationLevel ||
 		c1.Birthday.AsTime() != c2.Birthday.AsTime() ||
 		c1.NoticePeriod != c2.NoticePeriod ||

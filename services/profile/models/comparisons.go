@@ -16,12 +16,14 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.Email != c2.Email ||
 		c1.ContactNumber != c2.ContactNumber ||
 		c1.Gender != c2.Gender ||
+		c1.Picture != c2.Picture ||
 		c1.Nationality != c2.Nationality ||
 		c1.ResidenceCity != c2.ResidenceCity ||
 		c1.ExpectedSalaryCurrency != c2.ExpectedSalaryCurrency ||
 		c1.ExpectedSalary != c2.ExpectedSalary ||
 		c1.LinkedInURL != c2.LinkedInURL ||
 		c1.SCMURL != c2.SCMURL ||
+		c1.WebsiteURL != c2.WebsiteURL ||
 		c1.EducationLevel != c2.EducationLevel ||
 		c1.Birthday != c2.Birthday ||
 		c1.NoticePeriod != c2.NoticePeriod ||

@@ -158,6 +158,7 @@ func makeUpdateCandidateEndpoint(s profile.Service) endpoint.Endpoint {
 
 // UpdateCandidateRequest declares the inputs required for updating a candidate
 type UpdateCandidateRequest struct {
+	ID        uint64
 	Candidate *models.Candidate
 }
 
