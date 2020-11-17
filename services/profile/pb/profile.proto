@@ -28,38 +28,111 @@ service ProfileService {
         };
     };
     rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {
-        option (google.api.http) = { get: "/v1/candidates/{id}" };
+        option (google.api.http) = { delete: "/v1/candidates/{id}" };
     };
 
-    rpc CreateSkill(CreateSkillRequest) returns (Skill) {};
-    rpc GetSkill(GetSkillRequest) returns (Skill) {};
-    rpc GetAllSkills(GetAllSkillsRequest) returns (GetAllSkillsResponse) {};
+    rpc CreateSkill(CreateSkillRequest) returns (Skill) {
+        option (google.api.http) = { 
+            post: "/v1/skills" 
+            body: "skill"
+        };
+    };
+    rpc GetSkill(GetSkillRequest) returns (Skill) {
+        option (google.api.http) = { get: "/v1/skills/{id}" };
+    };
+    rpc GetAllSkills(GetAllSkillsRequest) returns (GetAllSkillsResponse) {
+        option (google.api.http) = { get: "/v1/skills" };
+    };
 
-    rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {};
-    rpc GetInstitution(GetInstitutionRequest) returns (Institution) {};
-    rpc GetAllInstitutions(GetAllInstitutionsRequest) returns (GetAllInstitutionsResponse) {};
+    rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {
+        option (google.api.http) = { 
+            post: "/v1/institutions" 
+            body: "institution"
+        };
+    };
+    rpc GetInstitution(GetInstitutionRequest) returns (Institution) {
+        option (google.api.http) = { get: "/v1/institutions/{id}" };
+    };
+    rpc GetAllInstitutions(GetAllInstitutionsRequest) returns (GetAllInstitutionsResponse) {
+        option (google.api.http) = { get: "/v1/institutions" };
+    };
 
-    rpc CreateCourse(CreateCourseRequest) returns (Course) {};
-    rpc GetCourse(GetCourseRequest) returns (Course) {};
-    rpc GetAllCourses(GetAllCoursesRequest) returns (GetAllCoursesResponse) {};
+    rpc CreateCourse(CreateCourseRequest) returns (Course) {
+        option (google.api.http) = { 
+            post: "/v1/courses" 
+            body: "course"
+        };
+    };
+    rpc GetCourse(GetCourseRequest) returns (Course) {
+        option (google.api.http) = { get: "/v1/courses/{id}" };
+    };
+    rpc GetAllCourses(GetAllCoursesRequest) returns (GetAllCoursesResponse) {
+        option (google.api.http) = { get: "/v1/courses/{id}" };
+    };
 
-    rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {};
-    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {};
+    rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {
+        option (google.api.http) = { 
+            post: "/v1/academichistories"
+            body: "academic_history" 
+        };
+    };
+    rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {
+        option (google.api.http) = { get: "/v1/academichistories/{id}" };
+    };
+    rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {
+        option (google.api.http) = { 
+            put: "/v1/academichistories/{id}" 
+            body: "academic_history"
+        };
+    };
+    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {
+        option (google.api.http) = { delete: "/v1/candidates/{id}" };
+    };
 
-    rpc CreateCompany(CreateCompanyRequest) returns (Company) {};
-    rpc GetCompany(GetCompanyRequest) returns (Company) {};
-    rpc GetAllCompanies(GetAllCompaniesRequest) returns (GetAllCompaniesResponse) {};
+    rpc CreateCompany(CreateCompanyRequest) returns (Company) {
+        option (google.api.http) = { 
+            post: "/v1/companies"
+            body: "company" 
+        };
+    };
+    rpc GetCompany(GetCompanyRequest) returns (Company) {
+        option (google.api.http) = { get: "/v1/companies/{id}" };
+    };
+    rpc GetAllCompanies(GetAllCompaniesRequest) returns (GetAllCompaniesResponse) {
+        option (google.api.http) = { get: "/v1/companies" };
+    };
 
-    rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {};
-    rpc GetDepartment(GetDepartmentRequest) returns (Department) {};
-    rpc GetAllDepartments(GetAllDepartmentsRequest) returns (GetAllDepartmentsResponse) {};
+    rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {
+        option (google.api.http) = { 
+            post: "/v1/departments"
+            body: "department" 
+        };
+    };
+    rpc GetDepartment(GetDepartmentRequest) returns (Department) {
+        option (google.api.http) = { get: "/v1/departments/{id}" };
+    };
+    rpc GetAllDepartments(GetAllDepartmentsRequest) returns (GetAllDepartmentsResponse) {
+        option (google.api.http) = { get: "/v1/departments" };
+    };
 
-    rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {};
-    rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {};
-    rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {};
-    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {};
+    rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {
+        option (google.api.http) = { 
+            post: "/v1/jobhistories"
+            body: "job_history" 
+        };
+    };
+    rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {
+        option (google.api.http) = { get: "/v1/jobhistories/{id}" };
+    };
+    rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {
+        option (google.api.http) = { 
+            put: "/v1/jobhistories/{id}" 
+            body: "job_history"
+        };
+    };
+    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {
+        option (google.api.http) = { delete: "/v1/jobhistories/{id}" };
+    };
 } 
 
 message Candidate {
@@ -217,7 +290,8 @@ message GetAcademicHistoryRequest {
 }
 
 message UpdateAcademicHistoryRequest {
-    AcademicHistory academic_history = 1;
+    uint64 id = 1;
+    AcademicHistory academic_history = 2;
 }
 
 message DeleteAcademicHistoryRequest {
@@ -303,7 +377,8 @@ message GetJobHistoryRequest {
 }
 
 message UpdateJobHistoryRequest {
-    JobHistory job_history = 1;
+    uint64 id = 1;
+    JobHistory job_history = 2;
 }
 
 message DeleteJobHistoryRequest {

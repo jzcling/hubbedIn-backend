@@ -34,7 +34,7 @@ func main() {
 	}
 
 	db := pg.Connect(&pg.Options{
-		Addr:     cfg.Database.Address,
+		Addr:     fmt.Sprintf("%s:%s", cfg.Database.Address, cfg.Database.Port),
 		User:     cfg.Database.Username,
 		Password: cfg.Database.Password,
 		Database: cfg.Database.Database,

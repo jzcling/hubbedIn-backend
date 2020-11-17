@@ -39,7 +39,7 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	srvAddr := fmt.Sprintf(":%d", cfg.Server.Port)
+	srvAddr := fmt.Sprintf(":%s", cfg.Server.Port)
 	s := &http.Server{
 		Addr:    srvAddr,
 		Handler: mux,

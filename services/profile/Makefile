@@ -10,7 +10,7 @@ $(PROTOC_GEN_GO):
 profile.pb.go: pb/profile.proto | $(PROTOC_GEN_GO)
 	protoc -I pb -I $(GOPATH)/src/ --go_out plugins=grpc:../../ pb/profile.proto
 	protoc -I pb -I $(GOPATH)/src/ --grpc-gateway_out ../../ --grpc-gateway_opt logtostderr=true pb/profile.proto
-	protoc -I pb -I $(GOPATH)/src/ --openapiv2_out ../../ --openapiv2_opt logtostderr=true pb/profile.proto
+	protoc -I pb -I $(GOPATH)/src/ --openapiv2_out ./pb/ --openapiv2_opt logtostderr=true pb/profile.proto
 
 proto: profile.pb.go
 
