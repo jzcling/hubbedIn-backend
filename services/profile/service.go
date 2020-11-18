@@ -5,7 +5,7 @@ import (
 	"in-backend/services/profile/models"
 )
 
-// Service describes the Profile Service.
+// Service describes the Profile Service
 type Service interface {
 	/* --------------- Candidate --------------- */
 
@@ -34,6 +34,14 @@ type Service interface {
 
 	// GetAllSkills returns all Skills
 	GetAllSkills(ctx context.Context) ([]*models.Skill, error)
+
+	/* --------------- User Skill --------------- */
+
+	// CreateUserSkill creates a new UserSkill
+	CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error)
+
+	// DeleteUserSkill deletes a UserSkill by ID
+	DeleteUserSkill(ctx context.Context, id uint64) error
 
 	/* --------------- Institution --------------- */
 

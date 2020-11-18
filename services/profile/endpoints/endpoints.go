@@ -21,6 +21,9 @@ type Endpoints struct {
 	GetSkill     endpoint.Endpoint
 	GetAllSkills endpoint.Endpoint
 
+	CreateUserSkill endpoint.Endpoint
+	DeleteUserSkill endpoint.Endpoint
+
 	CreateInstitution  endpoint.Endpoint
 	GetInstitution     endpoint.Endpoint
 	GetAllInstitutions endpoint.Endpoint
@@ -60,6 +63,9 @@ func MakeEndpoints(s profile.Service) Endpoints {
 		CreateSkill:  makeCreateSkillEndpoint(s),
 		GetSkill:     makeGetSkillEndpoint(s),
 		GetAllSkills: makeGetAllSkillsEndpoint(s),
+
+		CreateUserSkill: makeCreateUserSkillEndpoint(s),
+		DeleteUserSkill: makeDeleteUserSkillEndpoint(s),
 
 		CreateInstitution:  makeCreateInstitutionEndpoint(s),
 		GetInstitution:     makeGetInstitutionEndpoint(s),
@@ -242,6 +248,45 @@ type GetAllSkillsRequest struct {
 type GetAllSkillsResponse struct {
 	Skills []*models.Skill
 	Err    error
+}
+
+/* -------------- User Skill -------------- */
+
+func makeCreateUserSkillEndpoint(s profile.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(CreateUserSkillRequest)
+		us, err := s.CreateUserSkill(ctx, req.UserSkill)
+		return CreateUserSkillResponse{UserSkill: us, Err: err}, nil
+	}
+}
+
+// CreateUserSkillRequest declares the inputs required for creating a UserSkill
+type CreateUserSkillRequest struct {
+	UserSkill *models.UserSkill
+}
+
+// CreateUserSkillResponse declares the outputs after attempting to create a UserSkill
+type CreateUserSkillResponse struct {
+	UserSkill *models.UserSkill
+	Err       error
+}
+
+func makeDeleteUserSkillEndpoint(s profile.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteUserSkillRequest)
+		err := s.DeleteUserSkill(ctx, req.ID)
+		return DeleteUserSkillResponse{Err: err}, nil
+	}
+}
+
+// DeleteUserSkillRequest declares the inputs required for deleting a UserSkill
+type DeleteUserSkillRequest struct {
+	ID uint64
+}
+
+// DeleteUserSkillResponse declares the outputs after attempting to delete a UserSkill
+type DeleteUserSkillResponse struct {
+	Err error
 }
 
 /* -------------- Institution -------------- */

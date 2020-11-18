@@ -53,6 +53,27 @@ func (s1 *Skill) IsEqual(s2 *Skill) bool {
 	return true
 }
 
+// IsEqual checks the equivalence of two UserSkill objects
+func (us1 *UserSkill) IsEqual(us2 *UserSkill) bool {
+	if us1 == nil && us2 == nil {
+		return true
+	}
+
+	if (us1 == nil && us2 != nil) ||
+		(us1 != nil && us2 == nil) {
+		return false
+	}
+
+	if us1.CandidateID != us2.CandidateID ||
+		us1.SkillID != us2.SkillID ||
+		us1.CreatedAt != us2.CreatedAt ||
+		us1.UpdatedAt != us2.UpdatedAt ||
+		us1.DeletedAt != us2.DeletedAt {
+		return false
+	}
+	return true
+}
+
 // IsEqual checks the equivalence of two Institution objects
 func (i1 *Institution) IsEqual(i2 *Institution) bool {
 	if i1 == nil && i2 == nil {

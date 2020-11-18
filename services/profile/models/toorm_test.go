@@ -15,6 +15,7 @@ func TestCandidateToORM(t *testing.T) {
 
 	input := &pb.Candidate{
 		Id:                     1,
+		AuthId:                 "authId",
 		FirstName:              "first",
 		LastName:               "last",
 		Email:                  "email",
@@ -210,6 +211,33 @@ func TestSkillToORM(t *testing.T) {
 	}
 
 	got := SkillToORM(input)
+	require.EqualValues(t, expect, got)
+}
+
+func TestUserkillToORM(t *testing.T) {
+	testPbTime := ptypes.TimestampNow()
+	testTime, err := ptypes.Timestamp(testPbTime)
+	require.NoError(t, err)
+
+	input := &pb.UserSkill{
+		Id:          1,
+		CandidateId: 1,
+		SkillId:     1,
+		CreatedAt:   testPbTime,
+		UpdatedAt:   testPbTime,
+		DeletedAt:   testPbTime,
+	}
+
+	expect := &UserSkill{
+		ID:          1,
+		CandidateID: 1,
+		SkillID:     1,
+		CreatedAt:   &testTime,
+		UpdatedAt:   &testTime,
+		DeletedAt:   &testTime,
+	}
+
+	got := UserSkillToORM(input)
 	require.EqualValues(t, expect, got)
 }
 

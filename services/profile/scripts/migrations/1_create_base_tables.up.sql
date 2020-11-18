@@ -1,5 +1,6 @@
 create table if not exists candidates (
     id bigserial not null primary key,
+    auth_id text not null unique,
     first_name text not null,
     last_name text not null,
     email text not null unique,

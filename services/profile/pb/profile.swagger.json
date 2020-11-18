@@ -848,6 +848,9 @@
           "type": "string",
           "format": "uint64"
         },
+        "authId": {
+          "type": "string"
+        },
         "firstName": {
           "type": "string"
         },

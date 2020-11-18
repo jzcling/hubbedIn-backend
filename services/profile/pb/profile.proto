@@ -137,29 +137,30 @@ service ProfileService {
 
 message Candidate {
     uint64 id = 1;
-    string first_name = 2;
-    string last_name = 3;
-    string email = 4;
-    string contact_number = 5;
-    string picture = 6;
-    string gender = 7;
-    string nationality = 8;
-    string residence_city = 9;
-    string expected_salary_currency = 10;
-    uint32 expected_salary = 11;
-    string linked_in_url = 12;
-    string scm_url = 13;
-    string website_url = 14;
-    string education_level = 15;
-    string summary = 16;
-    google.protobuf.Timestamp birthday = 17;
-    uint32 notice_period = 18;
-    repeated Skill skills = 19;
-    repeated AcademicHistory academics = 20;
-    repeated JobHistory jobs = 21;
-    google.protobuf.Timestamp created_at = 22;
-    google.protobuf.Timestamp updated_at = 23;
-    google.protobuf.Timestamp deleted_at = 24;
+    string auth_id = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string email = 5;
+    string contact_number = 6;
+    string picture = 7;
+    string gender = 8;
+    string nationality = 9;
+    string residence_city = 10;
+    string expected_salary_currency = 11;
+    uint32 expected_salary = 12;
+    string linked_in_url = 13;
+    string scm_url = 14;
+    string website_url = 15;
+    string education_level = 16;
+    string summary = 17;
+    google.protobuf.Timestamp birthday = 18;
+    uint32 notice_period = 19;
+    repeated Skill skills = 20;
+    repeated AcademicHistory academics = 21;
+    repeated JobHistory jobs = 22;
+    google.protobuf.Timestamp created_at = 23;
+    google.protobuf.Timestamp updated_at = 24;
+    google.protobuf.Timestamp deleted_at = 25;
 }
 
 message CreateCandidateRequest {

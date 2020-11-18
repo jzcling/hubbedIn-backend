@@ -35,6 +35,14 @@ type Repository interface {
 	// GetAllSkills returns all Skills
 	GetAllSkills(ctx context.Context) ([]*models.Skill, error)
 
+	/* --------------- User Skill --------------- */
+
+	// CreateUserSkill creates a new UserSkill
+	CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error)
+
+	// DeleteUserSkill deletes a UserSkill by ID
+	DeleteUserSkill(ctx context.Context, id uint64) error
+
 	/* --------------- Institution --------------- */
 
 	// CreateInstitution creates a new Institution

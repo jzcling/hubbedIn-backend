@@ -47,7 +47,7 @@ services:
     networks:
       - backend
   api-gateway:
-    image: devopsfaith/krakend:1.2.0
+    image: devopsfaith/krakend:config-watcher
     container_name: api-gateway
     restart: always
     ports:

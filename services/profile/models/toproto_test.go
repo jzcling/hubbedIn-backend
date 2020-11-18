@@ -15,6 +15,7 @@ func TestCandidateToProto(t *testing.T) {
 
 	input := &Candidate{
 		ID:                     1,
+		AuthID:                 "authId",
 		FirstName:              "first",
 		LastName:               "last",
 		Email:                  "email",
@@ -33,17 +34,17 @@ func TestCandidateToProto(t *testing.T) {
 		Birthday:               &testTime,
 		NoticePeriod:           1,
 		Skills: []*Skill{
-			&Skill{
+			{
 				ID:   1,
 				Name: "java",
 			},
-			&Skill{
+			{
 				ID:   2,
 				Name: "javascript",
 			},
 		},
 		Academics: []*AcademicHistory{
-			&AcademicHistory{
+			{
 				ID:            1,
 				CandidateID:   1,
 				InstitutionID: 1,
@@ -53,7 +54,7 @@ func TestCandidateToProto(t *testing.T) {
 				UpdatedAt:     &testTime,
 				DeletedAt:     &testTime,
 			},
-			&AcademicHistory{
+			{
 				ID:            2,
 				CandidateID:   1,
 				InstitutionID: 1,
@@ -65,7 +66,7 @@ func TestCandidateToProto(t *testing.T) {
 			},
 		},
 		Jobs: []*JobHistory{
-			&JobHistory{
+			{
 				ID:             1,
 				CandidateID:    1,
 				CompanyID:      1,
@@ -82,7 +83,7 @@ func TestCandidateToProto(t *testing.T) {
 				UpdatedAt:      &testTime,
 				DeletedAt:      &testTime,
 			},
-			&JobHistory{
+			{
 				ID:             2,
 				CandidateID:    1,
 				CompanyID:      1,
@@ -122,17 +123,17 @@ func TestCandidateToProto(t *testing.T) {
 		Birthday:               testPbTime,
 		NoticePeriod:           1,
 		Skills: []*pb.Skill{
-			&pb.Skill{
+			{
 				Id:   1,
 				Name: "java",
 			},
-			&pb.Skill{
+			{
 				Id:   2,
 				Name: "javascript",
 			},
 		},
 		Academics: []*pb.AcademicHistory{
-			&pb.AcademicHistory{
+			{
 				Id:            1,
 				CandidateId:   1,
 				InstitutionId: 1,
@@ -142,7 +143,7 @@ func TestCandidateToProto(t *testing.T) {
 				UpdatedAt:     testPbTime,
 				DeletedAt:     testPbTime,
 			},
-			&pb.AcademicHistory{
+			{
 				Id:            2,
 				CandidateId:   1,
 				InstitutionId: 1,
@@ -154,7 +155,7 @@ func TestCandidateToProto(t *testing.T) {
 			},
 		},
 		Jobs: []*pb.JobHistory{
-			&pb.JobHistory{
+			{
 				Id:             1,
 				CandidateId:    1,
 				CompanyId:      1,
@@ -171,7 +172,7 @@ func TestCandidateToProto(t *testing.T) {
 				UpdatedAt:      testPbTime,
 				DeletedAt:      testPbTime,
 			},
-			&pb.JobHistory{
+			{
 				Id:             2,
 				CandidateId:    1,
 				CompanyId:      1,
@@ -207,6 +208,33 @@ func TestSkillToProto(t *testing.T) {
 	expect := &pb.Skill{
 		Id:   1,
 		Name: "skill",
+	}
+
+	got := input.ToProto()
+	require.EqualValues(t, expect, got)
+}
+
+func TestUserSkillToProto(t *testing.T) {
+	testPbTime := ptypes.TimestampNow()
+	testTime, err := ptypes.Timestamp(testPbTime)
+	require.NoError(t, err)
+
+	input := &UserSkill{
+		ID:          1,
+		CandidateID: 1,
+		SkillID:     1,
+		CreatedAt:   &testTime,
+		UpdatedAt:   &testTime,
+		DeletedAt:   &testTime,
+	}
+
+	expect := &pb.UserSkill{
+		Id:          1,
+		CandidateId: 1,
+		SkillId:     1,
+		CreatedAt:   testPbTime,
+		UpdatedAt:   testPbTime,
+		DeletedAt:   testPbTime,
 	}
 
 	got := input.ToProto()

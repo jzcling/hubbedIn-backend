@@ -18,9 +18,10 @@ import (
 )
 
 var (
-	r *mocks.Repository = &mocks.Repository{}
-	w io.Writer         = log.NewSyncWriter(os.Stderr)
-	l log.Logger        = log.NewLogfmtLogger(w)
+	r *mocks.Repository    = &mocks.Repository{}
+	w io.Writer            = log.NewSyncWriter(os.Stderr)
+	l log.Logger           = log.NewLogfmtLogger(w)
+	a *mocks.Auth0Provider = &mocks.Auth0Provider{}
 
 	ctx context.Context = context.Background()
 	now time.Time       = time.Now()
@@ -30,15 +31,16 @@ func TestNew(t *testing.T) {
 	expect := &service{
 		repository: r,
 		logger:     l,
+		auth0:      a,
 	}
 
-	got := New(r, l)
+	got := New(r, l, a)
 
 	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	s := New(r, l)
+	s := New(r, l, a)
 
 	testCreateCandidate(t, s)
 	testGetAllCandidates(t, s)
@@ -49,6 +51,9 @@ func TestAllCRUD(t *testing.T) {
 	testCreateSkill(t, s)
 	testGetAllSkills(t, s)
 	testGetSkill(t, s)
+
+	testCreateUserSkill(t, s)
+	testDeleteUserSkill(t, s)
 
 	testCreateInstitution(t, s)
 	testGetAllInstitutions(t, s)
@@ -396,6 +401,85 @@ func testGetSkill(t *testing.T, s profile.Service) {
 			} else {
 				assert.Equal(t, tt.exp.output, got)
 			}
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+/* --------------- User Skill --------------- */
+
+func testCreateUserSkill(t *testing.T, s profile.Service) {
+	testNoCID := &models.UserSkill{
+		CandidateID: 1,
+	}
+
+	test := &models.UserSkill{
+		CandidateID: 1,
+		SkillID:     1,
+	}
+
+	type args struct {
+		ctx   context.Context
+		input *models.UserSkill
+	}
+
+	type expect struct {
+		output *models.UserSkill
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"failed not null", args{ctx, testNoCID}, expect{nil, errors.New("Failed to insert user skill")}},
+		{"valid", args{ctx, test}, expect{test, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r.On("CreateUserSkill", tt.args.ctx, tt.args.input).Return(tt.exp.output, tt.exp.err)
+
+			got, err := s.CreateUserSkill(tt.args.ctx, tt.args.input)
+			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testDeleteUserSkill(t *testing.T, s profile.Service) {
+	type args struct {
+		ctx context.Context
+		id  uint64
+	}
+
+	type expect struct {
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"id existing", args{ctx, 1}, expect{nil}},
+		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r.On("DeleteUserSkill", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+
+			err := s.DeleteUserSkill(tt.args.ctx, tt.args.id)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

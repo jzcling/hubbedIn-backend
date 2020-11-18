@@ -20,7 +20,8 @@
                 "*"
             ],
             "expose_headers": [
-                "Content-Length"
+                "Content-Length",
+                "Content-Type"
             ],
             "max_age": "12h",
             "allow_methods": [
@@ -32,7 +33,8 @@
                 "OPTIONS"
             ],
             "allow_headers": [
-                "Authorization"
+                "Authorization", 
+                "Content-Type"
             ],
             "allow_credentials": false
         }

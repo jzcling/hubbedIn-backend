@@ -57,6 +57,7 @@ func CandidateToORM(c *pb.Candidate) *Candidate {
 
 	return &Candidate{
 		ID:                     c.Id,
+		AuthID:                 c.AuthId,
 		FirstName:              c.FirstName,
 		LastName:               c.LastName,
 		Email:                  c.Email,
@@ -91,6 +92,40 @@ func SkillToORM(s *pb.Skill) *Skill {
 	return &Skill{
 		ID:   s.Id,
 		Name: s.Name,
+	}
+}
+
+// UserSkillToORM maps the proto Skill model to the ORM model
+func UserSkillToORM(us *pb.UserSkill) *UserSkill {
+	if us == nil {
+		return nil
+	}
+
+	ca, err := ptypes.Timestamp(us.CreatedAt)
+	createdAt := &ca
+	if err != nil {
+		createdAt = (*time.Time)(nil)
+	}
+
+	ua, err := ptypes.Timestamp(us.UpdatedAt)
+	updatedAt := &ua
+	if err != nil {
+		updatedAt = (*time.Time)(nil)
+	}
+
+	da, err := ptypes.Timestamp(us.DeletedAt)
+	deletedAt := &da
+	if err != nil {
+		deletedAt = (*time.Time)(nil)
+	}
+
+	return &UserSkill{
+		ID:          us.Id,
+		CandidateID: us.CandidateId,
+		SkillID:     us.SkillId,
+		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
+		DeletedAt:   deletedAt,
 	}
 }
 

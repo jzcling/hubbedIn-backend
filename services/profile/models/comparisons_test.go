@@ -114,6 +114,53 @@ func TestSkillIsEqual(t *testing.T) {
 	}
 }
 
+func TestUserSkillIsEqual(t *testing.T) {
+	timeAt := time.Date(2020, 11, 10, 13, 0, 0, 0, time.Local)
+	m1 := (*UserSkill)(nil)
+	m2 := &UserSkill{
+		CandidateID: 1,
+		SkillID:     2,
+		CreatedAt:   &timeAt,
+		UpdatedAt:   &timeAt,
+		DeletedAt:   &timeAt,
+	}
+
+	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
+	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
+
+	m3 := *m2
+	values := reflect.ValueOf(&m3).Elem()
+	for i := 0; i < values.NumField(); i++ {
+		v := values.Field(i)
+		if v.CanSet() {
+			changed := false
+			switch v.Interface().(type) {
+			case string:
+				v.SetString("string")
+				changed = true
+			case uint64, uint32:
+				v.SetUint(999)
+				changed = true
+			case *time.Time:
+				now := time.Now()
+				v.Set(reflect.ValueOf(&now))
+				changed = true
+			}
+
+			fieldName := values.Type().Field(i).Name
+			if fieldName != "ID" && changed {
+				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
+			}
+
+			if fieldName == "ID" {
+				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
+			}
+
+			m3 = *m2
+		}
+	}
+}
+
 func TestInstitutionIsEqual(t *testing.T) {
 	m1 := (*Institution)(nil)
 	m2 := &Institution{

@@ -54,6 +54,9 @@ func TestAllCRUD(t *testing.T) {
 	testGetAllSkills(t, r, db)
 	testGetSkill(t, r, db)
 
+	testCreateUserSkill(t, r, db)
+	testDeleteUserSkill(t, r, db)
+
 	testCreateInstitution(t, r, db)
 	testGetAllInstitutions(t, r, db)
 	testGetInstitution(t, r, db)
@@ -403,6 +406,85 @@ func testGetSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 			} else {
 				assert.Equal(t, tt.exp.output, got)
 			}
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+/* --------------- User Skill --------------- */
+
+func testCreateUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+	testNoCID := &models.UserSkill{
+		SkillID: 1,
+	}
+
+	test := &models.UserSkill{
+		CandidateID: 1,
+		SkillID:     1,
+	}
+
+	type args struct {
+		ctx   context.Context
+		input *models.UserSkill
+	}
+
+	type expect struct {
+		output *models.UserSkill
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter user skill is nil")}},
+		{"failed no foreign key", args{ctx, testNoCID}, expect{nil, errors.New("Failed to insert user skill")}},
+		{"valid", args{ctx, test}, expect{test, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := r.CreateUserSkill(tt.args.ctx, tt.args.input)
+			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testDeleteUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+	existing := &models.UserSkill{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		id  uint64
+	}
+
+	type expect struct {
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"id existing", args{ctx, existing.ID}, expect{nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := r.DeleteUserSkill(tt.args.ctx, tt.args.id)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

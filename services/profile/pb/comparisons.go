@@ -25,6 +25,7 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.ScmUrl != c2.ScmUrl ||
 		c1.WebsiteUrl != c2.WebsiteUrl ||
 		c1.EducationLevel != c2.EducationLevel ||
+		c1.Summary != c2.Summary ||
 		c1.Birthday.AsTime() != c2.Birthday.AsTime() ||
 		c1.NoticePeriod != c2.NoticePeriod ||
 		c1.CreatedAt.AsTime() != c2.CreatedAt.AsTime() ||
@@ -47,6 +48,27 @@ func (s1 *Skill) IsEqual(s2 *Skill) bool {
 	}
 
 	if s1.Name != s2.Name {
+		return false
+	}
+	return true
+}
+
+// IsEqual checks the equivalence of two UserSkill objects
+func (us1 *UserSkill) IsEqual(us2 *UserSkill) bool {
+	if us1 == nil && us2 == nil {
+		return true
+	}
+
+	if (us1 == nil && us2 != nil) ||
+		(us1 != nil && us2 == nil) {
+		return false
+	}
+
+	if us1.CandidateId != us2.CandidateId ||
+		us1.SkillId != us2.SkillId ||
+		us1.CreatedAt != us2.CreatedAt ||
+		us1.UpdatedAt != us2.UpdatedAt ||
+		us1.DeletedAt != us2.DeletedAt {
 		return false
 	}
 	return true

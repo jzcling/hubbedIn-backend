@@ -115,6 +115,32 @@ func (r *repository) GetAllSkills(ctx context.Context) ([]*models.Skill, error) 
 	return s, err
 }
 
+/* --------------- User Skill --------------- */
+
+// CreateUserSkill creates a new UserSkill
+func (r *repository) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error) {
+	if us == nil {
+		return nil, errors.New("Input parameter user skill is nil")
+	}
+
+	_, err := r.DB.WithContext(ctx).Model(us).Returning("*").Insert()
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to insert user skill %v", us)
+	}
+
+	return us, nil
+}
+
+// DeleteUserSkill deletes a UserSkill by ID
+func (r *repository) DeleteUserSkill(ctx context.Context, id uint64) error {
+	us := &models.UserSkill{ID: id}
+	_, err := r.DB.WithContext(ctx).Model(us).WherePK().Delete()
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Cannot delete user skill with id %v", id))
+	}
+	return nil
+}
+
 /* --------------- Institution --------------- */
 
 // CreateInstitution creates a new Institution

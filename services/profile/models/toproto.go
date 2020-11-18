@@ -66,6 +66,7 @@ func (c *Candidate) ToProto() *pb.Candidate {
 
 	return &pb.Candidate{
 		Id:                     c.ID,
+		AuthId:                 c.AuthID,
 		FirstName:              c.FirstName,
 		LastName:               c.LastName,
 		Email:                  c.Email,
@@ -100,6 +101,47 @@ func (s *Skill) ToProto() *pb.Skill {
 	return &pb.Skill{
 		Id:   s.ID,
 		Name: s.Name,
+	}
+}
+
+// ToProto maps the ORM UserSkill model to the proto model
+func (us *UserSkill) ToProto() *pb.UserSkill {
+	if us == nil {
+		return nil
+	}
+
+	var err error
+	var createdAt *timestamppb.Timestamp
+	if us.CreatedAt != nil {
+		createdAt, err = ptypes.TimestampProto(*us.CreatedAt)
+		if err != nil {
+			createdAt = nil
+		}
+	}
+
+	var updatedAt *timestamppb.Timestamp
+	if us.UpdatedAt != nil {
+		updatedAt, err = ptypes.TimestampProto(*us.UpdatedAt)
+		if err != nil {
+			updatedAt = nil
+		}
+	}
+
+	var deletedAt *timestamppb.Timestamp
+	if us.DeletedAt != nil {
+		deletedAt, err = ptypes.TimestampProto(*us.DeletedAt)
+		if err != nil {
+			deletedAt = nil
+		}
+	}
+
+	return &pb.UserSkill{
+		Id:          us.ID,
+		CandidateId: us.CandidateID,
+		SkillId:     us.SkillID,
+		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
+		DeletedAt:   deletedAt,
 	}
 }
 

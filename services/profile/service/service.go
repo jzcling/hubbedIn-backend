@@ -2,25 +2,29 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 
 	"in-backend/services/profile"
 	"in-backend/services/profile/models"
+	"in-backend/services/profile/providers"
 )
 
 // Service implements the profile Service interface
 type service struct {
 	repository profile.Repository
 	logger     log.Logger
+	auth0      providers.Auth0Provider
 }
 
 // New creates and returns a new Service that implements the profile Service interface
-func New(r profile.Repository, l log.Logger) profile.Service {
+func New(r profile.Repository, l log.Logger, a providers.Auth0Provider) profile.Service {
 	return &service{
 		repository: r,
 		logger:     l,
+		auth0:      a,
 	}
 }
 
@@ -34,6 +38,16 @@ func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candida
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
+
+	token, auth0err := s.auth0.GetAuth0Token()
+	if auth0err != nil {
+		level.Error(s.logger).Log("err", auth0err)
+	}
+	auth0err = s.auth0.UpdateAuth0User(fmt.Sprintf("%v", token["access_token"]), c)
+	if auth0err != nil {
+		level.Error(s.logger).Log("err", auth0err)
+	}
+
 	return c, err
 }
 
@@ -114,6 +128,31 @@ func (s *service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
 		level.Error(logger).Log("err", err)
 	}
 	return sk, err
+}
+
+/* --------------- User Skill --------------- */
+
+// CreateUserSkill creates a new UserSkill
+func (s *service) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error) {
+	logger := log.With(s.logger, "method", "CreateUserSkill")
+
+	us, err := s.repository.CreateUserSkill(ctx, us)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+	}
+
+	return us, err
+}
+
+// DeleteUserSkill deletes a UserSkill by ID
+func (s *service) DeleteUserSkill(ctx context.Context, id uint64) error {
+	logger := log.With(s.logger, "method", "DeleteUserSkill")
+
+	err := s.repository.DeleteUserSkill(ctx, id)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+	}
+	return err
 }
 
 /* --------------- Institution --------------- */

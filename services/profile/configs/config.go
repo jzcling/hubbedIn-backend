@@ -24,6 +24,13 @@ type Config struct {
 	AppName  string       `mapstructure:"appname"`
 	Server   ServerConfig `mapstructure:",squash"`
 	Database DbConfig     `mapstructure:",squash"`
+	Auth0    Auth0        `mapstructure:",squash"`
+}
+
+// ServerConfig declares server variables
+type ServerConfig struct {
+	Address string `mapstructure:"server_address"`
+	Port    string `mapstructure:"server_port"`
 }
 
 // DbConfig declares database variables
@@ -37,10 +44,10 @@ type DbConfig struct {
 	Drivername string `mapstructure:"database_drivername"`
 }
 
-// ServerConfig declares server variables
-type ServerConfig struct {
-	Address string `mapstructure:"server_address"`
-	Port    string `mapstructure:"server_port"`
+// Auth0 declares variables for connecting to Auth0
+type Auth0 struct {
+	MgmtClientID     string `mapstructure:"auth0_mgmt_client_id"`
+	MgmtClientSecret string `mapstructure:"auth0_mgmt_client_secret"`
 }
 
 // LoadConfig load config from file

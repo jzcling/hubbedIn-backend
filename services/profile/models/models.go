@@ -19,10 +19,11 @@ type Candidate struct {
 	tableName struct{} `pg:"candidates,alias:c"`
 
 	ID                     uint64             `json:"id"`
+	AuthID                 string             `json:"auth_id" pg:",unique,notnull"`
 	FirstName              string             `json:"first_name" pg:",notnull"`
 	LastName               string             `json:"last_name" pg:",notnull"`
 	Email                  string             `json:"email" pg:",unique,notnull"`
-	ContactNumber          string             `json:"contact_number" pg:",notnull"`
+	ContactNumber          string             `json:"contact_number" pg:",unique,notnull"`
 	Picture                string             `json:"picture,omitempty"`
 	Gender                 string             `json:"gender,omitempty"`
 	Nationality            string             `json:"nationality,omitempty"`
