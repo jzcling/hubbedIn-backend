@@ -29,6 +29,7 @@ func TestCandidateToProto(t *testing.T) {
 		SCMURL:                 "github",
 		WebsiteURL:             "website",
 		EducationLevel:         "bachelor",
+		Summary:                "summary",
 		Birthday:               &testTime,
 		NoticePeriod:           1,
 		Skills: []*Skill{

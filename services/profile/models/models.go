@@ -33,6 +33,7 @@ type Candidate struct {
 	SCMURL                 string             `json:"scm_url,omitempty" pg:"scm_url"`
 	WebsiteURL             string             `json:"website_url,omitempty" pg:"website_url"`
 	EducationLevel         string             `json:"education_level,omitempty"`
+	Summary                string             `json:"summary,omitempty"`
 	Birthday               *time.Time         `json:"birthday,omitempty"`
 	NoticePeriod           uint32             `json:"notice_period,omitempty"`
 	Skills                 []*Skill           `json:"skills,omitempty" pg:"many2many:users_skills"`

@@ -29,6 +29,7 @@ func TestCandidateToORM(t *testing.T) {
 		ScmUrl:                 "github",
 		WebsiteUrl:             "website",
 		EducationLevel:         "bachelor",
+		Summary:                "summary",
 		Birthday:               testPbTime,
 		NoticePeriod:           1,
 		Skills: []*pb.Skill{

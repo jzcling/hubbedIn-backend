@@ -28,6 +28,7 @@ func TestCandidateIsEqual(t *testing.T) {
 		SCMURL:                 "https://github.com/williamhgates",
 		WebsiteURL:             "https://billgates.com",
 		EducationLevel:         "bachelor",
+		Summary:                "summary",
 		Birthday:               &birthday,
 		NoticePeriod:           2,
 		CreatedAt:              &timeAt,

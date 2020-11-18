@@ -71,6 +71,7 @@ func CandidateToORM(c *pb.Candidate) *Candidate {
 		SCMURL:                 c.ScmUrl,
 		WebsiteURL:             c.WebsiteUrl,
 		EducationLevel:         c.EducationLevel,
+		Summary:                c.Summary,
 		Birthday:               birthday,
 		NoticePeriod:           c.NoticePeriod,
 		Skills:                 skills,

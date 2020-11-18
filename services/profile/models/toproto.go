@@ -80,6 +80,7 @@ func (c *Candidate) ToProto() *pb.Candidate {
 		ScmUrl:                 c.SCMURL,
 		WebsiteUrl:             c.WebsiteURL,
 		EducationLevel:         c.EducationLevel,
+		Summary:                c.Summary,
 		Birthday:               birthday,
 		NoticePeriod:           c.NoticePeriod,
 		Skills:                 skills,

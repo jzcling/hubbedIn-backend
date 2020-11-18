@@ -25,6 +25,7 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.SCMURL != c2.SCMURL ||
 		c1.WebsiteURL != c2.WebsiteURL ||
 		c1.EducationLevel != c2.EducationLevel ||
+		c1.Summary != c2.Summary ||
 		c1.Birthday != c2.Birthday ||
 		c1.NoticePeriod != c2.NoticePeriod ||
 		c1.CreatedAt != c2.CreatedAt ||

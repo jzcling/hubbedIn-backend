@@ -151,14 +151,15 @@ message Candidate {
     string scm_url = 13;
     string website_url = 14;
     string education_level = 15;
-    google.protobuf.Timestamp birthday = 16;
-    uint32 notice_period = 17;
-    repeated Skill skills = 18;
-    repeated AcademicHistory academics = 19;
-    repeated JobHistory jobs = 20;
-    google.protobuf.Timestamp created_at = 21;
-    google.protobuf.Timestamp updated_at = 22;
-    google.protobuf.Timestamp deleted_at = 23;
+    string summary = 16;
+    google.protobuf.Timestamp birthday = 17;
+    uint32 notice_period = 18;
+    repeated Skill skills = 19;
+    repeated AcademicHistory academics = 20;
+    repeated JobHistory jobs = 21;
+    google.protobuf.Timestamp created_at = 22;
+    google.protobuf.Timestamp updated_at = 23;
+    google.protobuf.Timestamp deleted_at = 24;
 }
 
 message CreateCandidateRequest {

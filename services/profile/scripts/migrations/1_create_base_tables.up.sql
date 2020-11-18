@@ -14,6 +14,7 @@ create table if not exists candidates (
     scm_url text,
     website_url text,
     education_level text,
+    summary text,
     birthday timestamp,
     notice_period int,
     created_at timestamptz,
