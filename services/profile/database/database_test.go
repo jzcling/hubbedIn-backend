@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/go-pg/migrations/v8"
@@ -50,7 +51,7 @@ func setupDB(c *container, opt *pg.Options, migrationsDir string) (*pg.DB, error
 	var db *pg.DB
 	err := c.Pool.Retry(func() error {
 		options := *opt
-		options.Addr = fmt.Sprintf("%s:%s", options.Addr, c.Resource.GetPort("5432/tcp"))
+		options.Addr = fmt.Sprintf("%s:%s", strings.Split(options.Addr, ":")[0], c.Resource.GetPort("5432/tcp"))
 		db = NewDatabase(&options)
 		_, err := db.Exec("select 1")
 		return errors.Wrap(err, "Test query failed")
@@ -108,6 +109,7 @@ func TestGetPgConnectionOptions(t *testing.T) {
 		AppName: "app",
 		Database: configs.DbConfig{
 			Address:  "address",
+			Port:     "5432",
 			Username: "user",
 			Password: "password",
 			Database: "database",
@@ -115,7 +117,7 @@ func TestGetPgConnectionOptions(t *testing.T) {
 	}
 
 	want := &pg.Options{
-		Addr:            "address",
+		Addr:            "address:5432",
 		User:            "user",
 		Password:        "password",
 		Database:        "database",
@@ -128,7 +130,7 @@ func TestGetPgConnectionOptions(t *testing.T) {
 
 	got := GetPgConnectionOptions(cfg)
 
-	require.EqualValues(t, got, want)
+	require.EqualValues(t, want, got)
 }
 
 func TestNewDatabase(t *testing.T) {

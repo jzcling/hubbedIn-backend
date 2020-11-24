@@ -90,7 +90,8 @@ func TestAllCRUD(t *testing.T) {
 /* --------------- Candidate --------------- */
 
 func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
-	testNoFirstName := &models.Candidate{
+	testNoAuthID := &models.Candidate{
+		FirstName:     "first",
 		LastName:      "last",
 		Email:         "first@last.com",
 		ContactNumber: "+6591234567",
@@ -98,14 +99,15 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 		UpdatedAt:     &now,
 	}
 
-	test := *testNoFirstName
-	test.FirstName = "first"
+	test := *testNoAuthID
+	test.AuthID = "authId"
 
 	testDupEmail := test
 
 	// this is required to insert 2 candidates so that one can be used
 	// for other tests after the first gets deleted
 	test2 := test
+	test2.AuthID = "authId2"
 	test2.Email = "test@test.com"
 	test2.ContactNumber = "+6587654321"
 
@@ -125,7 +127,7 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 		exp  expect
 	}{
 		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter candidate is nil")}},
-		{"failed not null", args{ctx, testNoFirstName}, expect{nil, errors.New("Failed to insert candidate")}},
+		{"failed not null", args{ctx, testNoAuthID}, expect{nil, errors.New("Failed to insert candidate")}},
 		{"valid", args{ctx, &test}, expect{&test, nil}},
 		{"failed unique", args{ctx, &testDupEmail}, expect{nil, errors.New("Failed to insert candidate")}},
 		{"valid2", args{ctx, &test2}, expect{&test2, nil}},
@@ -418,13 +420,21 @@ func testGetSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 /* --------------- User Skill --------------- */
 
 func testCreateUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+	existingC := &models.Candidate{}
+	err := db.WithContext(ctx).Model(existingC).First()
+	require.NoError(t, err)
+
+	existingS := &models.Skill{}
+	err = db.WithContext(ctx).Model(existingS).First()
+	require.NoError(t, err)
+
 	testNoCID := &models.UserSkill{
-		SkillID: 1,
+		SkillID: existingS.ID,
 	}
 
 	test := &models.UserSkill{
-		CandidateID: 1,
-		SkillID:     1,
+		CandidateID: existingC.ID,
+		SkillID:     existingS.ID,
 	}
 
 	type args struct {
