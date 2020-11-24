@@ -136,7 +136,6 @@
             ]
         },
 
-
         {
             "endpoint": "/v1/skills",
             "method": "POST",
@@ -191,6 +190,45 @@
                     "host": [ "gateway:8000" ],
                     "method": "GET",
                     "url_pattern": "/v1/skills/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/userskills",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/userskills"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/userskills/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/userskills/{id}"
                 }
             ]
         },
