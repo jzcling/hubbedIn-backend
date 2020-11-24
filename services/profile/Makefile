@@ -1,4 +1,4 @@
-.PHONY: proto migration-up migration-down mocks reset
+.PHONY: proto migration-up migration-down mocks
 PROTOC_GEN_GO := $(GOPATH)/bin/protoc-gen-go
 
 $(PROTOC_GEN_GO):
@@ -21,9 +21,4 @@ migration-down:
 	cd scripts/migrations && go run . down
 
 mocks:
-	mockery --all && mv mocks tests/
-
-reset:
-	cd ../.. && docker-compose down -v
-	cd ../.. && docker-compose build
-	cd ../.. && docker-compose up -d
+	mockery --all && rm -rf tests/mocks && mv mocks tests/
