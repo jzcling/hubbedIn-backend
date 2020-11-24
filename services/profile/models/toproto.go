@@ -127,21 +127,12 @@ func (us *UserSkill) ToProto() *pb.UserSkill {
 		}
 	}
 
-	var deletedAt *timestamppb.Timestamp
-	if us.DeletedAt != nil {
-		deletedAt, err = ptypes.TimestampProto(*us.DeletedAt)
-		if err != nil {
-			deletedAt = nil
-		}
-	}
-
 	return &pb.UserSkill{
 		Id:          us.ID,
 		CandidateId: us.CandidateID,
 		SkillId:     us.SkillID,
 		CreatedAt:   createdAt,
 		UpdatedAt:   updatedAt,
-		DeletedAt:   deletedAt,
 	}
 }
 
@@ -204,7 +195,9 @@ func (a *AcademicHistory) ToProto() *pb.AcademicHistory {
 		Id:            a.ID,
 		CandidateId:   a.CandidateID,
 		InstitutionId: a.InstitutionID,
+		Institution:   a.Institution.ToProto(),
 		CourseId:      a.CourseID,
+		Course:        a.Course.ToProto(),
 		YearObtained:  a.YearObtained,
 		CreatedAt:     createdAt,
 		UpdatedAt:     updatedAt,
@@ -284,7 +277,9 @@ func (j *JobHistory) ToProto() *pb.JobHistory {
 		Id:             j.ID,
 		CandidateId:    j.CandidateID,
 		CompanyId:      j.CompanyID,
+		Company:        j.Company.ToProto(),
 		DepartmentId:   j.DepartmentID,
+		Department:     j.Department.ToProto(),
 		Country:        j.Country,
 		City:           j.City,
 		Title:          j.Title,

@@ -122,7 +122,6 @@ func TestUserSkillIsEqual(t *testing.T) {
 		SkillID:     2,
 		CreatedAt:   &timeAt,
 		UpdatedAt:   &timeAt,
-		DeletedAt:   &timeAt,
 	}
 
 	assert.Condition(t, func() bool { return m1.IsEqual(m1) })

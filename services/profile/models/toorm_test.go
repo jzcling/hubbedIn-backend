@@ -225,7 +225,6 @@ func TestUserkillToORM(t *testing.T) {
 		SkillId:     1,
 		CreatedAt:   testPbTime,
 		UpdatedAt:   testPbTime,
-		DeletedAt:   testPbTime,
 	}
 
 	expect := &UserSkill{
@@ -234,7 +233,6 @@ func TestUserkillToORM(t *testing.T) {
 		SkillID:     1,
 		CreatedAt:   &testTime,
 		UpdatedAt:   &testTime,
-		DeletedAt:   &testTime,
 	}
 
 	got := UserSkillToORM(input)

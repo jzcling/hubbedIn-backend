@@ -20,10 +20,10 @@ type Candidate struct {
 
 	ID                     uint64             `json:"id"`
 	AuthID                 string             `json:"auth_id" pg:",unique,notnull"`
-	FirstName              string             `json:"first_name" pg:",notnull"`
-	LastName               string             `json:"last_name" pg:",notnull"`
+	FirstName              string             `json:"first_name" pg:""`
+	LastName               string             `json:"last_name" pg:""`
 	Email                  string             `json:"email" pg:",unique,notnull"`
-	ContactNumber          string             `json:"contact_number" pg:",unique,notnull"`
+	ContactNumber          string             `json:"contact_number" pg:",unique"`
 	Picture                string             `json:"picture,omitempty"`
 	Gender                 string             `json:"gender,omitempty"`
 	Nationality            string             `json:"nationality,omitempty"`
@@ -63,7 +63,6 @@ type UserSkill struct {
 	SkillID     uint64     `json:"skill_id" pg:",notnull"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
-	DeletedAt   *time.Time `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
 // Institution declares model for Institution

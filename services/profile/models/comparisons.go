@@ -67,8 +67,7 @@ func (us1 *UserSkill) IsEqual(us2 *UserSkill) bool {
 	if us1.CandidateID != us2.CandidateID ||
 		us1.SkillID != us2.SkillID ||
 		us1.CreatedAt != us2.CreatedAt ||
-		us1.UpdatedAt != us2.UpdatedAt ||
-		us1.DeletedAt != us2.DeletedAt {
+		us1.UpdatedAt != us2.UpdatedAt {
 		return false
 	}
 	return true

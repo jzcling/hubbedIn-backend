@@ -113,19 +113,12 @@ func UserSkillToORM(us *pb.UserSkill) *UserSkill {
 		updatedAt = (*time.Time)(nil)
 	}
 
-	da, err := ptypes.Timestamp(us.DeletedAt)
-	deletedAt := &da
-	if err != nil {
-		deletedAt = (*time.Time)(nil)
-	}
-
 	return &UserSkill{
 		ID:          us.Id,
 		CandidateID: us.CandidateId,
 		SkillID:     us.SkillId,
 		CreatedAt:   createdAt,
 		UpdatedAt:   updatedAt,
-		DeletedAt:   deletedAt,
 	}
 }
 
@@ -181,7 +174,9 @@ func AcademicHistoryToORM(a *pb.AcademicHistory) *AcademicHistory {
 		ID:            a.Id,
 		CandidateID:   a.CandidateId,
 		InstitutionID: a.InstitutionId,
+		Institution:   InstitutionToORM(a.Institution),
 		CourseID:      a.CourseId,
+		Course:        CourseToORM(a.Course),
 		YearObtained:  a.YearObtained,
 		CreatedAt:     createdAt,
 		UpdatedAt:     updatedAt,
@@ -251,7 +246,9 @@ func JobHistoryToORM(j *pb.JobHistory) *JobHistory {
 		ID:             j.Id,
 		CandidateID:    j.CandidateId,
 		CompanyID:      j.CompanyId,
+		Company:        CompanyToORM(j.Company),
 		DepartmentID:   j.DepartmentId,
+		Department:     DepartmentToORM(j.Department),
 		Country:        j.Country,
 		City:           j.City,
 		Title:          j.Title,

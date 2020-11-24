@@ -24,6 +24,9 @@ type grpcServer struct {
 	getSkill     kitgrpc.Handler
 	getAllSkills kitgrpc.Handler
 
+	createUserSkill kitgrpc.Handler
+	deleteUserSkill kitgrpc.Handler
+
 	createInstitution  kitgrpc.Handler
 	getInstitution     kitgrpc.Handler
 	getAllInstitutions kitgrpc.Handler
@@ -110,6 +113,19 @@ func NewGRPCServer(
 			endpoints.GetAllSkills,
 			decodeGetAllSkillsRequest,
 			encodeGetAllSkillsResponse,
+			options...,
+		),
+
+		createUserSkill: kitgrpc.NewServer(
+			endpoints.CreateUserSkill,
+			decodeCreateUserSkillRequest,
+			encodeCreateUserSkillResponse,
+			options...,
+		),
+		deleteUserSkill: kitgrpc.NewServer(
+			endpoints.DeleteUserSkill,
+			decodeDeleteUserSkillRequest,
+			encodeDeleteUserSkillResponse,
 			options...,
 		),
 
@@ -451,6 +467,58 @@ func encodeGetAllSkillsResponse(_ context.Context, response interface{}) (interf
 			skills = append(skills, skill.ToProto())
 		}
 		return &pb.GetAllSkillsResponse{Skills: skills}, nil
+	}
+	return nil, err
+}
+
+/* --------------- User Skill --------------- */
+
+// CreateUserSkill creates a new UserSkill
+func (s *grpcServer) CreateUserSkill(ctx context.Context, req *pb.CreateUserSkillRequest) (*pb.UserSkill, error) {
+	_, rep, err := s.createUserSkill.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.UserSkill), nil
+}
+
+// decodeCreateUserSkillRequest decodes the incoming grpc payload to our go kit payload
+func decodeCreateUserSkillRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.CreateUserSkillRequest)
+	return endpoints.CreateUserSkillRequest{UserSkill: models.UserSkillToORM(req.UserSkill)}, nil
+}
+
+// encodeCreateUserSkillResponse encodes the outgoing go kit payload to the grpc payload
+func encodeCreateUserSkillResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.CreateUserSkillResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return res.UserSkill.ToProto(), nil
+	}
+	return nil, err
+}
+
+// DeleteUserSkill deletes a UserSkill by ID
+func (s *grpcServer) DeleteUserSkill(ctx context.Context, req *pb.DeleteUserSkillRequest) (*pb.DeleteUserSkillResponse, error) {
+	_, rep, err := s.deleteUserSkill.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.DeleteUserSkillResponse), nil
+}
+
+// decodeDeleteUserSkillRequest decodes the incoming grpc payload to our go kit payload
+func decodeDeleteUserSkillRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.DeleteUserSkillRequest)
+	return endpoints.DeleteUserSkillRequest{ID: req.Id}, nil
+}
+
+// encodeDeleteUserSkillResponse encodes the outgoing go kit payload to the grpc payload
+func encodeDeleteUserSkillResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.DeleteUserSkillResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return &pb.DeleteUserSkillResponse{}, nil
 	}
 	return nil, err
 }

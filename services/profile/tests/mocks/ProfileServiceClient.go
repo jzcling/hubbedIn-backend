@@ -257,6 +257,36 @@ func (_m *ProfileServiceClient) CreateSkill(ctx context.Context, in *pb.CreateSk
 	return r0, r1
 }
 
+// CreateUserSkill provides a mock function with given fields: ctx, in, opts
+func (_m *ProfileServiceClient) CreateUserSkill(ctx context.Context, in *pb.CreateUserSkillRequest, opts ...grpc.CallOption) (*pb.UserSkill, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.UserSkill
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateUserSkillRequest, ...grpc.CallOption) *pb.UserSkill); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.UserSkill)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateUserSkillRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeleteAcademicHistory provides a mock function with given fields: ctx, in, opts
 func (_m *ProfileServiceClient) DeleteAcademicHistory(ctx context.Context, in *pb.DeleteAcademicHistoryRequest, opts ...grpc.CallOption) (*pb.DeleteAcademicHistoryResponse, error) {
 	_va := make([]interface{}, len(opts))
@@ -339,6 +369,36 @@ func (_m *ProfileServiceClient) DeleteJobHistory(ctx context.Context, in *pb.Del
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteJobHistoryRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DeleteUserSkill provides a mock function with given fields: ctx, in, opts
+func (_m *ProfileServiceClient) DeleteUserSkill(ctx context.Context, in *pb.DeleteUserSkillRequest, opts ...grpc.CallOption) (*pb.DeleteUserSkillResponse, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.DeleteUserSkillResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteUserSkillRequest, ...grpc.CallOption) *pb.DeleteUserSkillResponse); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.DeleteUserSkillResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteUserSkillRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)

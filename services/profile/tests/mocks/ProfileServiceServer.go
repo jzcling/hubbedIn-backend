@@ -198,6 +198,29 @@ func (_m *ProfileServiceServer) CreateSkill(_a0 context.Context, _a1 *pb.CreateS
 	return r0, r1
 }
 
+// CreateUserSkill provides a mock function with given fields: _a0, _a1
+func (_m *ProfileServiceServer) CreateUserSkill(_a0 context.Context, _a1 *pb.CreateUserSkillRequest) (*pb.UserSkill, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.UserSkill
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateUserSkillRequest) *pb.UserSkill); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.UserSkill)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateUserSkillRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeleteAcademicHistory provides a mock function with given fields: _a0, _a1
 func (_m *ProfileServiceServer) DeleteAcademicHistory(_a0 context.Context, _a1 *pb.DeleteAcademicHistoryRequest) (*pb.DeleteAcademicHistoryResponse, error) {
 	ret := _m.Called(_a0, _a1)
@@ -259,6 +282,29 @@ func (_m *ProfileServiceServer) DeleteJobHistory(_a0 context.Context, _a1 *pb.De
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteJobHistoryRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DeleteUserSkill provides a mock function with given fields: _a0, _a1
+func (_m *ProfileServiceServer) DeleteUserSkill(_a0 context.Context, _a1 *pb.DeleteUserSkillRequest) (*pb.DeleteUserSkillResponse, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.DeleteUserSkillResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteUserSkillRequest) *pb.DeleteUserSkillResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.DeleteUserSkillResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteUserSkillRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

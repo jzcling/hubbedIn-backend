@@ -1,10 +1,10 @@
 create table if not exists candidates (
     id bigserial not null primary key,
     auth_id text not null unique,
-    first_name text not null,
-    last_name text not null,
+    first_name text,
+    last_name text,
     email text not null unique,
-    contact_number text not null unique,
+    contact_number text unique,
     picture text,
     gender text,
     nationality text,
@@ -39,12 +39,11 @@ create table if not exists users_skills (
     skill_id bigint not null,
     created_at timestamptz,
     updated_at timestamptz,
-    deleted_at timestamptz,
     constraint fk_candidates foreign key(candidate_id) references candidates(id) on delete cascade on update cascade,
     constraint fk_skills foreign key(skill_id) references skills(id) on delete cascade on update cascade
 );
 
-create index on users_skills (candidate_id, skill_id, deleted_at);
+create index on users_skills (candidate_id, skill_id);
 
 create table if not exists institutions (
     id bigserial not null primary key,

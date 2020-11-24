@@ -357,6 +357,39 @@
       }
     },
     "/v1/courses": {
+      "get": {
+        "operationId": "ProfileService_GetAllCourses",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetAllCoursesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
       "post": {
         "operationId": "ProfileService_CreateCourse",
         "responses": {
@@ -390,12 +423,12 @@
     },
     "/v1/courses/{id}": {
       "get": {
-        "operationId": "ProfileService_GetAllCourses",
+        "operationId": "ProfileService_GetCourse",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbGetAllCoursesResponse"
+              "$ref": "#/definitions/pbCourse"
             }
           },
           "default": {
@@ -410,13 +443,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uint64"
-            },
-            "collectionFormat": "csv",
-            "minItems": 1
+            "type": "string",
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -801,6 +829,69 @@
           "ProfileService"
         ]
       }
+    },
+    "/v1/userskills": {
+      "post": {
+        "operationId": "ProfileService_CreateUserSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUserSkill"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbUserSkill"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/v1/userskills/{id}": {
+      "delete": {
+        "operationId": "ProfileService_DeleteUserSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteUserSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -819,9 +910,15 @@
           "type": "string",
           "format": "uint64"
         },
+        "institution": {
+          "$ref": "#/definitions/pbInstitution"
+        },
         "courseId": {
           "type": "string",
           "format": "uint64"
+        },
+        "course": {
+          "$ref": "#/definitions/pbCourse"
         },
         "yearObtained": {
           "type": "integer",
@@ -973,6 +1070,9 @@
     "pbDeleteJobHistoryResponse": {
       "type": "object"
     },
+    "pbDeleteUserSkillResponse": {
+      "type": "object"
+    },
     "pbDepartment": {
       "type": "object",
       "properties": {
@@ -1081,9 +1181,15 @@
           "type": "string",
           "format": "uint64"
         },
+        "company": {
+          "$ref": "#/definitions/pbCompany"
+        },
         "departmentId": {
           "type": "string",
           "format": "uint64"
+        },
+        "department": {
+          "$ref": "#/definitions/pbDepartment"
         },
         "country": {
           "type": "string"
@@ -1135,6 +1241,31 @@
         },
         "name": {
           "type": "string"
+        }
+      }
+    },
+    "pbUserSkill": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "skillId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
