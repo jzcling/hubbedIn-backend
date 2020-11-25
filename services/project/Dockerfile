@@ -1,0 +1,31 @@
+FROM golang:1.15-alpine as builder
+LABEL stage=builder
+RUN apk add --no-cache ca-certificates git build-base
+WORKDIR /go/src/in-backend/
+
+# restore dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY ./services/profile/ ./services/profile/
+RUN cd services/profile/cmd && \
+    CGO_ENABLED=1 && \
+    GOOS=linux && \
+    GOARCH=amd64 && \
+    go build -o /build/dist/main
+
+RUN cd services/profile/scripts/migrations && \
+    CGO_ENABLED=1 && \
+    GOOS=linux && \
+    GOARCH=amd64 && \
+    go build -o /build/dist/migrations
+
+FROM alpine as release
+RUN apk add --no-cache ca-certificates
+WORKDIR /app
+COPY --from=builder /build/dist/ .
+COPY --from=builder /go/src/in-backend/services/profile/configs/config.env .
+COPY --from=builder /go/src/in-backend/services/profile/scripts/migrations/*.sql ./
+RUN chmod +x ./main
+EXPOSE 50051
+ENTRYPOINT ["./main"]

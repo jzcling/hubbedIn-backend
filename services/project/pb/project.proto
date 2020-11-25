@@ -1,0 +1,185 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "services/project/pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// ------------ Project Service ------------
+
+service ProjectService {
+    /* --------------- Project --------------- */
+
+    rpc CreateProject(CreateProjectRequest) returns (Project) {
+        option (google.api.http) = { 
+            post: "/v1/projects" 
+            body: "project"
+        };
+    };
+    rpc GetAllProjects(GetAllProjectsRequest) returns (GetAllProjectsResponse) {
+        option (google.api.http) = { get: "/v1/projects" };
+    };
+    rpc GetProjectByID(GetProjectByIDRequest) returns (Project) {
+        option (google.api.http) = { get: "/v1/projects/{id}" };
+    };
+    rpc UpdateProject(UpdateProjectRequest) returns (Project) {
+        option (google.api.http) = { 
+            put: "/v1/projects/{id}" 
+            body: "project"
+        };
+    };
+    rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse) {
+        option (google.api.http) = { delete: "/v1/projects/{id}" };
+    };
+
+    rpc ScanProject(ScanProjectRequest) returns (ScanProjectResponse) {
+        option (google.api.http) = { post: "/v1/projects/{id}/scan" };
+    };
+
+    /* --------------- Candidate Project --------------- */
+
+    rpc CreateCandidateProject(CreateCandidateProjectRequest) returns (CreateCandidateProjectResponse) {
+        option (google.api.http) = { 
+            post: "/v1/candidates/{candidate_id}/projects" 
+            body: "candidate_project"
+        };
+    };
+    rpc DeleteCandidateProject(DeleteCandidateProjectRequest) returns (DeleteCandidateProjectResponse) {
+        option (google.api.http) = { delete: "/v1/candidates/{candidate_id}/projects/{project_id}" };
+    };
+    rpc GetAllProjectsByCandidate(GetAllProjectsByCandidateRequest) returns (GetAllProjectsByCandidateResponse) {
+        option (google.api.http) = { get: "/v1/candidates/{candidate_id}/projects" };
+    };
+
+    /* --------------- Rating --------------- */
+
+    rpc CreateRating(CreateRatingRequest) returns (CreateRatingResponse) {
+        option (google.api.http) = { 
+            post: "/v1/projects/{project_id}/ratings" 
+            body: "rating"
+        };
+    };
+    rpc DeleteRating(DeleteRatingRequest) returns (DeleteRatingResponse) {
+        option (google.api.http) = { delete: "/v1/projects/{project_id}/ratings/{id}" };
+    };
+}
+
+
+/* --------------- Project --------------- */
+
+message Project {
+    uint64 id = 1;
+    string name = 2;
+    string repo_url = 3;
+    repeated Rating ratings = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+    google.protobuf.Timestamp deleted_at = 7;
+}
+
+message CreateProjectRequest {
+    Project project = 1;
+}
+
+// TODO: filters
+message GetAllProjectsRequest {
+    repeated uint64 id = 1;
+}
+
+message GetAllProjectsResponse {
+    repeated Project projects = 1;
+}
+
+message GetProjectByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateProjectRequest {
+    uint64 id = 1;
+    Project project = 2;
+}
+
+message DeleteProjectRequest {
+    uint64 id = 1;
+}
+
+message DeleteProjectResponse {
+    // Empty
+}
+
+message ScanProjectRequest {
+    uint64 id = 1;
+}
+
+message ScanProjectResponse {
+    // Empty
+}
+
+
+/* --------------- Candidate Project --------------- */
+
+message CandidateProject {
+    uint64 id = 1;
+    uint64 candidate_id = 2;
+    uint64 project_id = 3;
+}
+
+message CreateCandidateProjectRequest {
+    uint64 candidate_id = 1;
+    CandidateProject candidate_project = 2;
+}
+
+message CreateCandidateProjectResponse {
+    // Empty
+}
+
+message DeleteCandidateProjectRequest {
+    uint64 candidate_id = 1;
+    uint64 project_id = 2;
+}
+
+message DeleteCandidateProjectResponse {
+    // Empty
+}
+
+message GetAllProjectsByCandidateRequest {
+    uint64 candidate_id = 1;
+}
+
+message GetAllProjectsByCandidateResponse {
+    repeated Project projects = 1;
+}
+
+/* --------------- Rating --------------- */
+
+message Rating {
+    uint64 id = 1;
+    uint64 project_id = 2;
+	int32 reliability_rating = 3;
+	int32 maintainability_rating = 4;
+	int32 security_rating = 5;
+	int32 security_review_rating = 6;
+	float coverage = 7;
+	float duplications = 8;
+	uint64 lines = 9;
+	google.protobuf.Timestamp created_at = 10;
+}
+
+message CreateRatingRequest {
+    uint64 project_id = 1;
+    Rating rating = 2;
+}
+
+message CreateRatingResponse {
+    // Empty
+}
+
+message DeleteRatingRequest {
+    uint64 id = 1;
+    uint64 project_id = 2;
+}
+
+message DeleteRatingResponse {
+    // Empty
+}
