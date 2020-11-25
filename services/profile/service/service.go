@@ -39,6 +39,12 @@ func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candida
 		level.Error(logger).Log("err", err)
 	}
 
+	s.updateAuth0User(c)
+
+	return c, err
+}
+
+func (s *service) updateAuth0User(c *models.Candidate) {
 	token, auth0err := s.auth0.GetAuth0Token()
 	if auth0err != nil {
 		level.Error(s.logger).Log("err", auth0err)
@@ -47,8 +53,6 @@ func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candida
 	if auth0err != nil {
 		level.Error(s.logger).Log("err", auth0err)
 	}
-
-	return c, err
 }
 
 // GetAllCandidates returns all Candidates

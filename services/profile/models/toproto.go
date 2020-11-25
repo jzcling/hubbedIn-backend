@@ -1,89 +1,59 @@
 package models
 
 import (
+	"in-backend/helpers"
 	"in-backend/services/profile/pb"
-
-	"github.com/golang/protobuf/ptypes"
-	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 // ToProto maps the ORM Candidate model to the proto model
-func (c *Candidate) ToProto() *pb.Candidate {
-	if c == nil {
+func (m *Candidate) ToProto() *pb.Candidate {
+	if m == nil {
 		return nil
 	}
 
 	var skills []*pb.Skill
-	s := c.Skills
+	s := m.Skills
 	for _, skill := range s {
 		skills = append(skills, skill.ToProto())
 	}
 
 	var academics []*pb.AcademicHistory
-	a := c.Academics
+	a := m.Academics
 	for _, academic := range a {
 		academics = append(academics, academic.ToProto())
 	}
 
 	var jobs []*pb.JobHistory
-	j := c.Jobs
+	j := m.Jobs
 	for _, job := range j {
 		jobs = append(jobs, job.ToProto())
 	}
 
-	var err error
-	var birthday *timestamppb.Timestamp
-	if c.Birthday != nil {
-		birthday, err = ptypes.TimestampProto(*c.Birthday)
-		if err != nil {
-			birthday = nil
-		}
-	}
-
-	var createdAt *timestamppb.Timestamp
-	if c.CreatedAt != nil {
-		createdAt, err = ptypes.TimestampProto(*c.CreatedAt)
-		if err != nil {
-			createdAt = nil
-		}
-	}
-
-	var updatedAt *timestamppb.Timestamp
-	if c.UpdatedAt != nil {
-		updatedAt, err = ptypes.TimestampProto(*c.UpdatedAt)
-		if err != nil {
-			updatedAt = nil
-		}
-	}
-
-	var deletedAt *timestamppb.Timestamp
-	if c.DeletedAt != nil {
-		deletedAt, err = ptypes.TimestampProto(*c.DeletedAt)
-		if err != nil {
-			deletedAt = nil
-		}
-	}
+	birthday := helpers.TimeToProto(m.Birthday)
+	createdAt := helpers.TimeToProto(m.CreatedAt)
+	updatedAt := helpers.TimeToProto(m.UpdatedAt)
+	deletedAt := helpers.TimeToProto(m.DeletedAt)
 
 	return &pb.Candidate{
-		Id:                     c.ID,
-		AuthId:                 c.AuthID,
-		FirstName:              c.FirstName,
-		LastName:               c.LastName,
-		Email:                  c.Email,
-		ContactNumber:          c.ContactNumber,
-		Picture:                c.Picture,
-		Gender:                 c.Gender,
-		Nationality:            c.Nationality,
-		ResidenceCity:          c.ResidenceCity,
-		ExpectedSalaryCurrency: c.ExpectedSalaryCurrency,
-		ExpectedSalary:         c.ExpectedSalary,
-		LinkedInUrl:            c.LinkedInURL,
-		ScmUrl:                 c.SCMURL,
-		WebsiteUrl:             c.WebsiteURL,
-		EducationLevel:         c.EducationLevel,
-		Summary:                c.Summary,
+		Id:                     m.ID,
+		AuthId:                 m.AuthID,
+		FirstName:              m.FirstName,
+		LastName:               m.LastName,
+		Email:                  m.Email,
+		ContactNumber:          m.ContactNumber,
+		Picture:                m.Picture,
+		Gender:                 m.Gender,
+		Nationality:            m.Nationality,
+		ResidenceCity:          m.ResidenceCity,
+		ExpectedSalaryCurrency: m.ExpectedSalaryCurrency,
+		ExpectedSalary:         m.ExpectedSalary,
+		LinkedInUrl:            m.LinkedInURL,
+		ScmUrl:                 m.SCMURL,
+		WebsiteUrl:             m.WebsiteURL,
+		EducationLevel:         m.EducationLevel,
+		Summary:                m.Summary,
 		Birthday:               birthday,
-		NoticePeriod:           c.NoticePeriod,
+		NoticePeriod:           m.NoticePeriod,
 		Skills:                 skills,
 		Academics:              academics,
 		Jobs:                   jobs,
@@ -94,111 +64,76 @@ func (c *Candidate) ToProto() *pb.Candidate {
 }
 
 // ToProto maps the ORM Skill model to the proto model
-func (s *Skill) ToProto() *pb.Skill {
-	if s == nil {
+func (m *Skill) ToProto() *pb.Skill {
+	if m == nil {
 		return nil
 	}
 	return &pb.Skill{
-		Id:   s.ID,
-		Name: s.Name,
+		Id:   m.ID,
+		Name: m.Name,
 	}
 }
 
 // ToProto maps the ORM UserSkill model to the proto model
-func (us *UserSkill) ToProto() *pb.UserSkill {
-	if us == nil {
+func (m *UserSkill) ToProto() *pb.UserSkill {
+	if m == nil {
 		return nil
 	}
 
-	var err error
-	var createdAt *timestamppb.Timestamp
-	if us.CreatedAt != nil {
-		createdAt, err = ptypes.TimestampProto(*us.CreatedAt)
-		if err != nil {
-			createdAt = nil
-		}
-	}
-
-	var updatedAt *timestamppb.Timestamp
-	if us.UpdatedAt != nil {
-		updatedAt, err = ptypes.TimestampProto(*us.UpdatedAt)
-		if err != nil {
-			updatedAt = nil
-		}
-	}
+	createdAt := helpers.TimeToProto(m.CreatedAt)
+	updatedAt := helpers.TimeToProto(m.UpdatedAt)
 
 	return &pb.UserSkill{
-		Id:          us.ID,
-		CandidateId: us.CandidateID,
-		SkillId:     us.SkillID,
+		Id:          m.ID,
+		CandidateId: m.CandidateID,
+		SkillId:     m.SkillID,
 		CreatedAt:   createdAt,
 		UpdatedAt:   updatedAt,
 	}
 }
 
 // ToProto maps the ORM Institution model to the proto model
-func (i *Institution) ToProto() *pb.Institution {
-	if i == nil {
+func (m *Institution) ToProto() *pb.Institution {
+	if m == nil {
 		return nil
 	}
 	return &pb.Institution{
-		Id:      i.ID,
-		Country: i.Country,
-		Name:    i.Name,
+		Id:      m.ID,
+		Country: m.Country,
+		Name:    m.Name,
 	}
 }
 
 // ToProto maps the ORM Course model to the proto model
-func (c *Course) ToProto() *pb.Course {
-	if c == nil {
+func (m *Course) ToProto() *pb.Course {
+	if m == nil {
 		return nil
 	}
 	return &pb.Course{
-		Id:    c.ID,
-		Level: c.Level,
-		Name:  c.Name,
+		Id:    m.ID,
+		Level: m.Level,
+		Name:  m.Name,
 	}
 }
 
 // ToProto maps the ORM AcademicHistory model to the proto model
-func (a *AcademicHistory) ToProto() *pb.AcademicHistory {
-	if a == nil {
+func (m *AcademicHistory) ToProto() *pb.AcademicHistory {
+	if m == nil {
 		return nil
 	}
 
-	var err error
-	var createdAt *timestamppb.Timestamp
-	if a.CreatedAt != nil {
-		createdAt, err = ptypes.TimestampProto(*a.CreatedAt)
-		if err != nil {
-			createdAt = nil
-		}
-	}
-
-	var updatedAt *timestamppb.Timestamp
-	if a.UpdatedAt != nil {
-		updatedAt, err = ptypes.TimestampProto(*a.UpdatedAt)
-		if err != nil {
-			updatedAt = nil
-		}
-	}
-
-	var deletedAt *timestamppb.Timestamp
-	if a.DeletedAt != nil {
-		deletedAt, err = ptypes.TimestampProto(*a.DeletedAt)
-		if err != nil {
-			deletedAt = nil
-		}
-	}
+	createdAt := helpers.TimeToProto(m.CreatedAt)
+	updatedAt := helpers.TimeToProto(m.UpdatedAt)
+	deletedAt := helpers.TimeToProto(m.DeletedAt)
 
 	return &pb.AcademicHistory{
-		Id:            a.ID,
-		CandidateId:   a.CandidateID,
-		InstitutionId: a.InstitutionID,
-		Institution:   a.Institution.ToProto(),
-		CourseId:      a.CourseID,
-		Course:        a.Course.ToProto(),
-		YearObtained:  a.YearObtained,
+		Id:            m.ID,
+		CandidateId:   m.CandidateID,
+		InstitutionId: m.InstitutionID,
+		Institution:   m.Institution.ToProto(),
+		CourseId:      m.CourseID,
+		Course:        m.Course.ToProto(),
+		YearObtained:  m.YearObtained,
 		CreatedAt:     createdAt,
 		UpdatedAt:     updatedAt,
 		DeletedAt:     deletedAt,
@@ -206,88 +141,54 @@ func (a *AcademicHistory) ToProto() *pb.AcademicHistory {
 }
 
 // ToProto maps the ORM Company model to the proto model
-func (c *Company) ToProto() *pb.Company {
-	if c == nil {
+func (m *Company) ToProto() *pb.Company {
+	if m == nil {
 		return nil
 	}
 	return &pb.Company{
-		Id:   c.ID,
-		Name: c.Name,
+		Id:   m.ID,
+		Name: m.Name,
 	}
 }
 
 // ToProto maps the ORM Department model to the proto model
-func (d *Department) ToProto() *pb.Department {
-	if d == nil {
+func (m *Department) ToProto() *pb.Department {
+	if m == nil {
 		return nil
 	}
 	return &pb.Department{
-		Id:   d.ID,
-		Name: d.Name,
+		Id:   m.ID,
+		Name: m.Name,
 	}
 }
 
 // ToProto maps the ORM JobHistory model to the proto model
-func (j *JobHistory) ToProto() *pb.JobHistory {
-	if j == nil {
+func (m *JobHistory) ToProto() *pb.JobHistory {
+	if m == nil {
 		return nil
 	}
-	var err error
-	var startDate *timestamppb.Timestamp
-	if j.StartDate != nil {
-		startDate, err = ptypes.TimestampProto(*j.StartDate)
-		if err != nil {
-			startDate = nil
-		}
-	}
 
-	var endDate *timestamppb.Timestamp
-	if j.EndDate != nil {
-		endDate, err = ptypes.TimestampProto(*j.EndDate)
-		if err != nil {
-			endDate = nil
-		}
-	}
-
-	var createdAt *timestamppb.Timestamp
-	if j.CreatedAt != nil {
-		createdAt, err = ptypes.TimestampProto(*j.CreatedAt)
-		if err != nil {
-			createdAt = nil
-		}
-	}
-
-	var updatedAt *timestamppb.Timestamp
-	if j.UpdatedAt != nil {
-		updatedAt, err = ptypes.TimestampProto(*j.UpdatedAt)
-		if err != nil {
-			updatedAt = nil
-		}
-	}
-
-	var deletedAt *timestamppb.Timestamp
-	if j.DeletedAt != nil {
-		deletedAt, err = ptypes.TimestampProto(*j.DeletedAt)
-		if err != nil {
-			deletedAt = nil
-		}
-	}
+	startDate := helpers.TimeToProto(m.StartDate)
+	endDate := helpers.TimeToProto(m.EndDate)
+	createdAt := helpers.TimeToProto(m.CreatedAt)
+	updatedAt := helpers.TimeToProto(m.UpdatedAt)
+	deletedAt := helpers.TimeToProto(m.DeletedAt)
 
 	return &pb.JobHistory{
-		Id:             j.ID,
-		CandidateId:    j.CandidateID,
-		CompanyId:      j.CompanyID,
-		Company:        j.Company.ToProto(),
-		DepartmentId:   j.DepartmentID,
-		Department:     j.Department.ToProto(),
-		Country:        j.Country,
-		City:           j.City,
-		Title:          j.Title,
+		Id:             m.ID,
+		CandidateId:    m.CandidateID,
+		CompanyId:      m.CompanyID,
+		Company:        m.Company.ToProto(),
+		DepartmentId:   m.DepartmentID,
+		Department:     m.Department.ToProto(),
+		Country:        m.Country,
+		City:           m.City,
+		Title:          m.Title,
 		StartDate:      startDate,
 		EndDate:        endDate,
-		SalaryCurrency: j.SalaryCurrency,
-		Salary:         j.Salary,
-		Description:    j.Description,
+		SalaryCurrency: m.SalaryCurrency,
+		Salary:         m.Salary,
+		Description:    m.Description,
 		CreatedAt:      createdAt,
 		UpdatedAt:      updatedAt,
 		DeletedAt:      deletedAt,

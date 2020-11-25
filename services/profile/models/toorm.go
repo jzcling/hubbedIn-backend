@@ -1,80 +1,59 @@
 package models
 
 import (
+	"in-backend/helpers"
 	"in-backend/services/profile/pb"
-	"time"
-
-	"github.com/golang/protobuf/ptypes"
 )
 
 // CandidateToORM maps the proto Candidate model to the ORM model
-func CandidateToORM(c *pb.Candidate) *Candidate {
-	if c == nil {
+func CandidateToORM(m *pb.Candidate) *Candidate {
+	if m == nil {
 		return nil
 	}
 
 	var skills []*Skill
-	s := c.Skills
+	s := m.Skills
 	for _, skill := range s {
 		skills = append(skills, SkillToORM(skill))
 	}
 
 	var academics []*AcademicHistory
-	a := c.Academics
+	a := m.Academics
 	for _, academic := range a {
 		academics = append(academics, AcademicHistoryToORM(academic))
 	}
 
 	var jobs []*JobHistory
-	j := c.Jobs
+	j := m.Jobs
 	for _, job := range j {
 		jobs = append(jobs, JobHistoryToORM(job))
 	}
 
-	b, err := ptypes.Timestamp(c.Birthday)
-	birthday := &b
-	if err != nil {
-		birthday = (*time.Time)(nil)
-	}
-
-	ca, err := ptypes.Timestamp(c.CreatedAt)
-	createdAt := &ca
-	if err != nil {
-		createdAt = (*time.Time)(nil)
-	}
-
-	ua, err := ptypes.Timestamp(c.UpdatedAt)
-	updatedAt := &ua
-	if err != nil {
-		updatedAt = (*time.Time)(nil)
-	}
-
-	da, err := ptypes.Timestamp(c.DeletedAt)
-	deletedAt := &da
-	if err != nil {
-		deletedAt = (*time.Time)(nil)
-	}
+	birthday := helpers.ProtoTimeToTime(m.Birthday)
+	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
+	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
 
 	return &Candidate{
-		ID:                     c.Id,
-		AuthID:                 c.AuthId,
-		FirstName:              c.FirstName,
-		LastName:               c.LastName,
-		Email:                  c.Email,
-		ContactNumber:          c.ContactNumber,
-		Picture:                c.Picture,
-		Gender:                 c.Gender,
-		Nationality:            c.Nationality,
-		ResidenceCity:          c.ResidenceCity,
-		ExpectedSalaryCurrency: c.ExpectedSalaryCurrency,
-		ExpectedSalary:         c.ExpectedSalary,
-		LinkedInURL:            c.LinkedInUrl,
-		SCMURL:                 c.ScmUrl,
-		WebsiteURL:             c.WebsiteUrl,
-		EducationLevel:         c.EducationLevel,
-		Summary:                c.Summary,
+		ID:                     m.Id,
+		AuthID:                 m.AuthId,
+		FirstName:              m.FirstName,
+		LastName:               m.LastName,
+		Email:                  m.Email,
+		ContactNumber:          m.ContactNumber,
+		Picture:                m.Picture,
+		Gender:                 m.Gender,
+		Nationality:            m.Nationality,
+		ResidenceCity:          m.ResidenceCity,
+		ExpectedSalaryCurrency: m.ExpectedSalaryCurrency,
+		ExpectedSalary:         m.ExpectedSalary,
+		LinkedInURL:            m.LinkedInUrl,
+		SCMURL:                 m.ScmUrl,
+		WebsiteURL:             m.WebsiteUrl,
+		EducationLevel:         m.EducationLevel,
+		Summary:                m.Summary,
 		Birthday:               birthday,
-		NoticePeriod:           c.NoticePeriod,
+		NoticePeriod:           m.NoticePeriod,
 		Skills:                 skills,
 		Academics:              academics,
 		Jobs:                   jobs,
@@ -85,99 +64,76 @@ func CandidateToORM(c *pb.Candidate) *Candidate {
 }
 
 // SkillToORM maps the proto Skill model to the ORM model
-func SkillToORM(s *pb.Skill) *Skill {
-	if s == nil {
+func SkillToORM(m *pb.Skill) *Skill {
+	if m == nil {
 		return nil
 	}
 	return &Skill{
-		ID:   s.Id,
-		Name: s.Name,
+		ID:   m.Id,
+		Name: m.Name,
 	}
 }
 
 // UserSkillToORM maps the proto Skill model to the ORM model
-func UserSkillToORM(us *pb.UserSkill) *UserSkill {
-	if us == nil {
+func UserSkillToORM(m *pb.UserSkill) *UserSkill {
+	if m == nil {
 		return nil
 	}
 
-	ca, err := ptypes.Timestamp(us.CreatedAt)
-	createdAt := &ca
-	if err != nil {
-		createdAt = (*time.Time)(nil)
-	}
-
-	ua, err := ptypes.Timestamp(us.UpdatedAt)
-	updatedAt := &ua
-	if err != nil {
-		updatedAt = (*time.Time)(nil)
-	}
+	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
 
 	return &UserSkill{
-		ID:          us.Id,
-		CandidateID: us.CandidateId,
-		SkillID:     us.SkillId,
+		ID:          m.Id,
+		CandidateID: m.CandidateId,
+		SkillID:     m.SkillId,
 		CreatedAt:   createdAt,
 		UpdatedAt:   updatedAt,
 	}
 }
 
 // InstitutionToORM maps the proto Institution model to the ORM model
-func InstitutionToORM(i *pb.Institution) *Institution {
-	if i == nil {
+func InstitutionToORM(m *pb.Institution) *Institution {
+	if m == nil {
 		return nil
 	}
 	return &Institution{
-		ID:      i.Id,
-		Country: i.Country,
-		Name:    i.Name,
+		ID:      m.Id,
+		Country: m.Country,
+		Name:    m.Name,
 	}
 }
 
 // CourseToORM maps the proto Course model to the ORM model
-func CourseToORM(c *pb.Course) *Course {
-	if c == nil {
+func CourseToORM(m *pb.Course) *Course {
+	if m == nil {
 		return nil
 	}
 	return &Course{
-		ID:    c.Id,
-		Level: c.Level,
-		Name:  c.Name,
+		ID:    m.Id,
+		Level: m.Level,
+		Name:  m.Name,
 	}
 }
 
 // AcademicHistoryToORM maps the proto AcademicHistory model to the ORM model
-func AcademicHistoryToORM(a *pb.AcademicHistory) *AcademicHistory {
-	if a == nil {
+func AcademicHistoryToORM(m *pb.AcademicHistory) *AcademicHistory {
+	if m == nil {
 		return nil
 	}
 
-	ca, err := ptypes.Timestamp(a.CreatedAt)
-	createdAt := &ca
-	if err != nil {
-		createdAt = (*time.Time)(nil)
-	}
-
-	ua, err := ptypes.Timestamp(a.UpdatedAt)
-	updatedAt := &ua
-	if err != nil {
-		updatedAt = (*time.Time)(nil)
-	}
-
-	da, err := ptypes.Timestamp(a.DeletedAt)
-	deletedAt := &da
-	if err != nil {
-		deletedAt = (*time.Time)(nil)
-	}
+	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
+	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
 
 	return &AcademicHistory{
-		ID:            a.Id,
-		CandidateID:   a.CandidateId,
-		InstitutionID: a.InstitutionId,
-		Institution:   InstitutionToORM(a.Institution),
-		CourseID:      a.CourseId,
-		Course:        CourseToORM(a.Course),
-		YearObtained:  a.YearObtained,
+		ID:            m.Id,
+		CandidateID:   m.CandidateId,
+		InstitutionID: m.InstitutionId,
+		Institution:   InstitutionToORM(m.Institution),
+		CourseID:      m.CourseId,
+		Course:        CourseToORM(m.Course),
+		YearObtained:  m.YearObtained,
 		CreatedAt:     createdAt,
 		UpdatedAt:     updatedAt,
 		DeletedAt:     deletedAt,
@@ -185,78 +141,54 @@ func AcademicHistoryToORM(a *pb.AcademicHistory) *AcademicHistory {
 }
 
 // CompanyToORM maps the proto Company model to the ORM model
-func CompanyToORM(c *pb.Company) *Company {
-	if c == nil {
+func CompanyToORM(m *pb.Company) *Company {
+	if m == nil {
 		return nil
 	}
 	return &Company{
-		ID:   c.Id,
-		Name: c.Name,
+		ID:   m.Id,
+		Name: m.Name,
 	}
 }
 
 // DepartmentToORM maps the proto Department model to the ORM model
-func DepartmentToORM(d *pb.Department) *Department {
-	if d == nil {
+func DepartmentToORM(m *pb.Department) *Department {
+	if m == nil {
 		return nil
 	}
 	return &Department{
-		ID:   d.Id,
-		Name: d.Name,
+		ID:   m.Id,
+		Name: m.Name,
 	}
 }
 
 // JobHistoryToORM maps the proto JobHistory model to the ORM model
-func JobHistoryToORM(j *pb.JobHistory) *JobHistory {
-	if j == nil {
+func JobHistoryToORM(m *pb.JobHistory) *JobHistory {
+	if m == nil {
 		return nil
 	}
 
-	sd, err := ptypes.Timestamp(j.StartDate)
-	startDate := &sd
-	if err != nil {
-		startDate = (*time.Time)(nil)
-	}
-
-	ed, err := ptypes.Timestamp(j.EndDate)
-	endDate := &ed
-	if err != nil {
-		endDate = (*time.Time)(nil)
-	}
-
-	ca, err := ptypes.Timestamp(j.CreatedAt)
-	createdAt := &ca
-	if err != nil {
-		createdAt = (*time.Time)(nil)
-	}
-
-	ua, err := ptypes.Timestamp(j.UpdatedAt)
-	updatedAt := &ua
-	if err != nil {
-		updatedAt = (*time.Time)(nil)
-	}
-
-	da, err := ptypes.Timestamp(j.DeletedAt)
-	deletedAt := &da
-	if err != nil {
-		deletedAt = (*time.Time)(nil)
-	}
+	startDate := helpers.ProtoTimeToTime(m.StartDate)
+	endDate := helpers.ProtoTimeToTime(m.EndDate)
+	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
+	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
 
 	return &JobHistory{
-		ID:             j.Id,
-		CandidateID:    j.CandidateId,
-		CompanyID:      j.CompanyId,
-		Company:        CompanyToORM(j.Company),
-		DepartmentID:   j.DepartmentId,
-		Department:     DepartmentToORM(j.Department),
-		Country:        j.Country,
-		City:           j.City,
-		Title:          j.Title,
+		ID:             m.Id,
+		CandidateID:    m.CandidateId,
+		CompanyID:      m.CompanyId,
+		Company:        CompanyToORM(m.Company),
+		DepartmentID:   m.DepartmentId,
+		Department:     DepartmentToORM(m.Department),
+		Country:        m.Country,
+		City:           m.City,
+		Title:          m.Title,
 		StartDate:      startDate,
 		EndDate:        endDate,
-		SalaryCurrency: j.SalaryCurrency,
-		Salary:         j.Salary,
-		Description:    j.Description,
+		SalaryCurrency: m.SalaryCurrency,
+		Salary:         m.Salary,
+		Description:    m.Description,
 		CreatedAt:      createdAt,
 		UpdatedAt:      updatedAt,
 		DeletedAt:      deletedAt,

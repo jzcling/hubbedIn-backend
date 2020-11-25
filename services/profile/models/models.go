@@ -14,7 +14,7 @@ func init() {
 	orm.RegisterTable((*CompanyDepartment)(nil))
 }
 
-// Candidate declares model for Candidate
+// Candidate declares the model for Candidate
 type Candidate struct {
 	tableName struct{} `pg:"candidates,alias:c"`
 
@@ -45,7 +45,7 @@ type Candidate struct {
 	DeletedAt              *time.Time         `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
-// Skill declares model for Skill
+// Skill declares the model for Skill
 type Skill struct {
 	tableName struct{} `pg:"skills,alias:s"`
 
@@ -54,7 +54,7 @@ type Skill struct {
 	Candidates []*Candidate `json:"candidates,omitempty" pg:"many2many:users_skills"`
 }
 
-// UserSkill declares model for UserSkill
+// UserSkill declares the model for UserSkill
 type UserSkill struct {
 	tableName struct{} `pg:"users_skills,alias:us"`
 
@@ -65,7 +65,7 @@ type UserSkill struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
 }
 
-// Institution declares model for Institution
+// Institution declares the model for Institution
 type Institution struct {
 	tableName struct{} `pg:"institutions,alias:i"`
 
@@ -75,7 +75,7 @@ type Institution struct {
 	Courses []*Course `json:"courses,omitempty" pg:"many2many:courses_institutions"`
 }
 
-// Course declares model for Course
+// Course declares the model for Course
 type Course struct {
 	tableName struct{} `pg:"courses,alias:cr"`
 
@@ -85,7 +85,7 @@ type Course struct {
 	Institutions []*Institution `json:"institutions,omitempty" pg:"many2many:courses_institutions"`
 }
 
-// CourseInstitution declares model for CourseInstitution
+// CourseInstitution declares the model for CourseInstitution
 type CourseInstitution struct {
 	tableName struct{} `pg:"courses_institutions,alias:ci"`
 
@@ -94,7 +94,7 @@ type CourseInstitution struct {
 	InstitutionID uint64 `json:"institution_id" pg:",notnull"`
 }
 
-// AcademicHistory declares model for AcademicHistory
+// AcademicHistory declares the model for AcademicHistory
 type AcademicHistory struct {
 	tableName struct{} `pg:"academic_histories,alias:ah"`
 
@@ -111,7 +111,7 @@ type AcademicHistory struct {
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
-// Company declares model for Company
+// Company declares the model for Company
 type Company struct {
 	tableName struct{} `pg:"companies,alias:co"`
 
@@ -120,7 +120,7 @@ type Company struct {
 	Departments []*Department `json:"departments,omitempty" pg:"many2many:companies_departments"`
 }
 
-// Department declares model for Department
+// Department declares the model for Department
 type Department struct {
 	tableName struct{} `pg:"departments,alias:d"`
 
@@ -129,7 +129,7 @@ type Department struct {
 	Companies []*Company `json:"companies,omitempty" pg:"many2many:companies_departments"`
 }
 
-// CompanyDepartment declares model for CourseInstitution
+// CompanyDepartment declares the model for CourseInstitution
 type CompanyDepartment struct {
 	tableName struct{} `pg:"companies_departments,alias:cd"`
 
@@ -138,7 +138,7 @@ type CompanyDepartment struct {
 	DepartmentID uint64 `json:"department_id" pg:",notnull"`
 }
 
-// JobHistory declares model for JobHistory
+// JobHistory declares the model for JobHistory
 type JobHistory struct {
 	tableName struct{} `pg:"job_histories,alias:jh"`
 
