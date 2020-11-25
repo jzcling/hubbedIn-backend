@@ -9,7 +9,7 @@ type Project struct {
 	tableName struct{} `pg:"projects,alias:p"`
 
 	ID        uint64     `json:"id"`
-	Name      string     `json:"name" pg:"notnull"`
+	Name      string     `json:"name" pg:",notnull"`
 	RepoURL   string     `json:"repo_url,omitempty" pg:"repo_url,notnull,unique"`
 	Ratings   []*Rating  `json:"ratings,omitempty" pg:"rel:has-many"`
 	CreatedAt *time.Time `json:"created_at,omitempty" pg:"default:now()"`
@@ -19,7 +19,7 @@ type Project struct {
 
 // CandidateProject declares the model for the pivot table between Candidate and Project
 type CandidateProject struct {
-	tableName struct{} `pg:"candidates_project,alias:cp"`
+	tableName struct{} `pg:"candidates_projects,alias:cp"`
 
 	ID          uint64 `json:"id"`
 	CandidateID uint64 `json:"candidate_id"`

@@ -16,12 +16,13 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 		return false
 	}
 
-	if m1.FirstName != m2.(*Candidate).FirstName ||
+	if m1.AuthID != m2.(*Candidate).AuthID ||
+		m1.FirstName != m2.(*Candidate).FirstName ||
 		m1.LastName != m2.(*Candidate).LastName ||
 		m1.Email != m2.(*Candidate).Email ||
 		m1.ContactNumber != m2.(*Candidate).ContactNumber ||
-		m1.Gender != m2.(*Candidate).Gender ||
 		m1.Picture != m2.(*Candidate).Picture ||
+		m1.Gender != m2.(*Candidate).Gender ||
 		m1.Nationality != m2.(*Candidate).Nationality ||
 		m1.ResidenceCity != m2.(*Candidate).ResidenceCity ||
 		m1.ExpectedSalaryCurrency != m2.(*Candidate).ExpectedSalaryCurrency ||

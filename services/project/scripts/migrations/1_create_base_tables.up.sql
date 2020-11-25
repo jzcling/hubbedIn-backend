@@ -7,8 +7,8 @@ create table if not exists projects (
     deleted_at timestamptz
 );
 
-create index on candidates (id, deleted_at);
-create index on candidates (repo_url, deleted_at);
+create index on projects (id, deleted_at);
+create index on projects (repo_url, deleted_at);
 
 create table if not exists candidates_projects (
     id bigserial not null primary key,

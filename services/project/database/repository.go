@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	pg "github.com/go-pg/pg/v10"
-	"github.com/go-pg/pg/v10/orm"
 	"github.com/pkg/errors"
 
 	"in-backend/services/project"
@@ -29,7 +28,7 @@ func NewRepository(db *pg.DB) project.Repository {
 // CreateProject creates a new Project
 func (r *repository) CreateProject(ctx context.Context, m *models.Project) (*models.Project, error) {
 	if m == nil {
-		return nil, errors.New("Input parameter project is nil")
+		return nil, nilErr("project")
 	}
 
 	_, err := r.DB.WithContext(ctx).Model(m).
@@ -37,7 +36,7 @@ func (r *repository) CreateProject(ctx context.Context, m *models.Project) (*mod
 		Returning("*").
 		Insert()
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to insert project %v", m)
+		return nil, failedToInsertErr(err, "project", m)
 	}
 
 	return m, nil
@@ -71,7 +70,7 @@ func (r *repository) GetProjectByID(ctx context.Context, id uint64) (*models.Pro
 // UpdateProject updates a Project
 func (r *repository) UpdateProject(ctx context.Context, m *models.Project) (*models.Project, error) {
 	if m == nil {
-		return nil, errors.New("Project is nil")
+		return nil, nilErr("project")
 	}
 
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
@@ -79,7 +78,7 @@ func (r *repository) UpdateProject(ctx context.Context, m *models.Project) (*mod
 		Returning("*").
 		Update()
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Cannot update project with id %v", m.ID))
+		return nil, updateErr(err, "project", m.ID)
 	}
 
 	return m, nil
@@ -90,7 +89,7 @@ func (r *repository) DeleteProject(ctx context.Context, id uint64) error {
 	m := &models.Project{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete project with id %v", id))
+		return deleteErr(err, "project", id)
 	}
 	return nil
 }
@@ -100,12 +99,12 @@ func (r *repository) DeleteProject(ctx context.Context, id uint64) error {
 // CreateCandidateProject creates a new CandidateProject
 func (r *repository) CreateCandidateProject(ctx context.Context, m *models.CandidateProject) error {
 	if m == nil {
-		return errors.New("Input parameter candidate project is nil")
+		return nilErr("candidate project")
 	}
 
 	_, err := r.DB.WithContext(ctx).Model(m).Insert()
 	if err != nil {
-		return errors.Wrapf(err, "Failed to insert candidate project %v", m)
+		return failedToInsertErr(err, "candidate project", m)
 	}
 
 	return nil
@@ -126,11 +125,22 @@ func (r *repository) DeleteCandidateProject(ctx context.Context, cid, pid uint64
 
 // GetAllProjectsByCandidate returns all Projects by a Candidate
 func (r *repository) GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error) {
+	cp := &models.CandidateProject{CandidateID: cid}
+	var pids []uint64
+	err := r.DB.WithContext(ctx).Model(cp).
+		Where("candidate_id = ?", cid).
+		Returning("project_id").
+		Select(&pids)
+	if err != nil {
+		return nil, candidateIDErr(err, cid)
+	}
+	fmt.Printf("test")
+	fmt.Printf("%v\n", pids)
+
 	var m []*models.Project
-	err := r.DB.WithContext(ctx).Model(&m).
-		Relation(relProjectRating, func(q *orm.Query) (*orm.Query, error) {
-			return q.Where("candidate_id = ?", cid), nil
-		}).
+	err = r.DB.WithContext(ctx).Model(&m).
+		Where("p.id in (?)", pg.In(pids)).
+		Relation(relProjectRating).
 		Returning("*").
 		Select()
 	return m, err
@@ -141,12 +151,12 @@ func (r *repository) GetAllProjectsByCandidate(ctx context.Context, cid uint64) 
 // CreateRating creates a new Rating
 func (r *repository) CreateRating(ctx context.Context, m *models.Rating) error {
 	if m == nil {
-		return errors.New("Input parameter rating is nil")
+		return nilErr("rating")
 	}
 
 	_, err := r.DB.WithContext(ctx).Model(m).Insert()
 	if err != nil {
-		return errors.Wrapf(err, "Failed to insert rating %v", m)
+		return failedToInsertErr(err, "rating", m)
 	}
 
 	return nil
@@ -159,7 +169,7 @@ func (r *repository) DeleteRating(ctx context.Context, id uint64) error {
 		Where(filRatingID, id).
 		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete rating with id %v ", id))
+		return deleteErr(err, "rating", id)
 	}
 	return nil
 }

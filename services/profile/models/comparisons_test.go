@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -16,6 +15,7 @@ func TestCandidateIsEqual(t *testing.T) {
 
 	m1 := (*Candidate)(nil)
 	m2 := &Candidate{
+		AuthID:                 "authId",
 		FirstName:              "first",
 		LastName:               "last",
 		Email:                  "new@email.com",
@@ -37,8 +37,9 @@ func TestCandidateIsEqual(t *testing.T) {
 		UpdatedAt:              &timeAt,
 		DeletedAt:              &timeAt,
 	}
+	m3 := &Candidate{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestSkillIsEqual(t *testing.T) {
@@ -46,8 +47,9 @@ func TestSkillIsEqual(t *testing.T) {
 	m2 := &Skill{
 		Name: "java",
 	}
+	m3 := &Skill{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestUserSkillIsEqual(t *testing.T) {
@@ -59,8 +61,9 @@ func TestUserSkillIsEqual(t *testing.T) {
 		CreatedAt:   &timeAt,
 		UpdatedAt:   &timeAt,
 	}
+	m3 := &UserSkill{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestInstitutionIsEqual(t *testing.T) {
@@ -69,8 +72,9 @@ func TestInstitutionIsEqual(t *testing.T) {
 		Name:    "national university of singapore",
 		Country: "singapore",
 	}
+	m3 := &Institution{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestCourseIsEqual(t *testing.T) {
@@ -79,8 +83,9 @@ func TestCourseIsEqual(t *testing.T) {
 		Name:  "computer science",
 		Level: "bachelor",
 	}
+	m3 := &Course{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestAcademicHistoryIsEqual(t *testing.T) {
@@ -95,8 +100,9 @@ func TestAcademicHistoryIsEqual(t *testing.T) {
 		UpdatedAt:     &timeAt,
 		DeletedAt:     &timeAt,
 	}
+	m3 := &AcademicHistory{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestCompanyIsEqual(t *testing.T) {
@@ -104,8 +110,9 @@ func TestCompanyIsEqual(t *testing.T) {
 	m2 := &Company{
 		Name: "hubbed",
 	}
+	m3 := &Company{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestDepartmentIsEqual(t *testing.T) {
@@ -113,8 +120,9 @@ func TestDepartmentIsEqual(t *testing.T) {
 	m2 := &Department{
 		Name: "tech",
 	}
+	m3 := &Department{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestJobHistoryIsEqual(t *testing.T) {
@@ -136,16 +144,15 @@ func TestJobHistoryIsEqual(t *testing.T) {
 		UpdatedAt:      &timeAt,
 		DeletedAt:      &timeAt,
 	}
+	m3 := &JobHistory{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
-func testIsEqual(t *testing.T, m1, m2 Comparator) {
+func testIsEqual(t *testing.T, m1, m2 Comparator, m3 interface{}) {
 	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
 	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
 
-	var emptyStruct struct{}
-	m3 := &emptyStruct
 	copier.Copy(m3, m2)
 	values := reflect.ValueOf(m3).Elem()
 	for i := 0; i < values.NumField(); i++ {
@@ -171,7 +178,6 @@ func testIsEqual(t *testing.T, m1, m2 Comparator) {
 			}
 
 			if fieldName == "ID" {
-				fmt.Println("id")
 				assert.Condition(t, func() bool { return m2.IsEqual(m3) })
 			}
 

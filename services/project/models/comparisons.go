@@ -18,9 +18,9 @@ func (m1 *Project) IsEqual(m2 interface{}) bool {
 
 	if m1.Name != m2.(*Project).Name ||
 		m1.RepoURL != m2.(*Project).RepoURL ||
-		m1.CreatedAt != m2.(*Project).CreatedAt ||
-		m1.UpdatedAt != m2.(*Project).UpdatedAt ||
-		m1.DeletedAt != m2.(*Project).DeletedAt {
+		*m1.CreatedAt != *m2.(*Project).CreatedAt ||
+		*m1.UpdatedAt != *m2.(*Project).UpdatedAt ||
+		*m1.DeletedAt != *m2.(*Project).DeletedAt {
 		return false
 	}
 	return true
@@ -63,7 +63,7 @@ func (m1 *Rating) IsEqual(m2 interface{}) bool {
 		m1.Coverage != m2.(*Rating).Coverage ||
 		m1.Duplications != m2.(*Rating).Duplications ||
 		m1.Lines != m2.(*Rating).Lines ||
-		m1.CreatedAt != m2.(*Rating).CreatedAt {
+		*m1.CreatedAt != *m2.(*Rating).CreatedAt {
 		return false
 	}
 	return true

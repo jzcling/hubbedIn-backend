@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -21,8 +20,9 @@ func TestProjectIsEqual(t *testing.T) {
 		UpdatedAt: &timeAt,
 		DeletedAt: &timeAt,
 	}
+	m3 := &Project{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestRatingIsEqual(t *testing.T) {
@@ -39,8 +39,9 @@ func TestRatingIsEqual(t *testing.T) {
 		Lines:                 1,
 		CreatedAt:             &timeAt,
 	}
+	m3 := &Rating{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
 func TestCandidateProjectIsEqual(t *testing.T) {
@@ -49,16 +50,15 @@ func TestCandidateProjectIsEqual(t *testing.T) {
 		CandidateID: 1,
 		ProjectID:   2,
 	}
+	m3 := &CandidateProject{}
 
-	testIsEqual(t, m1, m2)
+	testIsEqual(t, m1, m2, m3)
 }
 
-func testIsEqual(t *testing.T, m1, m2 Comparator) {
+func testIsEqual(t *testing.T, m1, m2 Comparator, m3 interface{}) {
 	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
 	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
 
-	var emptyStruct struct{}
-	m3 := &emptyStruct
 	copier.Copy(m3, m2)
 	values := reflect.ValueOf(m3).Elem()
 	for i := 0; i < values.NumField(); i++ {
@@ -84,7 +84,6 @@ func testIsEqual(t *testing.T, m1, m2 Comparator) {
 			}
 
 			if fieldName == "ID" {
-				fmt.Println("id")
 				assert.Condition(t, func() bool { return m2.IsEqual(m3) })
 			}
 

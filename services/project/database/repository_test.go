@@ -2,10 +2,10 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"in-backend/services/project"
 	"in-backend/services/project/configs"
 	"in-backend/services/project/models"
+	testmodels "in-backend/services/project/tests/models"
 	"strings"
 	"testing"
 	"time"
@@ -16,9 +16,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+type test func(t *testing.T, r project.Repository, db *pg.DB)
+
 var (
-	ctx context.Context = context.Background()
-	now time.Time       = time.Now()
+	ctx         context.Context = context.Background()
+	now         time.Time       = time.Now()
+	testRoutine []test          = []test{
+		testCreateProject,
+		testGetAllProjects,
+		testGetProjectByID,
+		testUpdateProject,
+		testDeleteProject,
+
+		testCreateCandidateProject,
+		testDeleteCandidateProject,
+		testGetAllProjectsByCandidate,
+
+		testCreateRating,
+		testDeleteRating,
+	}
 )
 
 func TestNewRepository(t *testing.T) {
@@ -40,13 +56,20 @@ func TestAllCRUD(t *testing.T) {
 	c, err := setupPGContainer(opt)
 	require.NoError(t, err)
 
-	db, err := setupDB(c, opt, "../scripts/migrations/")
+	db, err := setupDB(c, opt, "../tests/migrations/")
 	require.NoError(t, err)
 
 	r := NewRepository(db)
 
-	// List of all tests to run in test suite
-	testCreateProject(t, r, db)
+	// run all tests in test suite
+	for _, test := range testRoutine {
+		tx, err := db.Begin()
+		require.NoError(t, err)
+
+		test(t, r, db)
+
+		tx.Rollback()
+	}
 
 	cleanDb(db)
 	cleanContainer(c)
@@ -55,15 +78,8 @@ func TestAllCRUD(t *testing.T) {
 /* --------------- Project --------------- */
 
 func testCreateProject(t *testing.T, r project.Repository, db *pg.DB) {
-	testNoName := &models.Project{
-		RepoURL:   "repo",
-		CreatedAt: &now,
-		UpdatedAt: &now,
-	}
-
-	test := *testNoName
-	test.Name = "name"
-
+	testNoName := testmodels.ProjectNoName
+	test := testmodels.ProjectValid
 	testDupRepoURL := test
 
 	type args struct {
@@ -82,9 +98,9 @@ func testCreateProject(t *testing.T, r project.Repository, db *pg.DB) {
 		exp  expect
 	}{
 		{"nil", args{ctx, nil}, expect{nil, nilErr("project")}},
-		{"failed not null", args{ctx, testNoName}, expect{nil, failedToInsertErr("project")}},
-		{"valid", args{ctx, &test}, expect{&test, nil}},
-		{"failed unique", args{ctx, &testDupRepoURL}, expect{nil, failedToInsertErr("project")}},
+		{"failed not null", args{ctx, testNoName}, expect{nil, failedToInsertErr(nil, "project", testNoName)}},
+		{"valid", args{ctx, test}, expect{test, nil}},
+		{"failed unique", args{ctx, testDupRepoURL}, expect{nil, errors.New("Failed to insert project")}},
 	}
 
 	for _, tt := range tests {
@@ -100,10 +116,332 @@ func testCreateProject(t *testing.T, r project.Repository, db *pg.DB) {
 	}
 }
 
-func failedToInsertErr(s string) error {
-	return errors.New(fmt.Sprintf("Failed to insert %s", s))
+func testGetAllProjects(t *testing.T, r project.Repository, db *pg.DB) {
+	count, err := db.WithContext(ctx).Model((*models.Project)(nil)).Count()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		f   *models.ProjectFilters
+	}
+
+	type expect struct {
+		cnt int
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"no filter", args{ctx, nil}, expect{count, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := r.GetAllProjects(tt.args.ctx)
+			assert.Equal(t, tt.exp.cnt, len(got))
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
 }
 
-func nilErr(s string) error {
-	return errors.New(fmt.Sprintf("Input parameter %s is nil", s))
+func testGetProjectByID(t *testing.T, r project.Repository, db *pg.DB) {
+	existing := &models.Project{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		id  uint64
+	}
+
+	type expect struct {
+		output *models.Project
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"id exists", args{ctx, existing.ID}, expect{&models.Project{ID: existing.ID}, nil}},
+		{"id 10000", args{ctx, 10000}, expect{nil, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := r.GetProjectByID(tt.args.ctx, tt.args.id)
+			if tt.exp.output != nil && got != nil {
+				assert.Equal(t, tt.exp.output.ID, got.ID)
+			} else {
+				assert.Equal(t, tt.exp.output, got)
+			}
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testUpdateProject(t *testing.T, r project.Repository, db *pg.DB) {
+	existing := &models.Project{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
+
+	updated := *existing
+	updated.Name = "newname"
+
+	type args struct {
+		ctx   context.Context
+		input *models.Project
+	}
+
+	type expect struct {
+		output *models.Project
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"nil", args{ctx, nil}, expect{nil, nilErr("project")}},
+		{"id existing", args{ctx, &updated}, expect{&updated, nil}},
+		{"id 10000", args{ctx, &models.Project{ID: 10000}}, expect{nil, updateErr(nil, "project", 10000)}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := r.UpdateProject(tt.args.ctx, tt.args.input)
+			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testDeleteProject(t *testing.T, r project.Repository, db *pg.DB) {
+	existing := &models.Project{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		id  uint64
+	}
+
+	type expect struct {
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"id existing", args{ctx, existing.ID}, expect{nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := r.DeleteProject(tt.args.ctx, tt.args.id)
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+/* --------------- Candidate Project --------------- */
+
+func testCreateCandidateProject(t *testing.T, r project.Repository, db *pg.DB) {
+	test := testmodels.CandidateProjectValid
+
+	type args struct {
+		ctx   context.Context
+		input *models.CandidateProject
+	}
+
+	type expect struct {
+		output *models.CandidateProject
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"nil", args{ctx, nil}, expect{nil, nilErr("candidate project")}},
+		{"valid", args{ctx, test}, expect{test, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := r.CreateCandidateProject(tt.args.ctx, tt.args.input)
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testDeleteCandidateProject(t *testing.T, r project.Repository, db *pg.DB) {
+	existing := &models.CandidateProject{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		cid uint64
+		pid uint64
+	}
+
+	type expect struct {
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"id existing", args{ctx, existing.CandidateID, existing.ProjectID}, expect{nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := r.DeleteCandidateProject(tt.args.ctx, tt.args.cid, tt.args.pid)
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testGetAllProjectsByCandidate(t *testing.T, r project.Repository, db *pg.DB) {
+	cid := 1
+	count, err := db.WithContext(ctx).Model((*models.CandidateProject)(nil)).
+		Where("candidate_id = ?", cid).
+		Count()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		cid uint64
+	}
+
+	type expect struct {
+		cnt int
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"existing", args{ctx, 1}, expect{count, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := r.GetAllProjectsByCandidate(tt.args.ctx, tt.args.cid)
+			assert.Equal(t, tt.exp.cnt, len(got))
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+/* --------------- Rating --------------- */
+
+func testCreateRating(t *testing.T, r project.Repository, db *pg.DB) {
+	test := testmodels.RatingValid
+
+	type args struct {
+		ctx   context.Context
+		input *models.Rating
+	}
+
+	type expect struct {
+		output *models.Rating
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"nil", args{ctx, nil}, expect{nil, nilErr("rating")}},
+		{"valid", args{ctx, test}, expect{test, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := r.CreateRating(tt.args.ctx, tt.args.input)
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+func testDeleteRating(t *testing.T, r project.Repository, db *pg.DB) {
+	existing := &models.Rating{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
+
+	type args struct {
+		ctx context.Context
+		id  uint64
+	}
+
+	type expect struct {
+		err error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"id existing", args{ctx, existing.ID}, expect{nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := r.DeleteRating(tt.args.ctx, tt.args.id)
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
 }

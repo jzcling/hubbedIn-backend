@@ -108,10 +108,12 @@ func TestCandidateToProto(t *testing.T) {
 
 	expect := &pb.Candidate{
 		Id:                     1,
+		AuthId:                 "authId",
 		FirstName:              "first",
 		LastName:               "last",
 		Email:                  "email",
 		ContactNumber:          "contact",
+		Picture:                "picture",
 		Gender:                 "male",
 		Nationality:            "singapore",
 		ResidenceCity:          "singapore",
@@ -119,7 +121,9 @@ func TestCandidateToProto(t *testing.T) {
 		ExpectedSalary:         1000,
 		LinkedInUrl:            "linkedin",
 		ScmUrl:                 "github",
+		WebsiteUrl:             "website",
 		EducationLevel:         "bachelor",
+		Summary:                "summary",
 		Birthday:               testPbTime,
 		NoticePeriod:           1,
 		Skills: []*pb.Skill{

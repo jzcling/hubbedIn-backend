@@ -10,7 +10,7 @@ type Repository interface {
 	/* --------------- Project --------------- */
 
 	// CreateProject creates a new candidate
-	CreateProject(ctx context.Context, c *models.Project) (*models.Project, error)
+	CreateProject(ctx context.Context, m *models.Project) (*models.Project, error)
 
 	// GetAllProjects returns all candidates
 	GetAllProjects(ctx context.Context) ([]*models.Project, error)
@@ -19,7 +19,7 @@ type Repository interface {
 	GetProjectByID(ctx context.Context, id uint64) (*models.Project, error)
 
 	// UpdateProject updates a candidate
-	UpdateProject(ctx context.Context, c *models.Project) (*models.Project, error)
+	UpdateProject(ctx context.Context, m *models.Project) (*models.Project, error)
 
 	// DeleteProject deletes a candidate by ID
 	DeleteProject(ctx context.Context, id uint64) error
@@ -27,7 +27,7 @@ type Repository interface {
 	/* --------------- Candidate Project --------------- */
 
 	// CreateCandidateProject creates a new Candidate Project
-	CreateCandidateProject(ctx context.Context, c *models.CandidateProject) error
+	CreateCandidateProject(ctx context.Context, m *models.CandidateProject) error
 
 	// DeleteCandidateroject deletes a Candidate Project
 	DeleteCandidateProject(ctx context.Context, cid, pid uint64) error
@@ -38,7 +38,7 @@ type Repository interface {
 	/* --------------- Rating --------------- */
 
 	// CreateRating creates a new Project Rating
-	CreateRating(ctx context.Context, c *models.Rating) error
+	CreateRating(ctx context.Context, m *models.Rating) error
 
 	// DeleteRating deletes a Project Rating
 	DeleteRating(ctx context.Context, id uint64) error

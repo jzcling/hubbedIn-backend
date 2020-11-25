@@ -108,10 +108,12 @@ func TestCandidateToORM(t *testing.T) {
 
 	expect := &Candidate{
 		ID:                     1,
+		AuthID:                 "authId",
 		FirstName:              "first",
 		LastName:               "last",
 		Email:                  "email",
 		ContactNumber:          "contact",
+		Picture:                "picture",
 		Gender:                 "male",
 		Nationality:            "singapore",
 		ResidenceCity:          "singapore",
@@ -119,7 +121,9 @@ func TestCandidateToORM(t *testing.T) {
 		ExpectedSalary:         1000,
 		LinkedInURL:            "linkedin",
 		SCMURL:                 "github",
+		WebsiteURL:             "website",
 		EducationLevel:         "bachelor",
+		Summary:                "summary",
 		Birthday:               &testTime,
 		NoticePeriod:           1,
 		Skills: []*Skill{
