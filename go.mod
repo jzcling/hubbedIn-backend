@@ -9,6 +9,7 @@ require (
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
+	github.com/jinzhu/copier v0.0.0-20201025035756-632e723a6687
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/oklog/oklog v0.3.2

@@ -88,7 +88,7 @@ func setupDB(c *container, opt *pg.Options, migrationsDir string) (*pg.DB, error
 }
 
 func cleanContainer(c *container) error {
-	// When you're done, kill and remove the container
+	// kill and remove the container
 	err := c.Pool.Purge(c.Resource)
 	if err != nil {
 		return errors.Wrap(err, "Failed to purge docker pool")

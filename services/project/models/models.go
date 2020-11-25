@@ -9,8 +9,8 @@ type Project struct {
 	tableName struct{} `pg:"projects,alias:p"`
 
 	ID        uint64     `json:"id"`
-	Name      string     `json:"name"`
-	RepoURL   string     `json:"repo_url,omitempty" pg:"repo_url,unique"`
+	Name      string     `json:"name" pg:"notnull"`
+	RepoURL   string     `json:"repo_url,omitempty" pg:"repo_url,notnull,unique"`
 	Ratings   []*Rating  `json:"ratings,omitempty" pg:"rel:has-many"`
 	CreatedAt *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty" pg:"default:now()"`

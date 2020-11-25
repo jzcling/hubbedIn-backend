@@ -1,10 +1,12 @@
 package models
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 	"time"
 
+	"github.com/jinzhu/copier"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,40 +38,7 @@ func TestCandidateIsEqual(t *testing.T) {
 		DeletedAt:              &timeAt,
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestSkillIsEqual(t *testing.T) {
@@ -78,40 +47,7 @@ func TestSkillIsEqual(t *testing.T) {
 		Name: "java",
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestUserSkillIsEqual(t *testing.T) {
@@ -124,40 +60,7 @@ func TestUserSkillIsEqual(t *testing.T) {
 		UpdatedAt:   &timeAt,
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestInstitutionIsEqual(t *testing.T) {
@@ -167,40 +70,7 @@ func TestInstitutionIsEqual(t *testing.T) {
 		Country: "singapore",
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestCourseIsEqual(t *testing.T) {
@@ -210,40 +80,7 @@ func TestCourseIsEqual(t *testing.T) {
 		Level: "bachelor",
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestAcademicHistoryIsEqual(t *testing.T) {
@@ -259,40 +96,7 @@ func TestAcademicHistoryIsEqual(t *testing.T) {
 		DeletedAt:     &timeAt,
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestCompanyIsEqual(t *testing.T) {
@@ -301,40 +105,7 @@ func TestCompanyIsEqual(t *testing.T) {
 		Name: "hubbed",
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestDepartmentIsEqual(t *testing.T) {
@@ -343,40 +114,7 @@ func TestDepartmentIsEqual(t *testing.T) {
 		Name: "tech",
 	}
 
-	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
-	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
-
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i)
-		if v.CanSet() {
-			changed := false
-			switch v.Interface().(type) {
-			case string:
-				v.SetString("string")
-				changed = true
-			case uint64, uint32:
-				v.SetUint(999)
-				changed = true
-			case *time.Time:
-				now := time.Now()
-				v.Set(reflect.ValueOf(&now))
-				changed = true
-			}
-
-			fieldName := values.Type().Field(i).Name
-			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
-			}
-
-			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
-			}
-
-			m3 = *m2
-		}
-	}
+	testIsEqual(t, m1, m2)
 }
 
 func TestJobHistoryIsEqual(t *testing.T) {
@@ -399,11 +137,17 @@ func TestJobHistoryIsEqual(t *testing.T) {
 		DeletedAt:      &timeAt,
 	}
 
+	testIsEqual(t, m1, m2)
+}
+
+func testIsEqual(t *testing.T, m1, m2 Comparator) {
 	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
 	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
 
-	m3 := *m2
-	values := reflect.ValueOf(&m3).Elem()
+	var emptyStruct struct{}
+	m3 := &emptyStruct
+	copier.Copy(m3, m2)
+	values := reflect.ValueOf(m3).Elem()
 	for i := 0; i < values.NumField(); i++ {
 		v := values.Field(i)
 		if v.CanSet() {
@@ -423,14 +167,15 @@ func TestJobHistoryIsEqual(t *testing.T) {
 
 			fieldName := values.Type().Field(i).Name
 			if fieldName != "ID" && changed {
-				assert.Condition(t, func() bool { return !m2.IsEqual(&m3) })
+				assert.Condition(t, func() bool { return !m2.IsEqual(m3) })
 			}
 
 			if fieldName == "ID" {
-				assert.Condition(t, func() bool { return m2.IsEqual(&m3) })
+				fmt.Println("id")
+				assert.Condition(t, func() bool { return m2.IsEqual(m3) })
 			}
 
-			m3 = *m2
+			copier.Copy(m3, m2)
 		}
 	}
 }

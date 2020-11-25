@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"in-backend/services/project"
 	"in-backend/services/project/configs"
 	"in-backend/services/project/models"
@@ -44,43 +45,34 @@ func TestAllCRUD(t *testing.T) {
 
 	r := NewRepository(db)
 
-	testCreateCandidate(t, r, db)
+	// List of all tests to run in test suite
+	testCreateProject(t, r, db)
 
 	cleanDb(db)
 	cleanContainer(c)
 }
 
-/* --------------- Candidate --------------- */
+/* --------------- Project --------------- */
 
-func testCreateCandidate(t *testing.T, r project.Repository, db *pg.DB) {
-	testNoAuthID := &models.Candidate{
-		FirstName:     "first",
-		LastName:      "last",
-		Email:         "first@last.com",
-		ContactNumber: "+6591234567",
-		CreatedAt:     &now,
-		UpdatedAt:     &now,
+func testCreateProject(t *testing.T, r project.Repository, db *pg.DB) {
+	testNoName := &models.Project{
+		RepoURL:   "repo",
+		CreatedAt: &now,
+		UpdatedAt: &now,
 	}
 
-	test := *testNoAuthID
-	test.AuthID = "authId"
+	test := *testNoName
+	test.Name = "name"
 
-	testDupEmail := test
-
-	// this is required to insert 2 candidates so that one can be used
-	// for other tests after the first gets deleted
-	test2 := test
-	test2.AuthID = "authId2"
-	test2.Email = "test@test.com"
-	test2.ContactNumber = "+6587654321"
+	testDupRepoURL := test
 
 	type args struct {
 		ctx   context.Context
-		input *models.Candidate
+		input *models.Project
 	}
 
 	type expect struct {
-		output *models.Candidate
+		output *models.Project
 		err    error
 	}
 
@@ -89,16 +81,15 @@ func testCreateCandidate(t *testing.T, r project.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter candidate is nil")}},
-		{"failed not null", args{ctx, testNoAuthID}, expect{nil, errors.New("Failed to insert candidate")}},
+		{"nil", args{ctx, nil}, expect{nil, nilErr("project")}},
+		{"failed not null", args{ctx, testNoName}, expect{nil, failedToInsertErr("project")}},
 		{"valid", args{ctx, &test}, expect{&test, nil}},
-		{"failed unique", args{ctx, &testDupEmail}, expect{nil, errors.New("Failed to insert candidate")}},
-		{"valid2", args{ctx, &test2}, expect{&test2, nil}},
+		{"failed unique", args{ctx, &testDupRepoURL}, expect{nil, failedToInsertErr("project")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.CreateCandidate(tt.args.ctx, tt.args.input)
+			got, err := r.CreateProject(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -107,4 +98,12 @@ func testCreateCandidate(t *testing.T, r project.Repository, db *pg.DB) {
 			}
 		})
 	}
+}
+
+func failedToInsertErr(s string) error {
+	return errors.New(fmt.Sprintf("Failed to insert %s", s))
+}
+
+func nilErr(s string) error {
+	return errors.New(fmt.Sprintf("Input parameter %s is nil", s))
 }
