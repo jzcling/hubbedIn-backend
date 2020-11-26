@@ -36,8 +36,8 @@ type Rating struct {
 	MaintainabilityRating int32      `json:"maintainability_rating"`
 	SecurityRating        int32      `json:"security_rating"`
 	SecurityReviewRating  int32      `json:"security_review_rating"`
-	Coverage              float32    `json:"coverage"`
-	Duplications          float32    `json:"duplications"`
+	Coverage              float32    `json:"coverage" pg:",use_zero"`
+	Duplications          float32    `json:"duplications" pg:",use_zero"`
 	Lines                 uint64     `json:"lines"`
 	CreatedAt             *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 }

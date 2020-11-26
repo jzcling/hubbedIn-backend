@@ -9,4 +9,4 @@ do
 done
 
 git clone $url $name;
-cd $name && echo "sonar.projectKey=$name" > sonar-project.properties && sonar-scanner && rm -rf $folder
+cd $name && echo "sonar.projectKey=$name" > sonar-project.properties && sonar-scanner && rm -rf $name

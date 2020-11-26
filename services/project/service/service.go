@@ -2,13 +2,18 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/mitchellh/mapstructure"
 
 	"in-backend/services/project"
 	"in-backend/services/project/models"
@@ -18,13 +23,33 @@ import (
 type service struct {
 	repository project.Repository
 	logger     log.Logger
+	client     HTTPClient
+}
+
+// HTTPClient describes a default http client
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+// Component declares the model of a metrics response from sonarqube's API
+type Component struct {
+	Measures []Measure
+	Other    map[string]interface{} `mapstructure:",remain"`
+}
+
+// Measure declares the model of a measure response from sonarqube's API
+type Measure struct {
+	Metric    string `mapstructure:"metric"`
+	Value     string `mapstructure:"value"`
+	BestValue bool   `mapstructure:"bestValue,omitempty"`
 }
 
 // New creates and returns a new Service that implements the project Service interface
-func New(r project.Repository, l log.Logger) project.Service {
+func New(r project.Repository, l log.Logger, c HTTPClient) project.Service {
 	return &service{
 		repository: r,
 		logger:     l,
+		client:     c,
 	}
 }
 
@@ -96,16 +121,136 @@ func (s *service) ScanProject(ctx context.Context, id uint64) error {
 		return err
 	}
 
+	go s.scanAndStoreResult(m, logger)
+
+	return nil
+}
+
+func (s *service) scanAndStoreResult(m *models.Project, logger log.Logger) error {
 	name := strings.ToLower(m.Name)
 	name = strings.ReplaceAll(name, " ", "_")
-	name = name + "_" + strconv.FormatUint(id, 10)
-	out, err := exec.Command("/bin/sh", "-c", "./scan.sh -u "+m.RepoURL+" -n "+name).CombinedOutput()
+	name = name + "_" + strconv.FormatUint(m.ID, 10)
+	_, err := exec.Command("/bin/sh", "-c", "./scan.sh -u "+m.RepoURL+" -n "+name).Output()
 	if err != nil {
 		level.Error(logger).Log("err", err)
 		return err
 	}
-	fmt.Printf("%s", out)
+
+	jsonBody, err := s.getRatingMeasures(name, logger)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return err
+	}
+	var component Component
+	mapstructure.Decode(jsonBody["component"].(map[string]interface{}), &component)
+
+	now := time.Now()
+	r := &models.Rating{
+		ProjectID: m.ID,
+		CreatedAt: &now,
+	}
+	for _, measure := range component.Measures {
+		switch measure.Metric {
+		case "reliability_rating":
+			v, err := strconv.ParseFloat(measure.Value, 32)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+			r.ReliabilityRating = int32(v)
+		case "sqale_rating":
+			v, err := strconv.ParseFloat(measure.Value, 32)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+			r.MaintainabilityRating = int32(v)
+		case "security_rating":
+			v, err := strconv.ParseFloat(measure.Value, 32)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+			r.SecurityRating = int32(v)
+		case "security_review_rating":
+			v, err := strconv.ParseFloat(measure.Value, 32)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+			r.SecurityReviewRating = int32(v)
+		case "coverage":
+			v, err := strconv.ParseFloat(measure.Value, 32)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+			r.Coverage = float32(v)
+		case "duplicated_lines_density":
+			v, err := strconv.ParseFloat(measure.Value, 32)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+			r.Duplications = float32(v)
+		case "ncloc":
+			r.Lines, err = strconv.ParseUint(measure.Value, 10, 64)
+			if err != nil {
+				level.Error(logger).Log("err", err)
+				return err
+			}
+		}
+	}
+
+	err = s.CreateRating(context.Background(), r)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return err
+	}
 	return nil
+}
+
+func (s *service) getRatingMeasures(name string, logger log.Logger) (map[string]interface{}, error) {
+	metrics := []string{
+		"reliability_rating",
+		"sqale_rating",
+		"security_rating",
+		"security_review_rating",
+		"coverage",
+		"duplicated_lines_density",
+		"ncloc",
+	}
+
+	payload := url.Values{}
+	payload.Add("component", name)
+	payload.Add("metricKeys", strings.Join(metrics, ","))
+	req, err := http.NewRequest("GET", "http://sonarqube:9000/api/measures/component?"+payload.Encode(), nil)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return nil, err
+	}
+
+	res, err := s.client.Do(req)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return nil, err
+	}
+
+	jsonBody := make(map[string]interface{})
+	err = json.Unmarshal(body, &jsonBody)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 /* --------------- Candidate Project --------------- */

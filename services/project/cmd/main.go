@@ -9,6 +9,7 @@ import (
 	"in-backend/services/project/service"
 	"in-backend/services/project/transport"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -55,7 +56,8 @@ func main() {
 	// and finally, a series of concrete transport adapters
 
 	repo := database.NewRepository(db)
-	svc := service.New(repo, logger)
+	client := &http.Client{}
+	svc := service.New(repo, logger, client)
 	endpoints := endpoints.MakeEndpoints(svc)
 
 	// set-up grpc transport
