@@ -7,25 +7,43 @@ WORKDIR /go/src/in-backend/
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ./services/profile/ ./services/profile/
-RUN cd services/profile/cmd && \
+COPY ./helpers/ ./helpers/
+COPY ./services/project/ ./services/project/
+RUN cd services/project/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \
     GOARCH=amd64 && \
     go build -o /build/dist/main
 
-RUN cd services/profile/scripts/migrations && \
+RUN cd services/project/scripts/migrations && \
     CGO_ENABLED=1 && \
     GOOS=linux && \
     GOARCH=amd64 && \
     go build -o /build/dist/migrations
 
-FROM alpine as release
-RUN apk add --no-cache ca-certificates
+FROM openjdk:alpine as release
+RUN apk add --no-cache ca-certificates git curl sed unzip
 WORKDIR /app
+
+ARG RELEASE=4.5.0.2216
+
+RUN set -x &&\
+  curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$RELEASE-linux.zip &&\
+  unzip sonarscanner.zip &&\
+  rm sonarscanner.zip &&\
+  rm sonar-scanner-$RELEASE-linux/jre -rf &&\
+#   ensure Sonar uses the provided Java for musl instead of a borked glibc one
+  sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /app/sonar-scanner-$RELEASE-linux/bin/sonar-scanner
+
+ENV SONAR_RUNNER_HOME=/app/sonar-scanner-$RELEASE-linux
+ENV SONAR_HOST_URL=http://sonarqube:9000
+ENV PATH $PATH:/app/sonar-scanner-$RELEASE-linux/bin
+
 COPY --from=builder /build/dist/ .
-COPY --from=builder /go/src/in-backend/services/profile/configs/config.env .
-COPY --from=builder /go/src/in-backend/services/profile/scripts/migrations/*.sql ./
+COPY --from=builder /go/src/in-backend/services/project/configs/config.env .
+COPY --from=builder /go/src/in-backend/services/project/scripts/migrations/*.sql ./
+COPY --from=builder /go/src/in-backend/services/project/service/*.sh ./
 RUN chmod +x ./main
-EXPOSE 50051
+RUN chmod +x ./*.sh
+EXPOSE 50052
 ENTRYPOINT ["./main"]

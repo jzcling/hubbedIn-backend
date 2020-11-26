@@ -5,7 +5,7 @@ import (
 	"in-backend/services/project/models"
 )
 
-// Service describes the Profile Service
+// Service describes the Project Service
 type Service interface {
 	/* --------------- Project --------------- */
 

@@ -14,6 +14,19 @@ services:
             - ${PROFILE_SERVICE_PORT}:${PROFILE_SERVICE_PORT}
         networks:
             - backend
+    project-service:
+        build: 
+            context: .
+            dockerfile: ./services/project/Dockerfile
+        image: project-service
+        container_name: project-service
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - ${PROJECT_SERVICE_PORT}:${PROJECT_SERVICE_PORT}
+        networks:
+            - backend
     db:
         image: postgres:13-alpine
         container_name: db

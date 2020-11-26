@@ -8,6 +8,7 @@ RUN go mod download
 
 COPY ./gateway/ ./gateway/
 COPY ./services/profile/pb ./services/profile/pb
+COPY ./services/project/pb ./services/project/pb
 RUN cd gateway/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \

@@ -5,7 +5,7 @@ import (
 	"in-backend/services/project/models"
 )
 
-// Repository declares the repository for candidate profiles
+// Repository declares the repository for projects
 type Repository interface {
 	/* --------------- Project --------------- */
 

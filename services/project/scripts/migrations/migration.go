@@ -8,7 +8,7 @@ import (
 	migrations "github.com/go-pg/migrations/v8"
 	pg "github.com/go-pg/pg/v10"
 
-	"in-backend/services/profile/configs"
+	"in-backend/services/project/configs"
 )
 
 const usageText = `This program runs command on the db. Supported commands are:

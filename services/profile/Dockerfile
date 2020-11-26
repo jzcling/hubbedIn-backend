@@ -7,6 +7,7 @@ WORKDIR /go/src/in-backend/
 COPY go.mod go.sum ./
 RUN go mod download
 
+COPY ./helpers/ ./helpers/
 COPY ./services/profile/ ./services/profile/
 RUN cd services/profile/cmd && \
     CGO_ENABLED=1 && \

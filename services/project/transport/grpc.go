@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// grpc transport service for Profile Service.
+// grpc transport service for Project Service.
 type grpcServer struct {
 	createProject  kitgrpc.Handler
 	getAllProjects kitgrpc.Handler
@@ -46,6 +46,69 @@ func NewGRPCServer(
 			endpoints.CreateProject,
 			decodeCreateProjectRequest,
 			encodeCreateProjectResponse,
+			options...,
+		),
+		getAllProjects: kitgrpc.NewServer(
+			endpoints.GetAllProjects,
+			decodeGetAllProjectsRequest,
+			encodeGetAllProjectsResponse,
+			options...,
+		),
+		getProjectByID: kitgrpc.NewServer(
+			endpoints.GetProjectByID,
+			decodeGetProjectByIDRequest,
+			encodeGetProjectByIDResponse,
+			options...,
+		),
+		updateProject: kitgrpc.NewServer(
+			endpoints.UpdateProject,
+			decodeUpdateProjectRequest,
+			encodeUpdateProjectResponse,
+			options...,
+		),
+		deleteProject: kitgrpc.NewServer(
+			endpoints.DeleteProject,
+			decodeDeleteProjectRequest,
+			encodeDeleteProjectResponse,
+			options...,
+		),
+
+		scanProject: kitgrpc.NewServer(
+			endpoints.ScanProject,
+			decodeScanProjectRequest,
+			encodeScanProjectResponse,
+			options...,
+		),
+
+		createCandidateProject: kitgrpc.NewServer(
+			endpoints.CreateCandidateProject,
+			decodeCreateCandidateProjectRequest,
+			encodeCreateCandidateProjectResponse,
+			options...,
+		),
+		deleteCandidateProject: kitgrpc.NewServer(
+			endpoints.DeleteCandidateProject,
+			decodeDeleteCandidateProjectRequest,
+			encodeDeleteCandidateProjectResponse,
+			options...,
+		),
+		getAllProjectsByCandidate: kitgrpc.NewServer(
+			endpoints.GetAllProjectsByCandidate,
+			decodeGetAllProjectsByCandidateRequest,
+			encodeGetAllProjectsByCandidateResponse,
+			options...,
+		),
+
+		createRating: kitgrpc.NewServer(
+			endpoints.CreateRating,
+			decodeCreateRatingRequest,
+			encodeCreateRatingResponse,
+			options...,
+		),
+		deleteRating: kitgrpc.NewServer(
+			endpoints.DeleteRating,
+			decodeDeleteRatingRequest,
+			encodeDeleteRatingResponse,
 			options...,
 		),
 
