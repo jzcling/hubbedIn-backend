@@ -2,6 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"os/exec"
+	"strconv"
+	"strings"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -84,11 +88,23 @@ func (s *service) DeleteProject(ctx context.Context, id uint64) error {
 
 // ScanProject scans a Project using sonarqube
 func (s *service) ScanProject(ctx context.Context, id uint64) error {
-	_ = log.With(s.logger, "method", "ScanProject")
+	logger := log.With(s.logger, "method", "ScanProject")
 
-	// TODO: clone repo
-	// TODO: add properties file
-	// TODO: run scanner
+	m, err := s.GetProjectByID(ctx, id)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return err
+	}
+
+	name := strings.ToLower(m.Name)
+	name = strings.ReplaceAll(name, " ", "_")
+	name = name + "_" + strconv.FormatUint(id, 10)
+	out, err := exec.Command("/bin/sh", "-c", "./scan.sh -u "+m.RepoURL+" -n "+name).CombinedOutput()
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return err
+	}
+	fmt.Printf("%s", out)
 	return nil
 }
 
