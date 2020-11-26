@@ -617,6 +617,218 @@
                     "url_pattern": "/v1/jobhistories/{id}"
                 }
             ]
+        },
+
+        {
+            "endpoint": "/v1/projects",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/projects"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/projects",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/projects"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/projects/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/projects/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/projects/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/projects/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/projects/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/projects/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/projects/{id}/scan",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/projects/{id}/scan"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/candidates/{candidate_id}/projects",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/candidates/{candidate_id}/projects"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/candidates/{candidate_id}/projects/{project_id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/candidates/{candidate_id}/projects/{project_id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/candidates/{candidate_id}/projects",
+            "method": "GET",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/candidates/{candidate_id}/projects"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/projects/{project_id}/ratings",
+            "method": "POST",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/projects/{project_id}/ratings"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/projects/{project_id}/ratings/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "extra_config": {
+              "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                "maxRate": 100,
+                "clientMaxRate": 5,
+                "strategy": "ip"
+              }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/projects/{project_id}/ratings/{id}"
+                }
+            ]
         }
     ]
 }
