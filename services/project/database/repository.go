@@ -59,7 +59,7 @@ func (r *repository) GetProjectByID(ctx context.Context, id uint64) (*models.Pro
 		Where(filProjectID, id).
 		Relation(relProjectRating).
 		Returning("*").
-		Select()
+		First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil

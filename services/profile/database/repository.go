@@ -65,7 +65,7 @@ func (r *repository) GetCandidateByID(ctx context.Context, id uint64) (*models.C
 		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
 		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
 		Returning("*").
-		Select()
+		First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -121,7 +121,7 @@ func (r *repository) CreateSkill(ctx context.Context, s *models.Skill) (*models.
 // GetSkill returns a Skill by ID
 func (r *repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
 	s := models.Skill{ID: id}
-	err := r.DB.WithContext(ctx).Model(&s).Where(filSkillID, id).Select()
+	err := r.DB.WithContext(ctx).Model(&s).Where(filSkillID, id).First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -181,7 +181,7 @@ func (r *repository) CreateInstitution(ctx context.Context, i *models.Institutio
 // GetInstitution returns a Institution by ID
 func (r *repository) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
 	i := models.Institution{ID: id}
-	err := r.DB.WithContext(ctx).Model(&i).Where(filInstitutionID, id).Select()
+	err := r.DB.WithContext(ctx).Model(&i).Where(filInstitutionID, id).First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -215,7 +215,7 @@ func (r *repository) CreateCourse(ctx context.Context, c *models.Course) (*model
 // GetCourse returns a Course by ID
 func (r *repository) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
 	c := models.Course{ID: id}
-	err := r.DB.WithContext(ctx).Model(&c).Where(filCourseID, id).Select()
+	err := r.DB.WithContext(ctx).Model(&c).Where(filCourseID, id).First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -257,7 +257,7 @@ func (r *repository) GetAcademicHistory(ctx context.Context, id uint64) (*models
 		Where(filAcademicID, id).
 		Relation("Institution").
 		Relation("Course").
-		Select()
+		First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -312,7 +312,7 @@ func (r *repository) CreateCompany(ctx context.Context, c *models.Company) (*mod
 // GetCompany returns a Company by ID
 func (r *repository) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
 	c := models.Company{ID: id}
-	err := r.DB.WithContext(ctx).Model(&c).Where(filCompanyID, id).Select()
+	err := r.DB.WithContext(ctx).Model(&c).Where(filCompanyID, id).First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -346,7 +346,7 @@ func (r *repository) CreateDepartment(ctx context.Context, d *models.Department)
 // GetDepartment returns a Department by ID
 func (r *repository) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
 	d := models.Department{ID: id}
-	err := r.DB.WithContext(ctx).Model(&d).Where(filDepartmentID, id).Select()
+	err := r.DB.WithContext(ctx).Model(&d).Where(filDepartmentID, id).First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -387,7 +387,7 @@ func (r *repository) GetJobHistory(ctx context.Context, id uint64) (*models.JobH
 	err := r.DB.WithContext(ctx).Model(&j).Where(filJobID, id).
 		Relation("Company").
 		Relation("Department").
-		Select()
+		First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil
