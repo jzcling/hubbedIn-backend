@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -56,22 +57,54 @@ func New(r project.Repository, l log.Logger, c HTTPClient) project.Service {
 /* --------------- Project --------------- */
 
 // CreateProject creates a new Project
-func (s *service) CreateProject(ctx context.Context, model *models.Project) (*models.Project, error) {
+func (s *service) CreateProject(ctx context.Context, model *models.Project, cid uint64) (*models.Project, error) {
 	logger := log.With(s.logger, "method", "CreateProject")
 
-	m, err := s.repository.CreateProject(ctx, model)
+	f := models.ProjectFilters{
+		RepoURL: model.RepoURL,
+	}
+	existing, err := s.repository.GetAllProjects(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
+		return nil, err
+	}
+
+	var m *models.Project
+	if existing == nil {
+		m, err = s.repository.CreateProject(ctx, model)
+		if err != nil {
+			level.Error(logger).Log("err", err)
+			return nil, err
+		}
+	} else {
+		m = existing[0]
+	}
+
+	cp := &models.CandidateProject{
+		CandidateID: cid,
+		ProjectID:   m.ID,
+	}
+	err = s.repository.CreateCandidateProject(ctx, cp)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return nil, err
 	}
 
 	return m, err
 }
 
 // GetAllProjects returns all Projects
-func (s *service) GetAllProjects(ctx context.Context) ([]*models.Project, error) {
+func (s *service) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
 	logger := log.With(s.logger, "method", "GetAllProjects")
+	level.Debug(logger).Log("filters", fmt.Sprintf("%+v", f))
 
-	m, err := s.repository.GetAllProjects(ctx)
+	var m []*models.Project
+	var err error
+	if f.CandidateID > 0 {
+		m, err = s.repository.GetAllProjectsByCandidate(ctx, f.CandidateID)
+	} else {
+		m, err = s.repository.GetAllProjects(ctx, f)
+	}
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -267,11 +300,11 @@ func (s *service) CreateCandidateProject(ctx context.Context, m *models.Candidat
 	return err
 }
 
-// DeleteCandidateProject deletes a CandidateProject by Candidate ID and Project ID
-func (s *service) DeleteCandidateProject(ctx context.Context, cid, pid uint64) error {
+// DeleteCandidateProject deletes a CandidateProject by ID
+func (s *service) DeleteCandidateProject(ctx context.Context, id uint64) error {
 	logger := log.With(s.logger, "method", "DeleteCandidateProject")
 
-	err := s.repository.DeleteCandidateProject(ctx, cid, pid)
+	err := s.repository.DeleteCandidateProject(ctx, id)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}

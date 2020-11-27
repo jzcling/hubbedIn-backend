@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	pg "github.com/go-pg/pg/v10"
-	"github.com/pkg/errors"
 
 	"in-backend/services/project"
 	"in-backend/services/project/models"
@@ -43,7 +42,7 @@ func (r *repository) CreateProject(ctx context.Context, m *models.Project) (*mod
 }
 
 // GetAllProjects returns all Projects
-func (r *repository) GetAllProjects(ctx context.Context) ([]*models.Project, error) {
+func (r *repository) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
 	var m []*models.Project
 	err := r.DB.WithContext(ctx).Model(&m).
 		Relation(relProjectRating).
@@ -110,15 +109,12 @@ func (r *repository) CreateCandidateProject(ctx context.Context, m *models.Candi
 	return nil
 }
 
-// DeleteCandidateProject deletes a CandidateProject by Candidate ID and Project ID
-func (r *repository) DeleteCandidateProject(ctx context.Context, cid, pid uint64) error {
-	m := &models.CandidateProject{CandidateID: cid, ProjectID: pid}
-	_, err := r.DB.WithContext(ctx).Model(m).
-		Where("candidate_id = ?", cid).
-		Where("project_id = ?", pid).
-		Delete()
+// DeleteCandidateProject deletes a CandidateProject by ID
+func (r *repository) DeleteCandidateProject(ctx context.Context, id uint64) error {
+	m := &models.CandidateProject{ID: id}
+	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete candidate project for candidate id %v and project id %v", cid, pid))
+		return deleteErr(err, "candidate project", id)
 	}
 	return nil
 }
@@ -126,6 +122,7 @@ func (r *repository) DeleteCandidateProject(ctx context.Context, cid, pid uint64
 // GetAllProjectsByCandidate returns all Projects by a Candidate
 func (r *repository) GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error) {
 	cp := &models.CandidateProject{CandidateID: cid}
+	fmt.Printf("%v\n", cid)
 	var pids []uint64
 	err := r.DB.WithContext(ctx).Model(cp).
 		Where("candidate_id = ?", cid).
@@ -134,7 +131,6 @@ func (r *repository) GetAllProjectsByCandidate(ctx context.Context, cid uint64) 
 	if err != nil {
 		return nil, candidateIDErr(err, cid)
 	}
-	fmt.Printf("test")
 	fmt.Printf("%v\n", pids)
 
 	var m []*models.Project

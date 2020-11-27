@@ -140,7 +140,7 @@ func testGetAllProjects(t *testing.T, r project.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllProjects(tt.args.ctx)
+			got, err := r.GetAllProjects(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -310,8 +310,7 @@ func testDeleteCandidateProject(t *testing.T, r project.Repository, db *pg.DB) {
 
 	type args struct {
 		ctx context.Context
-		cid uint64
-		pid uint64
+		id  uint64
 	}
 
 	type expect struct {
@@ -323,12 +322,12 @@ func testDeleteCandidateProject(t *testing.T, r project.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.CandidateID, existing.ProjectID}, expect{nil}},
+		{"id existing", args{ctx, existing.ID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteCandidateProject(tt.args.ctx, tt.args.cid, tt.args.pid)
+			err := r.DeleteCandidateProject(tt.args.ctx, tt.args.id)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

@@ -10,10 +10,10 @@ type Service interface {
 	/* --------------- Project --------------- */
 
 	// CreateProject creates a new Project
-	CreateProject(ctx context.Context, m *models.Project) (*models.Project, error)
+	CreateProject(ctx context.Context, m *models.Project, cid uint64) (*models.Project, error)
 
 	// GetAllProjects returns all Projects
-	GetAllProjects(ctx context.Context) ([]*models.Project, error)
+	GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error)
 
 	// GetProjectByID finds and returns a Project by ID
 	GetProjectByID(ctx context.Context, id uint64) (*models.Project, error)
@@ -33,10 +33,7 @@ type Service interface {
 	CreateCandidateProject(ctx context.Context, m *models.CandidateProject) error
 
 	// DeleteCandidateroject deletes a Candidate Project
-	DeleteCandidateProject(ctx context.Context, cid, pid uint64) error
-
-	// GetAllProjectsByCandidate returns all Projects by a Candidate
-	GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error)
+	DeleteCandidateProject(ctx context.Context, id uint64) error
 
 	/* --------------- Rating --------------- */
 

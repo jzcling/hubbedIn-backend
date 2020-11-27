@@ -19,9 +19,8 @@ type Endpoints struct {
 
 	ScanProject endpoint.Endpoint
 
-	CreateCandidateProject    endpoint.Endpoint
-	DeleteCandidateProject    endpoint.Endpoint
-	GetAllProjectsByCandidate endpoint.Endpoint
+	CreateCandidateProject endpoint.Endpoint
+	DeleteCandidateProject endpoint.Endpoint
 
 	CreateRating endpoint.Endpoint
 	DeleteRating endpoint.Endpoint
@@ -38,9 +37,8 @@ func MakeEndpoints(s project.Service) Endpoints {
 
 		ScanProject: makeScanProjectEndpoint(s),
 
-		CreateCandidateProject:    makeCreateCandidateProjectEndpoint(s),
-		DeleteCandidateProject:    makeDeleteCandidateProjectEndpoint(s),
-		GetAllProjectsByCandidate: makeGetAllProjectsByCandidateEndpoint(s),
+		CreateCandidateProject: makeCreateCandidateProjectEndpoint(s),
+		DeleteCandidateProject: makeDeleteCandidateProjectEndpoint(s),
 
 		CreateRating: makeCreateRatingEndpoint(s),
 		DeleteRating: makeDeleteRatingEndpoint(s),
@@ -52,14 +50,15 @@ func MakeEndpoints(s project.Service) Endpoints {
 func makeCreateProjectEndpoint(s project.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateProjectRequest)
-		m, err := s.CreateProject(ctx, req.Project)
+		m, err := s.CreateProject(ctx, req.Project, req.CandidateID)
 		return CreateProjectResponse{Project: m, Err: err}, nil
 	}
 }
 
 // CreateProjectRequest declares the inputs required for creating a Project
 type CreateProjectRequest struct {
-	Project *models.Project
+	Project     *models.Project
+	CandidateID uint64
 }
 
 // CreateProjectResponse declares the outputs after attempting to create a Project
@@ -70,15 +69,19 @@ type CreateProjectResponse struct {
 
 func makeGetAllProjectsEndpoint(s project.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		m, err := s.GetAllProjects(ctx)
+		req := request.(GetAllProjectsRequest)
+		f := models.ProjectFilters(req)
+		m, err := s.GetAllProjects(ctx, f)
 		return GetAllProjectsResponse{Projects: m, Err: err}, nil
 	}
 }
 
 // GetAllProjectsRequest declares the inputs required for getting all Projects
-// TODO: filters
 type GetAllProjectsRequest struct {
-	ID []uint64
+	ID          []uint64
+	CandidateID uint64
+	Name        string
+	RepoURL     string
 }
 
 // GetAllProjectsResponse declares the outputs after attempting to get all Projects
@@ -185,39 +188,19 @@ type CreateCandidateProjectResponse struct {
 func makeDeleteCandidateProjectEndpoint(s project.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteCandidateProjectRequest)
-		err := s.DeleteCandidateProject(ctx, req.CandidateID, req.ProjectID)
+		err := s.DeleteCandidateProject(ctx, req.ID)
 		return DeleteCandidateProjectResponse{Err: err}, nil
 	}
 }
 
 // DeleteCandidateProjectRequest declares the inputs required for deleting a Candidate Project
 type DeleteCandidateProjectRequest struct {
-	CandidateID uint64
-	ProjectID   uint64
+	ID uint64
 }
 
 // DeleteCandidateProjectResponse declares the outputs after attempting to delete a Candidate Project
 type DeleteCandidateProjectResponse struct {
 	Err error
-}
-
-func makeGetAllProjectsByCandidateEndpoint(s project.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllProjectsByCandidateRequest)
-		m, err := s.GetAllProjectsByCandidate(ctx, req.CandidateID)
-		return GetAllProjectsResponse{Projects: m, Err: err}, nil
-	}
-}
-
-// GetAllProjectsByCandidateRequest declares the inputs required for getting all Projects by a Candidate
-type GetAllProjectsByCandidateRequest struct {
-	CandidateID uint64
-}
-
-// GetAllProjectsByCandidateResponse declares the outputs after attempting to get all Projects by a Candidate
-type GetAllProjectsByCandidateResponse struct {
-	Projects []*models.Project
-	Err      error
 }
 
 /* -------------- Rating -------------- */

@@ -13,7 +13,7 @@ type Repository interface {
 	CreateProject(ctx context.Context, m *models.Project) (*models.Project, error)
 
 	// GetAllProjects returns all candidates
-	GetAllProjects(ctx context.Context) ([]*models.Project, error)
+	GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error)
 
 	// GetProjectByID finds and returns a candidate by ID
 	GetProjectByID(ctx context.Context, id uint64) (*models.Project, error)
@@ -30,7 +30,7 @@ type Repository interface {
 	CreateCandidateProject(ctx context.Context, m *models.CandidateProject) error
 
 	// DeleteCandidateroject deletes a Candidate Project
-	DeleteCandidateProject(ctx context.Context, cid, pid uint64) error
+	DeleteCandidateProject(ctx context.Context, id uint64) error
 
 	// GetAllProjectsByCandidate returns all Projects by a Candidate
 	GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error)

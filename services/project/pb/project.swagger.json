@@ -11,36 +11,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/candidates/{candidateId}/projects": {
-      "get": {
-        "operationId": "ProjectService_GetAllProjectsByCandidate",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetAllProjectsByCandidateResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "candidateId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "ProjectService"
-        ]
-      },
+    "/v1/candidateprojects": {
       "post": {
         "operationId": "ProjectService_CreateCandidateProject",
         "responses": {
@@ -59,19 +30,19 @@
         },
         "parameters": [
           {
-            "name": "candidateId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/pbCandidateProject"
             }
+          },
+          {
+            "name": "candidateId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -79,7 +50,7 @@
         ]
       }
     },
-    "/v1/candidates/{candidateId}/projects/{projectId}": {
+    "/v1/candidateprojects/{id}": {
       "delete": {
         "operationId": "ProjectService_DeleteCandidateProject",
         "responses": {
@@ -98,7 +69,77 @@
         },
         "parameters": [
           {
-            "name": "candidateId",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProjectService"
+        ]
+      }
+    },
+    "/v1/projectratings": {
+      "post": {
+        "operationId": "ProjectService_CreateRating",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateRatingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbRating"
+            }
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProjectService"
+        ]
+      }
+    },
+    "/v1/projectratings/{id}": {
+      "delete": {
+        "operationId": "ProjectService_DeleteRating",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteRatingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -106,8 +147,8 @@
           },
           {
             "name": "projectId",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "type": "string",
             "format": "uint64"
           }
@@ -145,6 +186,25 @@
               "format": "uint64"
             },
             "collectionFormat": "multi"
+          },
+          {
+            "name": "candidateId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "repoUrl",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -175,6 +235,13 @@
             "schema": {
               "$ref": "#/definitions/pbProject"
             }
+          },
+          {
+            "name": "candidateId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -309,83 +376,6 @@
           "ProjectService"
         ]
       }
-    },
-    "/v1/projects/{projectId}/ratings": {
-      "post": {
-        "operationId": "ProjectService_CreateRating",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbCreateRatingResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbRating"
-            }
-          }
-        ],
-        "tags": [
-          "ProjectService"
-        ]
-      }
-    },
-    "/v1/projects/{projectId}/ratings/{id}": {
-      "delete": {
-        "operationId": "ProjectService_DeleteRating",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteRatingResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "ProjectService"
-        ]
-      }
     }
   },
   "definitions": {
@@ -420,17 +410,6 @@
     },
     "pbDeleteRatingResponse": {
       "type": "object"
-    },
-    "pbGetAllProjectsByCandidateResponse": {
-      "type": "object",
-      "properties": {
-        "projects": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/pbProject"
-          }
-        }
-      }
     },
     "pbGetAllProjectsResponse": {
       "type": "object",

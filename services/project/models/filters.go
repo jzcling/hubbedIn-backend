@@ -2,9 +2,10 @@ package models
 
 // ProjectFilters define filters for Project model
 type ProjectFilters struct {
-	ID      []uint64
-	Name    string
-	RepoURL string
+	ID          []uint64
+	CandidateID uint64
+	Name        string
+	RepoURL     string
 }
 
 // RatingFilters define filters for Rating model

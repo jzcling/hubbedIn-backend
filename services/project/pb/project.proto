@@ -41,27 +41,24 @@ service ProjectService {
 
     rpc CreateCandidateProject(CreateCandidateProjectRequest) returns (CreateCandidateProjectResponse) {
         option (google.api.http) = { 
-            post: "/v1/candidates/{candidate_id}/projects" 
+            post: "/v1/candidateprojects" 
             body: "candidate_project"
         };
     };
     rpc DeleteCandidateProject(DeleteCandidateProjectRequest) returns (DeleteCandidateProjectResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{candidate_id}/projects/{project_id}" };
-    };
-    rpc GetAllProjectsByCandidate(GetAllProjectsByCandidateRequest) returns (GetAllProjectsByCandidateResponse) {
-        option (google.api.http) = { get: "/v1/candidates/{candidate_id}/projects" };
+        option (google.api.http) = { delete: "/v1/candidateprojects/{id}" };
     };
 
     /* --------------- Rating --------------- */
 
     rpc CreateRating(CreateRatingRequest) returns (CreateRatingResponse) {
         option (google.api.http) = { 
-            post: "/v1/projects/{project_id}/ratings" 
+            post: "/v1/projectratings" 
             body: "rating"
         };
     };
     rpc DeleteRating(DeleteRatingRequest) returns (DeleteRatingResponse) {
-        option (google.api.http) = { delete: "/v1/projects/{project_id}/ratings/{id}" };
+        option (google.api.http) = { delete: "/v1/projectratings/{id}" };
     };
 }
 
@@ -80,11 +77,14 @@ message Project {
 
 message CreateProjectRequest {
     Project project = 1;
+    uint64 candidate_id = 2;
 }
 
-// TODO: filters
 message GetAllProjectsRequest {
     repeated uint64 id = 1;
+    uint64 candidate_id = 2;
+    string name = 3;
+    string repo_url = 4;
 }
 
 message GetAllProjectsResponse {
@@ -135,20 +135,11 @@ message CreateCandidateProjectResponse {
 }
 
 message DeleteCandidateProjectRequest {
-    uint64 candidate_id = 1;
-    uint64 project_id = 2;
+    uint64 id = 1;
 }
 
 message DeleteCandidateProjectResponse {
     // Empty
-}
-
-message GetAllProjectsByCandidateRequest {
-    uint64 candidate_id = 1;
-}
-
-message GetAllProjectsByCandidateResponse {
-    repeated Project projects = 1;
 }
 
 /* --------------- Rating --------------- */

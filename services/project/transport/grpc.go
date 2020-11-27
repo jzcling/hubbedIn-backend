@@ -22,9 +22,8 @@ type grpcServer struct {
 
 	scanProject kitgrpc.Handler
 
-	createCandidateProject    kitgrpc.Handler
-	deleteCandidateProject    kitgrpc.Handler
-	getAllProjectsByCandidate kitgrpc.Handler
+	createCandidateProject kitgrpc.Handler
+	deleteCandidateProject kitgrpc.Handler
 
 	createRating kitgrpc.Handler
 	deleteRating kitgrpc.Handler
@@ -92,12 +91,6 @@ func NewGRPCServer(
 			encodeDeleteCandidateProjectResponse,
 			options...,
 		),
-		getAllProjectsByCandidate: kitgrpc.NewServer(
-			endpoints.GetAllProjectsByCandidate,
-			decodeGetAllProjectsByCandidateRequest,
-			encodeGetAllProjectsByCandidateResponse,
-			options...,
-		),
 
 		createRating: kitgrpc.NewServer(
 			endpoints.CreateRating,
@@ -130,7 +123,7 @@ func (s *grpcServer) CreateProject(ctx context.Context, req *pb.CreateProjectReq
 // decodeCreateProjectRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateProjectRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateProjectRequest)
-	return endpoints.CreateProjectRequest{Project: models.ProjectToORM(req.Project)}, nil
+	return endpoints.CreateProjectRequest{Project: models.ProjectToORM(req.Project), CandidateID: req.CandidateId}, nil
 }
 
 // encodeCreateProjectResponse encodes the outgoing go kit payload to the grpc payload
@@ -155,7 +148,13 @@ func (s *grpcServer) GetAllProjects(ctx context.Context, req *pb.GetAllProjectsR
 // decodeGetAllProjectsRequest decodes the incoming grpc payload to our go kit payload
 func decodeGetAllProjectsRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.GetAllProjectsRequest)
-	return endpoints.GetAllProjectsRequest{ID: req.Id}, nil
+	decoded := endpoints.GetAllProjectsRequest{
+		ID:          req.Id,
+		CandidateID: req.CandidateId,
+		Name:        req.Name,
+		RepoURL:     req.RepoUrl,
+	}
+	return decoded, nil
 }
 
 // encodeGetAllProjectsResponse encodes the outgoing go kit payload to the grpc payload
@@ -311,7 +310,7 @@ func (s *grpcServer) DeleteCandidateProject(ctx context.Context, req *pb.DeleteC
 // decodeDeleteCandidateProjectRequest decodes the incoming grpc payload to our go kit payload
 func decodeDeleteCandidateProjectRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.DeleteCandidateProjectRequest)
-	return endpoints.DeleteCandidateProjectRequest{CandidateID: req.CandidateId, ProjectID: req.ProjectId}, nil
+	return endpoints.DeleteCandidateProjectRequest{ID: req.Id}, nil
 }
 
 // encodeDeleteCandidateProjectResponse encodes the outgoing go kit payload to the grpc payload
@@ -320,35 +319,6 @@ func encodeDeleteCandidateProjectResponse(_ context.Context, response interface{
 	err := getError(res.Err)
 	if err == nil {
 		return &pb.DeleteCandidateProjectResponse{}, nil
-	}
-	return nil, err
-}
-
-// GetAllProjectsByCandidate returns all Projects by a Candidate
-func (s *grpcServer) GetAllProjectsByCandidate(ctx context.Context, req *pb.GetAllProjectsByCandidateRequest) (*pb.GetAllProjectsByCandidateResponse, error) {
-	_, rep, err := s.getAllProjectsByCandidate.ServeGRPC(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return rep.(*pb.GetAllProjectsByCandidateResponse), nil
-}
-
-// decodeGetAllProjectsByCandidateRequest decodes the incoming grpc payload to our go kit payload
-func decodeGetAllProjectsByCandidateRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.GetAllProjectsByCandidateRequest)
-	return endpoints.GetAllProjectsByCandidateRequest{CandidateID: req.CandidateId}, nil
-}
-
-// encodeGetAllProjectsByCandidateResponse encodes the outgoing go kit payload to the grpc payload
-func encodeGetAllProjectsByCandidateResponse(_ context.Context, response interface{}) (interface{}, error) {
-	res := response.(endpoints.GetAllProjectsByCandidateResponse)
-	err := getError(res.Err)
-	if err == nil {
-		var projects []*pb.Project
-		for _, project := range res.Projects {
-			projects = append(projects, project.ToProto())
-		}
-		return &pb.GetAllProjectsByCandidateResponse{Projects: projects}, nil
 	}
 	return nil, err
 }
