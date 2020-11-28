@@ -56,10 +56,10 @@ func (s *service) updateAuth0User(c *models.Candidate) {
 }
 
 // GetAllCandidates returns all Candidates
-func (s *service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
+func (s *service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
 	logger := log.With(s.logger, "method", "GetAllCandidates")
 
-	c, err := s.repository.GetAllCandidates(ctx)
+	c, err := s.repository.GetAllCandidates(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -124,10 +124,10 @@ func (s *service) GetSkill(ctx context.Context, id uint64) (*models.Skill, error
 }
 
 // GetAllSkills returns all Skills
-func (s *service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
+func (s *service) GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error) {
 	logger := log.With(s.logger, "method", "GetAllSkills")
 
-	sk, err := s.repository.GetAllSkills(ctx)
+	sk, err := s.repository.GetAllSkills(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -184,10 +184,10 @@ func (s *service) GetInstitution(ctx context.Context, id uint64) (*models.Instit
 }
 
 // GetAllInstitutions returns all Institutions
-func (s *service) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
+func (s *service) GetAllInstitutions(ctx context.Context, f models.InstitutionFilters) ([]*models.Institution, error) {
 	logger := log.With(s.logger, "method", "GetAllInstitutions")
 
-	i, err := s.repository.GetAllInstitutions(ctx)
+	i, err := s.repository.GetAllInstitutions(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -219,10 +219,10 @@ func (s *service) GetCourse(ctx context.Context, id uint64) (*models.Course, err
 }
 
 // GetAllCourses returns all Courses
-func (s *service) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
+func (s *service) GetAllCourses(ctx context.Context, f models.CourseFilters) ([]*models.Course, error) {
 	logger := log.With(s.logger, "method", "GetAllCourses")
 
-	c, err := s.repository.GetAllCourses(ctx)
+	c, err := s.repository.GetAllCourses(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -300,10 +300,10 @@ func (s *service) GetCompany(ctx context.Context, id uint64) (*models.Company, e
 }
 
 // GetAllCompanies returns all Companies
-func (s *service) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
+func (s *service) GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error) {
 	logger := log.With(s.logger, "method", "GetAllCompanies")
 
-	c, err := s.repository.GetAllCompanies(ctx)
+	c, err := s.repository.GetAllCompanies(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -335,10 +335,10 @@ func (s *service) GetDepartment(ctx context.Context, id uint64) (*models.Departm
 }
 
 // GetAllDepartments returns all Departments
-func (s *service) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
+func (s *service) GetAllDepartments(ctx context.Context, f models.DepartmentFilters) ([]*models.Department, error) {
 	logger := log.With(s.logger, "method", "GetAllDepartments")
 
-	d, err := s.repository.GetAllDepartments(ctx)
+	d, err := s.repository.GetAllDepartments(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}

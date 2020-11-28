@@ -118,7 +118,9 @@ type CreateCandidateResponse struct {
 
 func makeGetAllCandidatesEndpoint(s profile.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		c, err := s.GetAllCandidates(ctx)
+		req := request.(GetAllCandidatesRequest)
+		f := models.CandidateFilters(req)
+		c, err := s.GetAllCandidates(ctx, f)
 		return GetAllCandidatesResponse{Candidates: c, Err: err}, nil
 	}
 }
@@ -244,7 +246,9 @@ type GetSkillResponse struct {
 
 func makeGetAllSkillsEndpoint(s profile.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		sk, err := s.GetAllSkills(ctx)
+		req := request.(GetAllSkillsRequest)
+		f := models.SkillFilters(req)
+		sk, err := s.GetAllSkills(ctx, f)
 		return GetAllSkillsResponse{Skills: sk, Err: err}, nil
 	}
 }
@@ -341,7 +345,9 @@ type GetInstitutionResponse struct {
 
 func makeGetAllInstitutionsEndpoint(s profile.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		i, err := s.GetAllInstitutions(ctx)
+		req := request.(GetAllInstitutionsRequest)
+		f := models.InstitutionFilters(req)
+		i, err := s.GetAllInstitutions(ctx, f)
 		return GetAllInstitutionsResponse{Institutions: i, Err: err}, nil
 	}
 }
@@ -400,7 +406,9 @@ type GetCourseResponse struct {
 
 func makeGetAllCoursesEndpoint(s profile.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		c, err := s.GetAllCourses(ctx)
+		req := request.(GetAllCoursesRequest)
+		f := models.CourseFilters(req)
+		c, err := s.GetAllCourses(ctx, f)
 		return GetAllCoursesResponse{Courses: c, Err: err}, nil
 	}
 }
@@ -536,7 +544,9 @@ type GetCompanyResponse struct {
 
 func makeGetAllCompaniesEndpoint(s profile.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		c, err := s.GetAllCompanies(ctx)
+		req := request.(GetAllCompaniesRequest)
+		f := models.CompanyFilters(req)
+		c, err := s.GetAllCompanies(ctx, f)
 		return GetAllCompaniesResponse{Companies: c, Err: err}, nil
 	}
 }
@@ -594,7 +604,9 @@ type GetDepartmentResponse struct {
 
 func makeGetAllDepartmentsEndpoint(s profile.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		d, err := s.GetAllDepartments(ctx)
+		req := request.(GetAllDepartmentsRequest)
+		f := models.DepartmentFilters(req)
+		d, err := s.GetAllDepartments(ctx, f)
 		return GetAllDepartmentsResponse{Departments: d, Err: err}, nil
 	}
 }

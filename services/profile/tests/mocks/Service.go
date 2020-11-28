@@ -300,13 +300,13 @@ func (_m *Service) GetAcademicHistory(ctx context.Context, id uint64) (*models.A
 	return r0, r1
 }
 
-// GetAllCandidates provides a mock function with given fields: ctx
-func (_m *Service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, error) {
-	ret := _m.Called(ctx)
+// GetAllCandidates provides a mock function with given fields: ctx, f
+func (_m *Service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
+	ret := _m.Called(ctx, f)
 
 	var r0 []*models.Candidate
-	if rf, ok := ret.Get(0).(func(context.Context) []*models.Candidate); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, models.CandidateFilters) []*models.Candidate); ok {
+		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Candidate)
@@ -314,8 +314,8 @@ func (_m *Service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, e
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, models.CandidateFilters) error); ok {
+		r1 = rf(ctx, f)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -323,13 +323,13 @@ func (_m *Service) GetAllCandidates(ctx context.Context) ([]*models.Candidate, e
 	return r0, r1
 }
 
-// GetAllCompanies provides a mock function with given fields: ctx
-func (_m *Service) GetAllCompanies(ctx context.Context) ([]*models.Company, error) {
-	ret := _m.Called(ctx)
+// GetAllCompanies provides a mock function with given fields: ctx, f
+func (_m *Service) GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error) {
+	ret := _m.Called(ctx, f)
 
 	var r0 []*models.Company
-	if rf, ok := ret.Get(0).(func(context.Context) []*models.Company); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, models.CompanyFilters) []*models.Company); ok {
+		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Company)
@@ -337,8 +337,8 @@ func (_m *Service) GetAllCompanies(ctx context.Context) ([]*models.Company, erro
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, models.CompanyFilters) error); ok {
+		r1 = rf(ctx, f)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -346,13 +346,13 @@ func (_m *Service) GetAllCompanies(ctx context.Context) ([]*models.Company, erro
 	return r0, r1
 }
 
-// GetAllCourses provides a mock function with given fields: ctx
-func (_m *Service) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
-	ret := _m.Called(ctx)
+// GetAllCourses provides a mock function with given fields: ctx, f
+func (_m *Service) GetAllCourses(ctx context.Context, f models.CourseFilters) ([]*models.Course, error) {
+	ret := _m.Called(ctx, f)
 
 	var r0 []*models.Course
-	if rf, ok := ret.Get(0).(func(context.Context) []*models.Course); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, models.CourseFilters) []*models.Course); ok {
+		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Course)
@@ -360,8 +360,8 @@ func (_m *Service) GetAllCourses(ctx context.Context) ([]*models.Course, error) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, models.CourseFilters) error); ok {
+		r1 = rf(ctx, f)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -369,13 +369,13 @@ func (_m *Service) GetAllCourses(ctx context.Context) ([]*models.Course, error) 
 	return r0, r1
 }
 
-// GetAllDepartments provides a mock function with given fields: ctx
-func (_m *Service) GetAllDepartments(ctx context.Context) ([]*models.Department, error) {
-	ret := _m.Called(ctx)
+// GetAllDepartments provides a mock function with given fields: ctx, f
+func (_m *Service) GetAllDepartments(ctx context.Context, f models.DepartmentFilters) ([]*models.Department, error) {
+	ret := _m.Called(ctx, f)
 
 	var r0 []*models.Department
-	if rf, ok := ret.Get(0).(func(context.Context) []*models.Department); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, models.DepartmentFilters) []*models.Department); ok {
+		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Department)
@@ -383,8 +383,8 @@ func (_m *Service) GetAllDepartments(ctx context.Context) ([]*models.Department,
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, models.DepartmentFilters) error); ok {
+		r1 = rf(ctx, f)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -392,13 +392,13 @@ func (_m *Service) GetAllDepartments(ctx context.Context) ([]*models.Department,
 	return r0, r1
 }
 
-// GetAllInstitutions provides a mock function with given fields: ctx
-func (_m *Service) GetAllInstitutions(ctx context.Context) ([]*models.Institution, error) {
-	ret := _m.Called(ctx)
+// GetAllInstitutions provides a mock function with given fields: ctx, f
+func (_m *Service) GetAllInstitutions(ctx context.Context, f models.InstitutionFilters) ([]*models.Institution, error) {
+	ret := _m.Called(ctx, f)
 
 	var r0 []*models.Institution
-	if rf, ok := ret.Get(0).(func(context.Context) []*models.Institution); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, models.InstitutionFilters) []*models.Institution); ok {
+		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Institution)
@@ -406,8 +406,8 @@ func (_m *Service) GetAllInstitutions(ctx context.Context) ([]*models.Institutio
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, models.InstitutionFilters) error); ok {
+		r1 = rf(ctx, f)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -415,13 +415,13 @@ func (_m *Service) GetAllInstitutions(ctx context.Context) ([]*models.Institutio
 	return r0, r1
 }
 
-// GetAllSkills provides a mock function with given fields: ctx
-func (_m *Service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
-	ret := _m.Called(ctx)
+// GetAllSkills provides a mock function with given fields: ctx, f
+func (_m *Service) GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error) {
+	ret := _m.Called(ctx, f)
 
 	var r0 []*models.Skill
-	if rf, ok := ret.Get(0).(func(context.Context) []*models.Skill); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, models.SkillFilters) []*models.Skill); ok {
+		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Skill)
@@ -429,8 +429,8 @@ func (_m *Service) GetAllSkills(ctx context.Context) ([]*models.Skill, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, models.SkillFilters) error); ok {
+		r1 = rf(ctx, f)
 	} else {
 		r1 = ret.Error(1)
 	}

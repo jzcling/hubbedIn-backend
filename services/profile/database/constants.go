@@ -18,4 +18,8 @@ const (
 	filCompanyID     string = "co.id = ?"
 	filDepartmentID  string = "d.id = ?"
 	filJobID         string = "jh.id = ?"
+
+	filNameIn    string = "lower(name) in (?)"
+	filLevelIn   string = "lower(level) in (?)"
+	filCountryIn string = "lower(ountry) in (?)"
 )

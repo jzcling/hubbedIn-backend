@@ -13,7 +13,7 @@ type Service interface {
 	CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)
 
 	// GetAllCandidates returns all candidates
-	GetAllCandidates(ctx context.Context) ([]*models.Candidate, error)
+	GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error)
 
 	// GetCandidateByID finds and returns a candidate by ID
 	GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error)
@@ -33,7 +33,7 @@ type Service interface {
 	GetSkill(ctx context.Context, id uint64) (*models.Skill, error)
 
 	// GetAllSkills returns all Skills
-	GetAllSkills(ctx context.Context) ([]*models.Skill, error)
+	GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error)
 
 	/* --------------- User Skill --------------- */
 
@@ -52,7 +52,7 @@ type Service interface {
 	GetInstitution(ctx context.Context, id uint64) (*models.Institution, error)
 
 	// GetAllInstitutions returns all Institutions
-	GetAllInstitutions(ctx context.Context) ([]*models.Institution, error)
+	GetAllInstitutions(ctx context.Context, f models.InstitutionFilters) ([]*models.Institution, error)
 
 	/* --------------- Course --------------- */
 
@@ -63,7 +63,7 @@ type Service interface {
 	GetCourse(ctx context.Context, id uint64) (*models.Course, error)
 
 	// GetAllCourses returns all Courses
-	GetAllCourses(ctx context.Context) ([]*models.Course, error)
+	GetAllCourses(ctx context.Context, f models.CourseFilters) ([]*models.Course, error)
 
 	/* --------------- Academic History --------------- */
 
@@ -88,7 +88,7 @@ type Service interface {
 	GetCompany(ctx context.Context, id uint64) (*models.Company, error)
 
 	// GetAllCompanies returns all Companies
-	GetAllCompanies(ctx context.Context) ([]*models.Company, error)
+	GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error)
 
 	/* --------------- Department --------------- */
 
@@ -99,7 +99,7 @@ type Service interface {
 	GetDepartment(ctx context.Context, id uint64) (*models.Department, error)
 
 	// GetAllDepartments returns all Departments
-	GetAllDepartments(ctx context.Context) ([]*models.Department, error)
+	GetAllDepartments(ctx context.Context, f models.DepartmentFilters) ([]*models.Department, error)
 
 	/* --------------- Job History --------------- */
 

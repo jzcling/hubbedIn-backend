@@ -170,7 +170,7 @@ func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllCandidates(tt.args.ctx)
+			got, err := r.GetAllCandidates(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -365,7 +365,7 @@ func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllSkills(tt.args.ctx)
+			got, err := r.GetAllSkills(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -573,7 +573,7 @@ func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllInstitutions(tt.args.ctx)
+			got, err := r.GetAllInstitutions(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -694,7 +694,7 @@ func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllCourses(tt.args.ctx)
+			got, err := r.GetAllCourses(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -1002,7 +1002,7 @@ func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllCompanies(tt.args.ctx)
+			got, err := r.GetAllCompanies(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -1122,7 +1122,7 @@ func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllDepartments(tt.args.ctx)
+			got, err := r.GetAllDepartments(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })

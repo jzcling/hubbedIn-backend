@@ -161,7 +161,7 @@ func testGetAllCandidates(t *testing.T, s profile.Service) {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllCandidates", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllCandidates(tt.args.ctx)
+			got, err := s.GetAllCandidates(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -360,7 +360,7 @@ func testGetAllSkills(t *testing.T, s profile.Service) {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllSkills", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllSkills(tt.args.ctx)
+			got, err := s.GetAllSkills(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -564,7 +564,7 @@ func testGetAllInstitutions(t *testing.T, s profile.Service) {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllInstitutions", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllInstitutions(tt.args.ctx)
+			got, err := s.GetAllInstitutions(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -689,7 +689,7 @@ func testGetAllCourses(t *testing.T, s profile.Service) {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllCourses", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllCourses(tt.args.ctx)
+			got, err := s.GetAllCourses(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -973,7 +973,7 @@ func testGetAllCompanies(t *testing.T, s profile.Service) {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllCompanies", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllCompanies(tt.args.ctx)
+			got, err := s.GetAllCompanies(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -1097,7 +1097,7 @@ func testGetAllDepartments(t *testing.T, s profile.Service) {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllDepartments", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllDepartments(tt.args.ctx)
+			got, err := s.GetAllDepartments(tt.args.ctx, *tt.args.f)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
