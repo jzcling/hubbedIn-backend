@@ -124,9 +124,19 @@ func makeGetAllCandidatesEndpoint(s profile.Service) endpoint.Endpoint {
 }
 
 // GetAllCandidatesRequest declares the inputs required for getting all candidates
-// TODO: filters
 type GetAllCandidatesRequest struct {
-	ID []uint64
+	ID              []uint64
+	FirstName       string
+	LastName        string
+	Email           string
+	ContactNumber   string
+	Gender          []string
+	Nationality     []string
+	ResidenceCity   []string
+	MinSalary       uint32
+	MaxSalary       uint32
+	EducationLevel  []string
+	MaxNoticePeriod uint32
 }
 
 // GetAllCandidatesResponse declares the outputs after attempting to get all candidates
@@ -241,7 +251,7 @@ func makeGetAllSkillsEndpoint(s profile.Service) endpoint.Endpoint {
 
 // GetAllSkillsRequest declares the inputs required for getting all skills
 type GetAllSkillsRequest struct {
-	// TODO
+	Name []string
 }
 
 // GetAllSkillsResponse declares the outputs after attempting to get all skills
@@ -338,7 +348,8 @@ func makeGetAllInstitutionsEndpoint(s profile.Service) endpoint.Endpoint {
 
 // GetAllInstitutionsRequest declares the inputs required for getting all Institutions
 type GetAllInstitutionsRequest struct {
-	// TODO
+	Name    []string
+	Country []string
 }
 
 // GetAllInstitutionsResponse declares the outputs after attempting to get all Institutions
@@ -396,7 +407,8 @@ func makeGetAllCoursesEndpoint(s profile.Service) endpoint.Endpoint {
 
 // GetAllCoursesRequest declares the inputs required for getting all Courses
 type GetAllCoursesRequest struct {
-	// TODO
+	Name  []string
+	Level []string
 }
 
 // GetAllCoursesResponse declares the outputs after attempting to get all Courses
@@ -531,7 +543,7 @@ func makeGetAllCompaniesEndpoint(s profile.Service) endpoint.Endpoint {
 
 // GetAllCompaniesRequest declares the inputs required for getting all Companies
 type GetAllCompaniesRequest struct {
-	// TODO
+	Name []string
 }
 
 // GetAllCompaniesResponse declares the outputs after attempting to get all Companies
@@ -589,7 +601,7 @@ func makeGetAllDepartmentsEndpoint(s profile.Service) endpoint.Endpoint {
 
 // GetAllDepartmentsRequest declares the inputs required for getting all Departments
 type GetAllDepartmentsRequest struct {
-	// TODO
+	Name []string
 }
 
 // GetAllDepartmentsResponse declares the outputs after attempting to get all Departments

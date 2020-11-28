@@ -177,9 +177,19 @@ message CreateCandidateRequest {
     Candidate candidate = 1;
 }
 
-// TODO: filters
 message GetAllCandidatesRequest {
     repeated uint64 id = 1;
+	string first_name = 2;
+	string last_name = 3;
+	string email = 4;
+	string contact_number = 5;
+	repeated string gender = 6;
+	repeated string nationality = 7;
+	repeated string residence_city = 8;
+	uint32 min_salary = 9;
+	uint32 max_salary = 10;
+	repeated string education_level = 11;
+	uint32 max_notice_period = 12;
 }
 
 message GetAllCandidatesResponse {
@@ -217,7 +227,7 @@ message GetSkillRequest {
 }
 
 message GetAllSkillsRequest {
-    // TODO
+    repeated string name = 1;
 }
 
 message GetAllSkillsResponse {
@@ -259,7 +269,8 @@ message GetInstitutionRequest {
 }
 
 message GetAllInstitutionsRequest {
-    // TODO
+    repeated string name = 1;
+    repeated string country = 2;
 }
 
 message GetAllInstitutionsResponse {
@@ -281,7 +292,8 @@ message GetCourseRequest {
 }
 
 message GetAllCoursesRequest {
-    repeated uint64 id = 1;
+    repeated string name = 1;
+    repeated string level = 2;
 }
 
 message GetAllCoursesResponse {
@@ -341,7 +353,7 @@ message GetCompanyRequest {
 }
 
 message GetAllCompaniesRequest {
-    // TODO
+    repeated string name = 1;
 }
 
 message GetAllCompaniesResponse {
@@ -362,7 +374,7 @@ message GetDepartmentRequest {
 }
 
 message GetAllDepartmentsRequest {
-    // TODO
+    repeated string name = 1;
 }
 
 message GetAllDepartmentsResponse {

@@ -2,18 +2,18 @@ package models
 
 // CandidateFilters define filters for Candidate model
 type CandidateFilters struct {
-	ID             []uint64
-	FirstName      string
-	LastName       string
-	Email          string
-	ContactNumber  string
-	Gender         []string
-	Nationality    []string
-	ResidenceCity  []string
-	MinSalary      uint32
-	MaxSalary      uint32
-	EducationLevel []string
-	NoticePeriod   []uint32
+	ID              []uint64
+	FirstName       string
+	LastName        string
+	Email           string
+	ContactNumber   string
+	Gender          []string
+	Nationality     []string
+	ResidenceCity   []string
+	MinSalary       uint32
+	MaxSalary       uint32
+	EducationLevel  []string
+	MaxNoticePeriod uint32
 }
 
 // SkillFilters define filters for Skill model
