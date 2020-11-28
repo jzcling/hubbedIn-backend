@@ -655,6 +655,12 @@
                     "method": "GET",
                     "url_pattern": "/v1/projects"
                 }
+            ],
+            "querystring_params": [
+                "id",
+                "candidate_id",
+                "name",
+                "repo_url"
             ]
         },
         {
