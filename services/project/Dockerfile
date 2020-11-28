@@ -22,7 +22,7 @@ RUN cd services/project/scripts/migrations && \
     go build -o /build/dist/migrations
 
 FROM openjdk:alpine as release
-RUN apk add --no-cache ca-certificates git curl sed unzip
+RUN apk add --no-cache ca-certificates git curl sed unzip nodejs npm
 WORKDIR /app
 
 ARG RELEASE=4.5.0.2216
