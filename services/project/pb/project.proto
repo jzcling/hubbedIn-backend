@@ -14,7 +14,7 @@ service ProjectService {
     rpc CreateProject(CreateProjectRequest) returns (Project) {
         option (google.api.http) = { 
             post: "/v1/projects" 
-            body: "project"
+            body: "*"
         };
     };
     rpc GetAllProjects(GetAllProjectsRequest) returns (GetAllProjectsResponse) {

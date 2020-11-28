@@ -30,7 +30,6 @@ var (
 
 		testCreateCandidateProject,
 		testDeleteCandidateProject,
-		testGetAllProjectsByCandidate,
 
 		testCreateRating,
 		testDeleteRating,
@@ -120,6 +119,13 @@ func testGetAllProjects(t *testing.T, r project.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Project)(nil)).Count()
 	require.NoError(t, err)
 
+	f := &models.ProjectFilters{
+		ID:          []uint64{1, 2},
+		CandidateID: 1,
+		Name:        "test",
+		RepoURL:     "repo",
+	}
+
 	type args struct {
 		ctx context.Context
 		f   *models.ProjectFilters
@@ -136,6 +142,7 @@ func testGetAllProjects(t *testing.T, r project.Repository, db *pg.DB) {
 		exp  expect
 	}{
 		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"all filters", args{ctx, f}, expect{2, nil}},
 	}
 
 	for _, tt := range tests {
@@ -328,44 +335,6 @@ func testDeleteCandidateProject(t *testing.T, r project.Repository, db *pg.DB) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := r.DeleteCandidateProject(tt.args.ctx, tt.args.id)
-			if tt.exp.err != nil && err != nil {
-				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
-			} else {
-				assert.Equal(t, tt.exp.err, err)
-			}
-		})
-	}
-}
-
-func testGetAllProjectsByCandidate(t *testing.T, r project.Repository, db *pg.DB) {
-	cid := 1
-	count, err := db.WithContext(ctx).Model((*models.CandidateProject)(nil)).
-		Where("candidate_id = ?", cid).
-		Count()
-	require.NoError(t, err)
-
-	type args struct {
-		ctx context.Context
-		cid uint64
-	}
-
-	type expect struct {
-		cnt int
-		err error
-	}
-
-	var tests = []struct {
-		name string
-		args args
-		exp  expect
-	}{
-		{"existing", args{ctx, 1}, expect{count, nil}},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllProjectsByCandidate(tt.args.ctx, tt.args.cid)
-			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

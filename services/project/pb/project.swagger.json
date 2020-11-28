@@ -233,15 +233,8 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbProject"
+              "$ref": "#/definitions/pbCreateProjectRequest"
             }
-          },
-          {
-            "name": "candidateId",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
           }
         ],
         "tags": [
@@ -398,6 +391,18 @@
     },
     "pbCreateCandidateProjectResponse": {
       "type": "object"
+    },
+    "pbCreateProjectRequest": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/pbProject"
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
     },
     "pbCreateRatingResponse": {
       "type": "object"

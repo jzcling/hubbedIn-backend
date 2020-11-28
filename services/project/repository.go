@@ -32,9 +32,6 @@ type Repository interface {
 	// DeleteCandidateroject deletes a Candidate Project
 	DeleteCandidateProject(ctx context.Context, id uint64) error
 
-	// GetAllProjectsByCandidate returns all Projects by a Candidate
-	GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error)
-
 	/* --------------- Rating --------------- */
 
 	// CreateRating creates a new Project Rating

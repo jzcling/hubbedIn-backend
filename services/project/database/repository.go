@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"fmt"
+	"strings"
 
 	pg "github.com/go-pg/pg/v10"
 
@@ -44,10 +44,42 @@ func (r *repository) CreateProject(ctx context.Context, m *models.Project) (*mod
 // GetAllProjects returns all Projects
 func (r *repository) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
 	var m []*models.Project
-	err := r.DB.WithContext(ctx).Model(&m).
-		Relation(relProjectRating).
-		Returning("*").
-		Select()
+	q := r.DB.WithContext(ctx).Model(&m).Relation(relProjectRating)
+
+	if len(f.ID) > 0 {
+		q = q.Where("p.id in (?)", pg.In(f.ID))
+	}
+	if f.CandidateID > 0 {
+		cp := &models.CandidateProject{CandidateID: f.CandidateID}
+		var pids []uint64
+		err := r.DB.WithContext(ctx).Model(cp).
+			Where("candidate_id = ?", f.CandidateID).
+			Returning("project_id").
+			Select(&pids)
+		if err != nil {
+			return nil, candidateIDErr(err, f.CandidateID)
+		}
+
+		/*
+			Written like this because if pids is empty, a syntax error
+			is thrown due to pg.In's handling. In the case where there
+			are no project IDs, we should return an empty result and a proxy
+			for that is to condition on id is null
+		*/
+		if len(pids) > 0 {
+			q = q.Where("p.id in (?)", pg.In(pids))
+		} else {
+			q = q.Where("p.id is null")
+		}
+	}
+	if f.Name != "" {
+		q = q.Where("lower(p.name) like ?", "%"+strings.ToLower(f.Name)+"%")
+	}
+	if f.RepoURL != "" {
+		q = q.Where("lower(p.repo_url) like ?", "%"+strings.ToLower(f.RepoURL)+"%")
+	}
+
+	err := q.Returning("*").Select()
 	return m, err
 }
 
@@ -117,29 +149,6 @@ func (r *repository) DeleteCandidateProject(ctx context.Context, id uint64) erro
 		return deleteErr(err, "candidate project", id)
 	}
 	return nil
-}
-
-// GetAllProjectsByCandidate returns all Projects by a Candidate
-func (r *repository) GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error) {
-	cp := &models.CandidateProject{CandidateID: cid}
-	fmt.Printf("%v\n", cid)
-	var pids []uint64
-	err := r.DB.WithContext(ctx).Model(cp).
-		Where("candidate_id = ?", cid).
-		Returning("project_id").
-		Select(&pids)
-	if err != nil {
-		return nil, candidateIDErr(err, cid)
-	}
-	fmt.Printf("%v\n", pids)
-
-	var m []*models.Project
-	err = r.DB.WithContext(ctx).Model(&m).
-		Where("p.id in (?)", pg.In(pids)).
-		Relation(relProjectRating).
-		Returning("*").
-		Select()
-	return m, err
 }
 
 /* --------------- Rating --------------- */

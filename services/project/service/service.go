@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -96,15 +95,8 @@ func (s *service) CreateProject(ctx context.Context, model *models.Project, cid 
 // GetAllProjects returns all Projects
 func (s *service) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
 	logger := log.With(s.logger, "method", "GetAllProjects")
-	level.Debug(logger).Log("filters", fmt.Sprintf("%+v", f))
 
-	var m []*models.Project
-	var err error
-	if f.CandidateID > 0 {
-		m, err = s.repository.GetAllProjectsByCandidate(ctx, f.CandidateID)
-	} else {
-		m, err = s.repository.GetAllProjects(ctx, f)
-	}
+	m, err := s.repository.GetAllProjects(ctx, f)
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
@@ -309,17 +301,6 @@ func (s *service) DeleteCandidateProject(ctx context.Context, id uint64) error {
 		level.Error(logger).Log("err", err)
 	}
 	return err
-}
-
-// GetAllProjectsByCandidate returns all Projects by a Candidate
-func (s *service) GetAllProjectsByCandidate(ctx context.Context, cid uint64) ([]*models.Project, error) {
-	logger := log.With(s.logger, "method", "GetAllProjectsByCandidate")
-
-	c, err := s.repository.GetAllProjectsByCandidate(ctx, cid)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
-	return c, err
 }
 
 /* --------------- Rating --------------- */
