@@ -1,0 +1,542 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "joblisting.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/candidatejoblistings": {
+      "post": {
+        "operationId": "JoblistingService_CreateCandidateJoblisting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateCandidateJoblistingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCandidateJoblisting"
+            }
+          },
+          {
+            "name": "candidateId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    },
+    "/v1/candidatejoblistings/{id}": {
+      "delete": {
+        "operationId": "JoblistingService_DeleteCandidateJoblisting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteCandidateJoblistingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    },
+    "/v1/joblistingratings": {
+      "post": {
+        "operationId": "JoblistingService_CreateRating",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateRatingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbRating"
+            }
+          },
+          {
+            "name": "joblistingId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    },
+    "/v1/joblistingratings/{id}": {
+      "delete": {
+        "operationId": "JoblistingService_DeleteRating",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteRatingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "joblistingId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    },
+    "/v1/joblistings": {
+      "get": {
+        "operationId": "JoblistingService_GetAllJoblistings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetAllJoblistingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "candidateId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "repoUrl",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      },
+      "post": {
+        "operationId": "JoblistingService_CreateJoblisting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbJoblisting"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateJoblistingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    },
+    "/v1/joblistings/{id}": {
+      "get": {
+        "operationId": "JoblistingService_GetJoblistingByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbJoblisting"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      },
+      "delete": {
+        "operationId": "JoblistingService_DeleteJoblisting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteJoblistingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      },
+      "put": {
+        "operationId": "JoblistingService_UpdateJoblisting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbJoblisting"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbJoblisting"
+            }
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    },
+    "/v1/joblistings/{id}/scan": {
+      "post": {
+        "operationId": "JoblistingService_ScanJoblisting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbScanJoblistingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "JoblistingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbCandidateJoblisting": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "joblistingId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "pbCreateCandidateJoblistingResponse": {
+      "type": "object"
+    },
+    "pbCreateJoblistingRequest": {
+      "type": "object",
+      "properties": {
+        "joblisting": {
+          "$ref": "#/definitions/pbJoblisting"
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "pbCreateRatingResponse": {
+      "type": "object"
+    },
+    "pbDeleteCandidateJoblistingResponse": {
+      "type": "object"
+    },
+    "pbDeleteJoblistingResponse": {
+      "type": "object"
+    },
+    "pbDeleteRatingResponse": {
+      "type": "object"
+    },
+    "pbGetAllJoblistingsResponse": {
+      "type": "object",
+      "properties": {
+        "joblistings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbJoblisting"
+          }
+        }
+      }
+    },
+    "pbJoblisting": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "repoUrl": {
+          "type": "string"
+        },
+        "ratings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbRating"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbRating": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "joblistingId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "reliabilityRating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maintainabilityRating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "securityRating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "securityReviewRating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "coverage": {
+          "type": "number",
+          "format": "float"
+        },
+        "duplications": {
+          "type": "number",
+          "format": "float"
+        },
+        "lines": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbScanJoblistingResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
