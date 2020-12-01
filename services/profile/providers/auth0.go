@@ -29,7 +29,10 @@ type auth0Provider struct {
 }
 
 var (
-	auth0URL string = "https://hubbed-in.au.auth0.com"
+	auth0URL        string = "https://hubbed-in.au.auth0.com"
+	candidateRoleID string = "rol_zlZ3Ha3n1E7WIbNI"
+	companyRoleID   string = "rol_I8Ol4fIrKZrFph2p"
+	adminRoleID     string = "rol_NjsiJ7p3Z6IEhlRm"
 )
 
 // NewAuth0 creates and returns a new Auth0Provider
@@ -111,9 +114,19 @@ func (p *auth0Provider) UpdateUser(token string, candidate *models.Candidate) er
 }
 
 func (p *auth0Provider) SetUserRole(token, authID, role string) error {
+	var val []string
+	switch role {
+	case "Candidate":
+		val = []string{candidateRoleID}
+	case "Company":
+		val = []string{companyRoleID}
+	case "Admin":
+		val = []string{adminRoleID}
+	}
+
 	url := auth0URL + "/api/v2/users/" + url.QueryEscape(authID) + "/roles"
 	reqBody, err := json.Marshal(map[string]([]string){
-		"roles": []string{role},
+		"roles": val,
 	})
 	if err != nil {
 		return err

@@ -35,31 +35,22 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		return nil, errors.New("Input parameter candidate is nil")
 	}
 
-	tx, err := r.DB.BeginContext(ctx)
-	defer tx.Close()
-	_, err = tx.Model(m).
+	_, err := r.DB.WithContext(ctx).Model(m).
 		Relation(relCandidateSkill).
 		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
 		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
 		Returning("*").
 		Insert()
 	if err != nil {
-		_ = tx.Rollback()
-		return nil, errors.Wrapf(err, "Failed to insert candidate %v", m)
+		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
 	}
 
 	err = r.updateAuth0User(m)
 	if err != nil {
-		_ = tx.Rollback()
-		return nil, errors.Wrapf(err, "Failed to update auth0 user %v", m.AuthID)
+		err = errors.Wrapf(err, "Failed to update auth0 user %v", m.AuthID)
 	}
 
-	err = tx.Commit()
-	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to commit")
-	}
-
-	return m, nil
+	return m, err
 }
 
 func (r *repository) updateAuth0User(m *models.Candidate) error {
