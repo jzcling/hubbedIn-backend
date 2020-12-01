@@ -90,6 +90,10 @@ services:
             - sonarqube-temp:/opt/sonarqube/temp
         networks: 
             - backend
+        ulimits:
+            nofile:
+                soft: "65536"
+                hard: "65536"
   
 
 networks:
