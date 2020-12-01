@@ -5,6 +5,7 @@ import (
 	"in-backend/services/profile"
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/models"
+	"in-backend/services/profile/tests/mocks"
 	"strings"
 	"testing"
 	"time"
@@ -16,16 +17,18 @@ import (
 )
 
 var (
-	ctx context.Context = context.Background()
-	now time.Time       = time.Now()
+	ctx context.Context      = context.Background()
+	now time.Time            = time.Now()
+	a   *mocks.Auth0Provider = &mocks.Auth0Provider{}
 )
 
 func TestNewRepository(t *testing.T) {
 	want := &repository{
-		DB: &pg.DB{},
+		DB:    &pg.DB{},
+		auth0: a,
 	}
 
-	got := NewRepository(&pg.DB{})
+	got := NewRepository(&pg.DB{}, a)
 
 	require.EqualValues(t, want, got)
 }
@@ -42,7 +45,7 @@ func TestAllCRUD(t *testing.T) {
 	db, err := setupDB(c, opt, "../scripts/migrations/")
 	require.NoError(t, err)
 
-	r := NewRepository(db)
+	r := NewRepository(db, a)
 
 	testCreateCandidate(t, r, db)
 	testGetAllCandidates(t, r, db)

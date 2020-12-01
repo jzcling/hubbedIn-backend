@@ -18,10 +18,8 @@ import (
 )
 
 var (
-	r *mocks.Repository    = &mocks.Repository{}
-	w io.Writer            = log.NewSyncWriter(os.Stderr)
-	l log.Logger           = log.NewLogfmtLogger(w)
-	a *mocks.Auth0Provider = &mocks.Auth0Provider{}
+	r *mocks.Repository = &mocks.Repository{}
+	w io.Writer         = log.NewSyncWriter(os.Stderr)
 
 	ctx context.Context = context.Background()
 	now time.Time       = time.Now()
@@ -30,17 +28,15 @@ var (
 func TestNew(t *testing.T) {
 	expect := &service{
 		repository: r,
-		logger:     l,
-		auth0:      a,
 	}
 
-	got := New(r, l, a)
+	got := New(r)
 
 	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	s := New(r, l, a)
+	s := New(r)
 
 	testCreateCandidate(t, s)
 	testGetAllCandidates(t, s)

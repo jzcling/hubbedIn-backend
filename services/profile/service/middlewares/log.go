@@ -1,0 +1,232 @@
+package middlewares
+
+import (
+	"context"
+	"fmt"
+	"in-backend/services/profile"
+	"in-backend/services/profile/models"
+	"time"
+
+	"github.com/go-kit/kit/log"
+)
+
+type logMiddleware struct {
+	logger log.Logger
+	next   profile.Service
+}
+
+// NewLogMiddleware creates and returns a new Log Middleware that implements the profile Service interface
+func NewLogMiddleware(logger log.Logger, svc profile.Service) profile.Service {
+	return &logMiddleware{
+		logger: logger,
+		next:   svc,
+	}
+}
+
+func (mw logMiddleware) log(method string, begin time.Time, input, output interface{}, err error) {
+	mw.logger.Log(
+		"method", method,
+		"input", input,
+		"output", output,
+		"err", err,
+		"took", time.Since(begin),
+	)
+}
+
+/* --------------- Candidate --------------- */
+
+// CreateCandidate creates a new Candidate
+func (mw logMiddleware) CreateCandidate(ctx context.Context, input *models.Candidate) (output *models.Candidate, err error) {
+	defer mw.log("CreateCandidate", time.Now(), input, output, err)
+	return mw.next.CreateCandidate(ctx, input)
+}
+
+// GetAllCandidates returns all Candidates
+func (mw logMiddleware) GetAllCandidates(ctx context.Context, input models.CandidateFilters) (output []*models.Candidate, err error) {
+	defer mw.log("GetAllCandidates", time.Now(), input, output, err)
+	return mw.next.GetAllCandidates(ctx, input)
+}
+
+// GetCandidateByID returns a Candidate by ID
+func (mw logMiddleware) GetCandidateByID(ctx context.Context, input uint64) (output *models.Candidate, err error) {
+	defer mw.log("GetCandidateByID", time.Now(), input, fmt.Sprintf("%v", output), err)
+	return mw.next.GetCandidateByID(ctx, input)
+}
+
+// UpdateCandidate updates a Candidate
+func (mw logMiddleware) UpdateCandidate(ctx context.Context, input *models.Candidate) (output *models.Candidate, err error) {
+	defer mw.log("UpdateCandidate", time.Now(), input, output, err)
+	return mw.next.UpdateCandidate(ctx, input)
+}
+
+// DeleteCandidate deletes a Candidate by ID
+func (mw logMiddleware) DeleteCandidate(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteCandidate", time.Now(), input, nil, err)
+	return mw.next.DeleteCandidate(ctx, input)
+}
+
+/* --------------- Skill --------------- */
+
+// CreateSkill creates a new Skill
+func (mw logMiddleware) CreateSkill(ctx context.Context, input *models.Skill) (output *models.Skill, err error) {
+	defer mw.log("CreateSkill", time.Now(), input, output, err)
+	return mw.next.CreateSkill(ctx, input)
+}
+
+// GetSkill returns a Skill by ID
+func (mw logMiddleware) GetSkill(ctx context.Context, input uint64) (output *models.Skill, err error) {
+	defer mw.log("GetSkill", time.Now(), input, output, err)
+	return mw.next.GetSkill(ctx, input)
+}
+
+// GetAllSkills returns all Skills
+func (mw logMiddleware) GetAllSkills(ctx context.Context, input models.SkillFilters) (output []*models.Skill, err error) {
+	defer mw.log("GetAllSkills", time.Now(), input, output, err)
+	return mw.next.GetAllSkills(ctx, input)
+}
+
+/* --------------- User Skill --------------- */
+
+// CreateUserSkill creates a new UserSkill
+func (mw logMiddleware) CreateUserSkill(ctx context.Context, input *models.UserSkill) (output *models.UserSkill, err error) {
+	defer mw.log("CreateUserSkill", time.Now(), input, output, err)
+	return mw.next.CreateUserSkill(ctx, input)
+}
+
+// DeleteUserSkill deletes a UserSkill by ID
+func (mw logMiddleware) DeleteUserSkill(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteUserSkill", time.Now(), input, nil, err)
+	return mw.next.DeleteUserSkill(ctx, input)
+}
+
+/* --------------- Institution --------------- */
+
+// CreateInstitution creates a new Institution
+func (mw logMiddleware) CreateInstitution(ctx context.Context, input *models.Institution) (output *models.Institution, err error) {
+	defer mw.log("CreateInstitution", time.Now(), input, output, err)
+	return mw.next.CreateInstitution(ctx, input)
+}
+
+// GetInstitution returns a Institution by ID
+func (mw logMiddleware) GetInstitution(ctx context.Context, input uint64) (output *models.Institution, err error) {
+	defer mw.log("GetInstitution", time.Now(), input, output, err)
+	return mw.next.GetInstitution(ctx, input)
+}
+
+// GetAllInstitutions returns all Institutions
+func (mw logMiddleware) GetAllInstitutions(ctx context.Context, input models.InstitutionFilters) (output []*models.Institution, err error) {
+	defer mw.log("GetAllInstitutions", time.Now(), input, output, err)
+	return mw.next.GetAllInstitutions(ctx, input)
+}
+
+/* --------------- Course --------------- */
+
+// CreateCourse creates a new Course
+func (mw logMiddleware) CreateCourse(ctx context.Context, input *models.Course) (output *models.Course, err error) {
+	defer mw.log("CreateCourse", time.Now(), input, output, err)
+	return mw.next.CreateCourse(ctx, input)
+}
+
+// GetCourse returns a Course by ID
+func (mw logMiddleware) GetCourse(ctx context.Context, input uint64) (output *models.Course, err error) {
+	defer mw.log("GetCourse", time.Now(), input, output, err)
+	return mw.next.GetCourse(ctx, input)
+}
+
+// GetAllCourses returns all Courses
+func (mw logMiddleware) GetAllCourses(ctx context.Context, input models.CourseFilters) (output []*models.Course, err error) {
+	defer mw.log("GetAllCourses", time.Now(), input, output, err)
+	return mw.next.GetAllCourses(ctx, input)
+}
+
+/* --------------- Academic History --------------- */
+
+// CreateAcademicHistory creates a new AcademicHistory
+func (mw logMiddleware) CreateAcademicHistory(ctx context.Context, input *models.AcademicHistory) (output *models.AcademicHistory, err error) {
+	defer mw.log("CreateAcademicHistory", time.Now(), input, output, err)
+	return mw.next.CreateAcademicHistory(ctx, input)
+}
+
+// GetAcademicHistory returns a AcademicHistory by ID
+func (mw logMiddleware) GetAcademicHistory(ctx context.Context, input uint64) (output *models.AcademicHistory, err error) {
+	defer mw.log("GetAcademicHistory", time.Now(), input, output, err)
+	return mw.next.GetAcademicHistory(ctx, input)
+}
+
+// UpdateAcademicHistory updates a AcademicHistory
+func (mw logMiddleware) UpdateAcademicHistory(ctx context.Context, input *models.AcademicHistory) (output *models.AcademicHistory, err error) {
+	defer mw.log("UpdateAcademicHistory", time.Now(), input, output, err)
+	return mw.next.UpdateAcademicHistory(ctx, input)
+}
+
+// DeleteAcademicHistory deletes a AcademicHistory by ID
+func (mw logMiddleware) DeleteAcademicHistory(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteAcademicHistory", time.Now(), input, nil, err)
+	return mw.next.DeleteAcademicHistory(ctx, input)
+}
+
+/* --------------- Company --------------- */
+
+// CreateCompany creates a new Company
+func (mw logMiddleware) CreateCompany(ctx context.Context, input *models.Company) (output *models.Company, err error) {
+	defer mw.log("CreateCompany", time.Now(), input, output, err)
+	return mw.next.CreateCompany(ctx, input)
+}
+
+// GetCompany returns a Company by ID
+func (mw logMiddleware) GetCompany(ctx context.Context, input uint64) (output *models.Company, err error) {
+	defer mw.log("GetCompany", time.Now(), input, output, err)
+	return mw.next.GetCompany(ctx, input)
+}
+
+// GetAllCompanies returns all Companies
+func (mw logMiddleware) GetAllCompanies(ctx context.Context, input models.CompanyFilters) (output []*models.Company, err error) {
+	defer mw.log("GetAllCompanies", time.Now(), input, output, err)
+	return mw.next.GetAllCompanies(ctx, input)
+}
+
+/* --------------- Department --------------- */
+
+// CreateDepartment creates a new Department
+func (mw logMiddleware) CreateDepartment(ctx context.Context, input *models.Department) (output *models.Department, err error) {
+	defer mw.log("CreateDepartment", time.Now(), input, output, err)
+	return mw.next.CreateDepartment(ctx, input)
+}
+
+// GetDepartment returns a Department by ID
+func (mw logMiddleware) GetDepartment(ctx context.Context, input uint64) (output *models.Department, err error) {
+	defer mw.log("GetDepartment", time.Now(), input, output, err)
+	return mw.next.GetDepartment(ctx, input)
+}
+
+// GetAllDepartments returns all Departments
+func (mw logMiddleware) GetAllDepartments(ctx context.Context, input models.DepartmentFilters) (output []*models.Department, err error) {
+	defer mw.log("GetAllDepartments", time.Now(), input, output, err)
+	return mw.next.GetAllDepartments(ctx, input)
+}
+
+/* --------------- Job History --------------- */
+
+// CreateJobHistory creates a new JobHistory
+func (mw logMiddleware) CreateJobHistory(ctx context.Context, input *models.JobHistory) (output *models.JobHistory, err error) {
+	defer mw.log("CreateJobHistory", time.Now(), input, output, err)
+	return mw.next.CreateJobHistory(ctx, input)
+}
+
+// GetJobHistory returns a JobHistory by ID
+func (mw logMiddleware) GetJobHistory(ctx context.Context, input uint64) (output *models.JobHistory, err error) {
+	defer mw.log("GetJobHistory", time.Now(), input, output, err)
+	return mw.next.GetJobHistory(ctx, input)
+}
+
+// UpdateJobHistory updates a JobHistory
+func (mw logMiddleware) UpdateJobHistory(ctx context.Context, input *models.JobHistory) (output *models.JobHistory, err error) {
+	defer mw.log("UpdateJobHistory", time.Now(), input, output, err)
+	return mw.next.UpdateJobHistory(ctx, input)
+}
+
+// DeleteJobHistory deletes a JobHistory by ID
+func (mw logMiddleware) DeleteJobHistory(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteJobHistory", time.Now(), input, nil, err)
+	return mw.next.DeleteJobHistory(ctx, input)
+}

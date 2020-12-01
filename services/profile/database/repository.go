@@ -10,17 +10,20 @@ import (
 
 	"in-backend/services/profile"
 	"in-backend/services/profile/models"
+	"in-backend/services/profile/providers"
 )
 
 // Repository implements the profile Repository interface
 type repository struct {
-	DB *pg.DB
+	DB    *pg.DB
+	auth0 providers.Auth0Provider
 }
 
 // NewRepository declares a new Repository that implements profile Repository
-func NewRepository(db *pg.DB) profile.Repository {
+func NewRepository(db *pg.DB, a providers.Auth0Provider) profile.Repository {
 	return &repository{
-		DB: db,
+		DB:    db,
+		auth0: a,
 	}
 }
 
@@ -32,17 +35,43 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		return nil, errors.New("Input parameter candidate is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).
+	tx, err := r.DB.BeginContext(ctx)
+	defer tx.Close()
+	_, err = tx.Model(m).
 		Relation(relCandidateSkill).
 		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
 		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
 		Returning("*").
 		Insert()
 	if err != nil {
+		_ = tx.Rollback()
 		return nil, errors.Wrapf(err, "Failed to insert candidate %v", m)
 	}
 
+	err = r.updateAuth0User(m)
+	if err != nil {
+		_ = tx.Rollback()
+		return nil, errors.Wrapf(err, "Failed to update auth0 user %v", m.AuthID)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to commit")
+	}
+
 	return m, nil
+}
+
+func (r *repository) updateAuth0User(m *models.Candidate) error {
+	token, err := r.auth0.GetAuth0Token()
+	if err != nil {
+		return err
+	}
+	err = r.auth0.UpdateAuth0User(fmt.Sprintf("%v", token["access_token"]), m)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetAllCandidates returns all Candidates
