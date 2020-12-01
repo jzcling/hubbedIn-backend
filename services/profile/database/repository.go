@@ -63,11 +63,16 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 }
 
 func (r *repository) updateAuth0User(m *models.Candidate) error {
-	token, err := r.auth0.GetAuth0Token()
+	token, err := r.auth0.GetToken()
 	if err != nil {
 		return err
 	}
-	err = r.auth0.UpdateAuth0User(fmt.Sprintf("%v", token["access_token"]), m)
+	t := token["access_token"].(string)
+	err = r.auth0.UpdateUser(t, m)
+	if err != nil {
+		return err
+	}
+	err = r.auth0.SetUserRole(t, m.AuthID, "Candidate")
 	if err != nil {
 		return err
 	}

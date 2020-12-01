@@ -13,8 +13,9 @@ import (
 
 // Auth0Provider describes the methods to interact with the Auth0 identity provider
 type Auth0Provider interface {
-	GetAuth0Token() (map[string]interface{}, error)
-	UpdateAuth0User(token string, candidate *models.Candidate) error
+	GetToken() (map[string]interface{}, error)
+	UpdateUser(token string, candidate *models.Candidate) error
+	SetUserRole(token, authID, role string) error
 }
 
 // HTTPClient describes a default http client
@@ -39,7 +40,7 @@ func NewAuth0(cfg configs.Config, client HTTPClient) Auth0Provider {
 	}
 }
 
-func (p *auth0Provider) GetAuth0Token() (map[string]interface{}, error) {
+func (p *auth0Provider) GetToken() (map[string]interface{}, error) {
 	url := auth0URL + "/oauth/token"
 	reqBody, err := json.Marshal(map[string]string{
 		"client_id":     p.config.Auth0.MgmtClientID,
@@ -77,7 +78,7 @@ func (p *auth0Provider) GetAuth0Token() (map[string]interface{}, error) {
 	return jsonBody, nil
 }
 
-func (p *auth0Provider) UpdateAuth0User(token string, candidate *models.Candidate) error {
+func (p *auth0Provider) UpdateUser(token string, candidate *models.Candidate) error {
 	url := auth0URL + "/api/v2/users/" + url.QueryEscape(candidate.AuthID)
 	reqBody, err := json.Marshal(map[string](map[string]string){
 		"app_metadata": {
@@ -94,6 +95,37 @@ func (p *auth0Provider) UpdateAuth0User(token string, candidate *models.Candidat
 	}
 	req.Header.Add("authorization", "Bearer "+token)
 	req.Header.Add("content-type", "application/json")
+
+	res, err := p.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	_, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *auth0Provider) SetUserRole(token, authID, role string) error {
+	url := auth0URL + "/api/v2/users/" + url.QueryEscape(authID) + "/roles"
+	reqBody, err := json.Marshal(map[string]([]string){
+		"roles": []string{role},
+	})
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Add("authorization", "Bearer "+token)
+	req.Header.Add("content-type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
 
 	res, err := p.client.Do(req)
 	if err != nil {

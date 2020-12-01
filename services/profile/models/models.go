@@ -45,6 +45,23 @@ type Candidate struct {
 	DeletedAt              *time.Time         `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
+func (m *Candidate) BeforeInsert(db orm.DB) error {
+	now := time.Now()
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = &now
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = &now
+	}
+	return nil
+}
+
+func (m *Candidate) BeforeUpdate(db orm.DB) error {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return nil
+}
+
 // Skill declares the model for Skill
 type Skill struct {
 	tableName struct{} `pg:"skills,alias:s"`
@@ -63,6 +80,23 @@ type UserSkill struct {
 	SkillID     uint64     `json:"skill_id" pg:",notnull"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
+}
+
+func (m *UserSkill) BeforeInsert(db orm.DB) error {
+	now := time.Now()
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = &now
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = &now
+	}
+	return nil
+}
+
+func (m *UserSkill) BeforeUpdate(db orm.DB) error {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return nil
 }
 
 // Institution declares the model for Institution
@@ -109,6 +143,23 @@ type AcademicHistory struct {
 	CreatedAt     *time.Time   `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt     *time.Time   `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`
+}
+
+func (m *AcademicHistory) BeforeInsert(db orm.DB) error {
+	now := time.Now()
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = &now
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = &now
+	}
+	return nil
+}
+
+func (m *AcademicHistory) BeforeUpdate(db orm.DB) error {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return nil
 }
 
 // Company declares the model for Company
@@ -160,4 +211,21 @@ type JobHistory struct {
 	CreatedAt      *time.Time  `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt      *time.Time  `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt      *time.Time  `json:"deleted_at,omitempty" pg:",soft_delete"`
+}
+
+func (m *JobHistory) BeforeInsert(db orm.DB) error {
+	now := time.Now()
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = &now
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = &now
+	}
+	return nil
+}
+
+func (m *JobHistory) BeforeUpdate(db orm.DB) error {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return nil
 }
