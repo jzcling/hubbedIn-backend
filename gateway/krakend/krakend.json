@@ -15,9 +15,20 @@
             "syslog": false,
             "stdout": true
         },
+        "github_com/devopsfaith/krakend-httpsecure": {
+            "allowed_hosts": [
+            ],
+            "sts_include_subdomains": true,
+            "frame_deny": true,
+            "custom_frame_options_value": "ALLOW-FROM https://hubbedin.dev",
+            "hpkp_public_key": "pin-sha256=\"base64==\"; max-age=expireTime [; includeSubDomains][; report-uri=\"reportURI\"]",
+            "content_type_nosniff": true,
+            "browser_xss_filter": true,
+            "content_security_policy": "default-src 'self';"
+        },
         "github_com/devopsfaith/krakend-cors": {
             "allow_origins": [
-                "*"
+                "https://hubbedin.dev:3000"
             ],
             "expose_headers": [
                 "Content-Length",
@@ -74,6 +85,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -123,6 +139,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -145,6 +166,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -168,6 +194,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -190,6 +221,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -212,6 +248,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -235,6 +276,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -257,6 +303,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -280,6 +331,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -302,6 +358,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -324,6 +385,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -347,6 +413,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -369,6 +440,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -391,6 +467,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -414,6 +495,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -436,6 +522,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -458,6 +549,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -480,6 +576,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -503,6 +604,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -525,6 +631,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -547,6 +658,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -570,6 +686,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -592,6 +713,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -614,6 +740,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -637,6 +768,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -659,6 +795,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -681,6 +822,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -703,6 +849,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -726,6 +877,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -748,6 +904,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -776,6 +937,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -798,6 +964,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -820,6 +991,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -842,6 +1018,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -865,6 +1046,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -887,6 +1073,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -910,6 +1101,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -932,6 +1128,11 @@
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
