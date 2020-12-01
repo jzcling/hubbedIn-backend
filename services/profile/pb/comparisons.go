@@ -11,7 +11,8 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		return false
 	}
 
-	if c1.FirstName != c2.FirstName ||
+	if c1.AuthId != c2.AuthId ||
+		c1.FirstName != c2.FirstName ||
 		c1.LastName != c2.LastName ||
 		c1.Email != c2.Email ||
 		c1.ContactNumber != c2.ContactNumber ||

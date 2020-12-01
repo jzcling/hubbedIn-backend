@@ -16,6 +16,13 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 		return false
 	}
 
+	if ((m1.Birthday != nil && m2.(*Candidate).Birthday == nil) || (m1.Birthday == nil && m2.(*Candidate).Birthday != nil)) ||
+		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt == nil) || (m1.CreatedAt == nil && m2.(*Candidate).CreatedAt != nil)) ||
+		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt == nil) || (m1.UpdatedAt == nil && m2.(*Candidate).UpdatedAt != nil)) ||
+		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt == nil) || (m1.DeletedAt == nil && m2.(*Candidate).DeletedAt != nil)) {
+		return false
+	}
+
 	if m1.AuthID != m2.(*Candidate).AuthID ||
 		m1.FirstName != m2.(*Candidate).FirstName ||
 		m1.LastName != m2.(*Candidate).LastName ||
@@ -32,11 +39,11 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 		m1.WebsiteURL != m2.(*Candidate).WebsiteURL ||
 		m1.EducationLevel != m2.(*Candidate).EducationLevel ||
 		m1.Summary != m2.(*Candidate).Summary ||
-		*m1.Birthday != *m2.(*Candidate).Birthday ||
+		((m1.Birthday != nil && m2.(*Candidate).Birthday != nil) && (*m1.Birthday != *m2.(*Candidate).Birthday)) ||
 		m1.NoticePeriod != m2.(*Candidate).NoticePeriod ||
-		*m1.CreatedAt != *m2.(*Candidate).CreatedAt ||
-		*m1.UpdatedAt != *m2.(*Candidate).UpdatedAt ||
-		*m1.DeletedAt != *m2.(*Candidate).DeletedAt {
+		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt != nil) && (*m1.CreatedAt != *m2.(*Candidate).CreatedAt)) ||
+		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt != nil) && (*m1.UpdatedAt != *m2.(*Candidate).UpdatedAt)) ||
+		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt != nil) && (*m1.DeletedAt != *m2.(*Candidate).DeletedAt)) {
 		return false
 	}
 	return true

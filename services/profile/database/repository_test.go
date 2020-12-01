@@ -43,6 +43,8 @@ func TestAllCRUD(t *testing.T) {
 	require.NoError(t, err)
 
 	db, err := setupDB(c, opt, "../scripts/migrations/")
+	defer cleanDb(db)
+	defer cleanContainer(c)
 	require.NoError(t, err)
 
 	r := NewRepository(db, a)
@@ -85,9 +87,6 @@ func TestAllCRUD(t *testing.T) {
 	testGetJobHistory(t, r, db)
 	testUpdateJobHistory(t, r, db)
 	testDeleteJobHistory(t, r, db)
-
-	cleanDb(db)
-	cleanContainer(c)
 }
 
 /* --------------- Candidate --------------- */
@@ -107,21 +106,26 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	testDupEmail := test
 
-	// this is required to insert 2 candidates so that one can be used
-	// for other tests after the first gets deleted
 	test2 := test
 	test2.AuthID = "authId2"
 	test2.Email = "test@test.com"
 	test2.ContactNumber = "+6587654321"
 
+	auth0GetOutput := make(map[string]interface{})
+	auth0GetOutput["access_token"] = "test"
+	auth0UpdateInput := "test"
+
 	type args struct {
-		ctx   context.Context
-		input *models.Candidate
+		ctx              context.Context
+		input            *models.Candidate
+		auth0UpdateInput string
 	}
 
 	type expect struct {
-		output *models.Candidate
-		err    error
+		output            *models.Candidate
+		err               error
+		auth0GetOutput    map[string]interface{}
+		auth0UpdateOutput error
 	}
 
 	var tests = []struct {
@@ -129,15 +133,17 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter candidate is nil")}},
-		{"failed not null", args{ctx, testNoAuthID}, expect{nil, errors.New("Failed to insert candidate")}},
-		{"valid", args{ctx, &test}, expect{&test, nil}},
-		{"failed unique", args{ctx, &testDupEmail}, expect{nil, errors.New("Failed to insert candidate")}},
-		{"valid2", args{ctx, &test2}, expect{&test2, nil}},
+		{"nil", args{ctx, nil, auth0UpdateInput}, expect{nil, errors.New("Input parameter candidate is nil"), auth0GetOutput, nil}},
+		{"failed not null", args{ctx, testNoAuthID, auth0UpdateInput}, expect{nil, errors.New("Failed to insert candidate"), auth0GetOutput, nil}},
+		{"valid", args{ctx, &test, auth0UpdateInput}, expect{&test, nil, auth0GetOutput, nil}},
+		{"failed unique", args{ctx, &testDupEmail, auth0UpdateInput}, expect{nil, errors.New("Failed to insert candidate"), auth0GetOutput, nil}},
+		{"invalid auth0", args{ctx, &test2, auth0UpdateInput}, expect{nil, errors.New("Failed to update auth0 user"), auth0GetOutput, errors.New("Failed to update auth0 user")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			a.On("GetAuth0Token").Return(tt.exp.auth0GetOutput, nil)
+			a.On("UpdateAuth0User", tt.args.auth0UpdateInput, tt.args.input).Return(tt.exp.auth0UpdateOutput)
 			got, err := r.CreateCandidate(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
@@ -168,7 +174,7 @@ func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.CandidateFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -363,7 +369,7 @@ func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.SkillFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -571,7 +577,7 @@ func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.InstitutionFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -692,7 +698,7 @@ func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.CourseFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -1000,7 +1006,7 @@ func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.CompanyFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -1120,7 +1126,7 @@ func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.DepartmentFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
