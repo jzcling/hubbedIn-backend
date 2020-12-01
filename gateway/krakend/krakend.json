@@ -44,6 +44,9 @@
             "endpoint": "/v1/candidates",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -63,6 +66,9 @@
             "endpoint": "/v1/candidates",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -82,11 +88,19 @@
             "endpoint": "/v1/candidates/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
                     "clientMaxRate": 5,
                     "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
                 }
             },
             "backend": [
@@ -101,6 +115,9 @@
             "endpoint": "/v1/candidates/{id}",
             "method": "PUT",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -120,6 +137,9 @@
             "endpoint": "/v1/candidates/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -140,6 +160,9 @@
             "endpoint": "/v1/skills",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -159,6 +182,9 @@
             "endpoint": "/v1/skills",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -178,6 +204,9 @@
             "endpoint": "/v1/skills/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -198,6 +227,9 @@
             "endpoint": "/v1/userskills",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -217,6 +249,9 @@
             "endpoint": "/v1/userskills/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -237,6 +272,9 @@
             "endpoint": "/v1/institutions",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -256,6 +294,9 @@
             "endpoint": "/v1/institutions",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -275,6 +316,9 @@
             "endpoint": "/v1/institutions/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -295,6 +339,9 @@
             "endpoint": "/v1/courses",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -314,6 +361,9 @@
             "endpoint": "/v1/courses",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -333,6 +383,9 @@
             "endpoint": "/v1/courses/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -353,6 +406,9 @@
             "endpoint": "/v1/academichistories",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -372,6 +428,9 @@
             "endpoint": "/v1/academichistories/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -391,6 +450,9 @@
             "endpoint": "/v1/academichistories/{id}",
             "method": "PUT",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -410,6 +472,9 @@
             "endpoint": "/v1/academichistories/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -430,6 +495,9 @@
             "endpoint": "/v1/companies",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -449,6 +517,9 @@
             "endpoint": "/v1/companies",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -468,6 +539,9 @@
             "endpoint": "/v1/companies/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -488,6 +562,9 @@
             "endpoint": "/v1/departments",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -507,6 +584,9 @@
             "endpoint": "/v1/departments",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -526,6 +606,9 @@
             "endpoint": "/v1/departments/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -546,6 +629,9 @@
             "endpoint": "/v1/jobhistories",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -565,6 +651,9 @@
             "endpoint": "/v1/jobhistories/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -584,6 +673,9 @@
             "endpoint": "/v1/jobhistories/{id}",
             "method": "PUT",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -603,6 +695,9 @@
             "endpoint": "/v1/jobhistories/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -623,6 +718,9 @@
             "endpoint": "/v1/projects",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -642,6 +740,9 @@
             "endpoint": "/v1/projects",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -667,6 +768,9 @@
             "endpoint": "/v1/projects/{id}",
             "method": "GET",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -686,6 +790,9 @@
             "endpoint": "/v1/projects/{id}",
             "method": "PUT",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -705,6 +812,9 @@
             "endpoint": "/v1/projects/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -724,6 +834,9 @@
             "endpoint": "/v1/projects/{id}/scan",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -744,6 +857,9 @@
             "endpoint": "/v1/candidateprojects",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -763,6 +879,9 @@
             "endpoint": "/v1/candidateprojects/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -783,6 +902,9 @@
             "endpoint": "/v1/projectratings",
             "method": "POST",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
@@ -802,6 +924,9 @@
             "endpoint": "/v1/projectratings/{id}",
             "method": "DELETE",
             "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
