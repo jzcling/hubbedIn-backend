@@ -20,12 +20,8 @@ type Project struct {
 
 func (m *Project) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
-	if m.CreatedAt.IsZero() {
-		m.CreatedAt = &now
-	}
-	if m.UpdatedAt.IsZero() {
-		m.UpdatedAt = &now
-	}
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
 	return ctx, nil
 }
 
@@ -62,8 +58,6 @@ type Rating struct {
 
 func (m *Rating) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
-	if m.CreatedAt.IsZero() {
-		m.CreatedAt = &now
-	}
+	m.CreatedAt = &now
 	return ctx, nil
 }

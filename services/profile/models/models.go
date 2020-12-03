@@ -48,12 +48,8 @@ type Candidate struct {
 
 func (m *Candidate) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
-	if m.CreatedAt.IsZero() {
-		m.CreatedAt = &now
-	}
-	if m.UpdatedAt.IsZero() {
-		m.UpdatedAt = &now
-	}
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
 	return ctx, nil
 }
 
@@ -85,12 +81,8 @@ type UserSkill struct {
 
 func (m *UserSkill) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
-	if m.CreatedAt.IsZero() {
-		m.CreatedAt = &now
-	}
-	if m.UpdatedAt.IsZero() {
-		m.UpdatedAt = &now
-	}
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
 	return ctx, nil
 }
 
@@ -148,12 +140,8 @@ type AcademicHistory struct {
 
 func (m *AcademicHistory) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
-	if m.CreatedAt.IsZero() {
-		m.CreatedAt = &now
-	}
-	if m.UpdatedAt.IsZero() {
-		m.UpdatedAt = &now
-	}
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
 	return ctx, nil
 }
 
@@ -216,12 +204,8 @@ type JobHistory struct {
 
 func (m *JobHistory) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
-	if m.CreatedAt.IsZero() {
-		m.CreatedAt = &now
-	}
-	if m.UpdatedAt.IsZero() {
-		m.UpdatedAt = &now
-	}
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
 	return ctx, nil
 }
 
