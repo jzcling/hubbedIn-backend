@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 
 	"github.com/go-pg/pg/v10/orm"
@@ -45,7 +46,7 @@ type Candidate struct {
 	DeletedAt              *time.Time         `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
-func (m *Candidate) BeforeInsert(db orm.DB) error {
+func (m *Candidate) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	if m.CreatedAt.IsZero() {
 		m.CreatedAt = &now
@@ -53,13 +54,13 @@ func (m *Candidate) BeforeInsert(db orm.DB) error {
 	if m.UpdatedAt.IsZero() {
 		m.UpdatedAt = &now
 	}
-	return nil
+	return ctx, nil
 }
 
-func (m *Candidate) BeforeUpdate(db orm.DB) error {
+func (m *Candidate) BeforeUpdate(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	m.UpdatedAt = &now
-	return nil
+	return ctx, nil
 }
 
 // Skill declares the model for Skill
@@ -82,7 +83,7 @@ type UserSkill struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
 }
 
-func (m *UserSkill) BeforeInsert(db orm.DB) error {
+func (m *UserSkill) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	if m.CreatedAt.IsZero() {
 		m.CreatedAt = &now
@@ -90,13 +91,13 @@ func (m *UserSkill) BeforeInsert(db orm.DB) error {
 	if m.UpdatedAt.IsZero() {
 		m.UpdatedAt = &now
 	}
-	return nil
+	return ctx, nil
 }
 
-func (m *UserSkill) BeforeUpdate(db orm.DB) error {
+func (m *UserSkill) BeforeUpdate(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	m.UpdatedAt = &now
-	return nil
+	return ctx, nil
 }
 
 // Institution declares the model for Institution
@@ -145,7 +146,7 @@ type AcademicHistory struct {
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
-func (m *AcademicHistory) BeforeInsert(db orm.DB) error {
+func (m *AcademicHistory) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	if m.CreatedAt.IsZero() {
 		m.CreatedAt = &now
@@ -153,13 +154,13 @@ func (m *AcademicHistory) BeforeInsert(db orm.DB) error {
 	if m.UpdatedAt.IsZero() {
 		m.UpdatedAt = &now
 	}
-	return nil
+	return ctx, nil
 }
 
-func (m *AcademicHistory) BeforeUpdate(db orm.DB) error {
+func (m *AcademicHistory) BeforeUpdate(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	m.UpdatedAt = &now
-	return nil
+	return ctx, nil
 }
 
 // Company declares the model for Company
@@ -213,7 +214,7 @@ type JobHistory struct {
 	DeletedAt      *time.Time  `json:"deleted_at,omitempty" pg:",soft_delete"`
 }
 
-func (m *JobHistory) BeforeInsert(db orm.DB) error {
+func (m *JobHistory) BeforeInsert(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	if m.CreatedAt.IsZero() {
 		m.CreatedAt = &now
@@ -221,11 +222,11 @@ func (m *JobHistory) BeforeInsert(db orm.DB) error {
 	if m.UpdatedAt.IsZero() {
 		m.UpdatedAt = &now
 	}
-	return nil
+	return ctx, nil
 }
 
-func (m *JobHistory) BeforeUpdate(db orm.DB) error {
+func (m *JobHistory) BeforeUpdate(ctx context.Context) (context.Context, error) {
 	now := time.Now()
 	m.UpdatedAt = &now
-	return nil
+	return ctx, nil
 }
