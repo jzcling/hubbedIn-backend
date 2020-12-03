@@ -40,7 +40,8 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
 		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
 		Returning("*").
-		Insert()
+		Where("c.email = ?", m.Email).
+		SelectOrInsert()
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
 		return nil, err
