@@ -20,7 +20,7 @@
             ],
             "sts_include_subdomains": true,
             "frame_deny": true,
-            "custom_frame_options_value": "ALLOW-FROM https://hubbedin.dev",
+            "custom_frame_options_value": "ALLOW-FROM hubbedin.com",
             "hpkp_public_key": "pin-sha256=\"base64==\"; max-age=expireTime [; includeSubDomains][; report-uri=\"reportURI\"]",
             "content_type_nosniff": true,
             "browser_xss_filter": true,
@@ -28,7 +28,8 @@
         },
         "github_com/devopsfaith/krakend-cors": {
             "allow_origins": [
-                "https://hubbedin.dev:3000"
+                "https://hubbedin.dev:3000",
+                "https://candidate.hubbedin.com"
             ],
             "expose_headers": [
                 "Content-Length",
