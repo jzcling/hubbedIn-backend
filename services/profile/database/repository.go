@@ -43,14 +43,16 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		Insert()
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
+		return nil, err
 	}
 
 	err = r.updateAuth0User(m)
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to update auth0 user %v", m.AuthID)
+		return nil, err
 	}
 
-	return m, err
+	return m, nil
 }
 
 func (r *repository) updateAuth0User(m *models.Candidate) error {
