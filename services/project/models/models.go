@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 )
 
@@ -15,6 +16,23 @@ type Project struct {
 	CreatedAt *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty" pg:",soft_delete"`
+}
+
+func (m *Project) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = &now
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = &now
+	}
+	return ctx, nil
+}
+
+func (m *Project) BeforeUpdate(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return ctx, nil
 }
 
 // CandidateProject declares the model for the pivot table between Candidate and Project
@@ -40,4 +58,12 @@ type Rating struct {
 	Duplications          float32    `json:"duplications" pg:",use_zero"`
 	Lines                 uint64     `json:"lines"`
 	CreatedAt             *time.Time `json:"created_at,omitempty" pg:"default:now()"`
+}
+
+func (m *Rating) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = &now
+	}
+	return ctx, nil
 }
