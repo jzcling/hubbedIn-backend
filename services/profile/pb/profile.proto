@@ -96,7 +96,7 @@ service ProfileService {
         };
     };
     rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{id}" };
+        option (google.api.http) = { delete: "/v1/academichistories/{id}" };
     };
 
     rpc CreateCompany(CreateCompanyRequest) returns (Company) {
