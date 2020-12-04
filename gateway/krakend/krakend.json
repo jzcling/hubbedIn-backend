@@ -565,7 +565,7 @@
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
-                    "clientMaxRate": 5,
+                    "clientMaxRate": 10,
                     "strategy": "ip"
                 },
                 "github.com/devopsfaith/krakend-jose/validator": {
@@ -628,7 +628,7 @@
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
-                    "clientMaxRate": 5,
+                    "clientMaxRate": 10,
                     "strategy": "ip"
                 },
                 "github.com/devopsfaith/krakend-jose/validator": {
@@ -655,7 +655,7 @@
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
-                    "clientMaxRate": 5,
+                    "clientMaxRate": 10,
                     "strategy": "ip"
                 },
                 "github.com/devopsfaith/krakend-jose/validator": {
@@ -883,7 +883,7 @@
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
-                    "clientMaxRate": 5,
+                    "clientMaxRate": 10,
                     "strategy": "ip"
                 },
                 "github.com/devopsfaith/krakend-jose/validator": {
@@ -946,7 +946,7 @@
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
-                    "clientMaxRate": 5,
+                    "clientMaxRate": 10,
                     "strategy": "ip"
                 },
                 "github.com/devopsfaith/krakend-jose/validator": {
@@ -973,7 +973,7 @@
             "extra_config": {
                 "github.com/devopsfaith/krakend-ratelimit/juju/router": {
                     "maxRate": 100,
-                    "clientMaxRate": 5,
+                    "clientMaxRate": 10,
                     "strategy": "ip"
                 },
                 "github.com/devopsfaith/krakend-jose/validator": {
