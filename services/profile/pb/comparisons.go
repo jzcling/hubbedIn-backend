@@ -125,6 +125,7 @@ func (a1 *AcademicHistory) IsEqual(a2 *AcademicHistory) bool {
 		a1.InstitutionId != a2.InstitutionId ||
 		a1.CourseId != a2.CourseId ||
 		a1.YearObtained != a2.YearObtained ||
+		a1.Grade != a2.Grade ||
 		a1.CreatedAt.AsTime() != a2.CreatedAt.AsTime() ||
 		a1.UpdatedAt.AsTime() != a2.UpdatedAt.AsTime() ||
 		a1.DeletedAt.AsTime() != a2.DeletedAt.AsTime() {

@@ -39,6 +39,7 @@ type AcademicHistoryFilters struct {
 	InstitutionID []uint64
 	CourseID      []uint64
 	YearObtained  []uint32
+	Grade         []string
 }
 
 // CompanyFilters define filters for Company model

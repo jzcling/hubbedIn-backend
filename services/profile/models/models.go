@@ -133,6 +133,7 @@ type AcademicHistory struct {
 	CourseID      uint64       `json:"-" pg:",notnull"`
 	Course        *Course      `json:"course,omitempty" pg:"rel:has-one"`
 	YearObtained  uint32       `json:"year_obtained,omitempty"`
+	Grade         string       `json:"grade,omitempty"`
 	CreatedAt     *time.Time   `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt     *time.Time   `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`

@@ -134,6 +134,7 @@ func AcademicHistoryToORM(m *pb.AcademicHistory) *AcademicHistory {
 		CourseID:      m.CourseId,
 		Course:        CourseToORM(m.Course),
 		YearObtained:  m.YearObtained,
+		Grade:         m.Grade,
 		CreatedAt:     createdAt,
 		UpdatedAt:     updatedAt,
 		DeletedAt:     deletedAt,

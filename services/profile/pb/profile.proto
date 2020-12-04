@@ -313,9 +313,10 @@ message AcademicHistory {
     uint64 course_id = 5;
     Course course = 6;
     uint32 year_obtained = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+    string grade = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp deleted_at = 11;
 }
 
 message CreateAcademicHistoryRequest {

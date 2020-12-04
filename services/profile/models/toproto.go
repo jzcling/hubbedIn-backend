@@ -134,6 +134,7 @@ func (m *AcademicHistory) ToProto() *pb.AcademicHistory {
 		CourseId:      m.CourseID,
 		Course:        m.Course.ToProto(),
 		YearObtained:  m.YearObtained,
+		Grade:         m.Grade,
 		CreatedAt:     createdAt,
 		UpdatedAt:     updatedAt,
 		DeletedAt:     deletedAt,

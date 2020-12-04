@@ -96,6 +96,7 @@ func TestAcademicHistoryIsEqual(t *testing.T) {
 		InstitutionID: 1,
 		CourseID:      1,
 		YearObtained:  2020,
+		Grade:         "first",
 		CreatedAt:     &timeAt,
 		UpdatedAt:     &timeAt,
 		DeletedAt:     &timeAt,
