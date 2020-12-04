@@ -1105,6 +1105,9 @@
           "type": "integer",
           "format": "int64"
         },
+        "grade": {
+          "type": "string"
+        },
         "createdAt": {
           "type": "string",
           "format": "date-time"
