@@ -97,7 +97,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/candidates"
+                    "url_pattern": "/v1/candidates",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "private, max-age=60"
+                        }
+                    }
                 }
             ]
         },
@@ -124,7 +131,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/candidates/{id}"
+                    "url_pattern": "/v1/candidates/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "private, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -233,7 +247,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/skills"
+                    "url_pattern": "/v1/skills",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=60"
+                        }
+                    }
                 }
             ]
         },
@@ -260,7 +281,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/skills/{id}"
+                    "url_pattern": "/v1/skills/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -370,7 +398,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/institutions"
+                    "url_pattern": "/v1/institutions",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=60"
+                        }
+                    }
                 }
             ]
         },
@@ -397,7 +432,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/institutions/{id}"
+                    "url_pattern": "/v1/institutions/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -452,7 +494,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/courses"
+                    "url_pattern": "/v1/courses",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=60"
+                        }
+                    }
                 }
             ]
         },
@@ -479,7 +528,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/courses/{id}"
+                    "url_pattern": "/v1/courses/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -534,7 +590,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/academichistories/{id}"
+                    "url_pattern": "/v1/academichistories/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "private, max-age=30"
+                        }
+                    }
                 }
             ]
         },
@@ -643,7 +706,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/companies"
+                    "url_pattern": "/v1/companies",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=60"
+                        }
+                    }
                 }
             ]
         },
@@ -670,7 +740,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/companies/{id}"
+                    "url_pattern": "/v1/companies/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -725,7 +802,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/departments"
+                    "url_pattern": "/v1/departments",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=60"
+                        }
+                    }
                 }
             ]
         },
@@ -752,7 +836,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/departments/{id}"
+                    "url_pattern": "/v1/departments/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "public, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -807,7 +898,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/jobhistories/{id}"
+                    "url_pattern": "/v1/jobhistories/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "private, max-age=5"
+                        }
+                    }
                 }
             ]
         },
@@ -916,7 +1014,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/projects"
+                    "url_pattern": "/v1/projects",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "private, max-age=60"
+                        }
+                    }
                 }
             ],
             "querystring_params": [
@@ -949,7 +1054,14 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "GET",
-                    "url_pattern": "/v1/projects/{id}"
+                    "url_pattern": "/v1/projects/{id}",
+                    "github.com/devopsfaith/krakend-martian": {
+                        "header.Modifier": {
+                          "scope": ["response"],
+                          "name": "Cache-Control",
+                          "value": "private, max-age=5"
+                        }
+                    }
                 }
             ]
         },
