@@ -73,6 +73,35 @@
           "ProfileService"
         ]
       },
+      "delete": {
+        "operationId": "ProfileService_DeleteAcademicHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteAcademicHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
       "put": {
         "operationId": "ProfileService_UpdateAcademicHistory",
         "responses": {
@@ -292,12 +321,12 @@
         ]
       },
       "delete": {
-        "operationId": "ProfileService_DeleteAcademicHistory",
+        "operationId": "ProfileService_DeleteCandidate",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbDeleteAcademicHistoryResponse"
+              "$ref": "#/definitions/pbDeleteCandidateResponse"
             }
           },
           "default": {
