@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-kit/kit/log"
+
 	"github.com/mitchellh/mapstructure"
 
 	"in-backend/services/project"
@@ -21,6 +23,7 @@ import (
 type service struct {
 	repository project.Repository
 	client     HTTPClient
+	logger     log.Logger
 }
 
 // HTTPClient describes a default http client
@@ -42,10 +45,11 @@ type Measure struct {
 }
 
 // New creates and returns a new Service that implements the project Service interface
-func New(r project.Repository, c HTTPClient) project.Service {
+func New(r project.Repository, c HTTPClient, l log.Logger) project.Service {
 	return &service{
 		repository: r,
 		client:     c,
+		logger:     l,
 	}
 }
 
@@ -130,6 +134,7 @@ func (s *service) scanAndStoreResult(m *models.Project) error {
 
 	jsonBody, err := s.getRatingMeasures(name)
 	if err != nil {
+		s.logger.Log("method", "getRatingMeasures", "err", err)
 		return err
 	}
 	var component Component
@@ -145,42 +150,49 @@ func (s *service) scanAndStoreResult(m *models.Project) error {
 		case "reliability_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
+				s.logger.Log("method", "parseReliabilityRating", "err", err)
 				return err
 			}
 			r.ReliabilityRating = int32(v)
 		case "sqale_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
+				s.logger.Log("method", "parseMaintainabilityRating", "err", err)
 				return err
 			}
 			r.MaintainabilityRating = int32(v)
 		case "security_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
+				s.logger.Log("method", "parseSecurityRating", "err", err)
 				return err
 			}
 			r.SecurityRating = int32(v)
 		case "security_review_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
+				s.logger.Log("method", "parseSecurityReviewRating", "err", err)
 				return err
 			}
 			r.SecurityReviewRating = int32(v)
 		case "coverage":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
+				s.logger.Log("method", "parseCoverage", "err", err)
 				return err
 			}
 			r.Coverage = float32(v)
 		case "duplicated_lines_density":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
+				s.logger.Log("method", "parseDuplications", "err", err)
 				return err
 			}
 			r.Duplications = float32(v)
 		case "ncloc":
 			r.Lines, err = strconv.ParseUint(measure.Value, 10, 64)
 			if err != nil {
+				s.logger.Log("method", "parseLines", "err", err)
 				return err
 			}
 		}
@@ -188,6 +200,7 @@ func (s *service) scanAndStoreResult(m *models.Project) error {
 
 	err = s.CreateRating(context.Background(), r)
 	if err != nil {
+		s.logger.Log("method", "CreateRating", "err", err)
 		return err
 	}
 	return nil
