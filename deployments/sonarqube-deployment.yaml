@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: null
+  labels:
+    app: sonarqube
+  name: sonarqube
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: sonarqube
+    spec:
+      containers:
+        - env:
+            - name: SONAR_JDBC_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: SONAR_JDBC_URL
+              valueFrom: 
+                secretKeyRef:
+                  name: db-secret
+                  key: jdbc_url
+            - name: SONAR_JDBC_USERNAME
+              valueFrom: 
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+          image: sonarqube:community
+          name: sonarqube
+          ports:
+            - containerPort: 9000
+          resources: {}
+          volumeMounts:
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube-data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube-extensions
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube-logs
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube-temp
+      restartPolicy: Always
+      volumes:
+        - name: sonarqube-data
+          persistentVolumeClaim:
+            claimName: sonarqube-data
+        - name: sonarqube-extensions
+          persistentVolumeClaim:
+            claimName: sonarqube-extensions
+        - name: sonarqube-logs
+          persistentVolumeClaim:
+            claimName: sonarqube-logs
+        - name: sonarqube-temp
+          persistentVolumeClaim:
+            claimName: sonarqube-temp
+status: {}

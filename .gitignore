@@ -19,3 +19,6 @@ vendor/
 
 # vscode launch file
 launch.json
+
+# kubernetes deployment files
+db-secret.yaml
