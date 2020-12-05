@@ -220,7 +220,7 @@ func (s *service) getRatingMeasures(name string) (map[string]interface{}, error)
 	payload := url.Values{}
 	payload.Add("component", name)
 	payload.Add("metricKeys", strings.Join(metrics, ","))
-	req, err := http.NewRequest("GET", "http://sonarqube-sonarqube-svc:9000/api/measures/component?"+payload.Encode(), nil)
+	req, err := http.NewRequest("GET", "http://sonarqube:9000/api/measures/component?"+payload.Encode(), nil)
 	if err != nil {
 		return nil, err
 	}

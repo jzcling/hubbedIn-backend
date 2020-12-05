@@ -36,7 +36,7 @@ RUN set -x &&\
   sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /app/sonar-scanner-$RELEASE-linux/bin/sonar-scanner
 
 ENV SONAR_RUNNER_HOME=/app/sonar-scanner-$RELEASE-linux
-ENV SONAR_HOST_URL=http://sonarqube-sonarqube-svc:9000
+ENV SONAR_HOST_URL=http://sonarqube:9000
 ENV PATH $PATH:/app/sonar-scanner-$RELEASE-linux/bin
 
 COPY --from=builder /build/dist/ .

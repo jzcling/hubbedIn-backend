@@ -73,7 +73,7 @@ services:
         networks: 
             - backend
             - frontend
-    sonarqube-sonarqube-svc:
+    sonarqube:
         image: sonarqube:community
         container_name: sonarqube
         restart: unless-stopped
@@ -92,8 +92,8 @@ services:
             - backend
         ulimits:
             nofile:
-                soft: "65536"
-                hard: "65536"
+                soft: 65536
+                hard: 65536
   
 
 networks:
