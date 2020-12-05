@@ -8,7 +8,7 @@ reset:
 sonarscanner:
 	docker run \
 		--rm \
-		-e SONAR_HOST_URL="http://sonarqube:9000" \
+		-e SONAR_HOST_URL="http://sonarqube-sonarqube-svc:9000" \
 		-v "$(PWD):/usr/src" \
 		--network=in-backend_backend \
 		sonarsource/sonar-scanner-cli
