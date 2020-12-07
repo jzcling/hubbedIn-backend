@@ -67,6 +67,17 @@ func (mw authMiddleware) CreateProject(ctx context.Context, model *models.Projec
 
 // GetAllProjects returns all Projects
 func (mw authMiddleware) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
+	claims, err := getClaims(ctx)
+	if err != nil {
+		return nil, err
+	}
+	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	if f.CandidateID > 0 && id != f.CandidateID {
+		return nil, errAuth
+	}
 	return mw.next.GetAllProjects(ctx, f)
 }
 
