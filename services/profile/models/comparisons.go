@@ -137,6 +137,7 @@ func (m1 *AcademicHistory) IsEqual(m2 interface{}) bool {
 		m1.InstitutionID != m2.(*AcademicHistory).InstitutionID ||
 		m1.CourseID != m2.(*AcademicHistory).CourseID ||
 		m1.YearObtained != m2.(*AcademicHistory).YearObtained ||
+		m1.Grade != m2.(*AcademicHistory).Grade ||
 		*m1.CreatedAt != *m2.(*AcademicHistory).CreatedAt ||
 		*m1.UpdatedAt != *m2.(*AcademicHistory).UpdatedAt ||
 		*m1.DeletedAt != *m2.(*AcademicHistory).DeletedAt {
