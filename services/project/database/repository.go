@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 
 	"in-backend/services/project"
 	"in-backend/services/project/models"
@@ -44,7 +45,9 @@ func (r *repository) CreateProject(ctx context.Context, m *models.Project) (*mod
 // GetAllProjects returns all Projects
 func (r *repository) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
 	var m []*models.Project
-	q := r.DB.WithContext(ctx).Model(&m).Relation(relProjectRating)
+	q := r.DB.WithContext(ctx).Model(&m).Relation(relProjectRating, func(q *orm.Query) (*orm.Query, error) {
+		return q.Order("r.created_at desc"), nil
+	})
 
 	if len(f.ID) > 0 {
 		q = q.Where("p.id in (?)", pg.In(f.ID))
