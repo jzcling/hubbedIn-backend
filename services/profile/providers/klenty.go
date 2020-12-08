@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/configs"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"io"
 	"io/ioutil"
@@ -125,7 +125,7 @@ func (p *klentyProvider) newRequest(method, url string, buf *bytes.Buffer) (*htt
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("key", p.config.Klenty.ApiKey)
+	req.Header.Add("x-api-key", p.config.Klenty.ApiKey)
 	req.Header.Add("content-type", "application/json")
 	return req, nil
 }
