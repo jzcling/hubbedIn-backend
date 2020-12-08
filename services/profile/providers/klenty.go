@@ -44,7 +44,7 @@ func (p *klentyProvider) CreateProspect(c *models.Candidate, pw string) error {
 		"FirstName": c.FirstName,
 		"LastName":  c.LastName,
 		"CustomFields": []map[string]string{
-			0: {"password": pw},
+			0: {"key": "hubbedlearn password", "value": pw},
 		},
 	})
 	if err != nil {
