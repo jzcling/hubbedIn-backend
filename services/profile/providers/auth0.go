@@ -3,7 +3,7 @@ package providers
 import (
 	"bytes"
 	"encoding/json"
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/models"
 	"io/ioutil"
@@ -21,7 +21,7 @@ type Auth0Provider interface {
 
 type auth0Provider struct {
 	config configs.Config
-	client profile.HTTPClient
+	client interfaces.HTTPClient
 }
 
 var (
@@ -32,7 +32,7 @@ var (
 )
 
 // NewAuth0 creates and returns a new Auth0Provider
-func NewAuth0(cfg configs.Config, client profile.HTTPClient) Auth0Provider {
+func NewAuth0(cfg configs.Config, client interfaces.HTTPClient) Auth0Provider {
 	return &auth0Provider{
 		config: cfg,
 		client: client,

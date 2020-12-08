@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 )
 
@@ -52,7 +52,7 @@ type Endpoints struct {
 }
 
 // MakeEndpoints initializes all Go kit endpoints for the Profile service.
-func MakeEndpoints(s profile.Service) Endpoints {
+func MakeEndpoints(s interfaces.Service) Endpoints {
 	return Endpoints{
 		CreateCandidate:  makeCreateCandidateEndpoint(s),
 		GetAllCandidates: makeGetAllCandidatesEndpoint(s),
@@ -97,7 +97,7 @@ func MakeEndpoints(s profile.Service) Endpoints {
 
 /* -------------- Candidate -------------- */
 
-func makeCreateCandidateEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateCandidateEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateCandidateRequest)
 		c, err := s.CreateCandidate(ctx, req.Candidate)
@@ -116,7 +116,7 @@ type CreateCandidateResponse struct {
 	Err       error
 }
 
-func makeGetAllCandidatesEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAllCandidatesEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllCandidatesRequest)
 		f := models.CandidateFilters(req)
@@ -147,7 +147,7 @@ type GetAllCandidatesResponse struct {
 	Err        error
 }
 
-func makeGetCandidateByIDEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetCandidateByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetCandidateByIDRequest)
 		c, err := s.GetCandidateByID(ctx, req.ID)
@@ -166,7 +166,7 @@ type GetCandidateByIDResponse struct {
 	Err       error
 }
 
-func makeUpdateCandidateEndpoint(s profile.Service) endpoint.Endpoint {
+func makeUpdateCandidateEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateCandidateRequest)
 		c, err := s.UpdateCandidate(ctx, req.Candidate)
@@ -186,7 +186,7 @@ type UpdateCandidateResponse struct {
 	Err       error
 }
 
-func makeDeleteCandidateEndpoint(s profile.Service) endpoint.Endpoint {
+func makeDeleteCandidateEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteCandidateRequest)
 		err := s.DeleteCandidate(ctx, req.ID)
@@ -206,7 +206,7 @@ type DeleteCandidateResponse struct {
 
 /* -------------- Skill -------------- */
 
-func makeCreateSkillEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateSkillRequest)
 		sk, err := s.CreateSkill(ctx, req.Skill)
@@ -225,7 +225,7 @@ type CreateSkillResponse struct {
 	Err   error
 }
 
-func makeGetSkillEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetSkillRequest)
 		sk, err := s.GetSkill(ctx, req.ID)
@@ -244,7 +244,7 @@ type GetSkillResponse struct {
 	Err   error
 }
 
-func makeGetAllSkillsEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAllSkillsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllSkillsRequest)
 		f := models.SkillFilters(req)
@@ -266,7 +266,7 @@ type GetAllSkillsResponse struct {
 
 /* -------------- User Skill -------------- */
 
-func makeCreateUserSkillEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateUserSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateUserSkillRequest)
 		us, err := s.CreateUserSkill(ctx, req.UserSkill)
@@ -285,7 +285,7 @@ type CreateUserSkillResponse struct {
 	Err       error
 }
 
-func makeDeleteUserSkillEndpoint(s profile.Service) endpoint.Endpoint {
+func makeDeleteUserSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteUserSkillRequest)
 		err := s.DeleteUserSkill(ctx, req.ID)
@@ -305,7 +305,7 @@ type DeleteUserSkillResponse struct {
 
 /* -------------- Institution -------------- */
 
-func makeCreateInstitutionEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateInstitutionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateInstitutionRequest)
 		i, err := s.CreateInstitution(ctx, req.Institution)
@@ -324,7 +324,7 @@ type CreateInstitutionResponse struct {
 	Err         error
 }
 
-func makeGetInstitutionEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetInstitutionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetInstitutionRequest)
 		i, err := s.GetInstitution(ctx, req.ID)
@@ -343,7 +343,7 @@ type GetInstitutionResponse struct {
 	Err         error
 }
 
-func makeGetAllInstitutionsEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAllInstitutionsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllInstitutionsRequest)
 		f := models.InstitutionFilters(req)
@@ -366,7 +366,7 @@ type GetAllInstitutionsResponse struct {
 
 /* -------------- Course -------------- */
 
-func makeCreateCourseEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateCourseEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateCourseRequest)
 		c, err := s.CreateCourse(ctx, req.Course)
@@ -385,7 +385,7 @@ type CreateCourseResponse struct {
 	Err    error
 }
 
-func makeGetCourseEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetCourseEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetCourseRequest)
 		c, err := s.GetCourse(ctx, req.ID)
@@ -404,7 +404,7 @@ type GetCourseResponse struct {
 	Err    error
 }
 
-func makeGetAllCoursesEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAllCoursesEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllCoursesRequest)
 		f := models.CourseFilters(req)
@@ -427,7 +427,7 @@ type GetAllCoursesResponse struct {
 
 /* -------------- Academic History -------------- */
 
-func makeCreateAcademicHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateAcademicHistoryRequest)
 		a, err := s.CreateAcademicHistory(ctx, req.AcademicHistory)
@@ -446,7 +446,7 @@ type CreateAcademicHistoryResponse struct {
 	Err             error
 }
 
-func makeGetAcademicHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAcademicHistoryRequest)
 		a, err := s.GetAcademicHistory(ctx, req.ID)
@@ -465,7 +465,7 @@ type GetAcademicHistoryResponse struct {
 	Err             error
 }
 
-func makeUpdateAcademicHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeUpdateAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateAcademicHistoryRequest)
 		a, err := s.UpdateAcademicHistory(ctx, req.AcademicHistory)
@@ -484,7 +484,7 @@ type UpdateAcademicHistoryResponse struct {
 	Err             error
 }
 
-func makeDeleteAcademicHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeDeleteAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteAcademicHistoryRequest)
 		err := s.DeleteAcademicHistory(ctx, req.ID)
@@ -504,7 +504,7 @@ type DeleteAcademicHistoryResponse struct {
 
 /* -------------- Company -------------- */
 
-func makeCreateCompanyEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateCompanyRequest)
 		c, err := s.CreateCompany(ctx, req.Company)
@@ -523,7 +523,7 @@ type CreateCompanyResponse struct {
 	Err     error
 }
 
-func makeGetCompanyEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetCompanyRequest)
 		c, err := s.GetCompany(ctx, req.ID)
@@ -542,7 +542,7 @@ type GetCompanyResponse struct {
 	Err     error
 }
 
-func makeGetAllCompaniesEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAllCompaniesEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllCompaniesRequest)
 		f := models.CompanyFilters(req)
@@ -564,7 +564,7 @@ type GetAllCompaniesResponse struct {
 
 /* -------------- Department -------------- */
 
-func makeCreateDepartmentEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateDepartmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateDepartmentRequest)
 		d, err := s.CreateDepartment(ctx, req.Department)
@@ -583,7 +583,7 @@ type CreateDepartmentResponse struct {
 	Err        error
 }
 
-func makeGetDepartmentEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetDepartmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetDepartmentRequest)
 		d, err := s.GetDepartment(ctx, req.ID)
@@ -602,7 +602,7 @@ type GetDepartmentResponse struct {
 	Err        error
 }
 
-func makeGetAllDepartmentsEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetAllDepartmentsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllDepartmentsRequest)
 		f := models.DepartmentFilters(req)
@@ -624,7 +624,7 @@ type GetAllDepartmentsResponse struct {
 
 /* -------------- Job History -------------- */
 
-func makeCreateJobHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeCreateJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateJobHistoryRequest)
 		j, err := s.CreateJobHistory(ctx, req.JobHistory)
@@ -643,7 +643,7 @@ type CreateJobHistoryResponse struct {
 	Err        error
 }
 
-func makeGetJobHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeGetJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetJobHistoryRequest)
 		j, err := s.GetJobHistory(ctx, req.ID)
@@ -662,7 +662,7 @@ type GetJobHistoryResponse struct {
 	Err        error
 }
 
-func makeUpdateJobHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeUpdateJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateJobHistoryRequest)
 		j, err := s.UpdateJobHistory(ctx, req.JobHistory)
@@ -681,7 +681,7 @@ type UpdateJobHistoryResponse struct {
 	Err        error
 }
 
-func makeDeleteJobHistoryEndpoint(s profile.Service) endpoint.Endpoint {
+func makeDeleteJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteJobHistoryRequest)
 		err := s.DeleteJobHistory(ctx, req.ID)

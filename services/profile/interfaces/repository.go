@@ -1,12 +1,12 @@
-package profile
+package interfaces
 
 import (
 	"context"
 	"in-backend/services/profile/models"
 )
 
-// Service describes the Profile Service
-type Service interface {
+// Repository declares the repository for candidate profiles
+type Repository interface {
 	/* --------------- Candidate --------------- */
 
 	// CreateCandidate creates a new candidate

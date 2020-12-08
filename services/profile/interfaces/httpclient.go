@@ -1,4 +1,4 @@
-package profile
+package interfaces
 
 import "net/http"
 

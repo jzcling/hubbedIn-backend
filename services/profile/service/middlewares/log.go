@@ -3,7 +3,7 @@ package middlewares
 import (
 	"context"
 	"fmt"
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"time"
 
@@ -12,11 +12,11 @@ import (
 
 type logMiddleware struct {
 	logger log.Logger
-	next   profile.Service
+	next   interfaces.Service
 }
 
 // NewLogMiddleware creates and returns a new Log Middleware that implements the profile Service interface
-func NewLogMiddleware(logger log.Logger, svc profile.Service) profile.Service {
+func NewLogMiddleware(logger log.Logger, svc interfaces.Service) interfaces.Service {
 	return &logMiddleware{
 		logger: logger,
 		next:   svc,

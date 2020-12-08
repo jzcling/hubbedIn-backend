@@ -3,7 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"strconv"
 	"strings"
@@ -13,7 +13,7 @@ import (
 )
 
 type authMiddleware struct {
-	next profile.Service
+	next interfaces.Service
 }
 
 var (
@@ -23,7 +23,7 @@ var (
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the profile Service interface
-func NewAuthMiddleware(svc profile.Service) profile.Service {
+func NewAuthMiddleware(svc interfaces.Service) interfaces.Service {
 	return &authMiddleware{
 		next: svc,
 	}
