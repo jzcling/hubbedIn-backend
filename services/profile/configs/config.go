@@ -21,10 +21,12 @@ var (
 
 // Config declares the application configuration variables
 type Config struct {
-	AppName  string       `mapstructure:"appname"`
-	Server   ServerConfig `mapstructure:",squash"`
-	Database DbConfig     `mapstructure:",squash"`
-	Auth0    Auth0        `mapstructure:",squash"`
+	AppName     string       `mapstructure:"appname"`
+	Server      ServerConfig `mapstructure:",squash"`
+	Database    DbConfig     `mapstructure:",squash"`
+	Auth0       Auth0        `mapstructure:",squash"`
+	Klenty      Klenty       `mapstructure:",squash"`
+	HubbedLearn HubbedLearn  `mapstructure:",squash"`
 }
 
 // ServerConfig declares server variables
@@ -48,6 +50,17 @@ type DbConfig struct {
 type Auth0 struct {
 	MgmtClientID     string `mapstructure:"auth0_mgmt_client_id"`
 	MgmtClientSecret string `mapstructure:"auth0_mgmt_client_secret"`
+}
+
+// Klenty declares variables for connecting to Klenty
+type Klenty struct {
+	ApiKey        string `mapstructure:"klenty_api_key"`
+	SignupCadence string `mapstructure:"klenty_signup_cadence"`
+}
+
+// HubbedLearn declares variables for connecting to HubbedLearn
+type HubbedLearn struct {
+	ApiKey string `mapstructure:"hubbedlearn_api_key"`
 }
 
 // LoadConfig load config from file

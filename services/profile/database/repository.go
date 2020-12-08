@@ -8,22 +8,26 @@ import (
 	pg "github.com/go-pg/pg/v10"
 	"github.com/pkg/errors"
 
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"in-backend/services/profile/providers"
 )
 
 // Repository implements the profile Repository interface
 type repository struct {
-	DB    *pg.DB
-	auth0 providers.Auth0Provider
+	DB          *pg.DB
+	auth0       providers.Auth0Provider
+	hubbedlearn providers.HubbedLearnProvider
+	klenty      providers.KlentyProvider
 }
 
 // NewRepository declares a new Repository that implements profile Repository
-func NewRepository(db *pg.DB, a providers.Auth0Provider) profile.Repository {
+func NewRepository(db *pg.DB, a providers.Auth0Provider, hl providers.HubbedLearnProvider, k providers.KlentyProvider) interfaces.Repository {
 	return &repository{
-		DB:    db,
-		auth0: a,
+		DB:          db,
+		auth0:       a,
+		hubbedlearn: hl,
+		klenty:      k,
 	}
 }
 
@@ -53,6 +57,18 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		return nil, err
 	}
 
+	pw, err := r.createHubbedLearnUser(m)
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to create Hubbed Learn user %v", m.Email)
+		return nil, err
+	}
+
+	err = r.triggerCRMRegistrationWorkflow(m, *pw)
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to trigger CRM workflow %v", m.Email)
+		return nil, err
+	}
+
 	return m, nil
 }
 
@@ -67,6 +83,26 @@ func (r *repository) updateAuth0User(m *models.Candidate) error {
 		return err
 	}
 	err = r.auth0.SetUserRole(t, m.AuthID, "Candidate")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *repository) createHubbedLearnUser(m *models.Candidate) (*string, error) {
+	pw, err := r.hubbedlearn.CreateUser(m)
+	if err != nil {
+		return nil, err
+	}
+	return pw, nil
+}
+
+func (r *repository) triggerCRMRegistrationWorkflow(m *models.Candidate, pw string) error {
+	err := r.klenty.CreateProspect(m, pw)
+	if err != nil {
+		return err
+	}
+	err = r.klenty.StartCadence(m.Email)
 	if err != nil {
 		return err
 	}

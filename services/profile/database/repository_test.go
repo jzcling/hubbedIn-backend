@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/models"
 	"in-backend/services/profile/tests/mocks"
@@ -17,18 +17,22 @@ import (
 )
 
 var (
-	ctx context.Context      = context.Background()
-	now time.Time            = time.Now()
-	a   *mocks.Auth0Provider = &mocks.Auth0Provider{}
+	ctx context.Context            = context.Background()
+	now time.Time                  = time.Now()
+	a   *mocks.Auth0Provider       = &mocks.Auth0Provider{}
+	hl  *mocks.HubbedLearnProvider = &mocks.HubbedLearnProvider{}
+	k   *mocks.KlentyProvider      = &mocks.KlentyProvider{}
 )
 
 func TestNewRepository(t *testing.T) {
 	want := &repository{
-		DB:    &pg.DB{},
-		auth0: a,
+		DB:          &pg.DB{},
+		auth0:       a,
+		hubbedlearn: hl,
+		klenty:      k,
 	}
 
-	got := NewRepository(&pg.DB{}, a)
+	got := NewRepository(&pg.DB{}, a, hl, k)
 
 	require.EqualValues(t, want, got)
 }
@@ -47,7 +51,7 @@ func TestAllCRUD(t *testing.T) {
 	defer cleanContainer(c)
 	require.NoError(t, err)
 
-	r := NewRepository(db, a)
+	r := NewRepository(db, a, hl, k)
 
 	testCreateCandidate(t, r, db)
 	testGetAllCandidates(t, r, db)
@@ -91,7 +95,7 @@ func TestAllCRUD(t *testing.T) {
 
 /* --------------- Candidate --------------- */
 
-func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoAuthID := &models.Candidate{
 		FirstName:     "first",
 		LastName:      "last",
@@ -155,7 +159,7 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllCandidates(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Candidate)(nil)).Count()
 	require.NoError(t, err)
 
@@ -190,7 +194,7 @@ func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetCandidateByID(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetCandidateByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -231,7 +235,7 @@ func testGetCandidateByID(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
+func testUpdateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -272,7 +276,7 @@ func testUpdateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -308,7 +312,7 @@ func testDeleteCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Skill --------------- */
 
-func testCreateSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Skill{
 		ID: 1,
 	}
@@ -350,7 +354,7 @@ func testCreateSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllSkills(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Skill)(nil)).Count()
 	require.NoError(t, err)
 
@@ -385,7 +389,7 @@ func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Skill{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -428,7 +432,7 @@ func testGetSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- User Skill --------------- */
 
-func testCreateUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateUserSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existingC := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existingC).First()
 	require.NoError(t, err)
@@ -479,7 +483,7 @@ func testCreateUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteUserSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.UserSkill{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -515,7 +519,7 @@ func testDeleteUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Institution --------------- */
 
-func testCreateInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateInstitution(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Institution{
 		ID: 1,
 	}
@@ -558,7 +562,7 @@ func testCreateInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllInstitutions(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Institution)(nil)).Count()
 	require.NoError(t, err)
 
@@ -593,7 +597,7 @@ func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetInstitution(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Institution{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -636,7 +640,7 @@ func testGetInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Course --------------- */
 
-func testCreateCourse(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateCourse(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Course{
 		ID: 1,
 	}
@@ -679,7 +683,7 @@ func testCreateCourse(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllCourses(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Course)(nil)).Count()
 	require.NoError(t, err)
 
@@ -714,7 +718,7 @@ func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetCourse(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetCourse(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Course{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -757,7 +761,7 @@ func testGetCourse(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- AcademicHistory --------------- */
 
-func testCreateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existingC := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existingC).First()
 	require.NoError(t, err)
@@ -827,7 +831,7 @@ func testCreateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.AcademicHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -868,7 +872,7 @@ func testGetAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testUpdateAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.AcademicHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -909,7 +913,7 @@ func testUpdateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.AcademicHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -945,7 +949,7 @@ func testDeleteAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Company --------------- */
 
-func testCreateCompany(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateCompany(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Company{
 		ID: 1,
 	}
@@ -987,7 +991,7 @@ func testCreateCompany(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllCompanies(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Company)(nil)).Count()
 	require.NoError(t, err)
 
@@ -1022,7 +1026,7 @@ func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetCompany(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetCompany(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Company{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1065,7 +1069,7 @@ func testGetCompany(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Department --------------- */
 
-func testCreateDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateDepartment(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Department{
 		ID: 1,
 	}
@@ -1107,7 +1111,7 @@ func testCreateDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllDepartments(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Department)(nil)).Count()
 	require.NoError(t, err)
 
@@ -1142,7 +1146,7 @@ func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetDepartment(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Department{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1185,7 +1189,7 @@ func testGetDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- JobHistory --------------- */
 
-func testCreateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existingC := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existingC).First()
 	require.NoError(t, err)
@@ -1252,7 +1256,7 @@ func testCreateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.JobHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1293,7 +1297,7 @@ func testGetJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testUpdateJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.JobHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1334,7 +1338,7 @@ func testUpdateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.JobHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)

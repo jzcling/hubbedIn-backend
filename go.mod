@@ -16,6 +16,7 @@ require (
 	github.com/oklog/oklog v0.3.2
 	github.com/ory/dockertest/v3 v3.6.2
 	github.com/pkg/errors v0.9.1
+	github.com/sethvargo/go-password v0.2.0
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/objx v0.2.0 // indirect
