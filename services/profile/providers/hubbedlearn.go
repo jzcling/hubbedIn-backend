@@ -3,13 +3,17 @@ package providers
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"in-backend/services/profile/interfaces"
+	"fmt"
 	"in-backend/services/profile/configs"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
+	"regexp"
+	"strconv"
+	"time"
 
 	"github.com/sethvargo/go-password/password"
 )
@@ -38,16 +42,34 @@ func NewHubbedLearn(cfg configs.Config, client interfaces.HTTPClient) HubbedLear
 
 func (p *hubbedlearnProvider) CreateUser(c *models.Candidate) (*string, error) {
 	url := hubbedlearnURL + "/auth/student/create"
+
+	name := c.FirstName + " " + c.LastName
+	alpha, err := regexp.Compile("[^a-zA-Z\\s]+")
+	if err != nil {
+		return nil, err
+	}
+	name = alpha.ReplaceAllString(name, "")[:19]
+
 	password, err := password.Generate(10, 2, 2, false, false)
 	if err != nil {
 		return nil, err
 	}
+
+	contact := c.ContactNumber
+	if contact == "" {
+		rand.Seed(time.Now().UnixNano())
+		min := 1000000
+		max := 9999999
+		contact = "888" + strconv.Itoa(rand.Intn(max-min+1)+min)
+	}
+
 	reqBody, err := json.Marshal(map[string]string{
 		"email":        c.Email,
-		"phone":        c.ContactNumber,
+		"phone":        contact,
 		"password":     password,
-		"name":         c.FirstName + " " + c.LastName,
+		"name":         name,
 		"business_key": p.config.HubbedLearn.ApiKey,
+		"classroom":    "HUBBEDIN-BATCH-3",
 	})
 	if err != nil {
 		return nil, err
@@ -65,7 +87,7 @@ func (p *hubbedlearnProvider) CreateUser(c *models.Candidate) (*string, error) {
 	}
 	defer res.Body.Close()
 
-	err = getHubbedLearnRequestError(res.Body)
+	err = getHubbedLearnRequestError(bytes.NewBuffer(reqBody), res.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +95,7 @@ func (p *hubbedlearnProvider) CreateUser(c *models.Candidate) (*string, error) {
 	return &password, nil
 }
 
-func getHubbedLearnRequestError(r io.Reader) error {
+func getHubbedLearnRequestError(in *bytes.Buffer, r io.Reader) error {
 	body, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
@@ -85,8 +107,9 @@ func getHubbedLearnRequestError(r io.Reader) error {
 		return err
 	}
 
-	if jsonBody["message"] != "Created Successfully" {
-		return errors.New("Request failed")
+	msg := jsonBody["message"]
+	if msg != "Created Successfully" {
+		return fmt.Errorf("%s: %+v", msg, in)
 	}
 	return nil
 }
