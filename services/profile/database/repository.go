@@ -45,6 +45,7 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
 		Returning("*").
 		Where("c.email = ?", m.Email).
+		OnConflict("DO NOTHING").
 		SelectOrInsert()
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
@@ -211,7 +212,10 @@ func (r *repository) CreateSkill(ctx context.Context, m *models.Skill) (*models.
 		return nil, errors.New("Input parameter skill is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Where(filNameEquals, m.Name).SelectOrInsert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert skill %v", m)
 	}
@@ -252,6 +256,7 @@ func (r *repository) CreateUserSkill(ctx context.Context, us *models.UserSkill) 
 	_, err := r.DB.WithContext(ctx).Model(us).Returning("*").
 		Where("candidate_id = ?", us.CandidateID).
 		Where("skill_id = ?", us.SkillID).
+		OnConflict("DO NOTHING").
 		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert user skill %v", us)
@@ -281,6 +286,7 @@ func (r *repository) CreateInstitution(ctx context.Context, m *models.Institutio
 	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
 		Where(filNameEquals, m.Name).
 		Where(filCountryEquals, m.Country).
+		OnConflict("DO NOTHING").
 		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert institution %v", m)
@@ -325,6 +331,7 @@ func (r *repository) CreateCourse(ctx context.Context, m *models.Course) (*model
 	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
 		Where(filNameEquals, m.Name).
 		Where(filLevelEquals, m.Level).
+		OnConflict("DO NOTHING").
 		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert course %v", m)
@@ -429,7 +436,10 @@ func (r *repository) CreateCompany(ctx context.Context, m *models.Company) (*mod
 		return nil, errors.New("Input parameter company is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Where(filNameEquals, m.Name).SelectOrInsert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert company %v", m)
 	}
@@ -467,7 +477,10 @@ func (r *repository) CreateDepartment(ctx context.Context, m *models.Department)
 		return nil, errors.New("Input parameter department is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Where(filNameEquals, m.Name).SelectOrInsert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert department %v", m)
 	}
