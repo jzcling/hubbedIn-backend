@@ -3,17 +3,17 @@ package service
 import (
 	"context"
 
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 )
 
 // Service implements the profile Service interface
 type service struct {
-	repository profile.Repository
+	repository interfaces.Repository
 }
 
 // New creates and returns a new Service that implements the profile Service interface
-func New(r profile.Repository) profile.Service {
+func New(r interfaces.Repository) interfaces.Service {
 	return &service{
 		repository: r,
 	}
