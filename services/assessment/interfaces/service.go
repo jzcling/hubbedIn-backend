@@ -7,111 +7,64 @@ import (
 
 // Service describes the assessment Service
 type Service interface {
-	/* --------------- Candidate --------------- */
+	/* --------------- Assessment --------------- */
 
-	// CreateCandidate creates a new candidate
-	CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)
+	// CreateAssessment creates a new Assessment
+	CreateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error)
 
-	// GetAllCandidates returns all candidates
-	GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error)
+	// GetAllAssessments returns all Assessments
+	GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error)
 
-	// GetCandidateByID finds and returns a candidate by ID
-	GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error)
+	// GetAssessmentByID finds and returns a Assessment by ID
+	GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error)
 
-	// UpdateCandidate updates a candidate
-	UpdateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)
+	// UpdateAssessment updates a Assessment
+	UpdateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error)
 
-	// DeleteCandidate deletes a candidate by ID
-	DeleteCandidate(ctx context.Context, id uint64) error
+	// DeleteAssessment deletes a Assessment by ID
+	DeleteAssessment(ctx context.Context, id uint64) error
 
-	/* --------------- Skill --------------- */
+	/* --------------- AssessmentStatus --------------- */
 
-	// CreateSkill creates a new Skill
-	CreateSkill(ctx context.Context, s *models.Skill) (*models.Skill, error)
+	// CreateAssessmentStatus creates a new AssessmentStatus
+	CreateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error)
 
-	// GetSkill returns a Skill by ID
-	GetSkill(ctx context.Context, id uint64) (*models.Skill, error)
+	// UpdateAssessmentStatus updates a AssessmentStatus
+	UpdateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error)
 
-	// GetAllSkills returns all Skills
-	GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error)
+	// DeleteAssessmentStatus deletes a AssessmentStatus by ID
+	DeleteAssessmentStatus(ctx context.Context, id uint64) error
 
-	/* --------------- User Skill --------------- */
+	/* --------------- Question --------------- */
 
-	// CreateUserSkill creates a new UserSkill
-	CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error)
+	// CreateQuestion creates a new Question
+	CreateQuestion(ctx context.Context, m *models.Question) (*models.Question, error)
 
-	// DeleteUserSkill deletes a UserSkill by ID
-	DeleteUserSkill(ctx context.Context, id uint64) error
+	// GetAllQuestions returns all Questions
+	GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error)
 
-	/* --------------- Institution --------------- */
+	// GetQuestionByID finds and returns a Question by ID
+	GetQuestionByID(ctx context.Context, id uint64) (*models.Question, error)
 
-	// CreateInstitution creates a new Institution
-	CreateInstitution(ctx context.Context, i *models.Institution) (*models.Institution, error)
+	// UpdateQuestion updates a Question
+	UpdateQuestion(ctx context.Context, m *models.Question) (*models.Question, error)
 
-	// GetInstitution returns a Institution by ID
-	GetInstitution(ctx context.Context, id uint64) (*models.Institution, error)
+	// DeleteQuestion deletes a Question by ID
+	DeleteQuestion(ctx context.Context, id uint64) error
 
-	// GetAllInstitutions returns all Institutions
-	GetAllInstitutions(ctx context.Context, f models.InstitutionFilters) ([]*models.Institution, error)
+	/* --------------- Tag --------------- */
 
-	/* --------------- Course --------------- */
+	// CreateTag creates a new Tag
+	CreateTag(ctx context.Context, m *models.Tag) (*models.Tag, error)
 
-	// CreateCourse creates a new Course
-	CreateCourse(ctx context.Context, c *models.Course) (*models.Course, error)
+	// DeleteTag deletes a Tag by ID
+	DeleteTag(ctx context.Context, id uint64) error
 
-	// GetCourse returns a Course by ID
-	GetCourse(ctx context.Context, id uint64) (*models.Course, error)
+	/* --------------- Response --------------- */
 
-	// GetAllCourses returns all Courses
-	GetAllCourses(ctx context.Context, f models.CourseFilters) ([]*models.Course, error)
+	// CreateResponse creates a new Response
+	CreateResponse(ctx context.Context, m *models.Response) (*models.Response, error)
 
-	/* --------------- Academic History --------------- */
-
-	// CreateAcademicHistory creates a new AcademicHistory
-	CreateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error)
-
-	// GetAcademicHistory returns a AcademicHistory by ID
-	GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error)
-
-	// UpdateAcademicHistory updates a AcademicHistory
-	UpdateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error)
-
-	// DeleteAcademicHistory deletes a AcademicHistory by ID
-	DeleteAcademicHistory(ctx context.Context, id uint64) error
-
-	/* --------------- Company --------------- */
-
-	// CreateCompany creates a new Company
-	CreateCompany(ctx context.Context, c *models.Company) (*models.Company, error)
-
-	// GetCompany returns a Company by ID
-	GetCompany(ctx context.Context, id uint64) (*models.Company, error)
-
-	// GetAllCompanies returns all Companies
-	GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error)
-
-	/* --------------- Department --------------- */
-
-	// CreateDepartment creates a new Department
-	CreateDepartment(ctx context.Context, c *models.Department) (*models.Department, error)
-
-	// GetDepartment returns a Department by ID
-	GetDepartment(ctx context.Context, id uint64) (*models.Department, error)
-
-	// GetAllDepartments returns all Departments
-	GetAllDepartments(ctx context.Context, f models.DepartmentFilters) ([]*models.Department, error)
-
-	/* --------------- Job History --------------- */
-
-	// CreateJobHistory creates a new JobHistory
-	CreateJobHistory(ctx context.Context, a *models.JobHistory) (*models.JobHistory, error)
-
-	// GetJobHistory returns a JobHistory by ID
-	GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error)
-
-	// UpdateJobHistory updates a JobHistory
-	UpdateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error)
-
-	// DeleteJobHistory deletes a JobHistory by ID
-	DeleteJobHistory(ctx context.Context, id uint64) error
+	// DeleteResponse deletes a Response by ID
+	DeleteResponse(ctx context.Context, id uint64) error
 }
