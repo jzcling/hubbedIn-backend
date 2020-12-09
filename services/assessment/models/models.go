@@ -57,7 +57,7 @@ type Question struct {
 	Answer      uint32        `json:"answer" pg:",use_zero"`
 	Tags        []*Tag        `json:"tags" pg:"rel:has-many"`
 	Assessments []*Assessment `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
-	Responses   []*Response   `json:"responses,omitempty" pg:"rel:has-many`
+	Responses   []*Response   `json:"responses,omitempty" pg:"rel:has-many"`
 }
 
 // Tag declares the model for Tag
