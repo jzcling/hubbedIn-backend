@@ -11,690 +11,394 @@ import (
 
 // Endpoints holds all Go kit endpoints for the assessment Service.
 type Endpoints struct {
-	CreateCandidate  endpoint.Endpoint
-	GetAllCandidates endpoint.Endpoint
-	GetCandidateByID endpoint.Endpoint
-	UpdateCandidate  endpoint.Endpoint
-	DeleteCandidate  endpoint.Endpoint
+	CreateAssessment  endpoint.Endpoint
+	GetAllAssessments endpoint.Endpoint
+	GetAssessmentByID endpoint.Endpoint
+	UpdateAssessment  endpoint.Endpoint
+	DeleteAssessment  endpoint.Endpoint
 
-	CreateSkill  endpoint.Endpoint
-	GetSkill     endpoint.Endpoint
-	GetAllSkills endpoint.Endpoint
+	CreateAssessmentStatus endpoint.Endpoint
+	UpdateAssessmentStatus endpoint.Endpoint
+	DeleteAssessmentStatus endpoint.Endpoint
 
-	CreateUserSkill endpoint.Endpoint
-	DeleteUserSkill endpoint.Endpoint
+	CreateQuestion  endpoint.Endpoint
+	GetAllQuestions endpoint.Endpoint
+	GetQuestionByID endpoint.Endpoint
+	UpdateQuestion  endpoint.Endpoint
+	DeleteQuestion  endpoint.Endpoint
 
-	CreateInstitution  endpoint.Endpoint
-	GetInstitution     endpoint.Endpoint
-	GetAllInstitutions endpoint.Endpoint
+	CreateTag endpoint.Endpoint
+	DeleteTag endpoint.Endpoint
 
-	CreateCourse  endpoint.Endpoint
-	GetCourse     endpoint.Endpoint
-	GetAllCourses endpoint.Endpoint
-
-	CreateAcademicHistory endpoint.Endpoint
-	GetAcademicHistory    endpoint.Endpoint
-	UpdateAcademicHistory endpoint.Endpoint
-	DeleteAcademicHistory endpoint.Endpoint
-
-	CreateCompany   endpoint.Endpoint
-	GetCompany      endpoint.Endpoint
-	GetAllCompanies endpoint.Endpoint
-
-	CreateDepartment  endpoint.Endpoint
-	GetDepartment     endpoint.Endpoint
-	GetAllDepartments endpoint.Endpoint
-
-	CreateJobHistory endpoint.Endpoint
-	GetJobHistory    endpoint.Endpoint
-	UpdateJobHistory endpoint.Endpoint
-	DeleteJobHistory endpoint.Endpoint
+	CreateResponse endpoint.Endpoint
+	DeleteResponse endpoint.Endpoint
 }
 
 // MakeEndpoints initializes all Go kit endpoints for the assessment service.
 func MakeEndpoints(s interfaces.Service) Endpoints {
 	return Endpoints{
-		CreateCandidate:  makeCreateCandidateEndpoint(s),
-		GetAllCandidates: makeGetAllCandidatesEndpoint(s),
-		GetCandidateByID: makeGetCandidateByIDEndpoint(s),
-		UpdateCandidate:  makeUpdateCandidateEndpoint(s),
-		DeleteCandidate:  makeDeleteCandidateEndpoint(s),
+		CreateAssessment:  makeCreateAssessmentEndpoint(s),
+		GetAllAssessments: makeGetAllAssessmentsEndpoint(s),
+		GetAssessmentByID: makeGetAssessmentByIDEndpoint(s),
+		UpdateAssessment:  makeUpdateAssessmentEndpoint(s),
+		DeleteAssessment:  makeDeleteAssessmentEndpoint(s),
 
-		CreateSkill:  makeCreateSkillEndpoint(s),
-		GetSkill:     makeGetSkillEndpoint(s),
-		GetAllSkills: makeGetAllSkillsEndpoint(s),
+		CreateAssessmentStatus: makeCreateAssessmentStatusEndpoint(s),
+		UpdateAssessmentStatus: makeUpdateAssessmentStatusEndpoint(s),
+		DeleteAssessmentStatus: makeDeleteAssessmentStatusEndpoint(s),
 
-		CreateUserSkill: makeCreateUserSkillEndpoint(s),
-		DeleteUserSkill: makeDeleteUserSkillEndpoint(s),
+		CreateQuestion:  makeCreateQuestionEndpoint(s),
+		GetAllQuestions: makeGetAllQuestionsEndpoint(s),
+		GetQuestionByID: makeGetQuestionByIDEndpoint(s),
+		UpdateQuestion:  makeUpdateQuestionEndpoint(s),
+		DeleteQuestion:  makeDeleteQuestionEndpoint(s),
 
-		CreateInstitution:  makeCreateInstitutionEndpoint(s),
-		GetInstitution:     makeGetInstitutionEndpoint(s),
-		GetAllInstitutions: makeGetAllInstitutionsEndpoint(s),
+		CreateTag: makeCreateTagEndpoint(s),
+		DeleteTag: makeDeleteTagEndpoint(s),
 
-		CreateCourse:  makeCreateCourseEndpoint(s),
-		GetCourse:     makeGetCourseEndpoint(s),
-		GetAllCourses: makeGetAllCoursesEndpoint(s),
-
-		CreateAcademicHistory: makeCreateAcademicHistoryEndpoint(s),
-		GetAcademicHistory:    makeGetAcademicHistoryEndpoint(s),
-		UpdateAcademicHistory: makeUpdateAcademicHistoryEndpoint(s),
-		DeleteAcademicHistory: makeDeleteAcademicHistoryEndpoint(s),
-
-		CreateCompany:   makeCreateCompanyEndpoint(s),
-		GetCompany:      makeGetCompanyEndpoint(s),
-		GetAllCompanies: makeGetAllCompaniesEndpoint(s),
-
-		CreateDepartment:  makeCreateDepartmentEndpoint(s),
-		GetDepartment:     makeGetDepartmentEndpoint(s),
-		GetAllDepartments: makeGetAllDepartmentsEndpoint(s),
-
-		CreateJobHistory: makeCreateJobHistoryEndpoint(s),
-		GetJobHistory:    makeGetJobHistoryEndpoint(s),
-		UpdateJobHistory: makeUpdateJobHistoryEndpoint(s),
-		DeleteJobHistory: makeDeleteJobHistoryEndpoint(s),
+		CreateResponse: makeCreateResponseEndpoint(s),
+		DeleteResponse: makeDeleteResponseEndpoint(s),
 	}
 }
 
-/* -------------- Candidate -------------- */
+/* -------------- Assessment -------------- */
 
-func makeCreateCandidateEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeCreateAssessmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateCandidateRequest)
-		c, err := s.CreateCandidate(ctx, req.Candidate)
-		return CreateCandidateResponse{Candidate: c, Err: err}, nil
+		req := request.(CreateAssessmentRequest)
+		c, err := s.CreateAssessment(ctx, req.Assessment)
+		return CreateAssessmentResponse{Assessment: c, Err: err}, nil
 	}
 }
 
-// CreateCandidateRequest declares the inputs required for creating a candidate
-type CreateCandidateRequest struct {
-	Candidate *models.Candidate
+// CreateAssessmentRequest declares the inputs required for creating a assessment
+type CreateAssessmentRequest struct {
+	Assessment *models.Assessment
 }
 
-// CreateCandidateResponse declares the outputs after attempting to create a candidate
-type CreateCandidateResponse struct {
-	Candidate *models.Candidate
-	Err       error
-}
-
-func makeGetAllCandidatesEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllCandidatesRequest)
-		f := models.CandidateFilters(req)
-		c, err := s.GetAllCandidates(ctx, f)
-		return GetAllCandidatesResponse{Candidates: c, Err: err}, nil
-	}
-}
-
-// GetAllCandidatesRequest declares the inputs required for getting all candidates
-type GetAllCandidatesRequest struct {
-	ID              []uint64
-	FirstName       string
-	LastName        string
-	Email           string
-	ContactNumber   string
-	Gender          []string
-	Nationality     []string
-	ResidenceCity   []string
-	MinSalary       uint32
-	MaxSalary       uint32
-	EducationLevel  []string
-	MaxNoticePeriod uint32
-}
-
-// GetAllCandidatesResponse declares the outputs after attempting to get all candidates
-type GetAllCandidatesResponse struct {
-	Candidates []*models.Candidate
+// CreateAssessmentResponse declares the outputs after attempting to create a assessment
+type CreateAssessmentResponse struct {
+	Assessment *models.Assessment
 	Err        error
 }
 
-func makeGetCandidateByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeGetAllAssessmentsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetCandidateByIDRequest)
-		c, err := s.GetCandidateByID(ctx, req.ID)
-		return GetCandidateByIDResponse{Candidate: c, Err: err}, nil
+		req := request.(GetAllAssessmentsRequest)
+		f := models.AssessmentFilters(req)
+		c, err := s.GetAllAssessments(ctx, f)
+		return GetAllAssessmentsResponse{Assessments: c, Err: err}, nil
 	}
 }
 
-// GetCandidateByIDRequest declares the inputs required for getting a single candidate by ID
-type GetCandidateByIDRequest struct {
-	ID uint64
+// GetAllAssessmentsRequest declares the inputs required for getting all assessments
+type GetAllAssessmentsRequest struct {
+	ID         []uint64
+	Name       string
+	Difficulty []string
+	Type       []string
+
+	// relation filters
+	CandidateID uint64
+	Status      []string
+	MinScore    uint32
 }
 
-// GetCandidateByIDResponse declares the outputs after attempting to get a single candidate by ID
-type GetCandidateByIDResponse struct {
-	Candidate *models.Candidate
-	Err       error
-}
-
-func makeUpdateCandidateEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(UpdateCandidateRequest)
-		c, err := s.UpdateCandidate(ctx, req.Candidate)
-		return UpdateCandidateResponse{Candidate: c, Err: err}, nil
-	}
-}
-
-// UpdateCandidateRequest declares the inputs required for updating a candidate
-type UpdateCandidateRequest struct {
-	ID        uint64
-	Candidate *models.Candidate
-}
-
-// UpdateCandidateResponse declares the outputs after attempting to update a candidate
-type UpdateCandidateResponse struct {
-	Candidate *models.Candidate
-	Err       error
-}
-
-func makeDeleteCandidateEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(DeleteCandidateRequest)
-		err := s.DeleteCandidate(ctx, req.ID)
-		return DeleteCandidateResponse{Err: err}, nil
-	}
-}
-
-// DeleteCandidateRequest declares the inputs required for deleting a candidate
-type DeleteCandidateRequest struct {
-	ID uint64
-}
-
-// DeleteCandidateResponse declares the outputs after attempting to delete a candidate
-type DeleteCandidateResponse struct {
-	Err error
-}
-
-/* -------------- Skill -------------- */
-
-func makeCreateSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateSkillRequest)
-		sk, err := s.CreateSkill(ctx, req.Skill)
-		return CreateSkillResponse{Skill: sk, Err: err}, nil
-	}
-}
-
-// CreateSkillRequest declares the inputs required for creating a skill
-type CreateSkillRequest struct {
-	Skill *models.Skill
-}
-
-// CreateSkillResponse declares the outputs after attempting to create a skill
-type CreateSkillResponse struct {
-	Skill *models.Skill
-	Err   error
-}
-
-func makeGetSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetSkillRequest)
-		sk, err := s.GetSkill(ctx, req.ID)
-		return GetSkillResponse{Skill: sk, Err: err}, nil
-	}
-}
-
-// GetSkillRequest declares the inputs required for getting a single skill by ID
-type GetSkillRequest struct {
-	ID uint64
-}
-
-// GetSkillResponse declares the outputs after attempting to get a single skill by ID
-type GetSkillResponse struct {
-	Skill *models.Skill
-	Err   error
-}
-
-func makeGetAllSkillsEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllSkillsRequest)
-		f := models.SkillFilters(req)
-		sk, err := s.GetAllSkills(ctx, f)
-		return GetAllSkillsResponse{Skills: sk, Err: err}, nil
-	}
-}
-
-// GetAllSkillsRequest declares the inputs required for getting all skills
-type GetAllSkillsRequest struct {
-	Name []string
-}
-
-// GetAllSkillsResponse declares the outputs after attempting to get all skills
-type GetAllSkillsResponse struct {
-	Skills []*models.Skill
-	Err    error
-}
-
-/* -------------- User Skill -------------- */
-
-func makeCreateUserSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateUserSkillRequest)
-		us, err := s.CreateUserSkill(ctx, req.UserSkill)
-		return CreateUserSkillResponse{UserSkill: us, Err: err}, nil
-	}
-}
-
-// CreateUserSkillRequest declares the inputs required for creating a UserSkill
-type CreateUserSkillRequest struct {
-	UserSkill *models.UserSkill
-}
-
-// CreateUserSkillResponse declares the outputs after attempting to create a UserSkill
-type CreateUserSkillResponse struct {
-	UserSkill *models.UserSkill
-	Err       error
-}
-
-func makeDeleteUserSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(DeleteUserSkillRequest)
-		err := s.DeleteUserSkill(ctx, req.ID)
-		return DeleteUserSkillResponse{Err: err}, nil
-	}
-}
-
-// DeleteUserSkillRequest declares the inputs required for deleting a UserSkill
-type DeleteUserSkillRequest struct {
-	ID uint64
-}
-
-// DeleteUserSkillResponse declares the outputs after attempting to delete a UserSkill
-type DeleteUserSkillResponse struct {
-	Err error
-}
-
-/* -------------- Institution -------------- */
-
-func makeCreateInstitutionEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateInstitutionRequest)
-		i, err := s.CreateInstitution(ctx, req.Institution)
-		return CreateInstitutionResponse{Institution: i, Err: err}, nil
-	}
-}
-
-// CreateInstitutionRequest declares the inputs required for creating a Institution
-type CreateInstitutionRequest struct {
-	Institution *models.Institution
-}
-
-// CreateInstitutionResponse declares the outputs after attempting to create a Institution
-type CreateInstitutionResponse struct {
-	Institution *models.Institution
+// GetAllAssessmentsResponse declares the outputs after attempting to get all assessments
+type GetAllAssessmentsResponse struct {
+	Assessments []*models.Assessment
 	Err         error
 }
 
-func makeGetInstitutionEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeGetAssessmentByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetInstitutionRequest)
-		i, err := s.GetInstitution(ctx, req.ID)
-		return GetInstitutionResponse{Institution: i, Err: err}, nil
+		req := request.(GetAssessmentByIDRequest)
+		c, err := s.GetAssessmentByID(ctx, req.ID)
+		return GetAssessmentByIDResponse{Assessment: c, Err: err}, nil
 	}
 }
 
-// GetInstitutionRequest declares the inputs required for getting a single Institution by ID
-type GetInstitutionRequest struct {
+// GetAssessmentByIDRequest declares the inputs required for getting a single assessment by ID
+type GetAssessmentByIDRequest struct {
 	ID uint64
 }
 
-// GetInstitutionResponse declares the outputs after attempting to get a single Institution by ID
-type GetInstitutionResponse struct {
-	Institution *models.Institution
-	Err         error
+// GetAssessmentByIDResponse declares the outputs after attempting to get a single assessment by ID
+type GetAssessmentByIDResponse struct {
+	Assessment *models.Assessment
+	Err        error
 }
 
-func makeGetAllInstitutionsEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeUpdateAssessmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllInstitutionsRequest)
-		f := models.InstitutionFilters(req)
-		i, err := s.GetAllInstitutions(ctx, f)
-		return GetAllInstitutionsResponse{Institutions: i, Err: err}, nil
+		req := request.(UpdateAssessmentRequest)
+		c, err := s.UpdateAssessment(ctx, req.Assessment)
+		return UpdateAssessmentResponse{Assessment: c, Err: err}, nil
 	}
 }
 
-// GetAllInstitutionsRequest declares the inputs required for getting all Institutions
-type GetAllInstitutionsRequest struct {
-	Name    []string
-	Country []string
+// UpdateAssessmentRequest declares the inputs required for updating a assessment
+type UpdateAssessmentRequest struct {
+	ID         uint64
+	Assessment *models.Assessment
 }
 
-// GetAllInstitutionsResponse declares the outputs after attempting to get all Institutions
-type GetAllInstitutionsResponse struct {
-	Institutions []*models.Institution
-	Err          error
+// UpdateAssessmentResponse declares the outputs after attempting to update a assessment
+type UpdateAssessmentResponse struct {
+	Assessment *models.Assessment
+	Err        error
 }
 
-/* -------------- Course -------------- */
-
-func makeCreateCourseEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeDeleteAssessmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateCourseRequest)
-		c, err := s.CreateCourse(ctx, req.Course)
-		return CreateCourseResponse{Course: c, Err: err}, nil
+		req := request.(DeleteAssessmentRequest)
+		err := s.DeleteAssessment(ctx, req.ID)
+		return DeleteAssessmentResponse{Err: err}, nil
 	}
 }
 
-// CreateCourseRequest declares the inputs required for creating a Course
-type CreateCourseRequest struct {
-	Course *models.Course
-}
-
-// CreateCourseResponse declares the outputs after attempting to create a Course
-type CreateCourseResponse struct {
-	Course *models.Course
-	Err    error
-}
-
-func makeGetCourseEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetCourseRequest)
-		c, err := s.GetCourse(ctx, req.ID)
-		return GetCourseResponse{Course: c, Err: err}, nil
-	}
-}
-
-// GetCourseRequest declares the inputs required for getting a single Course by ID
-type GetCourseRequest struct {
+// DeleteAssessmentRequest declares the inputs required for deleting a assessment
+type DeleteAssessmentRequest struct {
 	ID uint64
 }
 
-// GetCourseResponse declares the outputs after attempting to get a single Course by ID
-type GetCourseResponse struct {
-	Course *models.Course
-	Err    error
-}
-
-func makeGetAllCoursesEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllCoursesRequest)
-		f := models.CourseFilters(req)
-		c, err := s.GetAllCourses(ctx, f)
-		return GetAllCoursesResponse{Courses: c, Err: err}, nil
-	}
-}
-
-// GetAllCoursesRequest declares the inputs required for getting all Courses
-type GetAllCoursesRequest struct {
-	Name  []string
-	Level []string
-}
-
-// GetAllCoursesResponse declares the outputs after attempting to get all Courses
-type GetAllCoursesResponse struct {
-	Courses []*models.Course
-	Err     error
-}
-
-/* -------------- Academic History -------------- */
-
-func makeCreateAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateAcademicHistoryRequest)
-		a, err := s.CreateAcademicHistory(ctx, req.AcademicHistory)
-		return CreateAcademicHistoryResponse{AcademicHistory: a, Err: err}, nil
-	}
-}
-
-// CreateAcademicHistoryRequest declares the inputs required for creating a AcademicHistory
-type CreateAcademicHistoryRequest struct {
-	AcademicHistory *models.AcademicHistory
-}
-
-// CreateAcademicHistoryResponse declares the outputs after attempting to create a AcademicHistory
-type CreateAcademicHistoryResponse struct {
-	AcademicHistory *models.AcademicHistory
-	Err             error
-}
-
-func makeGetAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAcademicHistoryRequest)
-		a, err := s.GetAcademicHistory(ctx, req.ID)
-		return GetAcademicHistoryResponse{AcademicHistory: a, Err: err}, nil
-	}
-}
-
-// GetAcademicHistoryRequest declares the inputs required for getting a single AcademicHistory by ID
-type GetAcademicHistoryRequest struct {
-	ID uint64
-}
-
-// GetAcademicHistoryResponse declares the outputs after attempting to get a single AcademicHistory by ID
-type GetAcademicHistoryResponse struct {
-	AcademicHistory *models.AcademicHistory
-	Err             error
-}
-
-func makeUpdateAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(UpdateAcademicHistoryRequest)
-		a, err := s.UpdateAcademicHistory(ctx, req.AcademicHistory)
-		return UpdateAcademicHistoryResponse{AcademicHistory: a, Err: err}, nil
-	}
-}
-
-// UpdateAcademicHistoryRequest declares the inputs required for updating a AcademicHistory
-type UpdateAcademicHistoryRequest struct {
-	AcademicHistory *models.AcademicHistory
-}
-
-// UpdateAcademicHistoryResponse declares the outputs after attempting to update a AcademicHistory
-type UpdateAcademicHistoryResponse struct {
-	AcademicHistory *models.AcademicHistory
-	Err             error
-}
-
-func makeDeleteAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(DeleteAcademicHistoryRequest)
-		err := s.DeleteAcademicHistory(ctx, req.ID)
-		return DeleteAcademicHistoryResponse{Err: err}, nil
-	}
-}
-
-// DeleteAcademicHistoryRequest declares the inputs required for deleting a AcademicHistory
-type DeleteAcademicHistoryRequest struct {
-	ID uint64
-}
-
-// DeleteAcademicHistoryResponse declares the outputs after attempting to delete a AcademicHistory
-type DeleteAcademicHistoryResponse struct {
+// DeleteAssessmentResponse declares the outputs after attempting to delete a assessment
+type DeleteAssessmentResponse struct {
 	Err error
 }
 
-/* -------------- Company -------------- */
+/* -------------- Assessment Status -------------- */
 
-func makeCreateCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeCreateAssessmentStatusEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateCompanyRequest)
-		c, err := s.CreateCompany(ctx, req.Company)
-		return CreateCompanyResponse{Company: c, Err: err}, nil
+		req := request.(CreateAssessmentStatusRequest)
+		c, err := s.CreateAssessmentStatus(ctx, req.AssessmentStatus)
+		return CreateAssessmentStatusResponse{AssessmentStatus: c, Err: err}, nil
 	}
 }
 
-// CreateCompanyRequest declares the inputs required for creating a Company
-type CreateCompanyRequest struct {
-	Company *models.Company
+// CreateAssessmentStatusRequest declares the inputs required for creating a assessment status
+type CreateAssessmentStatusRequest struct {
+	AssessmentStatus *models.AssessmentStatus
 }
 
-// CreateCompanyResponse declares the outputs after attempting to create a Company
-type CreateCompanyResponse struct {
-	Company *models.Company
-	Err     error
+// CreateAssessmentStatusResponse declares the outputs after attempting to create a assessment status
+type CreateAssessmentStatusResponse struct {
+	AssessmentStatus *models.AssessmentStatus
+	Err              error
 }
 
-func makeGetCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeUpdateAssessmentStatusEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetCompanyRequest)
-		c, err := s.GetCompany(ctx, req.ID)
-		return GetCompanyResponse{Company: c, Err: err}, nil
+		req := request.(UpdateAssessmentStatusRequest)
+		c, err := s.UpdateAssessmentStatus(ctx, req.AssessmentStatus)
+		return UpdateAssessmentStatusResponse{AssessmentStatus: c, Err: err}, nil
 	}
 }
 
-// GetCompanyRequest declares the inputs required for getting a single Company by ID
-type GetCompanyRequest struct {
+// UpdateAssessmentStatusRequest declares the inputs required for updating a assessment status
+type UpdateAssessmentStatusRequest struct {
+	ID               uint64
+	AssessmentStatus *models.AssessmentStatus
+}
+
+// UpdateAssessmentStatusResponse declares the outputs after attempting to update a assessment status
+type UpdateAssessmentStatusResponse struct {
+	AssessmentStatus *models.AssessmentStatus
+	Err              error
+}
+
+func makeDeleteAssessmentStatusEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteAssessmentStatusRequest)
+		err := s.DeleteAssessmentStatus(ctx, req.ID)
+		return DeleteAssessmentStatusResponse{Err: err}, nil
+	}
+}
+
+// DeleteAssessmentStatusRequest declares the inputs required for deleting a assessment status
+type DeleteAssessmentStatusRequest struct {
 	ID uint64
 }
 
-// GetCompanyResponse declares the outputs after attempting to get a single Company by ID
-type GetCompanyResponse struct {
-	Company *models.Company
-	Err     error
+// DeleteAssessmentStatusResponse declares the outputs after attempting to delete a assessment status
+type DeleteAssessmentStatusResponse struct {
+	Err error
 }
 
-func makeGetAllCompaniesEndpoint(s interfaces.Service) endpoint.Endpoint {
+/* -------------- Question -------------- */
+
+func makeCreateQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllCompaniesRequest)
-		f := models.CompanyFilters(req)
-		c, err := s.GetAllCompanies(ctx, f)
-		return GetAllCompaniesResponse{Companies: c, Err: err}, nil
+		req := request.(CreateQuestionRequest)
+		c, err := s.CreateQuestion(ctx, req.Question)
+		return CreateQuestionResponse{Question: c, Err: err}, nil
 	}
 }
 
-// GetAllCompaniesRequest declares the inputs required for getting all Companies
-type GetAllCompaniesRequest struct {
-	Name []string
+// CreateQuestionRequest declares the inputs required for creating a question
+type CreateQuestionRequest struct {
+	Question *models.Question
 }
 
-// GetAllCompaniesResponse declares the outputs after attempting to get all Companies
-type GetAllCompaniesResponse struct {
-	Companies []*models.Company
+// CreateQuestionResponse declares the outputs after attempting to create a question
+type CreateQuestionResponse struct {
+	Question *models.Question
+	Err      error
+}
+
+func makeGetAllQuestionsEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetAllQuestionsRequest)
+		f := models.QuestionFilters(req)
+		c, err := s.GetAllQuestions(ctx, f)
+		return GetAllQuestionsResponse{Questions: c, Err: err}, nil
+	}
+}
+
+// GetAllQuestionsRequest declares the inputs required for getting all questions
+type GetAllQuestionsRequest struct {
+	ID   []uint64
+	Tags []string
+}
+
+// GetAllQuestionsResponse declares the outputs after attempting to get all questions
+type GetAllQuestionsResponse struct {
+	Questions []*models.Question
 	Err       error
 }
 
-/* -------------- Department -------------- */
-
-func makeCreateDepartmentEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeGetQuestionByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateDepartmentRequest)
-		d, err := s.CreateDepartment(ctx, req.Department)
-		return CreateDepartmentResponse{Department: d, Err: err}, nil
+		req := request.(GetQuestionByIDRequest)
+		c, err := s.GetQuestionByID(ctx, req.ID)
+		return GetQuestionByIDResponse{Question: c, Err: err}, nil
 	}
 }
 
-// CreateDepartmentRequest declares the inputs required for creating a Department
-type CreateDepartmentRequest struct {
-	Department *models.Department
-}
-
-// CreateDepartmentResponse declares the outputs after attempting to create a Department
-type CreateDepartmentResponse struct {
-	Department *models.Department
-	Err        error
-}
-
-func makeGetDepartmentEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetDepartmentRequest)
-		d, err := s.GetDepartment(ctx, req.ID)
-		return GetDepartmentResponse{Department: d, Err: err}, nil
-	}
-}
-
-// GetDepartmentRequest declares the inputs required for getting a single Department by ID
-type GetDepartmentRequest struct {
+// GetQuestionByIDRequest declares the inputs required for getting a single question by ID
+type GetQuestionByIDRequest struct {
 	ID uint64
 }
 
-// GetDepartmentResponse declares the outputs after attempting to get a single Department by ID
-type GetDepartmentResponse struct {
-	Department *models.Department
-	Err        error
+// GetQuestionByIDResponse declares the outputs after attempting to get a single question by ID
+type GetQuestionByIDResponse struct {
+	Question *models.Question
+	Err      error
 }
 
-func makeGetAllDepartmentsEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeUpdateQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetAllDepartmentsRequest)
-		f := models.DepartmentFilters(req)
-		d, err := s.GetAllDepartments(ctx, f)
-		return GetAllDepartmentsResponse{Departments: d, Err: err}, nil
+		req := request.(UpdateQuestionRequest)
+		c, err := s.UpdateQuestion(ctx, req.Question)
+		return UpdateQuestionResponse{Question: c, Err: err}, nil
 	}
 }
 
-// GetAllDepartmentsRequest declares the inputs required for getting all Departments
-type GetAllDepartmentsRequest struct {
-	Name []string
+// UpdateQuestionRequest declares the inputs required for updating a question
+type UpdateQuestionRequest struct {
+	ID       uint64
+	Question *models.Question
 }
 
-// GetAllDepartmentsResponse declares the outputs after attempting to get all Departments
-type GetAllDepartmentsResponse struct {
-	Departments []*models.Department
-	Err         error
+// UpdateQuestionResponse declares the outputs after attempting to update a question
+type UpdateQuestionResponse struct {
+	Question *models.Question
+	Err      error
 }
 
-/* -------------- Job History -------------- */
-
-func makeCreateJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeDeleteQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateJobHistoryRequest)
-		j, err := s.CreateJobHistory(ctx, req.JobHistory)
-		return CreateJobHistoryResponse{JobHistory: j, Err: err}, nil
+		req := request.(DeleteQuestionRequest)
+		err := s.DeleteQuestion(ctx, req.ID)
+		return DeleteQuestionResponse{Err: err}, nil
 	}
 }
 
-// CreateJobHistoryRequest declares the inputs required for creating a JobHistory
-type CreateJobHistoryRequest struct {
-	JobHistory *models.JobHistory
-}
-
-// CreateJobHistoryResponse declares the outputs after attempting to create a JobHistory
-type CreateJobHistoryResponse struct {
-	JobHistory *models.JobHistory
-	Err        error
-}
-
-func makeGetJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetJobHistoryRequest)
-		j, err := s.GetJobHistory(ctx, req.ID)
-		return GetJobHistoryResponse{JobHistory: j, Err: err}, nil
-	}
-}
-
-// GetJobHistoryRequest declares the inputs required for getting a single JobHistory by ID
-type GetJobHistoryRequest struct {
+// DeleteQuestionRequest declares the inputs required for deleting a question
+type DeleteQuestionRequest struct {
 	ID uint64
 }
 
-// GetJobHistoryResponse declares the outputs after attempting to get a single JobHistory by ID
-type GetJobHistoryResponse struct {
-	JobHistory *models.JobHistory
-	Err        error
+// DeleteQuestionResponse declares the outputs after attempting to delete a question
+type DeleteQuestionResponse struct {
+	Err error
 }
 
-func makeUpdateJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
+/* -------------- Tag -------------- */
+
+func makeCreateTagEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(UpdateJobHistoryRequest)
-		j, err := s.UpdateJobHistory(ctx, req.JobHistory)
-		return UpdateJobHistoryResponse{JobHistory: j, Err: err}, nil
+		req := request.(CreateTagRequest)
+		c, err := s.CreateTag(ctx, req.Tag)
+		return CreateTagResponse{Tag: c, Err: err}, nil
 	}
 }
 
-// UpdateJobHistoryRequest declares the inputs required for updating a JobHistory
-type UpdateJobHistoryRequest struct {
-	JobHistory *models.JobHistory
+// CreateTagRequest declares the inputs required for creating a tag
+type CreateTagRequest struct {
+	Tag *models.Tag
 }
 
-// UpdateJobHistoryResponse declares the outputs after attempting to update a JobHistory
-type UpdateJobHistoryResponse struct {
-	JobHistory *models.JobHistory
-	Err        error
+// CreateTagResponse declares the outputs after attempting to create a tag
+type CreateTagResponse struct {
+	Tag *models.Tag
+	Err error
 }
 
-func makeDeleteJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeDeleteTagEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(DeleteJobHistoryRequest)
-		err := s.DeleteJobHistory(ctx, req.ID)
-		return DeleteJobHistoryResponse{Err: err}, nil
+		req := request.(DeleteTagRequest)
+		err := s.DeleteTag(ctx, req.ID)
+		return DeleteTagResponse{Err: err}, nil
 	}
 }
 
-// DeleteJobHistoryRequest declares the inputs required for deleting a JobHistory
-type DeleteJobHistoryRequest struct {
+// DeleteTagRequest declares the inputs required for deleting a tag
+type DeleteTagRequest struct {
 	ID uint64
 }
 
-// DeleteJobHistoryResponse declares the outputs after attempting to delete a JobHistory
-type DeleteJobHistoryResponse struct {
+// DeleteTagResponse declares the outputs after attempting to delete a tag
+type DeleteTagResponse struct {
+	Err error
+}
+
+/* -------------- Response -------------- */
+
+func makeCreateResponseEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(CreateResponseRequest)
+		c, err := s.CreateResponse(ctx, req.Response)
+		return CreateResponseResponse{Response: c, Err: err}, nil
+	}
+}
+
+// CreateResponseRequest declares the inputs required for creating a response
+type CreateResponseRequest struct {
+	Response *models.Response
+}
+
+// CreateResponseResponse declares the outputs after attempting to create a response
+type CreateResponseResponse struct {
+	Response *models.Response
+	Err      error
+}
+
+func makeDeleteResponseEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteResponseRequest)
+		err := s.DeleteResponse(ctx, req.ID)
+		return DeleteResponseResponse{Err: err}, nil
+	}
+}
+
+// DeleteResponseRequest declares the inputs required for deleting a response
+type DeleteResponseRequest struct {
+	ID uint64
+}
+
+// DeleteResponseResponse declares the outputs after attempting to delete a response
+type DeleteResponseResponse struct {
 	Err error
 }
