@@ -6,12 +6,10 @@ import (
 	"in-backend/services/assessment/database"
 	"in-backend/services/assessment/endpoints"
 	"in-backend/services/assessment/pb"
-	"in-backend/services/assessment/providers"
 	"in-backend/services/assessment/service"
 	"in-backend/services/assessment/service/middlewares"
 	"in-backend/services/assessment/transport"
 	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -57,11 +55,7 @@ func main() {
 	// business logic service; then, the set of endpoints that wrap the service;
 	// and finally, a series of concrete transport adapters
 
-	client := &http.Client{}
-	auth0 := providers.NewAuth0(cfg, client)
-	hubbedlearn := providers.NewHubbedLearn(cfg, client)
-	klenty := providers.NewKlenty(cfg, client)
-	repo := database.NewRepository(db, auth0, hubbedlearn, klenty)
+	repo := database.NewRepository(db)
 	svc := service.New(repo)
 	svc = middlewares.NewAuthMiddleware(svc)
 	svc = middlewares.NewLogMiddleware(logger, svc)
@@ -92,7 +86,7 @@ func main() {
 		*/
 		g.Add(func() error {
 			logger.Log("transport", "gRPC", "addr", cfg.Server.Port)
-			pb.RegisterassessmentServiceServer(grpcServer, assessmentService)
+			pb.RegisterAssessmentServiceServer(grpcServer, assessmentService)
 			// Register reflection service on gRPC server.
 			reflection.Register(grpcServer)
 			return grpcServer.Serve(grpcListener)
