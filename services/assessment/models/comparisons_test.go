@@ -1,6 +1,7 @@
 package models
 
 import (
+	"in-backend/services/assessment/interfaces"
 	"reflect"
 	"testing"
 	"time"
@@ -35,8 +36,8 @@ func TestAssessmentStatusIsEqual(t *testing.T) {
 		CandidateID:  1,
 		Status:       "Completed",
 		StartedAt:    &timeAt,
-		CompletedAt & timeAt,
-		Score: 5,
+		CompletedAt:  &timeAt,
+		Score:        5,
 	}
 	m3 := &AssessmentStatus{}
 
@@ -107,7 +108,7 @@ func TestAssessmentQuestionIsEqual(t *testing.T) {
 	testIsEqual(t, m1, m2, m3)
 }
 
-func testIsEqual(t *testing.T, m1, m2 Comparator, m3 interface{}) {
+func testIsEqual(t *testing.T, m1, m2 interfaces.Comparator, m3 interface{}) {
 	assert.Condition(t, func() bool { return m1.IsEqual(m1) })
 	assert.Condition(t, func() bool { return !m1.IsEqual(m2) })
 

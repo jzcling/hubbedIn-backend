@@ -6,425 +6,258 @@ option go_package = "services/assessment/pb";
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
-// ------------ assessment Service ------------
+// ------------ Assessment Service ------------
 
-service assessmentService {
-    rpc CreateCandidate(CreateCandidateRequest) returns (Candidate) {
+service AssessmentService {
+    rpc CreateAssessment(CreateAssessmentRequest) returns (Assessment) {
         option (google.api.http) = { 
-            post: "/v1/candidates" 
-            body: "candidate"
+            post: "/v1/assessments" 
+            body: "assessment"
         };
     };
-    rpc GetAllCandidates(GetAllCandidatesRequest) returns (GetAllCandidatesResponse) {
-        option (google.api.http) = { get: "/v1/candidates" };
+    rpc GetAllAssessments(GetAllAssessmentsRequest) returns (GetAllAssessmentsResponse) {
+        option (google.api.http) = { get: "/v1/assessments" };
     };
-    rpc GetCandidateByID(GetCandidateByIDRequest) returns (Candidate) {
-        option (google.api.http) = { get: "/v1/candidates/{id}" };
+    rpc GetAssessmentByID(GetAssessmentByIDRequest) returns (Assessment) {
+        option (google.api.http) = { get: "/v1/assessments/{id}" };
     };
-    rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {
+    rpc UpdateAssessment(UpdateAssessmentRequest) returns (Assessment) {
         option (google.api.http) = { 
-            put: "/v1/candidates/{id}"
-            body: "candidate"
+            put: "/v1/assessments/{id}"
+            body: "assessment"
         };
     };
-    rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{id}" };
-    };
-
-    rpc CreateSkill(CreateSkillRequest) returns (Skill) {
-        option (google.api.http) = { 
-            post: "/v1/skills" 
-            body: "skill"
-        };
-    };
-    rpc GetSkill(GetSkillRequest) returns (Skill) {
-        option (google.api.http) = { get: "/v1/skills/{id}" };
-    };
-    rpc GetAllSkills(GetAllSkillsRequest) returns (GetAllSkillsResponse) {
-        option (google.api.http) = { get: "/v1/skills" };
+    rpc DeleteAssessment(DeleteAssessmentRequest) returns (DeleteAssessmentResponse) {
+        option (google.api.http) = { delete: "/v1/assessments/{id}" };
     };
 
-    rpc CreateUserSkill(CreateUserSkillRequest) returns (UserSkill) {
+    rpc CreateAssessmentStatus(CreateAssessmentStatusRequest) returns (AssessmentStatus) {
         option (google.api.http) = { 
-            post: "/v1/userskills" 
-            body: "user_skill"
+            post: "/v1/assessmentstatuses" 
+            body: "assessment_status"
         };
     };
-    rpc DeleteUserSkill(DeleteUserSkillRequest) returns (DeleteUserSkillResponse) {
-        option (google.api.http) = { delete: "/v1/userskills/{id}" };
+    rpc UpdateAssessmentStatus(UpdateAssessmentStatusRequest) returns (AssessmentStatus) {
+        option (google.api.http) = {
+            put: "/v1/assessmentstatuses/{id}"
+            body: "assessment_status"
+        };
+    };
+    rpc DeleteAssessmentStatus(DeleteAssessmentStatusRequest) returns (DeleteAssessmentStatusResponse) {
+        option (google.api.http) = { delete: "/v1/assessmentstatuses/{id}" };
     };
 
-    rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {
+    rpc CreateQuestion(CreateQuestionRequest) returns (Question) {
         option (google.api.http) = { 
-            post: "/v1/institutions" 
-            body: "institution"
+            post: "/v1/questions" 
+            body: "question"
         };
     };
-    rpc GetInstitution(GetInstitutionRequest) returns (Institution) {
-        option (google.api.http) = { get: "/v1/institutions/{id}" };
+    rpc GetAllQuestions(GetAllQuestionsRequest) returns (GetAllQuestionsResponse) {
+        option (google.api.http) = { get: "/v1/questions" };
     };
-    rpc GetAllInstitutions(GetAllInstitutionsRequest) returns (GetAllInstitutionsResponse) {
-        option (google.api.http) = { get: "/v1/institutions" };
+    rpc GetQuestionByID(GetQuestionByIDRequest) returns (Question) {
+        option (google.api.http) = { get: "/v1/questions/{id}" };
+    };
+    rpc UpdateQuestion(UpdateQuestionRequest) returns (Question) {
+        option (google.api.http) = { 
+            put: "/v1/questions/{id}"
+            body: "question"
+        };
+    };
+    rpc DeleteQuestion(DeleteQuestionRequest) returns (DeleteQuestionResponse) {
+        option (google.api.http) = { delete: "/v1/questions/{id}" };
     };
 
-    rpc CreateCourse(CreateCourseRequest) returns (Course) {
+    rpc CreateTag(CreateTagRequest) returns (Tag) {
         option (google.api.http) = { 
-            post: "/v1/courses" 
-            body: "course"
+            post: "/v1/tags" 
+            body: "tag"
         };
     };
-    rpc GetCourse(GetCourseRequest) returns (Course) {
-        option (google.api.http) = { get: "/v1/courses/{id}" };
-    };
-    rpc GetAllCourses(GetAllCoursesRequest) returns (GetAllCoursesResponse) {
-        option (google.api.http) = { get: "/v1/courses" };
+    rpc DeleteTag(DeleteTagRequest) returns (DeleteTagResponse) {
+        option (google.api.http) = { delete: "/v1/tags/{id}" };
     };
 
-    rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {
+    rpc CreateResponse(CreateResponseRequest) returns (Response) {
         option (google.api.http) = { 
-            post: "/v1/academichistories"
-            body: "academic_history" 
+            post: "/v1/responses" 
+            body: "response"
         };
     };
-    rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {
-        option (google.api.http) = { get: "/v1/academichistories/{id}" };
-    };
-    rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {
-        option (google.api.http) = { 
-            put: "/v1/academichistories/{id}" 
-            body: "academic_history"
-        };
-    };
-    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/academichistories/{id}" };
-    };
-
-    rpc CreateCompany(CreateCompanyRequest) returns (Company) {
-        option (google.api.http) = { 
-            post: "/v1/companies"
-            body: "company" 
-        };
-    };
-    rpc GetCompany(GetCompanyRequest) returns (Company) {
-        option (google.api.http) = { get: "/v1/companies/{id}" };
-    };
-    rpc GetAllCompanies(GetAllCompaniesRequest) returns (GetAllCompaniesResponse) {
-        option (google.api.http) = { get: "/v1/companies" };
-    };
-
-    rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {
-        option (google.api.http) = { 
-            post: "/v1/departments"
-            body: "department" 
-        };
-    };
-    rpc GetDepartment(GetDepartmentRequest) returns (Department) {
-        option (google.api.http) = { get: "/v1/departments/{id}" };
-    };
-    rpc GetAllDepartments(GetAllDepartmentsRequest) returns (GetAllDepartmentsResponse) {
-        option (google.api.http) = { get: "/v1/departments" };
-    };
-
-    rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {
-        option (google.api.http) = { 
-            post: "/v1/jobhistories"
-            body: "job_history" 
-        };
-    };
-    rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {
-        option (google.api.http) = { get: "/v1/jobhistories/{id}" };
-    };
-    rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {
-        option (google.api.http) = { 
-            put: "/v1/jobhistories/{id}" 
-            body: "job_history"
-        };
-    };
-    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/jobhistories/{id}" };
+    rpc DeleteResponse(DeleteResponseRequest) returns (DeleteResponseResponse) {
+        option (google.api.http) = { delete: "/v1/responses/{id}" };
     };
 } 
 
-message Candidate {
+message Assessment {
     uint64 id = 1;
-    string auth_id = 2;
-    string first_name = 3;
-    string last_name = 4;
-    string email = 5;
-    string contact_number = 6;
-    string picture = 7;
-    string gender = 8;
-    string nationality = 9;
-    string residence_city = 10;
-    string expected_salary_currency = 11;
-    uint32 expected_salary = 12;
-    string linked_in_url = 13;
-    string scm_url = 14;
-    string website_url = 15;
-    string education_level = 16;
-    string summary = 17;
-    google.protobuf.Timestamp birthday = 18;
-    uint32 notice_period = 19;
-    repeated Skill skills = 20;
-    repeated AcademicHistory academics = 21;
-    repeated JobHistory jobs = 22;
-    google.protobuf.Timestamp created_at = 23;
-    google.protobuf.Timestamp updated_at = 24;
-    google.protobuf.Timestamp deleted_at = 25;
+    string name = 2;
+	string description = 3;
+	string notes = 4;
+	string image_url = 5;
+	string difficulty = 6;
+	uint64 time_allowed = 7;
+	string type = 8;
+	bool randomise = 9;
+	uint32 num_questions = 10;
+	repeated Question questions = 11;
+	repeated AssessmentStatus candidate_statuses = 12;
 }
 
-message CreateCandidateRequest {
-    Candidate candidate = 1;
+message CreateAssessmentRequest {
+    Assessment assessment = 1;
 }
 
-message GetAllCandidatesRequest {
+message GetAllAssessmentsRequest {
     repeated uint64 id = 1;
-	string first_name = 2;
-	string last_name = 3;
-	string email = 4;
-	string contact_number = 5;
-	repeated string gender = 6;
-	repeated string nationality = 7;
-	repeated string residence_city = 8;
-	uint32 min_salary = 9;
-	uint32 max_salary = 10;
-	repeated string education_level = 11;
-	uint32 max_notice_period = 12;
+	string name = 2;
+	repeated string difficulty = 3;
+	repeated string type = 4;
+	uint64 candidate_id = 5;
+	repeated string status = 6;
+	uint32 min_score = 7;
 }
 
-message GetAllCandidatesResponse {
-    repeated Candidate candidates = 1;
+message GetAllAssessmentsResponse {
+    repeated Assessment assessments = 1;
 }
 
-message GetCandidateByIDRequest {
+message GetAssessmentByIDRequest {
     uint64 id = 1;
 }
 
-message UpdateCandidateRequest {
+message UpdateAssessmentRequest {
     uint64 id = 1;
-    Candidate candidate = 2;
+    Assessment assessment = 2;
 }
 
-message DeleteCandidateRequest {
+message DeleteAssessmentRequest {
     uint64 id = 1;
 }
 
-message DeleteCandidateResponse {
+message DeleteAssessmentResponse {
     // Empty
 }
 
-message Skill {
+message AssessmentStatus {
+    uint64 id = 1;
+    uint64 assessment_id = 2;
+	uint64 candidate_id = 3;
+	string status = 4;
+	google.protobuf.Timestamp started_at = 5;
+	google.protobuf.Timestamp completed_at = 6;
+	uint32 score = 7;
+}
+
+message CreateAssessmentStatusRequest {
+    AssessmentStatus assessment_status = 1;
+}
+
+message UpdateAssessmentStatusRequest {
+    uint64 id = 1;
+    AssessmentStatus assessment_status = 2;
+}
+
+message DeleteAssessmentStatusRequest {
+    uint64 id = 1;
+}
+
+message DeleteAssessmentStatusResponse {
+    // Empty
+}
+
+message Question {
+    uint64 id = 1;
+    uint64 created_by = 2;
+	string type = 3;
+	string text = 4;
+	string image_url = 5;
+	repeated string options = 6;
+	uint32 answer = 7;
+	repeated Tag tags = 8;
+	repeated Assessment assessments = 9;
+	repeated Response responses = 10;
+}
+
+message CreateQuestionRequest {
+    Question question = 1;
+}
+
+message GetAllQuestionsRequest {
+    repeated uint64 id = 1;
+	repeated string tags = 2;
+}
+
+message GetAllQuestionsResponse {
+    repeated Question questions = 1;
+}
+
+message GetQuestionByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateQuestionRequest {
+    uint64 id = 1;
+    Question question = 2;
+}
+
+message DeleteQuestionRequest {
+    uint64 id = 1;
+}
+
+message DeleteQuestionResponse {
+    // Empty
+}
+
+message Tag {
     uint64 id = 1;
     string name = 2;
 }
 
-message CreateSkillRequest {
-    Skill skill = 1;
+message CreateTagRequest {
+    Tag tag = 1;
 }
 
-message GetSkillRequest {
+message DeleteTagRequest {
     uint64 id = 1;
 }
 
-message GetAllSkillsRequest {
-    repeated string name = 1;
-}
-
-message GetAllSkillsResponse {
-    repeated Skill skills = 1;
-}
-
-message UserSkill {
-    uint64 id = 1;
-    uint64 candidate_id = 2;
-    uint64 skill_id = 3;
-    google.protobuf.Timestamp created_at = 4;
-    google.protobuf.Timestamp updated_at = 5;
-}
-
-message CreateUserSkillRequest {
-    UserSkill user_skill = 1;
-}
-
-message DeleteUserSkillRequest {
-    uint64 id = 1;
-}
-
-message DeleteUserSkillResponse {
+message DeleteTagResponse {
     // Empty
 }
 
-message Institution {
+message QuestionTag {
     uint64 id = 1;
-    string country = 2;
-    string name = 3;
+    uint64 question_id = 2;
+    uint64 tag_id = 3;
 }
 
-message CreateInstitutionRequest {
-    Institution institution = 1;
-}
-
-message GetInstitutionRequest {
+message Response {
     uint64 id = 1;
+    uint64 question_id = 2;
+	uint64 candidate_id = 3;
+	uint32 selection = 4;
+	string text = 5;
+	uint32 score = 6;
+	uint64 time_taken = 7;
+    google.protobuf.Timestamp created_at = 8;
 }
 
-message GetAllInstitutionsRequest {
-    repeated string name = 1;
-    repeated string country = 2;
+message CreateResponseRequest {
+    Response response = 1;
 }
 
-message GetAllInstitutionsResponse {
-    repeated Institution institutions = 1;
-}
-
-message Course {
-    uint64 id = 1;
-    string level = 3;
-    string name = 4;
-}
-
-message CreateCourseRequest {
-    Course course = 1;
-}
-
-message GetCourseRequest {
+message DeleteResponseRequest {
     uint64 id = 1;
 }
 
-message GetAllCoursesRequest {
-    repeated string name = 1;
-    repeated string level = 2;
-}
-
-message GetAllCoursesResponse {
-    repeated Course courses = 1;
-}
-
-message CourseInstitution {
-    uint64 id = 1;
-    uint64 course_id = 2;
-}
-
-message AcademicHistory {
-    uint64 id = 1;
-    uint64 candidate_id = 2;
-    uint64 institution_id = 3;
-    Institution institution = 4;
-    uint64 course_id = 5;
-    Course course = 6;
-    uint32 year_obtained = 7;
-    string grade = 8;
-    google.protobuf.Timestamp created_at = 9;
-    google.protobuf.Timestamp updated_at = 10;
-    google.protobuf.Timestamp deleted_at = 11;
-}
-
-message CreateAcademicHistoryRequest {
-    AcademicHistory academic_history = 1;
-}
-
-message GetAcademicHistoryRequest {
-    uint64 id = 1;
-}
-
-message UpdateAcademicHistoryRequest {
-    uint64 id = 1;
-    AcademicHistory academic_history = 2;
-}
-
-message DeleteAcademicHistoryRequest {
-    uint64 id = 1;
-}
-
-message DeleteAcademicHistoryResponse {
+message DeleteResponseResponse {
     // Empty
 }
 
-message Company {
+message AssessmentQuestion {
     uint64 id = 1;
-    string name = 2;
-}
-
-message CreateCompanyRequest {
-    Company company = 1;
-}
-
-message GetCompanyRequest {
-    uint64 id = 1;
-}
-
-message GetAllCompaniesRequest {
-    repeated string name = 1;
-}
-
-message GetAllCompaniesResponse {
-    repeated Company companies = 1;
-}
-
-message Department {
-    uint64 id = 1;
-    string name = 2;
-}
-
-message CreateDepartmentRequest {
-    Department department = 1;
-}
-
-message GetDepartmentRequest {
-    uint64 id = 1;
-}
-
-message GetAllDepartmentsRequest {
-    repeated string name = 1;
-}
-
-message GetAllDepartmentsResponse {
-    repeated Department departments = 1;
-}
-
-message CompanyDepartment {
-    uint64 id = 1;
-    uint64 company_id = 2;
-    uint64 department_id = 3;
-}
-
-message JobHistory {
-    uint64 id = 1;
-    uint64 candidate_id = 2;
-    uint64 company_id = 3;
-    Company company = 4;
-    uint64 department_id = 5;
-    Department department = 6;
-    string country = 7;
-    string city = 8;
-    string title = 9;
-    google.protobuf.Timestamp start_date = 10;
-    google.protobuf.Timestamp end_date = 11;
-    string salary_currency = 12;
-    uint32 salary = 13;
-    string description = 14;
-    google.protobuf.Timestamp created_at = 15;
-    google.protobuf.Timestamp updated_at = 16;
-    google.protobuf.Timestamp deleted_at = 17;
-}
-
-message CreateJobHistoryRequest {
-    JobHistory job_history = 1;
-}
-
-message GetJobHistoryRequest {
-    uint64 id = 1;
-}
-
-message UpdateJobHistoryRequest {
-    uint64 id = 1;
-    JobHistory job_history = 2;
-}
-
-message DeleteJobHistoryRequest {
-    uint64 id = 1;
-}
-
-message DeleteJobHistoryResponse {
-    // Empty
+    uint64 assessment_id = 2;
+    uint64 question_id = 3;
 }

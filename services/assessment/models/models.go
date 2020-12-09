@@ -10,24 +10,25 @@ func init() {
 	// Register many to many model so ORM can better recognize m2m relation.
 	// This should be done before dependent models are used.
 	orm.RegisterTable((*AssessmentQuestion)(nil))
+	orm.RegisterTable((*QuestionTag)(nil))
 }
 
 // Assessment declares the model for Assessment
 type Assessment struct {
 	tableName struct{} `pg:"assessments,alias:a"`
 
-	ID                uint64             `json:"id"`
-	Name              string             `json:"name" pg:",notnull,unique"`
-	Description       string             `json:"description"`
-	Notes             string             `json:"notes"`
-	ImageURL          string             `json:"image_url" pg:"image_url"`
-	Difficulty        string             `json:"difficulty"`
-	TimeAllowed       uint64             `json:"time_allowed"`
-	Type              string             `json:"type"`
-	Randomise         bool               `json:"randomise"`
-	NumQuestions      uint16             `json:"num_questions"`
-	Questions         []Question         `json:"questions,omitempty" pg:"many2many:assessments_questions"`
-	CandidateStatuses []AssessmentStatus `json:"candidate_statuses,omitempty" pg:"rel:has-many"`
+	ID                uint64              `json:"id"`
+	Name              string              `json:"name" pg:",notnull,unique"`
+	Description       string              `json:"description"`
+	Notes             string              `json:"notes"`
+	ImageURL          string              `json:"image_url" pg:"image_url"`
+	Difficulty        string              `json:"difficulty"`
+	TimeAllowed       uint64              `json:"time_allowed"`
+	Type              string              `json:"type"`
+	Randomise         bool                `json:"randomise"`
+	NumQuestions      uint32              `json:"num_questions"`
+	Questions         []*Question         `json:"questions,omitempty" pg:"many2many:assessments_questions"`
+	CandidateStatuses []*AssessmentStatus `json:"candidate_statuses,omitempty" pg:"rel:has-many"`
 }
 
 // AssessmentStatus declares the model for AssessmentStatus
@@ -40,7 +41,7 @@ type AssessmentStatus struct {
 	Status       string     `json:"string" pg:",notnull"`
 	StartedAt    *time.Time `json:"started_at,omitempty"`
 	CompletedAt  *time.Time `json:"completed_at,omitempty"`
-	Score        uint8      `json:"score,omitempty" pg:",use_zero"`
+	Score        uint32     `json:"score,omitempty" pg:",use_zero"`
 }
 
 // Question declares the model for Question
@@ -53,10 +54,10 @@ type Question struct {
 	Text        string        `json:"text"`
 	ImageURL    string        `json:"image_url" pg:"image_url"`
 	Options     []string      `json:"options" pg:",array"`
-	Answer      uint8         `json:"answer" pg:",use_zero"`
-	Tags        []QuestionTag `json:"tags" pg:"rel:has-many"`
-	Assessments []Assessment  `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
-	Responses   []Response    `json:"responses,omitempty" pg:"rel:has-many`
+	Answer      uint32        `json:"answer" pg:",use_zero"`
+	Tags        []*Tag        `json:"tags" pg:"rel:has-many"`
+	Assessments []*Assessment `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
+	Responses   []*Response   `json:"responses,omitempty" pg:"rel:has-many`
 }
 
 // Tag declares the model for Tag
@@ -83,9 +84,9 @@ type Response struct {
 	ID          uint64     `json:"id"`
 	QuestionID  uint64     `json:"question_id" pg:"question_id,notnull"`
 	CandidateID uint64     `json:"candidate_id" pg:"candidate_id,notnull"`
-	Selection   uint8      `json:"selection" pg:",use_zero"`
+	Selection   uint32     `json:"selection" pg:",use_zero"`
 	Text        string     `json:"text"`
-	Score       uint8      `json:"score,omitempty" pg:",use_zero"`
+	Score       uint32     `json:"score,omitempty" pg:",use_zero"`
 	TimeTaken   uint64     `json:"time_taken,omitempty"`
 	CreatedAt   *time.Time `json:"created_at"`
 }
@@ -94,6 +95,7 @@ type Response struct {
 type AssessmentQuestion struct {
 	tableName struct{} `pg:"assessments_questions,alias:aq"`
 
+	ID           uint64 `json:"id"`
 	AssessmentID uint64 `json:"assessment_id" pg:"assessment_id,notnull"`
 	QuestionID   uint64 `json:"question_id" pg:"question_id,notnull"`
 }

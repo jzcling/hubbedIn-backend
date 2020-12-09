@@ -1,199 +1,158 @@
 package pb
 
-// IsEqual checks the equivalence of two Candidate objects
-func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
-	if c1 == nil && c2 == nil {
-		return true
+// IsEqual checks the equivalence of two Assessment objects
+func (m1 *Assessment) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*Assessment)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (c1 == nil && c2 != nil) ||
-		(c1 != nil && c2 == nil) {
-		return false
-	}
-
-	if c1.AuthId != c2.AuthId ||
-		c1.FirstName != c2.FirstName ||
-		c1.LastName != c2.LastName ||
-		c1.Email != c2.Email ||
-		c1.ContactNumber != c2.ContactNumber ||
-		c1.Picture != c2.Picture ||
-		c1.Gender != c2.Gender ||
-		c1.Nationality != c2.Nationality ||
-		c1.ResidenceCity != c2.ResidenceCity ||
-		c1.ExpectedSalaryCurrency != c2.ExpectedSalaryCurrency ||
-		c1.ExpectedSalary != c2.ExpectedSalary ||
-		c1.LinkedInUrl != c2.LinkedInUrl ||
-		c1.ScmUrl != c2.ScmUrl ||
-		c1.WebsiteUrl != c2.WebsiteUrl ||
-		c1.EducationLevel != c2.EducationLevel ||
-		c1.Summary != c2.Summary ||
-		c1.Birthday.AsTime() != c2.Birthday.AsTime() ||
-		c1.NoticePeriod != c2.NoticePeriod ||
-		c1.CreatedAt.AsTime() != c2.CreatedAt.AsTime() ||
-		c1.UpdatedAt.AsTime() != c2.UpdatedAt.AsTime() ||
-		c1.DeletedAt.AsTime() != c2.DeletedAt.AsTime() {
+	if m1.Name != convertedM2.Name ||
+		m1.Description != convertedM2.Description ||
+		m1.Notes != convertedM2.Notes ||
+		m1.ImageUrl != convertedM2.ImageUrl ||
+		m1.Difficulty != convertedM2.Difficulty ||
+		m1.TimeAllowed != convertedM2.TimeAllowed ||
+		m1.Type != convertedM2.Type ||
+		m1.Randomise != convertedM2.Randomise ||
+		m1.NumQuestions != convertedM2.NumQuestions {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two Skill objects
-func (s1 *Skill) IsEqual(s2 *Skill) bool {
-	if s1 == nil && s2 == nil {
-		return true
+// IsEqual checks the equivalence of two AssessmentStatus objects
+func (m1 *AssessmentStatus) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*AssessmentStatus)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (s1 == nil && s2 != nil) ||
-		(s1 != nil && s2 == nil) {
-		return false
-	}
-
-	if s1.Name != s2.Name {
-		return false
-	}
-	return true
-}
-
-// IsEqual checks the equivalence of two UserSkill objects
-func (us1 *UserSkill) IsEqual(us2 *UserSkill) bool {
-	if us1 == nil && us2 == nil {
-		return true
-	}
-
-	if (us1 == nil && us2 != nil) ||
-		(us1 != nil && us2 == nil) {
-		return false
-	}
-
-	if us1.CandidateId != us2.CandidateId ||
-		us1.SkillId != us2.SkillId ||
-		us1.CreatedAt != us2.CreatedAt ||
-		us1.UpdatedAt != us2.UpdatedAt {
+	if m1.AssessmentId != convertedM2.AssessmentId ||
+		m1.CandidateId != convertedM2.CandidateId ||
+		m1.Status != convertedM2.Status ||
+		m1.Score != convertedM2.Score ||
+		m1.StartedAt.AsTime() != convertedM2.StartedAt.AsTime() ||
+		m1.CompletedAt.AsTime() != convertedM2.CompletedAt.AsTime() {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two Institution objects
-func (i1 *Institution) IsEqual(i2 *Institution) bool {
-	if i1 == nil && i2 == nil {
-		return true
+// IsEqual checks the equivalence of two Question objects
+func (m1 *Question) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*Question)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (i1 == nil && i2 != nil) ||
-		(i1 != nil && i2 == nil) {
-		return false
-	}
-
-	if i1.Name != i2.Name ||
-		i1.Country != i2.Country {
-		return false
-	}
-	return true
-}
-
-// IsEqual checks the equivalence of two Course objects
-func (c1 *Course) IsEqual(c2 *Course) bool {
-	if c1 == nil && c2 == nil {
-		return true
-	}
-
-	if (c1 == nil && c2 != nil) ||
-		(c1 != nil && c2 == nil) {
-		return false
-	}
-
-	if c1.Name != c2.Name ||
-		c1.Level != c2.Level {
+	if m1.CreatedBy != convertedM2.CreatedBy ||
+		m1.Type != convertedM2.Type ||
+		m1.Text != convertedM2.Text ||
+		m1.ImageUrl != convertedM2.ImageUrl ||
+		testSliceEqual(m1.Options, convertedM2.Options) ||
+		m1.Answer != convertedM2.Answer ||
+		m1.Type != convertedM2.Type {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two AcademicHistory objects
-func (a1 *AcademicHistory) IsEqual(a2 *AcademicHistory) bool {
-	if a1 == nil && a2 == nil {
-		return true
+// IsEqual checks the equivalence of two Tag objects
+func (m1 *Tag) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*Tag)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (a1 == nil && a2 != nil) ||
-		(a1 != nil && a2 == nil) {
-		return false
-	}
-
-	if a1.CandidateId != a2.CandidateId ||
-		a1.InstitutionId != a2.InstitutionId ||
-		a1.CourseId != a2.CourseId ||
-		a1.YearObtained != a2.YearObtained ||
-		a1.Grade != a2.Grade ||
-		a1.CreatedAt.AsTime() != a2.CreatedAt.AsTime() ||
-		a1.UpdatedAt.AsTime() != a2.UpdatedAt.AsTime() ||
-		a1.DeletedAt.AsTime() != a2.DeletedAt.AsTime() {
+	if m1.Name != convertedM2.Name {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two Company objects
-func (c1 *Company) IsEqual(c2 *Company) bool {
-	if c1 == nil && c2 == nil {
-		return true
+// IsEqual checks the equivalence of two QuestionTag objects
+func (m1 *QuestionTag) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*QuestionTag)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (c1 == nil && c2 != nil) ||
-		(c1 != nil && c2 == nil) {
-		return false
-	}
-
-	if c1.Name != c2.Name {
-		return false
-	}
-	return true
-}
-
-// IsEqual checks the equivalence of two Department objects
-func (d1 *Department) IsEqual(d2 *Department) bool {
-	if d1 == nil && d2 == nil {
-		return true
-	}
-
-	if (d1 == nil && d2 != nil) ||
-		(d1 != nil && d2 == nil) {
-		return false
-	}
-
-	if d1.Name != d2.Name {
+	if m1.QuestionId != convertedM2.QuestionId ||
+		m1.TagId != convertedM2.TagId {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two JobHistory objects
-func (j1 *JobHistory) IsEqual(j2 *JobHistory) bool {
-	if j1 == nil && j2 == nil {
-		return true
+// IsEqual checks the equivalence of two Response objects
+func (m1 *Response) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*Response)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (j1 == nil && j2 != nil) ||
-		(j1 != nil && j2 == nil) {
-		return false
-	}
-
-	if j1.CandidateId != j2.CandidateId ||
-		j1.CompanyId != j2.CompanyId ||
-		j1.DepartmentId != j2.DepartmentId ||
-		j1.Country != j2.Country ||
-		j1.City != j2.City ||
-		j1.Title != j2.Title ||
-		j1.StartDate.AsTime() != j2.StartDate.AsTime() ||
-		j1.EndDate.AsTime() != j2.EndDate.AsTime() ||
-		j1.SalaryCurrency != j2.SalaryCurrency ||
-		j1.Salary != j2.Salary ||
-		j1.Description != j2.Description ||
-		j1.CreatedAt.AsTime() != j2.CreatedAt.AsTime() ||
-		j1.UpdatedAt.AsTime() != j2.UpdatedAt.AsTime() ||
-		j1.DeletedAt.AsTime() != j2.DeletedAt.AsTime() {
+	if m1.QuestionId != convertedM2.QuestionId ||
+		m1.CandidateId != convertedM2.CandidateId ||
+		m1.Selection != convertedM2.Selection ||
+		m1.Text != convertedM2.Text ||
+		m1.Score != convertedM2.Score ||
+		m1.TimeTaken != convertedM2.TimeTaken ||
+		m1.CreatedAt.AsTime() != convertedM2.CreatedAt.AsTime() {
 		return false
 	}
 	return true
+}
+
+// IsEqual checks the equivalence of two AssessmentQuestion objects
+func (m1 *AssessmentQuestion) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*AssessmentQuestion)
+	isNil, resolve := checkNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.AssessmentId != convertedM2.AssessmentId ||
+		m1.QuestionId != convertedM2.QuestionId {
+		return false
+	}
+	return true
+}
+
+func testSliceEqual(a, b []string) bool {
+	// if one is nil, the other must also be nil
+	if (a == nil) != (b == nil) {
+		return false
+	}
+
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func checkNil(m1, m2 interface{}) (isNil bool, resolve bool) {
+	// if both nil, return true and resolve
+	if m1 == nil && m2 == nil {
+		return true, true
+	}
+	// if one is nil and the other not, return false and resolve
+	if (m1 == nil) != (m2 == nil) {
+		return false, true
+	}
+	// both are not nil, return false and don't resolve
+	return false, false
 }

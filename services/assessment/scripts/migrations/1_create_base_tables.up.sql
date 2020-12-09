@@ -8,7 +8,7 @@ create table if not exists assessments (
 	time_allowed bigint,
 	type text,
 	randomise boolean,
-	NumQuestions integer
+	num_questions bigint
 );
 
 create index on assessments (name);
@@ -20,7 +20,7 @@ create table if not exists assessment_statuses (
 	status text not null,
 	started_at timestamptz,
 	completed_at timestamptz,
-	score smallint,
+	score bigint,
     constraint fk_assessments foreign key(assessment_id) references assessments(id) on delete cascade on update cascade
 );
 
@@ -33,7 +33,7 @@ create table if not exists questions (
 	text text,
 	image_url text,
 	options text[],
-	answer smallint,
+	answer bigint,
     tags text[]
 );
 
@@ -58,9 +58,9 @@ create table if not exists responses (
     id bigserial not null primary key,
     question_id bigint not null,
 	candidate_id bigint not null,
-	selection smallint,
+	selection bigint,
 	text text,
-	score smallint,
+	score bigint,
 	time_taken bigint,
 	created_at timestamptz,
     constraint fk_questions foreign key(question_id) references questions(id) on delete cascade on update cascade

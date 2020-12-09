@@ -8,377 +8,249 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCandidateToProto(t *testing.T) {
+func TestAssessmentToProto(t *testing.T) {
 	testPbTime := ptypes.TimestampNow()
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &Candidate{
-		ID:                     1,
-		AuthID:                 "authId",
-		FirstName:              "first",
-		LastName:               "last",
-		Email:                  "email",
-		ContactNumber:          "contact",
-		Picture:                "picture",
-		Gender:                 "male",
-		Nationality:            "singapore",
-		ResidenceCity:          "singapore",
-		ExpectedSalaryCurrency: "SGD",
-		ExpectedSalary:         1000,
-		LinkedInURL:            "linkedin",
-		SCMURL:                 "github",
-		WebsiteURL:             "website",
-		EducationLevel:         "bachelor",
-		Summary:                "summary",
-		Birthday:               &testTime,
-		NoticePeriod:           1,
-		Skills: []*Skill{
+	input := &Assessment{
+		ID:           1,
+		Name:         "Javascript",
+		Description:  "JS Test",
+		Notes:        "Notes",
+		ImageURL:     "image",
+		Difficulty:   "Easy",
+		TimeAllowed:  3600,
+		Type:         "Multiple Choice",
+		Randomise:    true,
+		NumQuestions: 10,
+		Questions: []*Question{
 			{
-				ID:   1,
-				Name: "java",
+				ID:        1,
+				CreatedBy: 1,
+				Type:      "Open",
+				Text:      "text",
+				ImageURL:  "image",
+				Options:   []string{"test", "test2"},
+				Answer:    0,
 			},
 			{
-				ID:   2,
-				Name: "javascript",
-			},
-		},
-		Academics: []*AcademicHistory{
-			{
-				ID:            1,
-				CandidateID:   1,
-				InstitutionID: 1,
-				CourseID:      1,
-				YearObtained:  2020,
-				Grade:         "first",
-				CreatedAt:     &testTime,
-				UpdatedAt:     &testTime,
-				DeletedAt:     &testTime,
-			},
-			{
-				ID:            2,
-				CandidateID:   1,
-				InstitutionID: 1,
-				CourseID:      2,
-				YearObtained:  2020,
-				Grade:         "first",
-				CreatedAt:     &testTime,
-				UpdatedAt:     &testTime,
-				DeletedAt:     &testTime,
+				ID:        2,
+				CreatedBy: 1,
+				Type:      "Multiple Choice",
+				Text:      "text",
+				ImageURL:  "image",
+				Options:   []string{"test", "test2"},
+				Answer:    0,
 			},
 		},
-		Jobs: []*JobHistory{
+		CandidateStatuses: []*AssessmentStatus{
 			{
-				ID:             1,
-				CandidateID:    1,
-				CompanyID:      1,
-				DepartmentID:   1,
-				Country:        "singapore",
-				City:           "singapore",
-				Title:          "software engineer",
-				StartDate:      &testTime,
-				EndDate:        &testTime,
-				SalaryCurrency: "SGD",
-				Salary:         1000,
-				Description:    "worked hard",
-				CreatedAt:      &testTime,
-				UpdatedAt:      &testTime,
-				DeletedAt:      &testTime,
+				ID:           1,
+				AssessmentID: 1,
+				CandidateID:  1,
+				Status:       "Completed",
+				StartedAt:    &testTime,
+				CompletedAt:  &testTime,
+				Score:        5,
 			},
 			{
-				ID:             2,
-				CandidateID:    1,
-				CompanyID:      1,
-				DepartmentID:   1,
-				Country:        "singapore",
-				City:           "singapore",
-				Title:          "senior software engineer",
-				StartDate:      &testTime,
-				EndDate:        &testTime,
-				SalaryCurrency: "SGD",
-				Salary:         2000,
-				Description:    "worked hard",
-				CreatedAt:      &testTime,
-				UpdatedAt:      &testTime,
-				DeletedAt:      &testTime,
+				ID:           2,
+				AssessmentID: 1,
+				CandidateID:  1,
+				Status:       "Completed",
+				StartedAt:    &testTime,
+				CompletedAt:  &testTime,
+				Score:        5,
 			},
 		},
-		CreatedAt: &testTime,
-		UpdatedAt: &testTime,
-		DeletedAt: &testTime,
 	}
 
-	expect := &pb.Candidate{
-		Id:                     1,
-		AuthId:                 "authId",
-		FirstName:              "first",
-		LastName:               "last",
-		Email:                  "email",
-		ContactNumber:          "contact",
-		Picture:                "picture",
-		Gender:                 "male",
-		Nationality:            "singapore",
-		ResidenceCity:          "singapore",
-		ExpectedSalaryCurrency: "SGD",
-		ExpectedSalary:         1000,
-		LinkedInUrl:            "linkedin",
-		ScmUrl:                 "github",
-		WebsiteUrl:             "website",
-		EducationLevel:         "bachelor",
-		Summary:                "summary",
-		Birthday:               testPbTime,
-		NoticePeriod:           1,
-		Skills: []*pb.Skill{
+	expect := &pb.Assessment{
+		Id:           1,
+		Name:         "Javascript",
+		Description:  "JS Test",
+		Notes:        "Notes",
+		ImageUrl:     "image",
+		Difficulty:   "Easy",
+		TimeAllowed:  3600,
+		Type:         "Multiple Choice",
+		Randomise:    true,
+		NumQuestions: 10,
+		Questions: []*pb.Question{
 			{
-				Id:   1,
-				Name: "java",
+				Id:        1,
+				CreatedBy: 1,
+				Type:      "Open",
+				Text:      "text",
+				ImageUrl:  "image",
+				Options:   []string{"test", "test2"},
+				Answer:    0,
 			},
 			{
-				Id:   2,
-				Name: "javascript",
-			},
-		},
-		Academics: []*pb.AcademicHistory{
-			{
-				Id:            1,
-				CandidateId:   1,
-				InstitutionId: 1,
-				CourseId:      1,
-				YearObtained:  2020,
-				CreatedAt:     testPbTime,
-				UpdatedAt:     testPbTime,
-				DeletedAt:     testPbTime,
-			},
-			{
-				Id:            2,
-				CandidateId:   1,
-				InstitutionId: 1,
-				CourseId:      2,
-				YearObtained:  2020,
-				CreatedAt:     testPbTime,
-				UpdatedAt:     testPbTime,
-				DeletedAt:     testPbTime,
+				Id:        2,
+				CreatedBy: 1,
+				Type:      "Multiple Choice",
+				Text:      "text",
+				ImageUrl:  "image",
+				Options:   []string{"test", "test2"},
+				Answer:    0,
 			},
 		},
-		Jobs: []*pb.JobHistory{
+		CandidateStatuses: []*pb.AssessmentStatus{
 			{
-				Id:             1,
-				CandidateId:    1,
-				CompanyId:      1,
-				DepartmentId:   1,
-				Country:        "singapore",
-				City:           "singapore",
-				Title:          "software engineer",
-				StartDate:      testPbTime,
-				EndDate:        testPbTime,
-				SalaryCurrency: "SGD",
-				Salary:         1000,
-				Description:    "worked hard",
-				CreatedAt:      testPbTime,
-				UpdatedAt:      testPbTime,
-				DeletedAt:      testPbTime,
+				Id:           1,
+				AssessmentId: 1,
+				CandidateId:  1,
+				Status:       "Completed",
+				StartedAt:    testPbTime,
+				CompletedAt:  testPbTime,
+				Score:        5,
 			},
 			{
-				Id:             2,
-				CandidateId:    1,
-				CompanyId:      1,
-				DepartmentId:   1,
-				Country:        "singapore",
-				City:           "singapore",
-				Title:          "senior software engineer",
-				StartDate:      testPbTime,
-				EndDate:        testPbTime,
-				SalaryCurrency: "SGD",
-				Salary:         2000,
-				Description:    "worked hard",
-				CreatedAt:      testPbTime,
-				UpdatedAt:      testPbTime,
-				DeletedAt:      testPbTime,
+				Id:           2,
+				AssessmentId: 1,
+				CandidateId:  1,
+				Status:       "Completed",
+				StartedAt:    testPbTime,
+				CompletedAt:  testPbTime,
+				Score:        5,
 			},
 		},
-		CreatedAt: testPbTime,
-		UpdatedAt: testPbTime,
-		DeletedAt: testPbTime,
 	}
 
 	got := input.ToProto()
 	require.EqualValues(t, expect, got)
 }
 
-func TestSkillToProto(t *testing.T) {
-	input := &Skill{
+func TestAssessmentStatusToProto(t *testing.T) {
+	testPbTime := ptypes.TimestampNow()
+	testTime, err := ptypes.Timestamp(testPbTime)
+	require.NoError(t, err)
+
+	input := &AssessmentStatus{
+		ID:           1,
+		AssessmentID: 1,
+		CandidateID:  1,
+		Status:       "Completed",
+		StartedAt:    &testTime,
+		CompletedAt:  &testTime,
+		Score:        5,
+	}
+
+	expect := &pb.AssessmentStatus{
+		Id:           1,
+		AssessmentId: 1,
+		CandidateId:  1,
+		Status:       "Completed",
+		StartedAt:    testPbTime,
+		CompletedAt:  testPbTime,
+		Score:        5,
+	}
+
+	got := input.ToProto()
+	require.EqualValues(t, expect, got)
+}
+
+func TestQuestionToProto(t *testing.T) {
+	input := &Question{
+		ID:        1,
+		CreatedBy: 1,
+		Type:      "Open",
+		Text:      "text",
+		ImageURL:  "image",
+		Options:   []string{"test", "test2"},
+		Answer:    0,
+	}
+
+	expect := &pb.Question{
+		Id:        1,
+		CreatedBy: 1,
+		Type:      "Open",
+		Text:      "text",
+		ImageUrl:  "image",
+		Options:   []string{"test", "test2"},
+		Answer:    0,
+	}
+
+	got := input.ToProto()
+	require.EqualValues(t, expect, got)
+}
+
+func TestTagToProto(t *testing.T) {
+	input := &Tag{
 		ID:   1,
-		Name: "skill",
+		Name: "javascript",
 	}
 
-	expect := &pb.Skill{
+	expect := &pb.Tag{
 		Id:   1,
-		Name: "skill",
+		Name: "javascript",
 	}
 
 	got := input.ToProto()
 	require.EqualValues(t, expect, got)
 }
 
-func TestUserSkillToProto(t *testing.T) {
+func TestQuestionTagToProto(t *testing.T) {
+	input := &QuestionTag{
+		ID:         1,
+		QuestionID: 1,
+		TagID:      1,
+	}
+
+	expect := &pb.QuestionTag{
+		Id:         1,
+		QuestionId: 1,
+		TagId:      1,
+	}
+
+	got := input.ToProto()
+	require.EqualValues(t, expect, got)
+}
+
+func TestResponseToProto(t *testing.T) {
 	testPbTime := ptypes.TimestampNow()
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &UserSkill{
+	input := &Response{
 		ID:          1,
+		QuestionID:  1,
 		CandidateID: 1,
-		SkillID:     1,
+		Selection:   0,
+		Text:        "text",
+		Score:       0,
+		TimeTaken:   10,
 		CreatedAt:   &testTime,
-		UpdatedAt:   &testTime,
 	}
 
-	expect := &pb.UserSkill{
+	expect := &pb.Response{
 		Id:          1,
+		QuestionId:  1,
 		CandidateId: 1,
-		SkillId:     1,
+		Selection:   0,
+		Text:        "text",
+		Score:       0,
+		TimeTaken:   10,
 		CreatedAt:   testPbTime,
-		UpdatedAt:   testPbTime,
 	}
 
 	got := input.ToProto()
 	require.EqualValues(t, expect, got)
 }
 
-func TestInstitutionToProto(t *testing.T) {
-	input := &Institution{
-		ID:      1,
-		Name:    "institution",
-		Country: "singapore",
+func TestAssessmentQuestionToProto(t *testing.T) {
+	input := &AssessmentQuestion{
+		ID:           1,
+		AssessmentID: 1,
+		QuestionID:   1,
 	}
 
-	expect := &pb.Institution{
-		Id:      1,
-		Name:    "institution",
-		Country: "singapore",
-	}
-
-	got := input.ToProto()
-	require.EqualValues(t, expect, got)
-}
-
-func TestCourseToProto(t *testing.T) {
-	input := &Course{
-		ID:    1,
-		Name:  "course",
-		Level: "bachelor",
-	}
-
-	expect := &pb.Course{
-		Id:    1,
-		Name:  "course",
-		Level: "bachelor",
-	}
-
-	got := input.ToProto()
-	require.EqualValues(t, expect, got)
-}
-
-func TestAcademicHistoryToProto(t *testing.T) {
-	testPbTime := ptypes.TimestampNow()
-	testTime, err := ptypes.Timestamp(testPbTime)
-	require.NoError(t, err)
-
-	input := &AcademicHistory{
-		ID:            1,
-		CandidateID:   1,
-		InstitutionID: 1,
-		CourseID:      1,
-		YearObtained:  2020,
-		CreatedAt:     &testTime,
-		UpdatedAt:     &testTime,
-		DeletedAt:     &testTime,
-	}
-
-	expect := &pb.AcademicHistory{
-		Id:            1,
-		CandidateId:   1,
-		InstitutionId: 1,
-		CourseId:      1,
-		YearObtained:  2020,
-		CreatedAt:     testPbTime,
-		UpdatedAt:     testPbTime,
-		DeletedAt:     testPbTime,
-	}
-
-	got := input.ToProto()
-	require.EqualValues(t, expect, got)
-}
-
-func TestCompanyToProto(t *testing.T) {
-	input := &Company{
-		ID:   1,
-		Name: "company",
-	}
-
-	expect := &pb.Company{
-		Id:   1,
-		Name: "company",
-	}
-
-	got := input.ToProto()
-	require.EqualValues(t, expect, got)
-}
-
-func TestDepartmentToProto(t *testing.T) {
-	input := &Department{
-		ID:   1,
-		Name: "department",
-	}
-
-	expect := &pb.Department{
-		Id:   1,
-		Name: "department",
-	}
-
-	got := input.ToProto()
-	require.EqualValues(t, expect, got)
-}
-
-func TestJobHistoryToProto(t *testing.T) {
-	testPbTime := ptypes.TimestampNow()
-	testTime, err := ptypes.Timestamp(testPbTime)
-	require.NoError(t, err)
-
-	input := &JobHistory{
-		ID:             1,
-		CandidateID:    1,
-		CompanyID:      1,
-		DepartmentID:   1,
-		Country:        "singapore",
-		City:           "singapore",
-		Title:          "software engineer",
-		StartDate:      &testTime,
-		EndDate:        &testTime,
-		SalaryCurrency: "SGD",
-		Salary:         1000,
-		Description:    "worked hard",
-		CreatedAt:      &testTime,
-		UpdatedAt:      &testTime,
-		DeletedAt:      &testTime,
-	}
-
-	expect := &pb.JobHistory{
-		Id:             1,
-		CandidateId:    1,
-		CompanyId:      1,
-		DepartmentId:   1,
-		Country:        "singapore",
-		City:           "singapore",
-		Title:          "software engineer",
-		StartDate:      testPbTime,
-		EndDate:        testPbTime,
-		SalaryCurrency: "SGD",
-		Salary:         1000,
-		Description:    "worked hard",
-		CreatedAt:      testPbTime,
-		UpdatedAt:      testPbTime,
-		DeletedAt:      testPbTime,
+	expect := &pb.AssessmentQuestion{
+		Id:           1,
+		AssessmentId: 1,
+		QuestionId:   1,
 	}
 
 	got := input.ToProto()

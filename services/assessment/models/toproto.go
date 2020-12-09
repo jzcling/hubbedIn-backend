@@ -5,193 +5,147 @@ import (
 	"in-backend/services/assessment/pb"
 )
 
-// ToProto maps the ORM Candidate model to the proto model
-func (m *Candidate) ToProto() *pb.Candidate {
+// ToProto maps the ORM Assessment model to the proto model
+func (m *Assessment) ToProto() *pb.Assessment {
 	if m == nil {
 		return nil
 	}
 
-	var skills []*pb.Skill
-	s := m.Skills
-	for _, skill := range s {
-		skills = append(skills, skill.ToProto())
+	var questions []*pb.Question
+	q := m.Questions
+	for _, question := range q {
+		questions = append(questions, question.ToProto())
 	}
 
-	var academics []*pb.AcademicHistory
-	a := m.Academics
-	for _, academic := range a {
-		academics = append(academics, academic.ToProto())
+	var statuses []*pb.AssessmentStatus
+	s := m.CandidateStatuses
+	for _, status := range s {
+		statuses = append(statuses, status.ToProto())
 	}
 
-	var jobs []*pb.JobHistory
-	j := m.Jobs
-	for _, job := range j {
-		jobs = append(jobs, job.ToProto())
-	}
-
-	birthday := helpers.TimeToProto(m.Birthday)
-	createdAt := helpers.TimeToProto(m.CreatedAt)
-	updatedAt := helpers.TimeToProto(m.UpdatedAt)
-	deletedAt := helpers.TimeToProto(m.DeletedAt)
-
-	return &pb.Candidate{
-		Id:                     m.ID,
-		AuthId:                 m.AuthID,
-		FirstName:              m.FirstName,
-		LastName:               m.LastName,
-		Email:                  m.Email,
-		ContactNumber:          m.ContactNumber,
-		Picture:                m.Picture,
-		Gender:                 m.Gender,
-		Nationality:            m.Nationality,
-		ResidenceCity:          m.ResidenceCity,
-		ExpectedSalaryCurrency: m.ExpectedSalaryCurrency,
-		ExpectedSalary:         m.ExpectedSalary,
-		LinkedInUrl:            m.LinkedInURL,
-		ScmUrl:                 m.SCMURL,
-		WebsiteUrl:             m.WebsiteURL,
-		EducationLevel:         m.EducationLevel,
-		Summary:                m.Summary,
-		Birthday:               birthday,
-		NoticePeriod:           m.NoticePeriod,
-		Skills:                 skills,
-		Academics:              academics,
-		Jobs:                   jobs,
-		CreatedAt:              createdAt,
-		UpdatedAt:              updatedAt,
-		DeletedAt:              deletedAt,
+	return &pb.Assessment{
+		Id:                m.ID,
+		Name:              m.Name,
+		Description:       m.Description,
+		Notes:             m.Notes,
+		ImageUrl:          m.ImageURL,
+		Difficulty:        m.Difficulty,
+		TimeAllowed:       m.TimeAllowed,
+		Type:              m.Type,
+		Randomise:         m.Randomise,
+		NumQuestions:      m.NumQuestions,
+		Questions:         questions,
+		CandidateStatuses: statuses,
 	}
 }
 
-// ToProto maps the ORM Skill model to the proto model
-func (m *Skill) ToProto() *pb.Skill {
+// ToProto maps the ORM AssessmentStatus model to the proto model
+func (m *AssessmentStatus) ToProto() *pb.AssessmentStatus {
 	if m == nil {
 		return nil
 	}
-	return &pb.Skill{
-		Id:   m.ID,
-		Name: m.Name,
+	startedAt := helpers.TimeToProto(m.StartedAt)
+	completedAt := helpers.TimeToProto(m.CompletedAt)
+	return &pb.AssessmentStatus{
+		Id:           m.ID,
+		AssessmentId: m.AssessmentID,
+		CandidateId:  m.CandidateID,
+		Status:       m.Status,
+		StartedAt:    startedAt,
+		CompletedAt:  completedAt,
+		Score:        m.Score,
 	}
 }
 
-// ToProto maps the ORM UserSkill model to the proto model
-func (m *UserSkill) ToProto() *pb.UserSkill {
+// ToProto maps the ORM Question model to the proto model
+func (m *Question) ToProto() *pb.Question {
 	if m == nil {
 		return nil
 	}
 
-	createdAt := helpers.TimeToProto(m.CreatedAt)
-	updatedAt := helpers.TimeToProto(m.UpdatedAt)
+	var tags []*pb.Tag
+	t := m.Tags
+	for _, tag := range t {
+		tags = append(tags, tag.ToProto())
+	}
 
-	return &pb.UserSkill{
+	var assessments []*pb.Assessment
+	a := m.Assessments
+	for _, assessment := range a {
+		assessments = append(assessments, assessment.ToProto())
+	}
+
+	var responses []*pb.Response
+	r := m.Responses
+	for _, response := range r {
+		responses = append(responses, response.ToProto())
+	}
+
+	return &pb.Question{
 		Id:          m.ID,
+		CreatedBy:   m.CreatedBy,
+		Type:        m.Type,
+		Text:        m.Text,
+		ImageUrl:    m.ImageURL,
+		Options:     m.Options,
+		Answer:      m.Answer,
+		Tags:        tags,
+		Assessments: assessments,
+		Responses:   responses,
+	}
+}
+
+// ToProto maps the ORM Tag model to the proto model
+func (m *Tag) ToProto() *pb.Tag {
+	if m == nil {
+		return nil
+	}
+	return &pb.Tag{
+		Id:   m.ID,
+		Name: m.Name,
+	}
+}
+
+// ToProto maps the ORM QuestionTag model to the proto model
+func (m *QuestionTag) ToProto() *pb.QuestionTag {
+	if m == nil {
+		return nil
+	}
+	return &pb.QuestionTag{
+		Id:         m.ID,
+		QuestionId: m.QuestionID,
+		TagId:      m.TagID,
+	}
+}
+
+// ToProto maps the ORM Response model to the proto model
+func (m *Response) ToProto() *pb.Response {
+	if m == nil {
+		return nil
+	}
+
+	createdAt := helpers.TimeToProto(m.CreatedAt)
+
+	return &pb.Response{
+		Id:          m.ID,
+		QuestionId:  m.QuestionID,
 		CandidateId: m.CandidateID,
-		SkillId:     m.SkillID,
+		Selection:   m.Selection,
+		Text:        m.Text,
+		Score:       m.Score,
+		TimeTaken:   m.TimeTaken,
 		CreatedAt:   createdAt,
-		UpdatedAt:   updatedAt,
 	}
 }
 
-// ToProto maps the ORM Institution model to the proto model
-func (m *Institution) ToProto() *pb.Institution {
+// ToProto maps the ORM AssessmentQuestion model to the proto model
+func (m *AssessmentQuestion) ToProto() *pb.AssessmentQuestion {
 	if m == nil {
 		return nil
 	}
-	return &pb.Institution{
-		Id:      m.ID,
-		Country: m.Country,
-		Name:    m.Name,
-	}
-}
-
-// ToProto maps the ORM Course model to the proto model
-func (m *Course) ToProto() *pb.Course {
-	if m == nil {
-		return nil
-	}
-	return &pb.Course{
-		Id:    m.ID,
-		Level: m.Level,
-		Name:  m.Name,
-	}
-}
-
-// ToProto maps the ORM AcademicHistory model to the proto model
-func (m *AcademicHistory) ToProto() *pb.AcademicHistory {
-	if m == nil {
-		return nil
-	}
-
-	createdAt := helpers.TimeToProto(m.CreatedAt)
-	updatedAt := helpers.TimeToProto(m.UpdatedAt)
-	deletedAt := helpers.TimeToProto(m.DeletedAt)
-
-	return &pb.AcademicHistory{
-		Id:            m.ID,
-		CandidateId:   m.CandidateID,
-		InstitutionId: m.InstitutionID,
-		Institution:   m.Institution.ToProto(),
-		CourseId:      m.CourseID,
-		Course:        m.Course.ToProto(),
-		YearObtained:  m.YearObtained,
-		Grade:         m.Grade,
-		CreatedAt:     createdAt,
-		UpdatedAt:     updatedAt,
-		DeletedAt:     deletedAt,
-	}
-}
-
-// ToProto maps the ORM Company model to the proto model
-func (m *Company) ToProto() *pb.Company {
-	if m == nil {
-		return nil
-	}
-	return &pb.Company{
-		Id:   m.ID,
-		Name: m.Name,
-	}
-}
-
-// ToProto maps the ORM Department model to the proto model
-func (m *Department) ToProto() *pb.Department {
-	if m == nil {
-		return nil
-	}
-	return &pb.Department{
-		Id:   m.ID,
-		Name: m.Name,
-	}
-}
-
-// ToProto maps the ORM JobHistory model to the proto model
-func (m *JobHistory) ToProto() *pb.JobHistory {
-	if m == nil {
-		return nil
-	}
-
-	startDate := helpers.TimeToProto(m.StartDate)
-	endDate := helpers.TimeToProto(m.EndDate)
-	createdAt := helpers.TimeToProto(m.CreatedAt)
-	updatedAt := helpers.TimeToProto(m.UpdatedAt)
-	deletedAt := helpers.TimeToProto(m.DeletedAt)
-
-	return &pb.JobHistory{
-		Id:             m.ID,
-		CandidateId:    m.CandidateID,
-		CompanyId:      m.CompanyID,
-		Company:        m.Company.ToProto(),
-		DepartmentId:   m.DepartmentID,
-		Department:     m.Department.ToProto(),
-		Country:        m.Country,
-		City:           m.City,
-		Title:          m.Title,
-		StartDate:      startDate,
-		EndDate:        endDate,
-		SalaryCurrency: m.SalaryCurrency,
-		Salary:         m.Salary,
-		Description:    m.Description,
-		CreatedAt:      createdAt,
-		UpdatedAt:      updatedAt,
-		DeletedAt:      deletedAt,
+	return &pb.AssessmentQuestion{
+		Id:           m.ID,
+		AssessmentId: m.AssessmentID,
+		QuestionId:   m.QuestionID,
 	}
 }

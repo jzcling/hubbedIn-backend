@@ -1,10 +1,5 @@
 package models
 
-// Comparator compares whether two models are equal
-type Comparator interface {
-	IsEqual(m2 interface{}) bool
-}
-
 // IsEqual checks the equivalence of two Assessment objects
 func (m1 *Assessment) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*Assessment)

@@ -5,193 +5,147 @@ import (
 	"in-backend/services/assessment/pb"
 )
 
-// CandidateToORM maps the proto Candidate model to the ORM model
-func CandidateToORM(m *pb.Candidate) *Candidate {
+// AssessmentToORM maps the proto Assessment model to the ORM model
+func AssessmentToORM(m *pb.Assessment) *Assessment {
 	if m == nil {
 		return nil
 	}
 
-	var skills []*Skill
-	s := m.Skills
-	for _, skill := range s {
-		skills = append(skills, SkillToORM(skill))
+	var questions []*Question
+	q := m.Questions
+	for _, question := range q {
+		questions = append(questions, QuestionToORM(question))
 	}
 
-	var academics []*AcademicHistory
-	a := m.Academics
-	for _, academic := range a {
-		academics = append(academics, AcademicHistoryToORM(academic))
+	var statuses []*AssessmentStatus
+	s := m.CandidateStatuses
+	for _, status := range s {
+		statuses = append(statuses, AssessmentStatusToORM(status))
 	}
 
-	var jobs []*JobHistory
-	j := m.Jobs
-	for _, job := range j {
-		jobs = append(jobs, JobHistoryToORM(job))
-	}
-
-	birthday := helpers.ProtoTimeToTime(m.Birthday)
-	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
-	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
-	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
-
-	return &Candidate{
-		ID:                     m.Id,
-		AuthID:                 m.AuthId,
-		FirstName:              m.FirstName,
-		LastName:               m.LastName,
-		Email:                  m.Email,
-		ContactNumber:          m.ContactNumber,
-		Picture:                m.Picture,
-		Gender:                 m.Gender,
-		Nationality:            m.Nationality,
-		ResidenceCity:          m.ResidenceCity,
-		ExpectedSalaryCurrency: m.ExpectedSalaryCurrency,
-		ExpectedSalary:         m.ExpectedSalary,
-		LinkedInURL:            m.LinkedInUrl,
-		SCMURL:                 m.ScmUrl,
-		WebsiteURL:             m.WebsiteUrl,
-		EducationLevel:         m.EducationLevel,
-		Summary:                m.Summary,
-		Birthday:               birthday,
-		NoticePeriod:           m.NoticePeriod,
-		Skills:                 skills,
-		Academics:              academics,
-		Jobs:                   jobs,
-		CreatedAt:              createdAt,
-		UpdatedAt:              updatedAt,
-		DeletedAt:              deletedAt,
+	return &Assessment{
+		ID:                m.Id,
+		Name:              m.Name,
+		Description:       m.Description,
+		Notes:             m.Notes,
+		ImageURL:          m.ImageUrl,
+		Difficulty:        m.Difficulty,
+		TimeAllowed:       m.TimeAllowed,
+		Type:              m.Type,
+		Randomise:         m.Randomise,
+		NumQuestions:      m.NumQuestions,
+		Questions:         questions,
+		CandidateStatuses: statuses,
 	}
 }
 
-// SkillToORM maps the proto Skill model to the ORM model
-func SkillToORM(m *pb.Skill) *Skill {
+// AssessmentStatusToORM maps the proto AssessmentStatus model to the ORM model
+func AssessmentStatusToORM(m *pb.AssessmentStatus) *AssessmentStatus {
 	if m == nil {
 		return nil
 	}
-	return &Skill{
-		ID:   m.Id,
-		Name: m.Name,
+	startedAt := helpers.ProtoTimeToTime(m.StartedAt)
+	completedAt := helpers.ProtoTimeToTime(m.CompletedAt)
+	return &AssessmentStatus{
+		ID:           m.Id,
+		AssessmentID: m.AssessmentId,
+		CandidateID:  m.CandidateId,
+		Status:       m.Status,
+		StartedAt:    startedAt,
+		CompletedAt:  completedAt,
+		Score:        m.Score,
 	}
 }
 
-// UserSkillToORM maps the proto Skill model to the ORM model
-func UserSkillToORM(m *pb.UserSkill) *UserSkill {
+// QuestionToORM maps the proto Question model to the ORM model
+func QuestionToORM(m *pb.Question) *Question {
 	if m == nil {
 		return nil
 	}
 
-	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
-	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
+	var tags []*Tag
+	t := m.Tags
+	for _, tag := range t {
+		tags = append(tags, TagToORM(tag))
+	}
 
-	return &UserSkill{
+	var assessments []*Assessment
+	a := m.Assessments
+	for _, assessment := range a {
+		assessments = append(assessments, AssessmentToORM(assessment))
+	}
+
+	var responses []*Response
+	r := m.Responses
+	for _, response := range r {
+		responses = append(responses, ResponseToORM(response))
+	}
+
+	return &Question{
 		ID:          m.Id,
+		CreatedBy:   m.CreatedBy,
+		Type:        m.Type,
+		Text:        m.Text,
+		ImageURL:    m.ImageUrl,
+		Options:     m.Options,
+		Answer:      m.Answer,
+		Tags:        tags,
+		Assessments: assessments,
+		Responses:   responses,
+	}
+}
+
+// TagToORM maps the proto Tag model to the ORM model
+func TagToORM(m *pb.Tag) *Tag {
+	if m == nil {
+		return nil
+	}
+	return &Tag{
+		ID:   m.Id,
+		Name: m.Name,
+	}
+}
+
+// QuestionTagToORM maps the proto QuestionTag model to the ORM model
+func QuestionTagToORM(m *pb.QuestionTag) *QuestionTag {
+	if m == nil {
+		return nil
+	}
+	return &QuestionTag{
+		ID:         m.Id,
+		QuestionID: m.QuestionId,
+		TagID:      m.TagId,
+	}
+}
+
+// ResponseToORM maps the proto Response model to the ORM model
+func ResponseToORM(m *pb.Response) *Response {
+	if m == nil {
+		return nil
+	}
+
+	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+
+	return &Response{
+		ID:          m.Id,
+		QuestionID:  m.QuestionId,
 		CandidateID: m.CandidateId,
-		SkillID:     m.SkillId,
+		Selection:   m.Selection,
+		Text:        m.Text,
+		Score:       m.Score,
+		TimeTaken:   m.TimeTaken,
 		CreatedAt:   createdAt,
-		UpdatedAt:   updatedAt,
 	}
 }
 
-// InstitutionToORM maps the proto Institution model to the ORM model
-func InstitutionToORM(m *pb.Institution) *Institution {
+// AssessmentQuestionToORM maps the proto AssessmentQuestion model to the ORM model
+func AssessmentQuestionToORM(m *pb.AssessmentQuestion) *AssessmentQuestion {
 	if m == nil {
 		return nil
 	}
-	return &Institution{
-		ID:      m.Id,
-		Country: m.Country,
-		Name:    m.Name,
-	}
-}
-
-// CourseToORM maps the proto Course model to the ORM model
-func CourseToORM(m *pb.Course) *Course {
-	if m == nil {
-		return nil
-	}
-	return &Course{
-		ID:    m.Id,
-		Level: m.Level,
-		Name:  m.Name,
-	}
-}
-
-// AcademicHistoryToORM maps the proto AcademicHistory model to the ORM model
-func AcademicHistoryToORM(m *pb.AcademicHistory) *AcademicHistory {
-	if m == nil {
-		return nil
-	}
-
-	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
-	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
-	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
-
-	return &AcademicHistory{
-		ID:            m.Id,
-		CandidateID:   m.CandidateId,
-		InstitutionID: m.InstitutionId,
-		Institution:   InstitutionToORM(m.Institution),
-		CourseID:      m.CourseId,
-		Course:        CourseToORM(m.Course),
-		YearObtained:  m.YearObtained,
-		Grade:         m.Grade,
-		CreatedAt:     createdAt,
-		UpdatedAt:     updatedAt,
-		DeletedAt:     deletedAt,
-	}
-}
-
-// CompanyToORM maps the proto Company model to the ORM model
-func CompanyToORM(m *pb.Company) *Company {
-	if m == nil {
-		return nil
-	}
-	return &Company{
-		ID:   m.Id,
-		Name: m.Name,
-	}
-}
-
-// DepartmentToORM maps the proto Department model to the ORM model
-func DepartmentToORM(m *pb.Department) *Department {
-	if m == nil {
-		return nil
-	}
-	return &Department{
-		ID:   m.Id,
-		Name: m.Name,
-	}
-}
-
-// JobHistoryToORM maps the proto JobHistory model to the ORM model
-func JobHistoryToORM(m *pb.JobHistory) *JobHistory {
-	if m == nil {
-		return nil
-	}
-
-	startDate := helpers.ProtoTimeToTime(m.StartDate)
-	endDate := helpers.ProtoTimeToTime(m.EndDate)
-	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
-	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
-	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
-
-	return &JobHistory{
-		ID:             m.Id,
-		CandidateID:    m.CandidateId,
-		CompanyID:      m.CompanyId,
-		Company:        CompanyToORM(m.Company),
-		DepartmentID:   m.DepartmentId,
-		Department:     DepartmentToORM(m.Department),
-		Country:        m.Country,
-		City:           m.City,
-		Title:          m.Title,
-		StartDate:      startDate,
-		EndDate:        endDate,
-		SalaryCurrency: m.SalaryCurrency,
-		Salary:         m.Salary,
-		Description:    m.Description,
-		CreatedAt:      createdAt,
-		UpdatedAt:      updatedAt,
-		DeletedAt:      deletedAt,
+	return &AssessmentQuestion{
+		ID:           m.Id,
+		AssessmentID: m.AssessmentId,
+		QuestionID:   m.QuestionId,
 	}
 }
