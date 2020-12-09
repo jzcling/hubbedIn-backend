@@ -1,0 +1,430 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "services/assessment/pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// ------------ assessment Service ------------
+
+service assessmentService {
+    rpc CreateCandidate(CreateCandidateRequest) returns (Candidate) {
+        option (google.api.http) = { 
+            post: "/v1/candidates" 
+            body: "candidate"
+        };
+    };
+    rpc GetAllCandidates(GetAllCandidatesRequest) returns (GetAllCandidatesResponse) {
+        option (google.api.http) = { get: "/v1/candidates" };
+    };
+    rpc GetCandidateByID(GetCandidateByIDRequest) returns (Candidate) {
+        option (google.api.http) = { get: "/v1/candidates/{id}" };
+    };
+    rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {
+        option (google.api.http) = { 
+            put: "/v1/candidates/{id}"
+            body: "candidate"
+        };
+    };
+    rpc DeleteCandidate(DeleteCandidateRequest) returns (DeleteCandidateResponse) {
+        option (google.api.http) = { delete: "/v1/candidates/{id}" };
+    };
+
+    rpc CreateSkill(CreateSkillRequest) returns (Skill) {
+        option (google.api.http) = { 
+            post: "/v1/skills" 
+            body: "skill"
+        };
+    };
+    rpc GetSkill(GetSkillRequest) returns (Skill) {
+        option (google.api.http) = { get: "/v1/skills/{id}" };
+    };
+    rpc GetAllSkills(GetAllSkillsRequest) returns (GetAllSkillsResponse) {
+        option (google.api.http) = { get: "/v1/skills" };
+    };
+
+    rpc CreateUserSkill(CreateUserSkillRequest) returns (UserSkill) {
+        option (google.api.http) = { 
+            post: "/v1/userskills" 
+            body: "user_skill"
+        };
+    };
+    rpc DeleteUserSkill(DeleteUserSkillRequest) returns (DeleteUserSkillResponse) {
+        option (google.api.http) = { delete: "/v1/userskills/{id}" };
+    };
+
+    rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {
+        option (google.api.http) = { 
+            post: "/v1/institutions" 
+            body: "institution"
+        };
+    };
+    rpc GetInstitution(GetInstitutionRequest) returns (Institution) {
+        option (google.api.http) = { get: "/v1/institutions/{id}" };
+    };
+    rpc GetAllInstitutions(GetAllInstitutionsRequest) returns (GetAllInstitutionsResponse) {
+        option (google.api.http) = { get: "/v1/institutions" };
+    };
+
+    rpc CreateCourse(CreateCourseRequest) returns (Course) {
+        option (google.api.http) = { 
+            post: "/v1/courses" 
+            body: "course"
+        };
+    };
+    rpc GetCourse(GetCourseRequest) returns (Course) {
+        option (google.api.http) = { get: "/v1/courses/{id}" };
+    };
+    rpc GetAllCourses(GetAllCoursesRequest) returns (GetAllCoursesResponse) {
+        option (google.api.http) = { get: "/v1/courses" };
+    };
+
+    rpc CreateAcademicHistory(CreateAcademicHistoryRequest) returns (AcademicHistory) {
+        option (google.api.http) = { 
+            post: "/v1/academichistories"
+            body: "academic_history" 
+        };
+    };
+    rpc GetAcademicHistory(GetAcademicHistoryRequest) returns (AcademicHistory) {
+        option (google.api.http) = { get: "/v1/academichistories/{id}" };
+    };
+    rpc UpdateAcademicHistory(UpdateAcademicHistoryRequest) returns (AcademicHistory) {
+        option (google.api.http) = { 
+            put: "/v1/academichistories/{id}" 
+            body: "academic_history"
+        };
+    };
+    rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {
+        option (google.api.http) = { delete: "/v1/academichistories/{id}" };
+    };
+
+    rpc CreateCompany(CreateCompanyRequest) returns (Company) {
+        option (google.api.http) = { 
+            post: "/v1/companies"
+            body: "company" 
+        };
+    };
+    rpc GetCompany(GetCompanyRequest) returns (Company) {
+        option (google.api.http) = { get: "/v1/companies/{id}" };
+    };
+    rpc GetAllCompanies(GetAllCompaniesRequest) returns (GetAllCompaniesResponse) {
+        option (google.api.http) = { get: "/v1/companies" };
+    };
+
+    rpc CreateDepartment(CreateDepartmentRequest) returns (Department) {
+        option (google.api.http) = { 
+            post: "/v1/departments"
+            body: "department" 
+        };
+    };
+    rpc GetDepartment(GetDepartmentRequest) returns (Department) {
+        option (google.api.http) = { get: "/v1/departments/{id}" };
+    };
+    rpc GetAllDepartments(GetAllDepartmentsRequest) returns (GetAllDepartmentsResponse) {
+        option (google.api.http) = { get: "/v1/departments" };
+    };
+
+    rpc CreateJobHistory(CreateJobHistoryRequest) returns (JobHistory) {
+        option (google.api.http) = { 
+            post: "/v1/jobhistories"
+            body: "job_history" 
+        };
+    };
+    rpc GetJobHistory(GetJobHistoryRequest) returns (JobHistory) {
+        option (google.api.http) = { get: "/v1/jobhistories/{id}" };
+    };
+    rpc UpdateJobHistory(UpdateJobHistoryRequest) returns (JobHistory) {
+        option (google.api.http) = { 
+            put: "/v1/jobhistories/{id}" 
+            body: "job_history"
+        };
+    };
+    rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {
+        option (google.api.http) = { delete: "/v1/jobhistories/{id}" };
+    };
+} 
+
+message Candidate {
+    uint64 id = 1;
+    string auth_id = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string email = 5;
+    string contact_number = 6;
+    string picture = 7;
+    string gender = 8;
+    string nationality = 9;
+    string residence_city = 10;
+    string expected_salary_currency = 11;
+    uint32 expected_salary = 12;
+    string linked_in_url = 13;
+    string scm_url = 14;
+    string website_url = 15;
+    string education_level = 16;
+    string summary = 17;
+    google.protobuf.Timestamp birthday = 18;
+    uint32 notice_period = 19;
+    repeated Skill skills = 20;
+    repeated AcademicHistory academics = 21;
+    repeated JobHistory jobs = 22;
+    google.protobuf.Timestamp created_at = 23;
+    google.protobuf.Timestamp updated_at = 24;
+    google.protobuf.Timestamp deleted_at = 25;
+}
+
+message CreateCandidateRequest {
+    Candidate candidate = 1;
+}
+
+message GetAllCandidatesRequest {
+    repeated uint64 id = 1;
+	string first_name = 2;
+	string last_name = 3;
+	string email = 4;
+	string contact_number = 5;
+	repeated string gender = 6;
+	repeated string nationality = 7;
+	repeated string residence_city = 8;
+	uint32 min_salary = 9;
+	uint32 max_salary = 10;
+	repeated string education_level = 11;
+	uint32 max_notice_period = 12;
+}
+
+message GetAllCandidatesResponse {
+    repeated Candidate candidates = 1;
+}
+
+message GetCandidateByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateCandidateRequest {
+    uint64 id = 1;
+    Candidate candidate = 2;
+}
+
+message DeleteCandidateRequest {
+    uint64 id = 1;
+}
+
+message DeleteCandidateResponse {
+    // Empty
+}
+
+message Skill {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message CreateSkillRequest {
+    Skill skill = 1;
+}
+
+message GetSkillRequest {
+    uint64 id = 1;
+}
+
+message GetAllSkillsRequest {
+    repeated string name = 1;
+}
+
+message GetAllSkillsResponse {
+    repeated Skill skills = 1;
+}
+
+message UserSkill {
+    uint64 id = 1;
+    uint64 candidate_id = 2;
+    uint64 skill_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message CreateUserSkillRequest {
+    UserSkill user_skill = 1;
+}
+
+message DeleteUserSkillRequest {
+    uint64 id = 1;
+}
+
+message DeleteUserSkillResponse {
+    // Empty
+}
+
+message Institution {
+    uint64 id = 1;
+    string country = 2;
+    string name = 3;
+}
+
+message CreateInstitutionRequest {
+    Institution institution = 1;
+}
+
+message GetInstitutionRequest {
+    uint64 id = 1;
+}
+
+message GetAllInstitutionsRequest {
+    repeated string name = 1;
+    repeated string country = 2;
+}
+
+message GetAllInstitutionsResponse {
+    repeated Institution institutions = 1;
+}
+
+message Course {
+    uint64 id = 1;
+    string level = 3;
+    string name = 4;
+}
+
+message CreateCourseRequest {
+    Course course = 1;
+}
+
+message GetCourseRequest {
+    uint64 id = 1;
+}
+
+message GetAllCoursesRequest {
+    repeated string name = 1;
+    repeated string level = 2;
+}
+
+message GetAllCoursesResponse {
+    repeated Course courses = 1;
+}
+
+message CourseInstitution {
+    uint64 id = 1;
+    uint64 course_id = 2;
+}
+
+message AcademicHistory {
+    uint64 id = 1;
+    uint64 candidate_id = 2;
+    uint64 institution_id = 3;
+    Institution institution = 4;
+    uint64 course_id = 5;
+    Course course = 6;
+    uint32 year_obtained = 7;
+    string grade = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp deleted_at = 11;
+}
+
+message CreateAcademicHistoryRequest {
+    AcademicHistory academic_history = 1;
+}
+
+message GetAcademicHistoryRequest {
+    uint64 id = 1;
+}
+
+message UpdateAcademicHistoryRequest {
+    uint64 id = 1;
+    AcademicHistory academic_history = 2;
+}
+
+message DeleteAcademicHistoryRequest {
+    uint64 id = 1;
+}
+
+message DeleteAcademicHistoryResponse {
+    // Empty
+}
+
+message Company {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message CreateCompanyRequest {
+    Company company = 1;
+}
+
+message GetCompanyRequest {
+    uint64 id = 1;
+}
+
+message GetAllCompaniesRequest {
+    repeated string name = 1;
+}
+
+message GetAllCompaniesResponse {
+    repeated Company companies = 1;
+}
+
+message Department {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message CreateDepartmentRequest {
+    Department department = 1;
+}
+
+message GetDepartmentRequest {
+    uint64 id = 1;
+}
+
+message GetAllDepartmentsRequest {
+    repeated string name = 1;
+}
+
+message GetAllDepartmentsResponse {
+    repeated Department departments = 1;
+}
+
+message CompanyDepartment {
+    uint64 id = 1;
+    uint64 company_id = 2;
+    uint64 department_id = 3;
+}
+
+message JobHistory {
+    uint64 id = 1;
+    uint64 candidate_id = 2;
+    uint64 company_id = 3;
+    Company company = 4;
+    uint64 department_id = 5;
+    Department department = 6;
+    string country = 7;
+    string city = 8;
+    string title = 9;
+    google.protobuf.Timestamp start_date = 10;
+    google.protobuf.Timestamp end_date = 11;
+    string salary_currency = 12;
+    uint32 salary = 13;
+    string description = 14;
+    google.protobuf.Timestamp created_at = 15;
+    google.protobuf.Timestamp updated_at = 16;
+    google.protobuf.Timestamp deleted_at = 17;
+}
+
+message CreateJobHistoryRequest {
+    JobHistory job_history = 1;
+}
+
+message GetJobHistoryRequest {
+    uint64 id = 1;
+}
+
+message UpdateJobHistoryRequest {
+    uint64 id = 1;
+    JobHistory job_history = 2;
+}
+
+message DeleteJobHistoryRequest {
+    uint64 id = 1;
+}
+
+message DeleteJobHistoryResponse {
+    // Empty
+}
