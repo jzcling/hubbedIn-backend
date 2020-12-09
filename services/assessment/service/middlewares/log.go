@@ -33,230 +33,131 @@ func (mw logMiddleware) log(method string, begin time.Time, input, output interf
 	)
 }
 
-/* --------------- Candidate --------------- */
+/* --------------- Assessment --------------- */
 
-// CreateCandidate creates a new Candidate
-func (mw logMiddleware) CreateCandidate(ctx context.Context, input *models.Candidate) (output *models.Candidate, err error) {
-	defer mw.log("CreateCandidate", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateCandidate(ctx, input)
+// CreateAssessment creates a new Assessment
+func (mw logMiddleware) CreateAssessment(ctx context.Context, input *models.Assessment) (output *models.Assessment, err error) {
+	defer mw.log("CreateAssessment", time.Now(), input, &output, &err)
+	output, err = mw.next.CreateAssessment(ctx, input)
 	return
 }
 
-// GetAllCandidates returns all Candidates
-func (mw logMiddleware) GetAllCandidates(ctx context.Context, input models.CandidateFilters) (output []*models.Candidate, err error) {
-	defer mw.log("GetAllCandidates", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllCandidates(ctx, input)
+// GetAllAssessments returns all Assessments
+func (mw logMiddleware) GetAllAssessments(ctx context.Context, input models.AssessmentFilters) (output []*models.Assessment, err error) {
+	defer mw.log("GetAllAssessments", time.Now(), input, &output, &err)
+	output, err = mw.next.GetAllAssessments(ctx, input)
 	return
 }
 
-// GetCandidateByID returns a Candidate by ID
-func (mw logMiddleware) GetCandidateByID(ctx context.Context, input uint64) (output *models.Candidate, err error) {
-	defer mw.log("GetCandidateByID", time.Now(), input, &output, &err)
-	output, err = mw.next.GetCandidateByID(ctx, input)
+// GetAssessmentByID returns a Assessment by ID
+func (mw logMiddleware) GetAssessmentByID(ctx context.Context, input uint64) (output *models.Assessment, err error) {
+	defer mw.log("GetAssessmentByID", time.Now(), input, &output, &err)
+	output, err = mw.next.GetAssessmentByID(ctx, input)
 	return
 }
 
-// UpdateCandidate updates a Candidate
-func (mw logMiddleware) UpdateCandidate(ctx context.Context, input *models.Candidate) (output *models.Candidate, err error) {
-	defer mw.log("UpdateCandidate", time.Now(), input, &output, &err)
-	output, err = mw.next.UpdateCandidate(ctx, input)
+// UpdateAssessment updates a Assessment
+func (mw logMiddleware) UpdateAssessment(ctx context.Context, input *models.Assessment) (output *models.Assessment, err error) {
+	defer mw.log("UpdateAssessment", time.Now(), input, &output, &err)
+	output, err = mw.next.UpdateAssessment(ctx, input)
 	return
 }
 
-// DeleteCandidate deletes a Candidate by ID
-func (mw logMiddleware) DeleteCandidate(ctx context.Context, input uint64) (err error) {
-	defer mw.log("DeleteCandidate", time.Now(), input, nil, &err)
-	err = mw.next.DeleteCandidate(ctx, input)
+// DeleteAssessment deletes a Assessment by ID
+func (mw logMiddleware) DeleteAssessment(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteAssessment", time.Now(), input, nil, &err)
+	err = mw.next.DeleteAssessment(ctx, input)
 	return
 }
 
-/* --------------- Skill --------------- */
+/* --------------- Assessment Status --------------- */
 
-// CreateSkill creates a new Skill
-func (mw logMiddleware) CreateSkill(ctx context.Context, input *models.Skill) (output *models.Skill, err error) {
-	defer mw.log("CreateSkill", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateSkill(ctx, input)
+// CreateAssessmentStatus creates a new AssessmentStatus
+func (mw logMiddleware) CreateAssessmentStatus(ctx context.Context, input *models.AssessmentStatus) (output *models.AssessmentStatus, err error) {
+	defer mw.log("CreateAssessmentStatus", time.Now(), input, &output, &err)
+	output, err = mw.next.CreateAssessmentStatus(ctx, input)
 	return
 }
 
-// GetSkill returns a Skill by ID
-func (mw logMiddleware) GetSkill(ctx context.Context, input uint64) (output *models.Skill, err error) {
-	defer mw.log("GetSkill", time.Now(), input, &output, &err)
-	output, err = mw.next.GetSkill(ctx, input)
+// UpdateAssessmentStatus updates a AssessmentStatus
+func (mw logMiddleware) UpdateAssessmentStatus(ctx context.Context, input *models.AssessmentStatus) (output *models.AssessmentStatus, err error) {
+	defer mw.log("UpdateAssessmentStatus", time.Now(), input, &output, &err)
+	output, err = mw.next.UpdateAssessmentStatus(ctx, input)
 	return
 }
 
-// GetAllSkills returns all Skills
-func (mw logMiddleware) GetAllSkills(ctx context.Context, input models.SkillFilters) (output []*models.Skill, err error) {
-	defer mw.log("GetAllSkills", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllSkills(ctx, input)
+// DeleteAssessmentStatus deletes a AssessmentStatus by ID
+func (mw logMiddleware) DeleteAssessmentStatus(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteAssessmentStatus", time.Now(), input, nil, &err)
+	err = mw.next.DeleteAssessmentStatus(ctx, input)
 	return
 }
 
-/* --------------- User Skill --------------- */
+/* --------------- Question --------------- */
 
-// CreateUserSkill creates a new UserSkill
-func (mw logMiddleware) CreateUserSkill(ctx context.Context, input *models.UserSkill) (output *models.UserSkill, err error) {
-	defer mw.log("CreateUserSkill", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateUserSkill(ctx, input)
+// CreateQuestion creates a new Question
+func (mw logMiddleware) CreateQuestion(ctx context.Context, input *models.Question) (output *models.Question, err error) {
+	defer mw.log("CreateQuestion", time.Now(), input, &output, &err)
+	output, err = mw.next.CreateQuestion(ctx, input)
 	return
 }
 
-// DeleteUserSkill deletes a UserSkill by ID
-func (mw logMiddleware) DeleteUserSkill(ctx context.Context, input uint64) (err error) {
-	defer mw.log("DeleteUserSkill", time.Now(), input, nil, &err)
-	err = mw.next.DeleteUserSkill(ctx, input)
+// GetAllQuestions returns all Questions
+func (mw logMiddleware) GetAllQuestions(ctx context.Context, input models.QuestionFilters) (output []*models.Question, err error) {
+	defer mw.log("GetAllQuestions", time.Now(), input, &output, &err)
+	output, err = mw.next.GetAllQuestions(ctx, input)
 	return
 }
 
-/* --------------- Institution --------------- */
-
-// CreateInstitution creates a new Institution
-func (mw logMiddleware) CreateInstitution(ctx context.Context, input *models.Institution) (output *models.Institution, err error) {
-	defer mw.log("CreateInstitution", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateInstitution(ctx, input)
+// GetQuestionByID returns a Question by ID
+func (mw logMiddleware) GetQuestionByID(ctx context.Context, input uint64) (output *models.Question, err error) {
+	defer mw.log("GetQuestionByID", time.Now(), input, &output, &err)
+	output, err = mw.next.GetQuestionByID(ctx, input)
 	return
 }
 
-// GetInstitution returns a Institution by ID
-func (mw logMiddleware) GetInstitution(ctx context.Context, input uint64) (output *models.Institution, err error) {
-	defer mw.log("GetInstitution", time.Now(), input, &output, &err)
-	output, err = mw.next.GetInstitution(ctx, input)
+// UpdateQuestion updates a Question
+func (mw logMiddleware) UpdateQuestion(ctx context.Context, input *models.Question) (output *models.Question, err error) {
+	defer mw.log("UpdateQuestion", time.Now(), input, &output, &err)
+	output, err = mw.next.UpdateQuestion(ctx, input)
 	return
 }
 
-// GetAllInstitutions returns all Institutions
-func (mw logMiddleware) GetAllInstitutions(ctx context.Context, input models.InstitutionFilters) (output []*models.Institution, err error) {
-	defer mw.log("GetAllInstitutions", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllInstitutions(ctx, input)
+// DeleteQuestion deletes a Question by ID
+func (mw logMiddleware) DeleteQuestion(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteQuestion", time.Now(), input, nil, &err)
+	err = mw.next.DeleteQuestion(ctx, input)
 	return
 }
 
-/* --------------- Course --------------- */
+/* --------------- Tag --------------- */
 
-// CreateCourse creates a new Course
-func (mw logMiddleware) CreateCourse(ctx context.Context, input *models.Course) (output *models.Course, err error) {
-	defer mw.log("CreateCourse", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateCourse(ctx, input)
+// CreateTag creates a new Tag
+func (mw logMiddleware) CreateTag(ctx context.Context, input *models.Tag) (output *models.Tag, err error) {
+	defer mw.log("CreateTag", time.Now(), input, &output, &err)
+	output, err = mw.next.CreateTag(ctx, input)
 	return
 }
 
-// GetCourse returns a Course by ID
-func (mw logMiddleware) GetCourse(ctx context.Context, input uint64) (output *models.Course, err error) {
-	defer mw.log("GetCourse", time.Now(), input, &output, &err)
-	output, err = mw.next.GetCourse(ctx, input)
+// DeleteTag deletes a Tag by ID
+func (mw logMiddleware) DeleteTag(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteTag", time.Now(), input, nil, &err)
+	err = mw.next.DeleteTag(ctx, input)
 	return
 }
 
-// GetAllCourses returns all Courses
-func (mw logMiddleware) GetAllCourses(ctx context.Context, input models.CourseFilters) (output []*models.Course, err error) {
-	defer mw.log("GetAllCourses", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllCourses(ctx, input)
+/* --------------- Response --------------- */
+
+// CreateResponse creates a new Response
+func (mw logMiddleware) CreateResponse(ctx context.Context, input *models.Response) (output *models.Response, err error) {
+	defer mw.log("CreateResponse", time.Now(), input, &output, &err)
+	output, err = mw.next.CreateResponse(ctx, input)
 	return
 }
 
-/* --------------- Academic History --------------- */
-
-// CreateAcademicHistory creates a new AcademicHistory
-func (mw logMiddleware) CreateAcademicHistory(ctx context.Context, input *models.AcademicHistory) (output *models.AcademicHistory, err error) {
-	defer mw.log("CreateAcademicHistory", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateAcademicHistory(ctx, input)
-	return
-}
-
-// GetAcademicHistory returns a AcademicHistory by ID
-func (mw logMiddleware) GetAcademicHistory(ctx context.Context, input uint64) (output *models.AcademicHistory, err error) {
-	defer mw.log("GetAcademicHistory", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAcademicHistory(ctx, input)
-	return
-}
-
-// UpdateAcademicHistory updates a AcademicHistory
-func (mw logMiddleware) UpdateAcademicHistory(ctx context.Context, input *models.AcademicHistory) (output *models.AcademicHistory, err error) {
-	defer mw.log("UpdateAcademicHistory", time.Now(), input, &output, &err)
-	output, err = mw.next.UpdateAcademicHistory(ctx, input)
-	return
-}
-
-// DeleteAcademicHistory deletes a AcademicHistory by ID
-func (mw logMiddleware) DeleteAcademicHistory(ctx context.Context, input uint64) (err error) {
-	defer mw.log("DeleteAcademicHistory", time.Now(), input, nil, &err)
-	err = mw.next.DeleteAcademicHistory(ctx, input)
-	return
-}
-
-/* --------------- Company --------------- */
-
-// CreateCompany creates a new Company
-func (mw logMiddleware) CreateCompany(ctx context.Context, input *models.Company) (output *models.Company, err error) {
-	defer mw.log("CreateCompany", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateCompany(ctx, input)
-	return
-}
-
-// GetCompany returns a Company by ID
-func (mw logMiddleware) GetCompany(ctx context.Context, input uint64) (output *models.Company, err error) {
-	defer mw.log("GetCompany", time.Now(), input, &output, &err)
-	output, err = mw.next.GetCompany(ctx, input)
-	return
-}
-
-// GetAllCompanies returns all Companies
-func (mw logMiddleware) GetAllCompanies(ctx context.Context, input models.CompanyFilters) (output []*models.Company, err error) {
-	defer mw.log("GetAllCompanies", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllCompanies(ctx, input)
-	return
-}
-
-/* --------------- Department --------------- */
-
-// CreateDepartment creates a new Department
-func (mw logMiddleware) CreateDepartment(ctx context.Context, input *models.Department) (output *models.Department, err error) {
-	defer mw.log("CreateDepartment", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateDepartment(ctx, input)
-	return
-}
-
-// GetDepartment returns a Department by ID
-func (mw logMiddleware) GetDepartment(ctx context.Context, input uint64) (output *models.Department, err error) {
-	defer mw.log("GetDepartment", time.Now(), input, &output, &err)
-	output, err = mw.next.GetDepartment(ctx, input)
-	return
-}
-
-// GetAllDepartments returns all Departments
-func (mw logMiddleware) GetAllDepartments(ctx context.Context, input models.DepartmentFilters) (output []*models.Department, err error) {
-	defer mw.log("GetAllDepartments", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllDepartments(ctx, input)
-	return
-}
-
-/* --------------- Job History --------------- */
-
-// CreateJobHistory creates a new JobHistory
-func (mw logMiddleware) CreateJobHistory(ctx context.Context, input *models.JobHistory) (output *models.JobHistory, err error) {
-	defer mw.log("CreateJobHistory", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateJobHistory(ctx, input)
-	return
-}
-
-// GetJobHistory returns a JobHistory by ID
-func (mw logMiddleware) GetJobHistory(ctx context.Context, input uint64) (output *models.JobHistory, err error) {
-	defer mw.log("GetJobHistory", time.Now(), input, &output, &err)
-	output, err = mw.next.GetJobHistory(ctx, input)
-	return
-}
-
-// UpdateJobHistory updates a JobHistory
-func (mw logMiddleware) UpdateJobHistory(ctx context.Context, input *models.JobHistory) (output *models.JobHistory, err error) {
-	defer mw.log("UpdateJobHistory", time.Now(), input, &output, &err)
-	output, err = mw.next.UpdateJobHistory(ctx, input)
-	return
-}
-
-// DeleteJobHistory deletes a JobHistory by ID
-func (mw logMiddleware) DeleteJobHistory(ctx context.Context, input uint64) (err error) {
-	defer mw.log("DeleteJobHistory", time.Now(), input, nil, &err)
-	err = mw.next.DeleteJobHistory(ctx, input)
+// DeleteResponse deletes a Response by ID
+func (mw logMiddleware) DeleteResponse(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteResponse", time.Now(), input, nil, &err)
+	err = mw.next.DeleteResponse(ctx, input)
 	return
 }

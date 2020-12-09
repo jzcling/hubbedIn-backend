@@ -19,291 +19,168 @@ func New(r interfaces.Repository) interfaces.Service {
 	}
 }
 
-/* --------------- Candidate --------------- */
+/* --------------- Assessment --------------- */
 
-// CreateCandidate creates a new Candidate
-func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
-	c, err := s.repository.CreateCandidate(ctx, candidate)
+// CreateAssessment creates a new Assessment
+func (s *service) CreateAssessment(ctx context.Context, model *models.Assessment) (*models.Assessment, error) {
+	m, err := s.repository.CreateAssessment(ctx, model)
 	if err != nil {
 		return nil, err
 	}
 
-	return c, err
+	return m, err
 }
 
-// GetAllCandidates returns all Candidates
-func (s *service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
-	c, err := s.repository.GetAllCandidates(ctx, f)
+// GetAllAssessments returns all Assessments
+func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error) {
+	m, err := s.repository.GetAllAssessments(ctx, f)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+	return m, err
 }
 
-// GetCandidateByID returns a Candidate by ID
-func (s *service) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
-	c, err := s.repository.GetCandidateByID(ctx, id)
+// GetAssessmentByID returns a Assessment by ID
+func (s *service) GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error) {
+	m, err := s.repository.GetAssessmentByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+	return m, err
 }
 
-// UpdateCandidate updates a Candidate
-func (s *service) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
-	c, err := s.repository.UpdateCandidate(ctx, candidate)
+// UpdateAssessment updates a Assessment
+func (s *service) UpdateAssessment(ctx context.Context, model *models.Assessment) (*models.Assessment, error) {
+	m, err := s.repository.UpdateAssessment(ctx, model)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+	return m, err
 }
 
-// DeleteCandidate deletes a Candidate by ID
-func (s *service) DeleteCandidate(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteCandidate(ctx, id)
+// DeleteAssessment deletes a Assessment by ID
+func (s *service) DeleteAssessment(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteAssessment(ctx, id)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-/* --------------- Skill --------------- */
+/* --------------- Assessment Status --------------- */
 
-// CreateSkill creates a new Skill
-func (s *service) CreateSkill(ctx context.Context, skill *models.Skill) (*models.Skill, error) {
-	sk, err := s.repository.CreateSkill(ctx, skill)
-	if err != nil {
-		return nil, err
-	}
-	return sk, err
-}
-
-// GetSkill returns a Skill by ID
-func (s *service) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
-	sk, err := s.repository.GetSkill(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return sk, err
-}
-
-// GetAllSkills returns all Skills
-func (s *service) GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error) {
-	sk, err := s.repository.GetAllSkills(ctx, f)
-	if err != nil {
-		return nil, err
-	}
-	return sk, err
-}
-
-/* --------------- User Skill --------------- */
-
-// CreateUserSkill creates a new UserSkill
-func (s *service) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error) {
-	us, err := s.repository.CreateUserSkill(ctx, us)
+// CreateAssessmentStatus creates a new AssessmentStatus
+func (s *service) CreateAssessmentStatus(ctx context.Context, model *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+	m, err := s.repository.CreateAssessmentStatus(ctx, model)
 	if err != nil {
 		return nil, err
 	}
 
-	return us, err
+	return m, err
 }
 
-// DeleteUserSkill deletes a UserSkill by ID
-func (s *service) DeleteUserSkill(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteUserSkill(ctx, id)
+// UpdateAssessmentStatus updates a AssessmentStatus
+func (s *service) UpdateAssessmentStatus(ctx context.Context, model *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+	m, err := s.repository.UpdateAssessmentStatus(ctx, model)
+	if err != nil {
+		return nil, err
+	}
+	return m, err
+}
+
+// DeleteAssessmentStatus deletes a AssessmentStatus by ID
+func (s *service) DeleteAssessmentStatus(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteAssessmentStatus(ctx, id)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-/* --------------- Institution --------------- */
+/* --------------- Question --------------- */
 
-// CreateInstitution creates a new Institution
-func (s *service) CreateInstitution(ctx context.Context, institution *models.Institution) (*models.Institution, error) {
-	i, err := s.repository.CreateInstitution(ctx, institution)
+// CreateQuestion creates a new Question
+func (s *service) CreateQuestion(ctx context.Context, model *models.Question) (*models.Question, error) {
+	m, err := s.repository.CreateQuestion(ctx, model)
 	if err != nil {
 		return nil, err
 	}
-	return i, err
+
+	return m, err
 }
 
-// GetInstitution returns a Institution by ID
-func (s *service) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
-	i, err := s.repository.GetInstitution(ctx, id)
+// GetAllQuestions returns all Questions
+func (s *service) GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error) {
+	m, err := s.repository.GetAllQuestions(ctx, f)
 	if err != nil {
 		return nil, err
 	}
-	return i, err
+	return m, err
 }
 
-// GetAllInstitutions returns all Institutions
-func (s *service) GetAllInstitutions(ctx context.Context, f models.InstitutionFilters) ([]*models.Institution, error) {
-	i, err := s.repository.GetAllInstitutions(ctx, f)
+// GetQuestionByID returns a Question by ID
+func (s *service) GetQuestionByID(ctx context.Context, id uint64) (*models.Question, error) {
+	m, err := s.repository.GetQuestionByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	return i, err
+	return m, err
 }
 
-/* --------------- Course --------------- */
-
-// CreateCourse creates a new Course
-func (s *service) CreateCourse(ctx context.Context, course *models.Course) (*models.Course, error) {
-	c, err := s.repository.CreateCourse(ctx, course)
+// UpdateQuestion updates a Question
+func (s *service) UpdateQuestion(ctx context.Context, model *models.Question) (*models.Question, error) {
+	m, err := s.repository.UpdateQuestion(ctx, model)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+	return m, err
 }
 
-// GetCourse returns a Course by ID
-func (s *service) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
-	c, err := s.repository.GetCourse(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return c, err
-}
-
-// GetAllCourses returns all Courses
-func (s *service) GetAllCourses(ctx context.Context, f models.CourseFilters) ([]*models.Course, error) {
-	c, err := s.repository.GetAllCourses(ctx, f)
-	if err != nil {
-		return nil, err
-	}
-	return c, err
-}
-
-/* --------------- Academic History --------------- */
-
-// CreateAcademicHistory creates a new AcademicHistory
-func (s *service) CreateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
-	a, err := s.repository.CreateAcademicHistory(ctx, academic)
-	if err != nil {
-		return nil, err
-	}
-	return a, err
-}
-
-// GetAcademicHistory returns a AcademicHistory by ID
-func (s *service) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
-	a, err := s.repository.GetAcademicHistory(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return a, err
-}
-
-// UpdateAcademicHistory updates a AcademicHistory
-func (s *service) UpdateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
-	a, err := s.repository.UpdateAcademicHistory(ctx, academic)
-	if err != nil {
-		return nil, err
-	}
-	return a, err
-}
-
-// DeleteAcademicHistory deletes a AcademicHistory by ID
-func (s *service) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteAcademicHistory(ctx, id)
+// DeleteQuestion deletes a Question by ID
+func (s *service) DeleteQuestion(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteQuestion(ctx, id)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-/* --------------- Company --------------- */
+/* --------------- Tag --------------- */
 
-// CreateCompany creates a new Company
-func (s *service) CreateCompany(ctx context.Context, company *models.Company) (*models.Company, error) {
-	c, err := s.repository.CreateCompany(ctx, company)
+// CreateTag creates a new Tag
+func (s *service) CreateTag(ctx context.Context, model *models.Tag) (*models.Tag, error) {
+	m, err := s.repository.CreateTag(ctx, model)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+
+	return m, err
 }
 
-// GetCompany returns a Company by ID
-func (s *service) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
+// DeleteTag deletes a Tag by ID
+func (s *service) DeleteTag(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteTag(ctx, id)
+	if err != nil {
+		return err
+	}
+	return err
+}
 
-	c, err := s.repository.GetCompany(ctx, id)
+/* --------------- Response --------------- */
+
+// CreateResponse creates a new Response
+func (s *service) CreateResponse(ctx context.Context, model *models.Response) (*models.Response, error) {
+	m, err := s.repository.CreateResponse(ctx, model)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+
+	return m, err
 }
 
-// GetAllCompanies returns all Companies
-func (s *service) GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error) {
-	c, err := s.repository.GetAllCompanies(ctx, f)
-	if err != nil {
-		return nil, err
-	}
-	return c, err
-}
-
-/* --------------- Department --------------- */
-
-// CreateDepartment creates a new Department
-func (s *service) CreateDepartment(ctx context.Context, department *models.Department) (*models.Department, error) {
-	d, err := s.repository.CreateDepartment(ctx, department)
-	if err != nil {
-		return nil, err
-	}
-	return d, err
-}
-
-// GetDepartment returns a Department by ID
-func (s *service) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
-	d, err := s.repository.GetDepartment(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return d, err
-}
-
-// GetAllDepartments returns all Departments
-func (s *service) GetAllDepartments(ctx context.Context, f models.DepartmentFilters) ([]*models.Department, error) {
-	d, err := s.repository.GetAllDepartments(ctx, f)
-	if err != nil {
-		return nil, err
-	}
-	return d, err
-}
-
-/* --------------- Job History --------------- */
-
-// CreateJobHistory creates a new JobHistory
-func (s *service) CreateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
-	j, err := s.repository.CreateJobHistory(ctx, job)
-	if err != nil {
-		return nil, err
-	}
-	return j, err
-}
-
-// GetJobHistory returns a JobHistory by ID
-func (s *service) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
-	j, err := s.repository.GetJobHistory(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return j, err
-}
-
-// UpdateJobHistory updates a JobHistory
-func (s *service) UpdateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
-	j, err := s.repository.UpdateJobHistory(ctx, job)
-	if err != nil {
-		return nil, err
-	}
-	return j, err
-}
-
-// DeleteJobHistory deletes a JobHistory by ID
-func (s *service) DeleteJobHistory(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteJobHistory(ctx, id)
+// DeleteResponse deletes a Response by ID
+func (s *service) DeleteResponse(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteResponse(ctx, id)
 	if err != nil {
 		return err
 	}

@@ -19,7 +19,9 @@ type authMiddleware struct {
 var (
 	errAuth = errors.New("Forbidden")
 
-	namespace = "https://hubbedin/id"
+	namespace = "https://hubbedin/"
+	idKey     = namespace + "id"
+	rolesKey  = namespace + "roles"
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the assessment Service interface
@@ -27,6 +29,31 @@ func NewAuthMiddleware(svc interfaces.Service) interfaces.Service {
 	return &authMiddleware{
 		next: svc,
 	}
+}
+
+func checkAdminOrOwner(ctx context.Context, ownerID *uint64) (bool, error) {
+	claims, err := getClaims(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	roles, err := claims[rolesKey].([]string)
+	if err != nil {
+		return false, err
+	}
+	if isStringInSlice("Admin", roles) {
+		return true, nil
+	}
+
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
+	if err != nil {
+		return false, err
+	}
+	if ownerID != nil && id == *ownerID {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func getClaims(ctx context.Context) (jwt.MapClaims, error) {
@@ -47,252 +74,218 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 	return claims, nil
 }
 
-/* --------------- Candidate --------------- */
-
-// CreateCandidate creates a new Candidate
-func (mw authMiddleware) CreateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
-	return mw.next.CreateCandidate(ctx, candidate)
+func isStringInSlice(s string, list []string) bool {
+	for _, item := range list {
+		if item == s {
+			return true
+		}
+	}
+	return false
 }
 
-// GetAllCandidates returns all Candidates
-func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
-	return mw.next.GetAllCandidates(ctx, f)
-}
+/* --------------- Assessment --------------- */
 
-// GetCandidateByID returns a Candidate by ID
-func (mw authMiddleware) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
-	claims, err := getClaims(ctx)
+// CreateAssessment creates a new Assessment
+func (mw authMiddleware) CreateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	id, err = strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	return mw.next.GetCandidateByID(ctx, id)
-}
-
-// UpdateCandidate updates a Candidate
-func (mw authMiddleware) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
-	claims, err := getClaims(ctx)
-	if err != nil {
-		return nil, err
-	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != candidate.ID {
+	if !isAdmin {
 		return nil, errAuth
 	}
-	return mw.next.UpdateCandidate(ctx, candidate)
+	return mw.next.CreateAssessment(ctx, m)
 }
 
-// DeleteCandidate deletes a Candidate by ID
-func (mw authMiddleware) DeleteCandidate(ctx context.Context, id uint64) error {
-	claims, err := getClaims(ctx)
+// GetAllAssessments returns all Assessments
+func (mw authMiddleware) GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	if !isAdmin {
+		return nil, errAuth
+	}
+	return mw.next.GetAllAssessments(ctx, f)
+}
+
+// GetAssessmentByID returns a Assessment by ID
+func (mw authMiddleware) GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	if !isAdmin {
+		return nil, errAuth
+	}
+	return mw.next.GetAssessmentByID(ctx, id)
+}
+
+// UpdateAssessment updates a Assessment
+func (mw authMiddleware) UpdateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	if !isAdmin {
+		return nil, errAuth
+	}
+	return mw.next.UpdateAssessment(ctx, m)
+}
+
+// DeleteAssessment deletes a Assessment by ID
+func (mw authMiddleware) DeleteAssessment(ctx context.Context, id uint64) error {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return err
 	}
-	id, err = strconv.ParseUint(claims[namespace].(string), 10, 64)
+	if !isAdmin {
+		return errAuth
+	}
+	return mw.next.DeleteAssessment(ctx, id)
+}
+
+/* --------------- Assessment Status --------------- */
+
+// CreateAssessmentStatus creates a new AssessmentStatus
+func (mw authMiddleware) CreateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
+	if err != nil {
+		return nil, err
+	}
+	if !owns {
+		return nil, errAuth
+	}
+	return mw.next.CreateAssessmentStatus(ctx, m)
+}
+
+// UpdateAssessmentStatus updates a AssessmentStatus
+func (mw authMiddleware) UpdateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
+	if err != nil {
+		return nil, err
+	}
+	if !owns {
+		return nil, errAuth
+	}
+	return mw.next.UpdateAssessmentStatus(ctx, m)
+}
+
+// DeleteAssessmentStatus deletes a AssessmentStatus by ID
+func (mw authMiddleware) DeleteAssessmentStatus(ctx context.Context, id uint64) error {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return err
 	}
-	return mw.next.DeleteCandidate(ctx, id)
+	if !isAdmin {
+		return errAuth
+	}
+	return mw.next.DeleteAssessmentStatus(ctx, id)
 }
 
-/* --------------- Skill --------------- */
+/* --------------- Question --------------- */
 
-// CreateSkill creates a new Skill
-func (mw authMiddleware) CreateSkill(ctx context.Context, skill *models.Skill) (*models.Skill, error) {
-	return mw.next.CreateSkill(ctx, skill)
-}
-
-// GetSkill returns a Skill by ID
-func (mw authMiddleware) GetSkill(ctx context.Context, id uint64) (*models.Skill, error) {
-	return mw.next.GetSkill(ctx, id)
-}
-
-// GetAllSkills returns all Skills
-func (mw authMiddleware) GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error) {
-	return mw.next.GetAllSkills(ctx, f)
-}
-
-/* --------------- User Skill --------------- */
-
-// CreateUserSkill creates a new UserSkill
-func (mw authMiddleware) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error) {
-	claims, err := getClaims(ctx)
+// CreateQuestion creates a new Question
+func (mw authMiddleware) CreateQuestion(ctx context.Context, m *models.Question) (*models.Question, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != us.CandidateID {
+	if !isAdmin {
 		return nil, errAuth
 	}
-	return mw.next.CreateUserSkill(ctx, us)
+	return mw.next.CreateQuestion(ctx, m)
 }
 
-// DeleteUserSkill deletes a UserSkill by ID
-func (mw authMiddleware) DeleteUserSkill(ctx context.Context, id uint64) error {
-	return mw.next.DeleteUserSkill(ctx, id)
-}
-
-/* --------------- Institution --------------- */
-
-// CreateInstitution creates a new Institution
-func (mw authMiddleware) CreateInstitution(ctx context.Context, institution *models.Institution) (*models.Institution, error) {
-	return mw.next.CreateInstitution(ctx, institution)
-}
-
-// GetInstitution returns a Institution by ID
-func (mw authMiddleware) GetInstitution(ctx context.Context, id uint64) (*models.Institution, error) {
-	return mw.next.GetInstitution(ctx, id)
-}
-
-// GetAllInstitutions returns all Institutions
-func (mw authMiddleware) GetAllInstitutions(ctx context.Context, f models.InstitutionFilters) ([]*models.Institution, error) {
-	return mw.next.GetAllInstitutions(ctx, f)
-}
-
-/* --------------- Course --------------- */
-
-// CreateCourse creates a new Course
-func (mw authMiddleware) CreateCourse(ctx context.Context, course *models.Course) (*models.Course, error) {
-	return mw.next.CreateCourse(ctx, course)
-}
-
-// GetCourse returns a Course by ID
-func (mw authMiddleware) GetCourse(ctx context.Context, id uint64) (*models.Course, error) {
-	return mw.next.GetCourse(ctx, id)
-}
-
-// GetAllCourses returns all Courses
-func (mw authMiddleware) GetAllCourses(ctx context.Context, f models.CourseFilters) ([]*models.Course, error) {
-	return mw.next.GetAllCourses(ctx, f)
-}
-
-/* --------------- Academic History --------------- */
-
-// CreateAcademicHistory creates a new AcademicHistory
-func (mw authMiddleware) CreateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
-	claims, err := getClaims(ctx)
+// GetAllQuestions returns all Questions
+func (mw authMiddleware) GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != academic.CandidateID {
+	if !isAdmin {
 		return nil, errAuth
 	}
-	return mw.next.CreateAcademicHistory(ctx, academic)
+	return mw.next.GetAllQuestions(ctx, f)
 }
 
-// GetAcademicHistory returns a AcademicHistory by ID
-func (mw authMiddleware) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
-	return mw.next.GetAcademicHistory(ctx, id)
-}
-
-// UpdateAcademicHistory updates a AcademicHistory
-func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
-	claims, err := getClaims(ctx)
+// GetQuestionByID returns a Question by ID
+func (mw authMiddleware) GetQuestionByID(ctx context.Context, id uint64) (*models.Question, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != academic.CandidateID {
+	if !isAdmin {
 		return nil, errAuth
 	}
-	return mw.next.UpdateAcademicHistory(ctx, academic)
+	return mw.next.GetQuestionByID(ctx, id)
 }
 
-// DeleteAcademicHistory deletes a AcademicHistory by ID
-func (mw authMiddleware) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	return mw.next.DeleteAcademicHistory(ctx, id)
-}
-
-/* --------------- Company --------------- */
-
-// CreateCompany creates a new Company
-func (mw authMiddleware) CreateCompany(ctx context.Context, company *models.Company) (*models.Company, error) {
-	return mw.next.CreateCompany(ctx, company)
-}
-
-// GetCompany returns a Company by ID
-func (mw authMiddleware) GetCompany(ctx context.Context, id uint64) (*models.Company, error) {
-	return mw.next.GetCompany(ctx, id)
-}
-
-// GetAllCompanies returns all Companies
-func (mw authMiddleware) GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error) {
-	return mw.next.GetAllCompanies(ctx, f)
-}
-
-/* --------------- Department --------------- */
-
-// CreateDepartment creates a new Department
-func (mw authMiddleware) CreateDepartment(ctx context.Context, department *models.Department) (*models.Department, error) {
-	return mw.next.CreateDepartment(ctx, department)
-}
-
-// GetDepartment returns a Department by ID
-func (mw authMiddleware) GetDepartment(ctx context.Context, id uint64) (*models.Department, error) {
-	return mw.next.GetDepartment(ctx, id)
-}
-
-// GetAllDepartments returns all Departments
-func (mw authMiddleware) GetAllDepartments(ctx context.Context, f models.DepartmentFilters) ([]*models.Department, error) {
-	return mw.next.GetAllDepartments(ctx, f)
-}
-
-/* --------------- Job History --------------- */
-
-// CreateJobHistory creates a new JobHistory
-func (mw authMiddleware) CreateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
-	claims, err := getClaims(ctx)
+// UpdateQuestion updates a Question
+func (mw authMiddleware) UpdateQuestion(ctx context.Context, m *models.Question) (*models.Question, error) {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != job.CandidateID {
+	if !isAdmin {
 		return nil, errAuth
 	}
-	return mw.next.CreateJobHistory(ctx, job)
+	return mw.next.UpdateQuestion(ctx, m)
 }
 
-// GetJobHistory returns a JobHistory by ID
-func (mw authMiddleware) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
-	return mw.next.GetJobHistory(ctx, id)
+// DeleteQuestion deletes a Question by ID
+func (mw authMiddleware) DeleteQuestion(ctx context.Context, id uint64) error {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	if err != nil {
+		return err
+	}
+	if !isAdmin {
+		return errAuth
+	}
+	return mw.next.DeleteQuestion(ctx, id)
 }
 
-// UpdateJobHistory updates a JobHistory
-func (mw authMiddleware) UpdateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
-	claims, err := getClaims(ctx)
+/* --------------- Tag --------------- */
+
+// CreateTag creates a new Tag
+func (mw authMiddleware) CreateTag(ctx context.Context, m *models.Tag) (*models.Tag, error) {
+	return mw.next.CreateTag(ctx, m)
+}
+
+// DeleteTag deletes a Tag by ID
+func (mw authMiddleware) DeleteTag(ctx context.Context, id uint64) error {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	if err != nil {
+		return err
+	}
+	if !isAdmin {
+		return errAuth
+	}
+	return mw.next.DeleteTag(ctx, id)
+}
+
+/* --------------- Response --------------- */
+
+// CreateResponse creates a new Response
+func (mw authMiddleware) CreateResponse(ctx context.Context, m *models.Response) (*models.Response, error) {
+	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != job.CandidateID {
+	if !owns {
 		return nil, errAuth
 	}
-	return mw.next.UpdateJobHistory(ctx, job)
+	return mw.next.CreateResponse(ctx, m)
 }
 
-// DeleteJobHistory deletes a JobHistory by ID
-func (mw authMiddleware) DeleteJobHistory(ctx context.Context, id uint64) error {
-	return mw.next.DeleteJobHistory(ctx, id)
+// DeleteResponse deletes a Response by ID
+func (mw authMiddleware) DeleteResponse(ctx context.Context, id uint64) error {
+	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	if err != nil {
+		return err
+	}
+	if !isAdmin {
+		return errAuth
+	}
+	return mw.next.DeleteResponse(ctx, id)
 }
