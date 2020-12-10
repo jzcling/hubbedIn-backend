@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
+	"in-backend/helpers"
 	"in-backend/services/assessment/interfaces"
 	"in-backend/services/assessment/models"
 	"strconv"
@@ -37,11 +38,8 @@ func checkAdminOrOwner(ctx context.Context, ownerID *uint64) (bool, error) {
 		return false, err
 	}
 
-	roles, err := claims[rolesKey].([]string)
-	if err != nil {
-		return false, err
-	}
-	if isStringInSlice("Admin", roles) {
+	roles := claims[rolesKey].([]string)
+	if helpers.IsStringInSlice("Admin", roles) {
 		return true, nil
 	}
 
@@ -72,15 +70,6 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 		return nil, errAuth
 	}
 	return claims, nil
-}
-
-func isStringInSlice(s string, list []string) bool {
-	for _, item := range list {
-		if item == s {
-			return true
-		}
-	}
-	return false
 }
 
 /* --------------- Assessment --------------- */

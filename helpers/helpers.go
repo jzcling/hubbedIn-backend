@@ -30,3 +30,13 @@ func ProtoTimeToTime(t *timestamppb.Timestamp) *time.Time {
 	}
 	return converted
 }
+
+// IsStringInSlice checks whether a slice contains a string exactly
+func IsStringInSlice(s string, list []string) bool {
+	for _, item := range list {
+		if item == s {
+			return true
+		}
+	}
+	return false
+}
