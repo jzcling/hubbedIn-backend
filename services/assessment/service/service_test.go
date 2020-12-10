@@ -113,8 +113,9 @@ func testGetAllAssessments(t *testing.T, s interfaces.Service) {
 	}
 
 	type args struct {
-		ctx context.Context
-		f   *models.AssessmentFilters
+		ctx   context.Context
+		f     *models.AssessmentFilters
+		admin bool
 	}
 
 	type expect struct {
@@ -127,15 +128,15 @@ func testGetAllAssessments(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{nil, nil}, expect{nil, errors.New("Context cannot be nil")}},
-		{"no filter", args{ctx, nil}, expect{mockRes, nil}},
+		{"nil", args{nil, nil, true}, expect{nil, errors.New("Context cannot be nil")}},
+		{"no filter", args{ctx, nil, true}, expect{mockRes, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllAssessments", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllAssessments(tt.args.ctx, *tt.args.f)
+			got, err := s.GetAllAssessments(tt.args.ctx, *tt.args.f, &tt.args.admin)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })

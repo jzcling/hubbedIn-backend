@@ -119,8 +119,9 @@ func testGetAllAssessments(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	require.NoError(t, err)
 
 	type args struct {
-		ctx context.Context
-		f   *models.AssessmentFilters
+		ctx   context.Context
+		f     *models.AssessmentFilters
+		admin bool
 	}
 
 	type expect struct {
@@ -133,12 +134,12 @@ func testGetAllAssessments(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, &models.AssessmentFilters{}}, expect{count, nil}},
+		{"no filter", args{ctx, &models.AssessmentFilters{}, true}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllAssessments(tt.args.ctx, *tt.args.f)
+			got, err := r.GetAllAssessments(tt.args.ctx, *tt.args.f, &tt.args.admin)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })

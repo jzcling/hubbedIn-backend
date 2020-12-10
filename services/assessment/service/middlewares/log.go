@@ -43,9 +43,9 @@ func (mw logMiddleware) CreateAssessment(ctx context.Context, input *models.Asse
 }
 
 // GetAllAssessments returns all Assessments
-func (mw logMiddleware) GetAllAssessments(ctx context.Context, input models.AssessmentFilters) (output []*models.Assessment, err error) {
+func (mw logMiddleware) GetAllAssessments(ctx context.Context, input models.AssessmentFilters, admin *bool) (output []*models.Assessment, err error) {
 	defer mw.log("GetAllAssessments", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllAssessments(ctx, input)
+	output, err = mw.next.GetAllAssessments(ctx, input, admin)
 	return
 }
 

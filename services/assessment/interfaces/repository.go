@@ -13,7 +13,7 @@ type Repository interface {
 	CreateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error)
 
 	// GetAllAssessments returns all Assessments
-	GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error)
+	GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error)
 
 	// GetAssessmentByID finds and returns a Assessment by ID
 	GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error)

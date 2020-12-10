@@ -87,15 +87,12 @@ func (mw authMiddleware) CreateAssessment(ctx context.Context, m *models.Assessm
 }
 
 // GetAllAssessments returns all Assessments
-func (mw authMiddleware) GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error) {
+func (mw authMiddleware) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, _ *bool) ([]*models.Assessment, error) {
 	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
-		return nil, errAuth
-	}
-	return mw.next.GetAllAssessments(ctx, f)
+	return mw.next.GetAllAssessments(ctx, f, &isAdmin)
 }
 
 // GetAssessmentByID returns a Assessment by ID

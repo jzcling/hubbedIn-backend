@@ -86,7 +86,7 @@ func makeGetAllAssessmentsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllAssessmentsRequest)
 		f := models.AssessmentFilters(req)
-		c, err := s.GetAllAssessments(ctx, f)
+		c, err := s.GetAllAssessments(ctx, f, nil)
 		return GetAllAssessmentsResponse{Assessments: c, Err: err}, nil
 	}
 }

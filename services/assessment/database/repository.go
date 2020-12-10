@@ -48,7 +48,7 @@ func (r *repository) CreateAssessment(ctx context.Context, m *models.Assessment)
 }
 
 // GetAllAssessments returns all Assessments
-func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error) {
+func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error) {
 	var m []*models.Assessment
 	q := r.DB.WithContext(ctx).Model(&m)
 	if len(f.ID) > 0 {
@@ -72,8 +72,10 @@ func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentF
 	if f.MinScore > 0 {
 		q = q.Where("as.score >= ?", f.MinScore)
 	}
+	if *admin {
+		q = q.Relation(relCandidateStatuses)
+	}
 	err := q.Relation(relQuestions).
-		Relation(relCandidateStatuses).
 		Returning("*").
 		Select()
 	return m, err

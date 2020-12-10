@@ -32,8 +32,8 @@ func (s *service) CreateAssessment(ctx context.Context, model *models.Assessment
 }
 
 // GetAllAssessments returns all Assessments
-func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error) {
-	m, err := s.repository.GetAllAssessments(ctx, f)
+func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error) {
+	m, err := s.repository.GetAllAssessments(ctx, f, admin)
 	if err != nil {
 		return nil, err
 	}
