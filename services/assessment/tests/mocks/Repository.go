@@ -200,13 +200,13 @@ func (_m *Repository) DeleteTag(ctx context.Context, id uint64) error {
 	return r0
 }
 
-// GetAllAssessments provides a mock function with given fields: ctx, f
-func (_m *Repository) GetAllAssessments(ctx context.Context, f models.AssessmentFilters) ([]*models.Assessment, error) {
-	ret := _m.Called(ctx, f)
+// GetAllAssessments provides a mock function with given fields: ctx, f, admin
+func (_m *Repository) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error) {
+	ret := _m.Called(ctx, f, admin)
 
 	var r0 []*models.Assessment
-	if rf, ok := ret.Get(0).(func(context.Context, models.AssessmentFilters) []*models.Assessment); ok {
-		r0 = rf(ctx, f)
+	if rf, ok := ret.Get(0).(func(context.Context, models.AssessmentFilters, *bool) []*models.Assessment); ok {
+		r0 = rf(ctx, f, admin)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Assessment)
@@ -214,8 +214,8 @@ func (_m *Repository) GetAllAssessments(ctx context.Context, f models.Assessment
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, models.AssessmentFilters) error); ok {
-		r1 = rf(ctx, f)
+	if rf, ok := ret.Get(1).(func(context.Context, models.AssessmentFilters, *bool) error); ok {
+		r1 = rf(ctx, f, admin)
 	} else {
 		r1 = ret.Error(1)
 	}
