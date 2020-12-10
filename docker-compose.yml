@@ -27,6 +27,19 @@ services:
             - ${PROJECT_SERVICE_PORT}:${PROJECT_SERVICE_PORT}
         networks:
             - backend
+    assessment-service:
+        build: 
+            context: .
+            dockerfile: ./services/assessment/Dockerfile
+        image: assessment-service
+        container_name: assessment-service
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - ${ASSESSMENT_SERVICE_PORT}:${ASSESSMENT_SERVICE_PORT}
+        networks:
+            - backend
     db:
         image: postgres:13-alpine
         container_name: db
