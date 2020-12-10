@@ -7,6 +7,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 
+	assessmentgw "in-backend/services/assessment/pb"
 	profilegw "in-backend/services/profile/pb"
 	projectgw "in-backend/services/project/pb"
 )
@@ -20,6 +21,10 @@ func New(ctx context.Context, profileEndpoint, projectEndpoint string) (http.Han
 		return nil, err
 	}
 	err = projectgw.RegisterProjectServiceHandlerFromEndpoint(ctx, mux, projectEndpoint, opts)
+	if err != nil {
+		return nil, err
+	}
+	err = assessmentgw.RegisterAssessmentServiceHandlerFromEndpoint(ctx, mux, projectEndpoint, opts)
 	if err != nil {
 		return nil, err
 	}
