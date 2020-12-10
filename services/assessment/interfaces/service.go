@@ -16,7 +16,7 @@ type Service interface {
 	GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error)
 
 	// GetAssessmentByID finds and returns a Assessment by ID
-	GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error)
+	GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error)
 
 	// UpdateAssessment updates a Assessment
 	UpdateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error)

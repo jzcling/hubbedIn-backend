@@ -149,8 +149,9 @@ func testGetAllAssessments(t *testing.T, s interfaces.Service) {
 
 func testGetAssessmentByID(t *testing.T, s interfaces.Service) {
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx   context.Context
+		id    uint64
+		admin bool
 	}
 
 	type expect struct {
@@ -163,15 +164,15 @@ func testGetAssessmentByID(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"id 1", args{ctx, 1}, expect{&models.Assessment{ID: 1}, nil}},
-		{"error", args{ctx, 10000}, expect{nil, errors.New("mock error")}},
+		{"id 1", args{ctx, 1, true}, expect{&models.Assessment{ID: 1}, nil}},
+		{"error", args{ctx, 10000, true}, expect{nil, errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAssessmentByID", tt.args.ctx, tt.args.id).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAssessmentByID(tt.args.ctx, tt.args.id)
+			got, err := s.GetAssessmentByID(tt.args.ctx, tt.args.id, &tt.args.admin)
 			if tt.exp.output != nil && got != nil {
 				assert.Equal(t, tt.exp.output.ID, got.ID)
 			} else {

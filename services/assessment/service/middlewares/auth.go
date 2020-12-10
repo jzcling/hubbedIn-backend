@@ -96,15 +96,12 @@ func (mw authMiddleware) GetAllAssessments(ctx context.Context, f models.Assessm
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (mw authMiddleware) GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error) {
+func (mw authMiddleware) GetAssessmentByID(ctx context.Context, id uint64, _ *bool) (*models.Assessment, error) {
 	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
-		return nil, errAuth
-	}
-	return mw.next.GetAssessmentByID(ctx, id)
+	return mw.next.GetAssessmentByID(ctx, id, &isAdmin)
 }
 
 // UpdateAssessment updates a Assessment

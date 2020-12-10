@@ -82,14 +82,15 @@ func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentF
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (r *repository) GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error) {
+func (r *repository) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
 	m := models.Assessment{ID: id}
-	err := r.DB.WithContext(ctx).Model(&m).
+	q := r.DB.WithContext(ctx).Model(&m).
 		Where("id = ?", id).
-		Relation(relQuestions).
-		Relation(relCandidateStatuses).
-		Returning("*").
-		First()
+		Relation(relQuestions)
+	if *admin {
+		q = q.Relation(relCandidateStatuses)
+	}
+	err := q.Returning("*").First()
 	//pg returns error when no rows in the result set
 	if err == pg.ErrNoRows {
 		return nil, nil

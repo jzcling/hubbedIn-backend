@@ -50,9 +50,9 @@ func (mw logMiddleware) GetAllAssessments(ctx context.Context, input models.Asse
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (mw logMiddleware) GetAssessmentByID(ctx context.Context, input uint64) (output *models.Assessment, err error) {
+func (mw logMiddleware) GetAssessmentByID(ctx context.Context, input uint64, admin *bool) (output *models.Assessment, err error) {
 	defer mw.log("GetAssessmentByID", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAssessmentByID(ctx, input)
+	output, err = mw.next.GetAssessmentByID(ctx, input, admin)
 	return
 }
 

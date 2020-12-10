@@ -113,7 +113,7 @@ type GetAllAssessmentsResponse struct {
 func makeGetAssessmentByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAssessmentByIDRequest)
-		c, err := s.GetAssessmentByID(ctx, req.ID)
+		c, err := s.GetAssessmentByID(ctx, req.ID, nil)
 		return GetAssessmentByIDResponse{Assessment: c, Err: err}, nil
 	}
 }

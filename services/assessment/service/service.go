@@ -41,8 +41,8 @@ func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilt
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (s *service) GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error) {
-	m, err := s.repository.GetAssessmentByID(ctx, id)
+func (s *service) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
+	m, err := s.repository.GetAssessmentByID(ctx, id, admin)
 	if err != nil {
 		return nil, err
 	}

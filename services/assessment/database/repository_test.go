@@ -156,8 +156,9 @@ func testGetAssessmentByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	require.NoError(t, err)
 
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx   context.Context
+		id    uint64
+		admin bool
 	}
 
 	type expect struct {
@@ -170,13 +171,13 @@ func testGetAssessmentByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id exists", args{ctx, existing.ID}, expect{&models.Assessment{ID: existing.ID}, nil}},
-		{"id 10000", args{ctx, 10000}, expect{nil, nil}},
+		{"id exists", args{ctx, existing.ID, true}, expect{&models.Assessment{ID: existing.ID}, nil}},
+		{"id 10000", args{ctx, 10000, true}, expect{nil, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAssessmentByID(tt.args.ctx, tt.args.id)
+			got, err := r.GetAssessmentByID(tt.args.ctx, tt.args.id, &tt.args.admin)
 			if tt.exp.output != nil && got != nil {
 				assert.Equal(t, tt.exp.output.ID, got.ID)
 			} else {
