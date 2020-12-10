@@ -1799,6 +1799,6 @@
                     "url_pattern": "/v1/responses/{id}"
                 }
             ]
-        },
+        }
     ]
 }
