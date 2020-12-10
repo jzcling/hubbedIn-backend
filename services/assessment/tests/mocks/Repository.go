@@ -246,13 +246,13 @@ func (_m *Repository) GetAllQuestions(ctx context.Context, f models.QuestionFilt
 	return r0, r1
 }
 
-// GetAssessmentByID provides a mock function with given fields: ctx, id
-func (_m *Repository) GetAssessmentByID(ctx context.Context, id uint64) (*models.Assessment, error) {
-	ret := _m.Called(ctx, id)
+// GetAssessmentByID provides a mock function with given fields: ctx, id, admin
+func (_m *Repository) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
+	ret := _m.Called(ctx, id, admin)
 
 	var r0 *models.Assessment
-	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.Assessment); ok {
-		r0 = rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, uint64, *bool) *models.Assessment); ok {
+		r0 = rf(ctx, id, admin)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.Assessment)
@@ -260,8 +260,8 @@ func (_m *Repository) GetAssessmentByID(ctx context.Context, id uint64) (*models
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
-		r1 = rf(ctx, id)
+	if rf, ok := ret.Get(1).(func(context.Context, uint64, *bool) error); ok {
+		r1 = rf(ctx, id, admin)
 	} else {
 		r1 = ret.Error(1)
 	}
