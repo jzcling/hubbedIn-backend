@@ -266,11 +266,14 @@ func (r *repository) CreateUserSkill(ctx context.Context, us *models.UserSkill) 
 }
 
 // DeleteUserSkill deletes a UserSkill by ID
-func (r *repository) DeleteUserSkill(ctx context.Context, id uint64) error {
-	us := &models.UserSkill{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(us).WherePK().Delete()
+func (r *repository) DeleteUserSkill(ctx context.Context, cid, sid uint64) error {
+	us := &models.UserSkill{}
+	_, err := r.DB.WithContext(ctx).Model(us).
+		Where("candidate_id = ?", cid).
+		Where("skill_id = ?", sid).
+		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete user skill with id %v", id))
+		return errors.Wrap(err, "Cannot delete user skill")
 	}
 	return nil
 }
@@ -419,11 +422,14 @@ func (r *repository) UpdateAcademicHistory(ctx context.Context, m *models.Academ
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (r *repository) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	m := &models.AcademicHistory{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
+func (r *repository) DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error {
+	m := &models.AcademicHistory{}
+	_, err := r.DB.WithContext(ctx).Model(m).
+		Where("candidate_id = ?", cid).
+		Where("id = ?", ahid).
+		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete academic history with id %v", id))
+		return errors.Wrap(err, "Cannot delete academic history")
 	}
 	return nil
 }
@@ -563,11 +569,14 @@ func (r *repository) UpdateJobHistory(ctx context.Context, m *models.JobHistory)
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (r *repository) DeleteJobHistory(ctx context.Context, id uint64) error {
-	m := &models.JobHistory{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
+func (r *repository) DeleteJobHistory(ctx context.Context, cid, jhid uint64) error {
+	m := &models.JobHistory{}
+	_, err := r.DB.WithContext(ctx).Model(m).
+		Where("candidate_id = ?", cid).
+		Where("id = ?", jhid).
+		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete job history with id %v", id))
+		return errors.Wrap(err, "Cannot delete job history")
 	}
 	return nil
 }

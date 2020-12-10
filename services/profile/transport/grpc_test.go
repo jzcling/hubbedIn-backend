@@ -993,8 +993,8 @@ func TestDeleteAcademicHistory(t *testing.T) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1, &pb.DeleteAcademicHistoryRequest{Id: 1}}, expect{nil}},
-		{"error", args{ctx, 10000, &pb.DeleteAcademicHistoryRequest{Id: 10000}}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, &pb.DeleteAcademicHistoryRequest{CandidateId: 1, AcademicHistoryId: 1}}, expect{nil}},
+		{"error", args{ctx, 10000, &pb.DeleteAcademicHistoryRequest{CandidateId: 10000, AcademicHistoryId: 10000}}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
@@ -1519,8 +1519,8 @@ func TestDeleteJobHistory(t *testing.T) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1, &pb.DeleteJobHistoryRequest{Id: 1}}, expect{nil}},
-		{"error", args{ctx, 10000, &pb.DeleteJobHistoryRequest{Id: 10000}}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, &pb.DeleteJobHistoryRequest{CandidateId: 1, JobHistoryId: 1}}, expect{nil}},
+		{"error", args{ctx, 10000, &pb.DeleteJobHistoryRequest{CandidateId: 10000, JobHistoryId: 10000}}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {

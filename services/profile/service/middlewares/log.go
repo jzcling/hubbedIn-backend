@@ -103,9 +103,9 @@ func (mw logMiddleware) CreateUserSkill(ctx context.Context, input *models.UserS
 }
 
 // DeleteUserSkill deletes a UserSkill by ID
-func (mw logMiddleware) DeleteUserSkill(ctx context.Context, input uint64) (err error) {
+func (mw logMiddleware) DeleteUserSkill(ctx context.Context, cid, input uint64) (err error) {
 	defer mw.log("DeleteUserSkill", time.Now(), input, nil, &err)
-	err = mw.next.DeleteUserSkill(ctx, input)
+	err = mw.next.DeleteUserSkill(ctx, cid, input)
 	return
 }
 
@@ -179,9 +179,9 @@ func (mw logMiddleware) UpdateAcademicHistory(ctx context.Context, input *models
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (mw logMiddleware) DeleteAcademicHistory(ctx context.Context, input uint64) (err error) {
+func (mw logMiddleware) DeleteAcademicHistory(ctx context.Context, cid, input uint64) (err error) {
 	defer mw.log("DeleteAcademicHistory", time.Now(), input, nil, &err)
-	err = mw.next.DeleteAcademicHistory(ctx, input)
+	err = mw.next.DeleteAcademicHistory(ctx, cid, input)
 	return
 }
 
@@ -255,8 +255,8 @@ func (mw logMiddleware) UpdateJobHistory(ctx context.Context, input *models.JobH
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (mw logMiddleware) DeleteJobHistory(ctx context.Context, input uint64) (err error) {
+func (mw logMiddleware) DeleteJobHistory(ctx context.Context, cid, input uint64) (err error) {
 	defer mw.log("DeleteJobHistory", time.Now(), input, nil, &err)
-	err = mw.next.DeleteJobHistory(ctx, input)
+	err = mw.next.DeleteJobHistory(ctx, cid, input)
 	return
 }

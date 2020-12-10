@@ -109,8 +109,8 @@ func (s *service) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*m
 }
 
 // DeleteUserSkill deletes a UserSkill by ID
-func (s *service) DeleteUserSkill(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteUserSkill(ctx, id)
+func (s *service) DeleteUserSkill(ctx context.Context, cid, sid uint64) error {
+	err := s.repository.DeleteUserSkill(ctx, cid, sid)
 	if err != nil {
 		return err
 	}
@@ -205,8 +205,8 @@ func (s *service) UpdateAcademicHistory(ctx context.Context, academic *models.Ac
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (s *service) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteAcademicHistory(ctx, id)
+func (s *service) DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error {
+	err := s.repository.DeleteAcademicHistory(ctx, cid, ahid)
 	if err != nil {
 		return err
 	}
@@ -302,8 +302,8 @@ func (s *service) UpdateJobHistory(ctx context.Context, job *models.JobHistory) 
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (s *service) DeleteJobHistory(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteJobHistory(ctx, id)
+func (s *service) DeleteJobHistory(ctx context.Context, cid, jhid uint64) error {
+	err := s.repository.DeleteJobHistory(ctx, cid, jhid)
 	if err != nil {
 		return err
 	}

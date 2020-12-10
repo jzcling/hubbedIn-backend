@@ -73,35 +73,6 @@
           "ProfileService"
         ]
       },
-      "delete": {
-        "operationId": "ProfileService_DeleteAcademicHistory",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteAcademicHistoryResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "ProfileService"
-        ]
-      },
       "put": {
         "operationId": "ProfileService_UpdateAcademicHistory",
         "responses": {
@@ -283,6 +254,120 @@
             "schema": {
               "$ref": "#/definitions/pbCandidate"
             }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/v1/candidates/{candidateId}/academichistories/{academicHistoryId}": {
+      "delete": {
+        "operationId": "ProfileService_DeleteAcademicHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteAcademicHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "candidateId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "academicHistoryId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/v1/candidates/{candidateId}/jobhistories/{jobHistoryId}": {
+      "delete": {
+        "operationId": "ProfileService_DeleteJobHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteJobHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "candidateId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "jobHistoryId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/v1/candidates/{candidateId}/skills/{skillId}": {
+      "delete": {
+        "operationId": "ProfileService_DeleteUserSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteUserSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "candidateId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "skillId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -849,35 +934,6 @@
           "ProfileService"
         ]
       },
-      "delete": {
-        "operationId": "ProfileService_DeleteJobHistory",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteJobHistoryResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "ProfileService"
-        ]
-      },
       "put": {
         "operationId": "ProfileService_UpdateJobHistory",
         "responses": {
@@ -1036,37 +1092,6 @@
             "schema": {
               "$ref": "#/definitions/pbUserSkill"
             }
-          }
-        ],
-        "tags": [
-          "ProfileService"
-        ]
-      }
-    },
-    "/v1/userskills/{id}": {
-      "delete": {
-        "operationId": "ProfileService_DeleteUserSkill",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteUserSkillResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
           }
         ],
         "tags": [

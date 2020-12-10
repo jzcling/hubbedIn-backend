@@ -440,14 +440,24 @@ func request_ProfileService_DeleteUserSkill_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["candidate_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "candidate_id")
 	}
 
-	protoReq.Id, err = runtime.Uint64(val)
+	protoReq.CandidateId, err = runtime.Uint64(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "candidate_id", err)
+	}
+
+	val, ok = pathParams["skill_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "skill_id")
+	}
+
+	protoReq.SkillId, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "skill_id", err)
 	}
 
 	msg, err := client.DeleteUserSkill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -466,14 +476,24 @@ func local_request_ProfileService_DeleteUserSkill_0(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["candidate_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "candidate_id")
 	}
 
-	protoReq.Id, err = runtime.Uint64(val)
+	protoReq.CandidateId, err = runtime.Uint64(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "candidate_id", err)
+	}
+
+	val, ok = pathParams["skill_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "skill_id")
+	}
+
+	protoReq.SkillId, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "skill_id", err)
 	}
 
 	msg, err := server.DeleteUserSkill(ctx, &protoReq)
@@ -890,14 +910,24 @@ func request_ProfileService_DeleteAcademicHistory_0(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["candidate_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "candidate_id")
 	}
 
-	protoReq.Id, err = runtime.Uint64(val)
+	protoReq.CandidateId, err = runtime.Uint64(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "candidate_id", err)
+	}
+
+	val, ok = pathParams["academic_history_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "academic_history_id")
+	}
+
+	protoReq.AcademicHistoryId, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "academic_history_id", err)
 	}
 
 	msg, err := client.DeleteAcademicHistory(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -916,14 +946,24 @@ func local_request_ProfileService_DeleteAcademicHistory_0(ctx context.Context, m
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["candidate_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "candidate_id")
 	}
 
-	protoReq.Id, err = runtime.Uint64(val)
+	protoReq.CandidateId, err = runtime.Uint64(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "candidate_id", err)
+	}
+
+	val, ok = pathParams["academic_history_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "academic_history_id")
+	}
+
+	protoReq.AcademicHistoryId, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "academic_history_id", err)
 	}
 
 	msg, err := server.DeleteAcademicHistory(ctx, &protoReq)
@@ -1340,14 +1380,24 @@ func request_ProfileService_DeleteJobHistory_0(ctx context.Context, marshaler ru
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["candidate_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "candidate_id")
 	}
 
-	protoReq.Id, err = runtime.Uint64(val)
+	protoReq.CandidateId, err = runtime.Uint64(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "candidate_id", err)
+	}
+
+	val, ok = pathParams["job_history_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "job_history_id")
+	}
+
+	protoReq.JobHistoryId, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "job_history_id", err)
 	}
 
 	msg, err := client.DeleteJobHistory(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1366,14 +1416,24 @@ func local_request_ProfileService_DeleteJobHistory_0(ctx context.Context, marsha
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["candidate_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "candidate_id")
 	}
 
-	protoReq.Id, err = runtime.Uint64(val)
+	protoReq.CandidateId, err = runtime.Uint64(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "candidate_id", err)
+	}
+
+	val, ok = pathParams["job_history_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "job_history_id")
+	}
+
+	protoReq.JobHistoryId, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "job_history_id", err)
 	}
 
 	msg, err := server.DeleteJobHistory(ctx, &protoReq)
@@ -2740,7 +2800,7 @@ var (
 
 	pattern_ProfileService_CreateUserSkill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "userskills"}, ""))
 
-	pattern_ProfileService_DeleteUserSkill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "userskills", "id"}, ""))
+	pattern_ProfileService_DeleteUserSkill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "candidates", "candidate_id", "skills", "skill_id"}, ""))
 
 	pattern_ProfileService_CreateInstitution_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "institutions"}, ""))
 
@@ -2760,7 +2820,7 @@ var (
 
 	pattern_ProfileService_UpdateAcademicHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "academichistories", "id"}, ""))
 
-	pattern_ProfileService_DeleteAcademicHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "academichistories", "id"}, ""))
+	pattern_ProfileService_DeleteAcademicHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "candidates", "candidate_id", "academichistories", "academic_history_id"}, ""))
 
 	pattern_ProfileService_CreateCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "companies"}, ""))
 
@@ -2780,7 +2840,7 @@ var (
 
 	pattern_ProfileService_UpdateJobHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "jobhistories", "id"}, ""))
 
-	pattern_ProfileService_DeleteJobHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "jobhistories", "id"}, ""))
+	pattern_ProfileService_DeleteJobHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "candidates", "candidate_id", "jobhistories", "job_history_id"}, ""))
 )
 
 var (

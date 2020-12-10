@@ -455,7 +455,8 @@ func testCreateUserSkill(t *testing.T, s interfaces.Service) {
 func testDeleteUserSkill(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
-		id  uint64
+		cid uint64
+		sid uint64
 	}
 
 	type expect struct {
@@ -467,15 +468,15 @@ func testDeleteUserSkill(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1}, expect{nil}},
-		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, 1}, expect{nil}},
+		{"error", args{ctx, 10000, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r.On("DeleteUserSkill", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+			r.On("DeleteUserSkill", tt.args.ctx, tt.args.cid, tt.args.sid).Return(tt.exp.err)
 
-			err := s.DeleteUserSkill(tt.args.ctx, tt.args.id)
+			err := s.DeleteUserSkill(tt.args.ctx, tt.args.cid, tt.args.sid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -864,8 +865,9 @@ func testUpdateAcademicHistory(t *testing.T, s interfaces.Service) {
 
 func testDeleteAcademicHistory(t *testing.T, s interfaces.Service) {
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		ahid uint64
 	}
 
 	type expect struct {
@@ -877,15 +879,15 @@ func testDeleteAcademicHistory(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1}, expect{nil}},
-		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, 1}, expect{nil}},
+		{"error", args{ctx, 10000, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r.On("DeleteAcademicHistory", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+			r.On("DeleteAcademicHistory", tt.args.ctx, tt.args.cid, tt.args.ahid).Return(tt.exp.err)
 
-			err := s.DeleteAcademicHistory(tt.args.ctx, tt.args.id)
+			err := s.DeleteAcademicHistory(tt.args.ctx, tt.args.cid, tt.args.ahid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -1276,8 +1278,9 @@ func testUpdateJobHistory(t *testing.T, s interfaces.Service) {
 
 func testDeleteJobHistory(t *testing.T, s interfaces.Service) {
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		jhid uint64
 	}
 
 	type expect struct {
@@ -1289,15 +1292,15 @@ func testDeleteJobHistory(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1}, expect{nil}},
-		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, 1}, expect{nil}},
+		{"error", args{ctx, 10000, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r.On("DeleteJobHistory", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+			r.On("DeleteJobHistory", tt.args.ctx, tt.args.cid, tt.args.jhid).Return(tt.exp.err)
 
-			err := s.DeleteJobHistory(tt.args.ctx, tt.args.id)
+			err := s.DeleteJobHistory(tt.args.ctx, tt.args.cid, tt.args.jhid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
