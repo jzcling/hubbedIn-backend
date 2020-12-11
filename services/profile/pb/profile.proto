@@ -51,7 +51,10 @@ service ProfileService {
         };
     };
     rpc DeleteUserSkill(DeleteUserSkillRequest) returns (DeleteUserSkillResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{candidate_id}/skills/{skill_id}" };
+        option (google.api.http) = { 
+            delete: "/v1/userskills"
+            body: "*"
+        };
     };
 
     rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {
@@ -96,7 +99,10 @@ service ProfileService {
         };
     };
     rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{candidate_id}/academichistories/{academic_history_id}" };
+        option (google.api.http) = { 
+            delete: "/v1/academichistories/{id}" 
+            body: "*"
+        };
     };
 
     rpc CreateCompany(CreateCompanyRequest) returns (Company) {
@@ -141,7 +147,10 @@ service ProfileService {
         };
     };
     rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{candidate_id}/jobhistories/{job_history_id}" };
+        option (google.api.http) = { 
+            delete: "/v1/jobhistories/{id}"
+            body: "*"
+        };
     };
 } 
 
@@ -334,8 +343,8 @@ message UpdateAcademicHistoryRequest {
 }
 
 message DeleteAcademicHistoryRequest {
-    uint64 candidate_id = 1;
-    uint64 academic_history_id = 2;
+    uint64 id = 1;
+    uint64 candidate_id = 2;
 }
 
 message DeleteAcademicHistoryResponse {
@@ -424,8 +433,8 @@ message UpdateJobHistoryRequest {
 }
 
 message DeleteJobHistoryRequest {
-    uint64 candidate_id = 1;
-    uint64 job_history_id = 2;
+    uint64 id = 1;
+    uint64 candidate_id = 2;
 }
 
 message DeleteJobHistoryResponse {

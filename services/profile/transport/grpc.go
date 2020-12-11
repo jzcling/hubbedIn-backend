@@ -774,7 +774,7 @@ func (s *grpcServer) DeleteAcademicHistory(ctx context.Context, req *pb.DeleteAc
 // decodeDeleteAcademicHistoryRequest decodes the incoming grpc payload to our go kit payload
 func decodeDeleteAcademicHistoryRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.DeleteAcademicHistoryRequest)
-	return endpoints.DeleteAcademicHistoryRequest{CandidateID: req.CandidateId, AcademicHistoryID: req.AcademicHistoryId}, nil
+	return endpoints.DeleteAcademicHistoryRequest{CandidateID: req.CandidateId, AcademicHistoryID: req.Id}, nil
 }
 
 // encodeDeleteAcademicHistoryResponse encodes the outgoing go kit payload to the grpc payload
@@ -1038,7 +1038,7 @@ func (s *grpcServer) DeleteJobHistory(ctx context.Context, req *pb.DeleteJobHist
 // decodeDeleteJobHistoryRequest decodes the incoming grpc payload to our go kit payload
 func decodeDeleteJobHistoryRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.DeleteJobHistoryRequest)
-	return endpoints.DeleteJobHistoryRequest{CandidateID: req.CandidateId, JobHistoryID: req.JobHistoryId}, nil
+	return endpoints.DeleteJobHistoryRequest{CandidateID: req.CandidateId, JobHistoryID: req.Id}, nil
 }
 
 // encodeDeleteJobHistoryResponse encodes the outgoing go kit payload to the grpc payload

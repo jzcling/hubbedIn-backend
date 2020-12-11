@@ -73,6 +73,43 @@
           "ProfileService"
         ]
       },
+      "delete": {
+        "operationId": "ProfileService_DeleteAcademicHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteAcademicHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbDeleteAcademicHistoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
       "put": {
         "operationId": "ProfileService_UpdateAcademicHistory",
         "responses": {
@@ -254,120 +291,6 @@
             "schema": {
               "$ref": "#/definitions/pbCandidate"
             }
-          }
-        ],
-        "tags": [
-          "ProfileService"
-        ]
-      }
-    },
-    "/v1/candidates/{candidateId}/academichistories/{academicHistoryId}": {
-      "delete": {
-        "operationId": "ProfileService_DeleteAcademicHistory",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteAcademicHistoryResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "candidateId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "academicHistoryId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "ProfileService"
-        ]
-      }
-    },
-    "/v1/candidates/{candidateId}/jobhistories/{jobHistoryId}": {
-      "delete": {
-        "operationId": "ProfileService_DeleteJobHistory",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteJobHistoryResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "candidateId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "jobHistoryId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "ProfileService"
-        ]
-      }
-    },
-    "/v1/candidates/{candidateId}/skills/{skillId}": {
-      "delete": {
-        "operationId": "ProfileService_DeleteUserSkill",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteUserSkillResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "candidateId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "skillId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
           }
         ],
         "tags": [
@@ -934,6 +857,43 @@
           "ProfileService"
         ]
       },
+      "delete": {
+        "operationId": "ProfileService_DeleteJobHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteJobHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbDeleteJobHistoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
       "put": {
         "operationId": "ProfileService_UpdateJobHistory",
         "responses": {
@@ -1068,6 +1028,36 @@
       }
     },
     "/v1/userskills": {
+      "delete": {
+        "operationId": "ProfileService_DeleteUserSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteUserSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbDeleteUserSkillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
       "post": {
         "operationId": "ProfileService_CreateUserSkill",
         "responses": {
@@ -1270,14 +1260,53 @@
         }
       }
     },
+    "pbDeleteAcademicHistoryRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "pbDeleteAcademicHistoryResponse": {
       "type": "object"
     },
     "pbDeleteCandidateResponse": {
       "type": "object"
     },
+    "pbDeleteJobHistoryRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "pbDeleteJobHistoryResponse": {
       "type": "object"
+    },
+    "pbDeleteUserSkillRequest": {
+      "type": "object",
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "skillId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
     },
     "pbDeleteUserSkillResponse": {
       "type": "object"
