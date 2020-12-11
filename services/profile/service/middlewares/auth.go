@@ -19,7 +19,7 @@ type authMiddleware struct {
 var (
 	errAuth = errors.New("Forbidden")
 
-	namespace = "https://hubbedin/id"
+	idKey = "https://hubbedin/id"
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the profile Service interface
@@ -65,7 +65,7 @@ func (mw authMiddleware) GetCandidateByID(ctx context.Context, id uint64) (*mode
 	if err != nil {
 		return nil, err
 	}
-	id, err = strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err = strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (mw authMiddleware) UpdateCandidate(ctx context.Context, candidate *models.
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (mw authMiddleware) DeleteCandidate(ctx context.Context, id uint64) error {
 	if err != nil {
 		return err
 	}
-	id, err = strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err = strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func (mw authMiddleware) CreateUserSkill(ctx context.Context, us *models.UserSki
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +142,7 @@ func (mw authMiddleware) DeleteUserSkill(ctx context.Context, cid, sid uint64) e
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return err
 	}
@@ -194,7 +194,7 @@ func (mw authMiddleware) CreateAcademicHistory(ctx context.Context, academic *mo
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, academic *mo
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -231,7 +231,7 @@ func (mw authMiddleware) DeleteAcademicHistory(ctx context.Context, cid, ahid ui
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return err
 	}
@@ -283,7 +283,7 @@ func (mw authMiddleware) CreateJobHistory(ctx context.Context, job *models.JobHi
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -304,7 +304,7 @@ func (mw authMiddleware) UpdateJobHistory(ctx context.Context, job *models.JobHi
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -320,7 +320,7 @@ func (mw authMiddleware) DeleteJobHistory(ctx context.Context, cid, jhid uint64)
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
 	if err != nil {
 		return err
 	}
