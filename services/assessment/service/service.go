@@ -69,9 +69,9 @@ func (s *service) DeleteAssessment(ctx context.Context, id uint64) error {
 
 /* --------------- Assessment Status --------------- */
 
-// CreateAssessmentStatus creates a new AssessmentStatus
-func (s *service) CreateAssessmentStatus(ctx context.Context, model *models.AssessmentStatus) (*models.AssessmentStatus, error) {
-	m, err := s.repository.CreateAssessmentStatus(ctx, model)
+// CreateAssessmentAttempt creates a new AssessmentAttempt
+func (s *service) CreateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
+	m, err := s.repository.CreateAssessmentAttempt(ctx, model)
 	if err != nil {
 		return nil, err
 	}
@@ -79,18 +79,18 @@ func (s *service) CreateAssessmentStatus(ctx context.Context, model *models.Asse
 	return m, err
 }
 
-// UpdateAssessmentStatus updates a AssessmentStatus
-func (s *service) UpdateAssessmentStatus(ctx context.Context, model *models.AssessmentStatus) (*models.AssessmentStatus, error) {
-	m, err := s.repository.UpdateAssessmentStatus(ctx, model)
+// UpdateAssessmentAttempt updates a AssessmentAttempt
+func (s *service) UpdateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
+	m, err := s.repository.UpdateAssessmentAttempt(ctx, model)
 	if err != nil {
 		return nil, err
 	}
 	return m, err
 }
 
-// DeleteAssessmentStatus deletes a AssessmentStatus by ID
-func (s *service) DeleteAssessmentStatus(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteAssessmentStatus(ctx, id)
+// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
+func (s *service) DeleteAssessmentAttempt(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteAssessmentAttempt(ctx, id)
 	if err != nil {
 		return err
 	}

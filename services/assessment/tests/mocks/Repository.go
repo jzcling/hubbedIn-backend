@@ -38,21 +38,21 @@ func (_m *Repository) CreateAssessment(ctx context.Context, m *models.Assessment
 	return r0, r1
 }
 
-// CreateAssessmentStatus provides a mock function with given fields: ctx, m
-func (_m *Repository) CreateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+// CreateAssessmentAttempt provides a mock function with given fields: ctx, m
+func (_m *Repository) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	ret := _m.Called(ctx, m)
 
-	var r0 *models.AssessmentStatus
-	if rf, ok := ret.Get(0).(func(context.Context, *models.AssessmentStatus) *models.AssessmentStatus); ok {
+	var r0 *models.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *models.AssessmentAttempt) *models.AssessmentAttempt); ok {
 		r0 = rf(ctx, m)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.AssessmentStatus)
+			r0 = ret.Get(0).(*models.AssessmentAttempt)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *models.AssessmentStatus) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *models.AssessmentAttempt) error); ok {
 		r1 = rf(ctx, m)
 	} else {
 		r1 = ret.Error(1)
@@ -144,8 +144,8 @@ func (_m *Repository) DeleteAssessment(ctx context.Context, id uint64) error {
 	return r0
 }
 
-// DeleteAssessmentStatus provides a mock function with given fields: ctx, id
-func (_m *Repository) DeleteAssessmentStatus(ctx context.Context, id uint64) error {
+// DeleteAssessmentAttempt provides a mock function with given fields: ctx, id
+func (_m *Repository) DeleteAssessmentAttempt(ctx context.Context, id uint64) error {
 	ret := _m.Called(ctx, id)
 
 	var r0 error
@@ -315,21 +315,21 @@ func (_m *Repository) UpdateAssessment(ctx context.Context, m *models.Assessment
 	return r0, r1
 }
 
-// UpdateAssessmentStatus provides a mock function with given fields: ctx, m
-func (_m *Repository) UpdateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+// UpdateAssessmentAttempt provides a mock function with given fields: ctx, m
+func (_m *Repository) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	ret := _m.Called(ctx, m)
 
-	var r0 *models.AssessmentStatus
-	if rf, ok := ret.Get(0).(func(context.Context, *models.AssessmentStatus) *models.AssessmentStatus); ok {
+	var r0 *models.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *models.AssessmentAttempt) *models.AssessmentAttempt); ok {
 		r0 = rf(ctx, m)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.AssessmentStatus)
+			r0 = ret.Get(0).(*models.AssessmentAttempt)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *models.AssessmentStatus) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *models.AssessmentAttempt) error); ok {
 		r1 = rf(ctx, m)
 	} else {
 		r1 = ret.Error(1)

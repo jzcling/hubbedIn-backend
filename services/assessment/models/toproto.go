@@ -17,36 +17,36 @@ func (m *Assessment) ToProto() *pb.Assessment {
 		questions = append(questions, question.ToProto())
 	}
 
-	var statuses []*pb.AssessmentStatus
-	s := m.CandidateStatuses
-	for _, status := range s {
-		statuses = append(statuses, status.ToProto())
+	var attempts []*pb.AssessmentAttempt
+	s := m.Attempts
+	for _, attempt := range s {
+		attempts = append(attempts, attempt.ToProto())
 	}
 
 	return &pb.Assessment{
-		Id:                m.ID,
-		Name:              m.Name,
-		Description:       m.Description,
-		Notes:             m.Notes,
-		ImageUrl:          m.ImageURL,
-		Difficulty:        m.Difficulty,
-		TimeAllowed:       m.TimeAllowed,
-		Type:              m.Type,
-		Randomise:         m.Randomise,
-		NumQuestions:      m.NumQuestions,
-		Questions:         questions,
-		CandidateStatuses: statuses,
+		Id:           m.ID,
+		Name:         m.Name,
+		Description:  m.Description,
+		Notes:        m.Notes,
+		ImageUrl:     m.ImageURL,
+		Difficulty:   m.Difficulty,
+		TimeAllowed:  m.TimeAllowed,
+		Type:         m.Type,
+		Randomise:    m.Randomise,
+		NumQuestions: m.NumQuestions,
+		Questions:    questions,
+		Attempts:     attempts,
 	}
 }
 
-// ToProto maps the ORM AssessmentStatus model to the proto model
-func (m *AssessmentStatus) ToProto() *pb.AssessmentStatus {
+// ToProto maps the ORM AssessmentAttempt model to the proto model
+func (m *AssessmentAttempt) ToProto() *pb.AssessmentAttempt {
 	if m == nil {
 		return nil
 	}
 	startedAt := helpers.TimeToProto(m.StartedAt)
 	completedAt := helpers.TimeToProto(m.CompletedAt)
-	return &pb.AssessmentStatus{
+	return &pb.AssessmentAttempt{
 		Id:           m.ID,
 		AssessmentId: m.AssessmentID,
 		CandidateId:  m.CandidateID,

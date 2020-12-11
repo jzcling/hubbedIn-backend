@@ -20,9 +20,9 @@ type grpcServer struct {
 	updateAssessment  kitgrpc.Handler
 	deleteAssessment  kitgrpc.Handler
 
-	createAssessmentStatus kitgrpc.Handler
-	updateAssessmentStatus kitgrpc.Handler
-	deleteAssessmentStatus kitgrpc.Handler
+	createAssessmentAttempt kitgrpc.Handler
+	updateAssessmentAttempt kitgrpc.Handler
+	deleteAssessmentAttempt kitgrpc.Handler
 
 	createQuestion  kitgrpc.Handler
 	getAllQuestions kitgrpc.Handler
@@ -80,22 +80,22 @@ func NewGRPCServer(
 			options...,
 		),
 
-		createAssessmentStatus: kitgrpc.NewServer(
-			endpoints.CreateAssessmentStatus,
-			decodeCreateAssessmentStatusRequest,
-			encodeCreateAssessmentStatusResponse,
+		createAssessmentAttempt: kitgrpc.NewServer(
+			endpoints.CreateAssessmentAttempt,
+			decodeCreateAssessmentAttemptRequest,
+			encodeCreateAssessmentAttemptResponse,
 			options...,
 		),
-		updateAssessmentStatus: kitgrpc.NewServer(
-			endpoints.UpdateAssessmentStatus,
-			decodeUpdateAssessmentStatusRequest,
-			encodeUpdateAssessmentStatusResponse,
+		updateAssessmentAttempt: kitgrpc.NewServer(
+			endpoints.UpdateAssessmentAttempt,
+			decodeUpdateAssessmentAttemptRequest,
+			encodeUpdateAssessmentAttemptResponse,
 			options...,
 		),
-		deleteAssessmentStatus: kitgrpc.NewServer(
-			endpoints.DeleteAssessmentStatus,
-			decodeDeleteAssessmentStatusRequest,
-			encodeDeleteAssessmentStatusResponse,
+		deleteAssessmentAttempt: kitgrpc.NewServer(
+			endpoints.DeleteAssessmentAttempt,
+			decodeDeleteAssessmentAttemptRequest,
+			encodeDeleteAssessmentAttemptResponse,
 			options...,
 		),
 
@@ -302,77 +302,77 @@ func encodeDeleteAssessmentResponse(_ context.Context, response interface{}) (in
 
 /* --------------- Assessment Status --------------- */
 
-// CreateAssessmentStatus creates a new AssessmentStatus
-func (s *grpcServer) CreateAssessmentStatus(ctx context.Context, req *pb.CreateAssessmentStatusRequest) (*pb.AssessmentStatus, error) {
-	_, rep, err := s.createAssessmentStatus.ServeGRPC(ctx, req)
+// CreateAssessmentAttempt creates a new AssessmentAttempt
+func (s *grpcServer) CreateAssessmentAttempt(ctx context.Context, req *pb.CreateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
+	_, rep, err := s.createAssessmentAttempt.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.AssessmentStatus), nil
+	return rep.(*pb.AssessmentAttempt), nil
 }
 
-// decodeCreateAssessmentStatusRequest decodes the incoming grpc payload to our go kit payload
-func decodeCreateAssessmentStatusRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.CreateAssessmentStatusRequest)
-	return endpoints.CreateAssessmentStatusRequest{AssessmentStatus: models.AssessmentStatusToORM(req.AssessmentStatus)}, nil
+// decodeCreateAssessmentAttemptRequest decodes the incoming grpc payload to our go kit payload
+func decodeCreateAssessmentAttemptRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.CreateAssessmentAttemptRequest)
+	return endpoints.CreateAssessmentAttemptRequest{AssessmentAttempt: models.AssessmentAttemptToORM(req.AssessmentAttempt)}, nil
 }
 
-// encodeCreateAssessmentStatusResponse encodes the outgoing go kit payload to the grpc payload
-func encodeCreateAssessmentStatusResponse(_ context.Context, response interface{}) (interface{}, error) {
-	res := response.(endpoints.CreateAssessmentStatusResponse)
+// encodeCreateAssessmentAttemptResponse encodes the outgoing go kit payload to the grpc payload
+func encodeCreateAssessmentAttemptResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.CreateAssessmentAttemptResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return res.AssessmentStatus.ToProto(), nil
+		return res.AssessmentAttempt.ToProto(), nil
 	}
 	return nil, err
 }
 
-// UpdateAssessmentStatus updates a AssessmentStatus
-func (s *grpcServer) UpdateAssessmentStatus(ctx context.Context, req *pb.UpdateAssessmentStatusRequest) (*pb.AssessmentStatus, error) {
-	_, rep, err := s.updateAssessmentStatus.ServeGRPC(ctx, req)
+// UpdateAssessmentAttempt updates a AssessmentAttempt
+func (s *grpcServer) UpdateAssessmentAttempt(ctx context.Context, req *pb.UpdateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
+	_, rep, err := s.updateAssessmentAttempt.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.AssessmentStatus), nil
+	return rep.(*pb.AssessmentAttempt), nil
 }
 
-// decodeUpdateAssessmentStatusRequest decodes the incoming grpc payload to our go kit payload
-func decodeUpdateAssessmentStatusRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.UpdateAssessmentStatusRequest)
-	return endpoints.UpdateAssessmentStatusRequest{ID: req.Id, AssessmentStatus: models.AssessmentStatusToORM(req.AssessmentStatus)}, nil
+// decodeUpdateAssessmentAttemptRequest decodes the incoming grpc payload to our go kit payload
+func decodeUpdateAssessmentAttemptRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.UpdateAssessmentAttemptRequest)
+	return endpoints.UpdateAssessmentAttemptRequest{ID: req.Id, AssessmentAttempt: models.AssessmentAttemptToORM(req.AssessmentAttempt)}, nil
 }
 
-// encodeUpdateAssessmentStatusResponse encodes the outgoing go kit payload to the grpc payload
-func encodeUpdateAssessmentStatusResponse(_ context.Context, response interface{}) (interface{}, error) {
-	res := response.(endpoints.UpdateAssessmentStatusResponse)
+// encodeUpdateAssessmentAttemptResponse encodes the outgoing go kit payload to the grpc payload
+func encodeUpdateAssessmentAttemptResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.UpdateAssessmentAttemptResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return res.AssessmentStatus.ToProto(), nil
+		return res.AssessmentAttempt.ToProto(), nil
 	}
 	return nil, err
 }
 
-// DeleteAssessmentStatus deletes a AssessmentStatus by ID
-func (s *grpcServer) DeleteAssessmentStatus(ctx context.Context, req *pb.DeleteAssessmentStatusRequest) (*pb.DeleteAssessmentStatusResponse, error) {
-	_, rep, err := s.deleteAssessmentStatus.ServeGRPC(ctx, req)
+// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
+func (s *grpcServer) DeleteAssessmentAttempt(ctx context.Context, req *pb.DeleteAssessmentAttemptRequest) (*pb.DeleteAssessmentAttemptResponse, error) {
+	_, rep, err := s.deleteAssessmentAttempt.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.DeleteAssessmentStatusResponse), nil
+	return rep.(*pb.DeleteAssessmentAttemptResponse), nil
 }
 
-// decodeDeleteAssessmentStatusRequest decodes the incoming grpc payload to our go kit payload
-func decodeDeleteAssessmentStatusRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.DeleteAssessmentStatusRequest)
-	return endpoints.DeleteAssessmentStatusRequest{ID: req.Id}, nil
+// decodeDeleteAssessmentAttemptRequest decodes the incoming grpc payload to our go kit payload
+func decodeDeleteAssessmentAttemptRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.DeleteAssessmentAttemptRequest)
+	return endpoints.DeleteAssessmentAttemptRequest{ID: req.Id}, nil
 }
 
-// encodeDeleteAssessmentStatusResponse encodes the outgoing go kit payload to the grpc payload
-func encodeDeleteAssessmentStatusResponse(_ context.Context, response interface{}) (interface{}, error) {
-	res := response.(endpoints.DeleteAssessmentStatusResponse)
+// encodeDeleteAssessmentAttemptResponse encodes the outgoing go kit payload to the grpc payload
+func encodeDeleteAssessmentAttemptResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.DeleteAssessmentAttemptResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return &pb.DeleteAssessmentStatusResponse{}, nil
+		return &pb.DeleteAssessmentAttemptResponse{}, nil
 	}
 	return nil, err
 }

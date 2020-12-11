@@ -134,8 +134,8 @@ func (mw authMiddleware) DeleteAssessment(ctx context.Context, id uint64) error 
 
 /* --------------- Assessment Status --------------- */
 
-// CreateAssessmentStatus creates a new AssessmentStatus
-func (mw authMiddleware) CreateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+// CreateAssessmentAttempt creates a new AssessmentAttempt
+func (mw authMiddleware) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
@@ -143,11 +143,11 @@ func (mw authMiddleware) CreateAssessmentStatus(ctx context.Context, m *models.A
 	if !owns {
 		return nil, errAuth
 	}
-	return mw.next.CreateAssessmentStatus(ctx, m)
+	return mw.next.CreateAssessmentAttempt(ctx, m)
 }
 
-// UpdateAssessmentStatus updates a AssessmentStatus
-func (mw authMiddleware) UpdateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+// UpdateAssessmentAttempt updates a AssessmentAttempt
+func (mw authMiddleware) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
@@ -155,11 +155,11 @@ func (mw authMiddleware) UpdateAssessmentStatus(ctx context.Context, m *models.A
 	if !owns {
 		return nil, errAuth
 	}
-	return mw.next.UpdateAssessmentStatus(ctx, m)
+	return mw.next.UpdateAssessmentAttempt(ctx, m)
 }
 
-// DeleteAssessmentStatus deletes a AssessmentStatus by ID
-func (mw authMiddleware) DeleteAssessmentStatus(ctx context.Context, id uint64) error {
+// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
+func (mw authMiddleware) DeleteAssessmentAttempt(ctx context.Context, id uint64) error {
 	isAdmin, err := checkAdminOrOwner(ctx, nil)
 	if err != nil {
 		return err
@@ -167,7 +167,7 @@ func (mw authMiddleware) DeleteAssessmentStatus(ctx context.Context, id uint64) 
 	if !isAdmin {
 		return errAuth
 	}
-	return mw.next.DeleteAssessmentStatus(ctx, id)
+	return mw.next.DeleteAssessmentAttempt(ctx, id)
 }
 
 /* --------------- Question --------------- */

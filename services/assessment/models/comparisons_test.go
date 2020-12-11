@@ -28,10 +28,10 @@ func TestAssessmentIsEqual(t *testing.T) {
 	testIsEqual(t, m1, m2, m3)
 }
 
-func TestAssessmentStatusIsEqual(t *testing.T) {
+func TestAssessmentAttemptIsEqual(t *testing.T) {
 	timeAt := time.Date(2020, 11, 10, 13, 0, 0, 0, time.Local)
-	m1 := (*AssessmentStatus)(nil)
-	m2 := &AssessmentStatus{
+	m1 := (*AssessmentAttempt)(nil)
+	m2 := &AssessmentAttempt{
 		AssessmentID: 1,
 		CandidateID:  1,
 		Status:       "Completed",
@@ -39,7 +39,7 @@ func TestAssessmentStatusIsEqual(t *testing.T) {
 		CompletedAt:  &timeAt,
 		Score:        5,
 	}
-	m3 := &AssessmentStatus{}
+	m3 := &AssessmentAttempt{}
 
 	testIsEqual(t, m1, m2, m3)
 }

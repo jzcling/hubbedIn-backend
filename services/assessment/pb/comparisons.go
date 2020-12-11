@@ -22,9 +22,9 @@ func (m1 *Assessment) IsEqual(m2 interface{}) bool {
 	return true
 }
 
-// IsEqual checks the equivalence of two AssessmentStatus objects
-func (m1 *AssessmentStatus) IsEqual(m2 interface{}) bool {
-	convertedM2 := m2.(*AssessmentStatus)
+// IsEqual checks the equivalence of two AssessmentAttempt objects
+func (m1 *AssessmentAttempt) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*AssessmentAttempt)
 	isNil, resolve := checkNil(m1, m2)
 	if resolve {
 		return isNil

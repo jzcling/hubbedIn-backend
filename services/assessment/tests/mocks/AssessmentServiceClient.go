@@ -47,8 +47,8 @@ func (_m *AssessmentServiceClient) CreateAssessment(ctx context.Context, in *pb.
 	return r0, r1
 }
 
-// CreateAssessmentStatus provides a mock function with given fields: ctx, in, opts
-func (_m *AssessmentServiceClient) CreateAssessmentStatus(ctx context.Context, in *pb.CreateAssessmentStatusRequest, opts ...grpc.CallOption) (*pb.AssessmentStatus, error) {
+// CreateAssessmentAttempt provides a mock function with given fields: ctx, in, opts
+func (_m *AssessmentServiceClient) CreateAssessmentAttempt(ctx context.Context, in *pb.CreateAssessmentAttemptRequest, opts ...grpc.CallOption) (*pb.AssessmentAttempt, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -58,17 +58,17 @@ func (_m *AssessmentServiceClient) CreateAssessmentStatus(ctx context.Context, i
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.AssessmentStatus
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateAssessmentStatusRequest, ...grpc.CallOption) *pb.AssessmentStatus); ok {
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateAssessmentAttemptRequest, ...grpc.CallOption) *pb.AssessmentAttempt); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.AssessmentStatus)
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateAssessmentStatusRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateAssessmentAttemptRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -197,8 +197,8 @@ func (_m *AssessmentServiceClient) DeleteAssessment(ctx context.Context, in *pb.
 	return r0, r1
 }
 
-// DeleteAssessmentStatus provides a mock function with given fields: ctx, in, opts
-func (_m *AssessmentServiceClient) DeleteAssessmentStatus(ctx context.Context, in *pb.DeleteAssessmentStatusRequest, opts ...grpc.CallOption) (*pb.DeleteAssessmentStatusResponse, error) {
+// DeleteAssessmentAttempt provides a mock function with given fields: ctx, in, opts
+func (_m *AssessmentServiceClient) DeleteAssessmentAttempt(ctx context.Context, in *pb.DeleteAssessmentAttemptRequest, opts ...grpc.CallOption) (*pb.DeleteAssessmentAttemptResponse, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -208,17 +208,17 @@ func (_m *AssessmentServiceClient) DeleteAssessmentStatus(ctx context.Context, i
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.DeleteAssessmentStatusResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteAssessmentStatusRequest, ...grpc.CallOption) *pb.DeleteAssessmentStatusResponse); ok {
+	var r0 *pb.DeleteAssessmentAttemptResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteAssessmentAttemptRequest, ...grpc.CallOption) *pb.DeleteAssessmentAttemptResponse); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.DeleteAssessmentStatusResponse)
+			r0 = ret.Get(0).(*pb.DeleteAssessmentAttemptResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteAssessmentStatusRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteAssessmentAttemptRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -467,8 +467,8 @@ func (_m *AssessmentServiceClient) UpdateAssessment(ctx context.Context, in *pb.
 	return r0, r1
 }
 
-// UpdateAssessmentStatus provides a mock function with given fields: ctx, in, opts
-func (_m *AssessmentServiceClient) UpdateAssessmentStatus(ctx context.Context, in *pb.UpdateAssessmentStatusRequest, opts ...grpc.CallOption) (*pb.AssessmentStatus, error) {
+// UpdateAssessmentAttempt provides a mock function with given fields: ctx, in, opts
+func (_m *AssessmentServiceClient) UpdateAssessmentAttempt(ctx context.Context, in *pb.UpdateAssessmentAttemptRequest, opts ...grpc.CallOption) (*pb.AssessmentAttempt, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -478,17 +478,17 @@ func (_m *AssessmentServiceClient) UpdateAssessmentStatus(ctx context.Context, i
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.AssessmentStatus
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAssessmentStatusRequest, ...grpc.CallOption) *pb.AssessmentStatus); ok {
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAssessmentAttemptRequest, ...grpc.CallOption) *pb.AssessmentAttempt); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.AssessmentStatus)
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentStatusRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentAttemptRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)

@@ -53,9 +53,9 @@ func TestAllCRUD(t *testing.T) {
 	testUpdateAssessment(t, r, db)
 	testDeleteAssessment(t, r, db)
 
-	testCreateAssessmentStatus(t, r, db)
-	testUpdateAssessmentStatus(t, r, db)
-	testDeleteAssessmentStatus(t, r, db)
+	testCreateAssessmentAttempt(t, r, db)
+	testUpdateAssessmentAttempt(t, r, db)
+	testDeleteAssessmentAttempt(t, r, db)
 
 	testCreateQuestion(t, r, db)
 	testGetAllQuestions(t, r, db)
@@ -269,19 +269,19 @@ func testDeleteAssessment(t *testing.T, r interfaces.Repository, db *pg.DB) {
 
 /* --------------- Assessment Status --------------- */
 
-func testCreateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	testNoAssessmentID := &testmodels.AssessmentStatusNoAssessmentID
+func testCreateAssessmentAttempt(t *testing.T, r interfaces.Repository, db *pg.DB) {
+	testNoAssessmentID := &testmodels.AssessmentAttemptNoAssessmentID
 
 	test := *testNoAssessmentID
 	test.AssessmentID = 1
 
 	type args struct {
 		ctx   context.Context
-		input *models.AssessmentStatus
+		input *models.AssessmentAttempt
 	}
 
 	type expect struct {
-		output *models.AssessmentStatus
+		output *models.AssessmentAttempt
 		err    error
 	}
 
@@ -297,7 +297,7 @@ func testCreateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.CreateAssessmentStatus(tt.args.ctx, tt.args.input)
+			got, err := r.CreateAssessmentAttempt(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -308,8 +308,8 @@ func testCreateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB
 	}
 }
 
-func testUpdateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	existing := &models.AssessmentStatus{}
+func testUpdateAssessmentAttempt(t *testing.T, r interfaces.Repository, db *pg.DB) {
+	existing := &models.AssessmentAttempt{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
 
@@ -318,11 +318,11 @@ func testUpdateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB
 
 	type args struct {
 		ctx   context.Context
-		input *models.AssessmentStatus
+		input *models.AssessmentAttempt
 	}
 
 	type expect struct {
-		output *models.AssessmentStatus
+		output *models.AssessmentAttempt
 		err    error
 	}
 
@@ -331,14 +331,14 @@ func testUpdateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("AssessmentStatus is nil")}},
+		{"nil", args{ctx, nil}, expect{nil, errors.New("AssessmentAttempt is nil")}},
 		{"id existing", args{ctx, &updated}, expect{&updated, nil}},
-		{"id 10000", args{ctx, &models.AssessmentStatus{ID: 10000}}, expect{nil, errors.New("Cannot update assessment status with id")}},
+		{"id 10000", args{ctx, &models.AssessmentAttempt{ID: 10000}}, expect{nil, errors.New("Cannot update assessment status with id")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.UpdateAssessmentStatus(tt.args.ctx, tt.args.input)
+			got, err := r.UpdateAssessmentAttempt(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -349,8 +349,8 @@ func testUpdateAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB
 	}
 }
 
-func testDeleteAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	existing := &models.AssessmentStatus{}
+func testDeleteAssessmentAttempt(t *testing.T, r interfaces.Repository, db *pg.DB) {
+	existing := &models.AssessmentAttempt{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
 
@@ -373,7 +373,7 @@ func testDeleteAssessmentStatus(t *testing.T, r interfaces.Repository, db *pg.DB
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteAssessmentStatus(tt.args.ctx, tt.args.id)
+			err := r.DeleteAssessmentAttempt(tt.args.ctx, tt.args.id)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

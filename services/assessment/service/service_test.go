@@ -45,9 +45,9 @@ func TestAllCRUD(t *testing.T) {
 	testUpdateAssessment(t, s)
 	testDeleteAssessment(t, s)
 
-	// testCreateAssessmentStatus(t, s)
-	// testUpdateAssessmentStatus(t, s)
-	// testDeleteAssessmentStatus(t, s)
+	// testCreateAssessmentAttempt(t, s)
+	// testUpdateAssessmentAttempt(t, s)
+	// testDeleteAssessmentAttempt(t, s)
 
 	// testCreateQuestion(t, s)
 	// testGetAllQuestions(t, s)

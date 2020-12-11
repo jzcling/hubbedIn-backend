@@ -11,6 +11,106 @@
     "application/json"
   ],
   "paths": {
+    "/v1/assessmentattempts": {
+      "post": {
+        "operationId": "AssessmentService_CreateAssessmentAttempt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssessmentAttempt"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAssessmentAttempt"
+            }
+          }
+        ],
+        "tags": [
+          "AssessmentService"
+        ]
+      }
+    },
+    "/v1/assessmentattempts/{id}": {
+      "delete": {
+        "operationId": "AssessmentService_DeleteAssessmentAttempt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteAssessmentAttemptResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "AssessmentService"
+        ]
+      },
+      "put": {
+        "operationId": "AssessmentService_UpdateAssessmentAttempt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssessmentAttempt"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAssessmentAttempt"
+            }
+          }
+        ],
+        "tags": [
+          "AssessmentService"
+        ]
+      }
+    },
     "/v1/assessments": {
       "get": {
         "operationId": "AssessmentService_GetAllAssessments",
@@ -215,106 +315,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/pbAssessment"
-            }
-          }
-        ],
-        "tags": [
-          "AssessmentService"
-        ]
-      }
-    },
-    "/v1/assessmentstatuses": {
-      "post": {
-        "operationId": "AssessmentService_CreateAssessmentStatus",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssessmentStatus"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbAssessmentStatus"
-            }
-          }
-        ],
-        "tags": [
-          "AssessmentService"
-        ]
-      }
-    },
-    "/v1/assessmentstatuses/{id}": {
-      "delete": {
-        "operationId": "AssessmentService_DeleteAssessmentStatus",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbDeleteAssessmentStatusResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "AssessmentService"
-        ]
-      },
-      "put": {
-        "operationId": "AssessmentService_UpdateAssessmentStatus",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssessmentStatus"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbAssessmentStatus"
             }
           }
         ],
@@ -665,15 +665,15 @@
             "$ref": "#/definitions/pbQuestion"
           }
         },
-        "candidateStatuses": {
+        "attempts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/pbAssessmentStatus"
+            "$ref": "#/definitions/pbAssessmentAttempt"
           }
         }
       }
     },
-    "pbAssessmentStatus": {
+    "pbAssessmentAttempt": {
       "type": "object",
       "properties": {
         "id": {
@@ -705,10 +705,10 @@
         }
       }
     },
-    "pbDeleteAssessmentResponse": {
+    "pbDeleteAssessmentAttemptResponse": {
       "type": "object"
     },
-    "pbDeleteAssessmentStatusResponse": {
+    "pbDeleteAssessmentResponse": {
       "type": "object"
     },
     "pbDeleteQuestionResponse": {

@@ -31,20 +31,20 @@ service AssessmentService {
         option (google.api.http) = { delete: "/v1/assessments/{id}" };
     };
 
-    rpc CreateAssessmentStatus(CreateAssessmentStatusRequest) returns (AssessmentStatus) {
+    rpc CreateAssessmentAttempt(CreateAssessmentAttemptRequest) returns (AssessmentAttempt) {
         option (google.api.http) = { 
-            post: "/v1/assessmentstatuses" 
-            body: "assessment_status"
+            post: "/v1/assessmentattempts" 
+            body: "assessment_attempt"
         };
     };
-    rpc UpdateAssessmentStatus(UpdateAssessmentStatusRequest) returns (AssessmentStatus) {
+    rpc UpdateAssessmentAttempt(UpdateAssessmentAttemptRequest) returns (AssessmentAttempt) {
         option (google.api.http) = {
-            put: "/v1/assessmentstatuses/{id}"
-            body: "assessment_status"
+            put: "/v1/assessmentattempts/{id}"
+            body: "assessment_attempt"
         };
     };
-    rpc DeleteAssessmentStatus(DeleteAssessmentStatusRequest) returns (DeleteAssessmentStatusResponse) {
-        option (google.api.http) = { delete: "/v1/assessmentstatuses/{id}" };
+    rpc DeleteAssessmentAttempt(DeleteAssessmentAttemptRequest) returns (DeleteAssessmentAttemptResponse) {
+        option (google.api.http) = { delete: "/v1/assessmentattempts/{id}" };
     };
 
     rpc CreateQuestion(CreateQuestionRequest) returns (Question) {
@@ -102,7 +102,7 @@ message Assessment {
 	bool randomise = 9;
 	uint32 num_questions = 10;
 	repeated Question questions = 11;
-	repeated AssessmentStatus candidate_statuses = 12;
+    repeated AssessmentAttempt attempts = 12;
 }
 
 message CreateAssessmentRequest {
@@ -140,7 +140,7 @@ message DeleteAssessmentResponse {
     // Empty
 }
 
-message AssessmentStatus {
+message AssessmentAttempt {
     uint64 id = 1;
     uint64 assessment_id = 2;
 	uint64 candidate_id = 3;
@@ -150,20 +150,20 @@ message AssessmentStatus {
 	uint32 score = 7;
 }
 
-message CreateAssessmentStatusRequest {
-    AssessmentStatus assessment_status = 1;
+message CreateAssessmentAttemptRequest {
+    AssessmentAttempt assessment_attempt = 1;
 }
 
-message UpdateAssessmentStatusRequest {
+message UpdateAssessmentAttemptRequest {
     uint64 id = 1;
-    AssessmentStatus assessment_status = 2;
+    AssessmentAttempt assessment_attempt = 2;
 }
 
-message DeleteAssessmentStatusRequest {
+message DeleteAssessmentAttemptRequest {
     uint64 id = 1;
 }
 
-message DeleteAssessmentStatusResponse {
+message DeleteAssessmentAttemptResponse {
     // Empty
 }
 

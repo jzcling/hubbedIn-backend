@@ -1290,7 +1290,7 @@
         },
 
         {
-            "endpoint": "/v1/assessmentstatuses",
+            "endpoint": "/v1/assessmentattempts",
             "method": "POST",
             "output_encoding": "json",
             "headers_to_pass": [
@@ -1312,12 +1312,12 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "POST",
-                    "url_pattern": "/v1/assessmentstatuses"
+                    "url_pattern": "/v1/assessmentattempts"
                 }
             ]
         },
         {
-            "endpoint": "/v1/assessmentstatuses/{id}",
+            "endpoint": "/v1/assessmentattempts/{id}",
             "method": "PUT",
             "output_encoding": "json",
             "headers_to_pass": [
@@ -1339,12 +1339,12 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "PUT",
-                    "url_pattern": "/v1/assessmentstatuses/{id}"
+                    "url_pattern": "/v1/assessmentattempts/{id}"
                 }
             ]
         },
         {
-            "endpoint": "/v1/assessmentstatuses/{id}",
+            "endpoint": "/v1/assessmentattempts/{id}",
             "method": "DELETE",
             "output_encoding": "json",
             "headers_to_pass": [
@@ -1366,7 +1366,7 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "DELETE",
-                    "url_pattern": "/v1/assessmentstatuses/{id}"
+                    "url_pattern": "/v1/assessmentattempts/{id}"
                 }
             ]
         },

@@ -17,47 +17,58 @@ func init() {
 type Assessment struct {
 	tableName struct{} `pg:"assessments,alias:a"`
 
-	ID                uint64              `json:"id"`
-	Name              string              `json:"name" pg:",notnull,unique"`
-	Description       string              `json:"description"`
-	Notes             string              `json:"notes"`
-	ImageURL          string              `json:"image_url" pg:"image_url"`
-	Difficulty        string              `json:"difficulty"`
-	TimeAllowed       uint64              `json:"time_allowed"`
-	Type              string              `json:"type"`
-	Randomise         bool                `json:"randomise"`
-	NumQuestions      uint32              `json:"num_questions"`
-	Questions         []*Question         `json:"questions,omitempty" pg:"many2many:assessments_questions"`
-	CandidateStatuses []*AssessmentStatus `json:"candidate_statuses,omitempty" pg:"rel:has-many"`
+	ID           uint64               `json:"id"`
+	Name         string               `json:"name" pg:",notnull,unique"`
+	Description  string               `json:"description"`
+	Notes        string               `json:"notes"`
+	ImageURL     string               `json:"image_url" pg:"image_url"`
+	Difficulty   string               `json:"difficulty"`
+	TimeAllowed  uint64               `json:"time_allowed"`
+	Type         string               `json:"type"`
+	Randomise    bool                 `json:"randomise"`
+	NumQuestions uint32               `json:"num_questions"`
+	Questions    []*Question          `json:"questions,omitempty" pg:"many2many:assessments_questions"`
+	Attempts     []*AssessmentAttempt `json:"assessment_attempts,omitempty" pg:"rel:has-many"`
 }
 
-// AssessmentStatus declares the model for AssessmentStatus
-type AssessmentStatus struct {
-	tableName struct{} `pg:"assessment_statuses,alias:as"`
+// AssessmentAttempt declares the model for AssessmentAttempt
+type AssessmentAttempt struct {
+	tableName struct{} `pg:"assessment_attempts,alias:aa"`
 
-	ID           uint64     `json:"id"`
-	AssessmentID uint64     `json:"assessment_id" pg:"assessment_id,notnull"`
-	CandidateID  uint64     `json:"candidate_id" pg:"candidate_id,notnull"`
-	Status       string     `json:"string" pg:",notnull"`
-	StartedAt    *time.Time `json:"started_at,omitempty"`
-	CompletedAt  *time.Time `json:"completed_at,omitempty"`
-	Score        uint32     `json:"score,omitempty" pg:",use_zero"`
+	ID           uint64      `json:"id"`
+	AssessmentID uint64      `json:"assessment_id" pg:"assessment_id,notnull"`
+	CandidateID  uint64      `json:"candidate_id" pg:"candidate_id,notnull"`
+	Status       string      `json:"string" pg:",notnull"`
+	StartedAt    *time.Time  `json:"started_at,omitempty"`
+	CompletedAt  *time.Time  `json:"completed_at,omitempty"`
+	Score        uint32      `json:"score,omitempty" pg:",use_zero"`
+	Questions    []*Question `json:"questions" pg:"many2many:attempts_questions,fk:attempt_id,joinFK:question_id"`
 }
 
 // Question declares the model for Question
 type Question struct {
 	tableName struct{} `pg:"questions,alias:q"`
 
-	ID          uint64        `json:"id"`
-	CreatedBy   uint64        `json:"created_by"`
-	Type        string        `json:"type" pg:",notnull"`
-	Text        string        `json:"text"`
-	ImageURL    string        `json:"image_url" pg:"image_url"`
-	Options     []string      `json:"options" pg:",array"`
-	Answer      uint32        `json:"answer" pg:",use_zero"`
-	Tags        []*Tag        `json:"tags" pg:"rel:has-many"`
-	Assessments []*Assessment `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
-	Responses   []*Response   `json:"responses,omitempty" pg:"rel:has-many"`
+	ID          uint64               `json:"id"`
+	CreatedBy   uint64               `json:"created_by"`
+	Type        string               `json:"type" pg:",notnull"`
+	Text        string               `json:"text"`
+	ImageURL    string               `json:"image_url" pg:"image_url"`
+	Options     []string             `json:"options" pg:",array"`
+	Answer      uint32               `json:"answer" pg:",use_zero"`
+	Tags        []*Tag               `json:"tags" pg:"rel:has-many"`
+	Assessments []*Assessment        `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
+	Responses   []*Response          `json:"responses,omitempty" pg:"rel:has-many"`
+	Attempts    []*AssessmentAttempt `json:"attempts,omitempty" pg:"many2many:attempts_questions,fk:question_id,joinFK:attempt_id"`
+}
+
+// AttemptQuestion declares the model for AttemptQuestion
+type AttemptQuestion struct {
+	tableName struct{} `pg:"attempts_questions,alias:aaq"`
+
+	ID         uint64 `json:"id"`
+	AttemptID  uint64 `json:"attempt_id"`
+	QuestionID uint64 `json:"question_id"`
 }
 
 // Tag declares the model for Tag

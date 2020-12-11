@@ -16,8 +16,8 @@ var (
 		NumQuestions: 10,
 	}
 
-	// AssessmentStatusNoAssessmentID is a mock AssessmentStatus with no AssessmentID
-	AssessmentStatusNoAssessmentID = models.AssessmentStatus{
+	// AssessmentAttemptNoAssessmentID is a mock AssessmentAttempt with no AssessmentID
+	AssessmentAttemptNoAssessmentID = models.AssessmentAttempt{
 		CandidateID: 1,
 		Status:      "Completed",
 	}

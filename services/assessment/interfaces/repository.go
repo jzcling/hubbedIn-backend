@@ -24,16 +24,16 @@ type Repository interface {
 	// DeleteAssessment deletes a Assessment by ID
 	DeleteAssessment(ctx context.Context, id uint64) error
 
-	/* --------------- AssessmentStatus --------------- */
+	/* --------------- Assessment Attempt --------------- */
 
-	// CreateAssessmentStatus creates a new AssessmentStatus
-	CreateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error)
+	// CreateAssessmentAttempt creates a new AssessmentAttempt
+	CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 
-	// UpdateAssessmentStatus updates a AssessmentStatus
-	UpdateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error)
+	// UpdateAssessmentAttempt updates a AssessmentAttempt
+	UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 
-	// DeleteAssessmentStatus deletes a AssessmentStatus by ID
-	DeleteAssessmentStatus(ctx context.Context, id uint64) error
+	// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
+	DeleteAssessmentAttempt(ctx context.Context, id uint64) error
 
 	/* --------------- Question --------------- */
 

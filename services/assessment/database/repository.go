@@ -34,7 +34,7 @@ func (r *repository) CreateAssessment(ctx context.Context, m *models.Assessment)
 
 	_, err := r.DB.WithContext(ctx).Model(m).
 		Relation(relQuestions).
-		Relation(relCandidateStatuses).
+		Relation(relAssessmentAttempts).
 		Returning("*").
 		Where("name = ?", m.Name).
 		OnConflict("DO NOTHING").
@@ -73,7 +73,7 @@ func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentF
 		q = q.Where("as.score >= ?", f.MinScore)
 	}
 	if *admin {
-		q = q.Relation(relCandidateStatuses)
+		q = q.Relation(relAssessmentAttempts)
 	}
 	err := q.Relation(relQuestions).
 		Returning("*").
@@ -88,7 +88,7 @@ func (r *repository) GetAssessmentByID(ctx context.Context, id uint64, admin *bo
 		Where("id = ?", id).
 		Relation(relQuestions)
 	if *admin {
-		q = q.Relation(relCandidateStatuses)
+		q = q.Relation(relAssessmentAttempts)
 	}
 	err := q.Returning("*").First()
 	//pg returns error when no rows in the result set
@@ -106,7 +106,7 @@ func (r *repository) UpdateAssessment(ctx context.Context, m *models.Assessment)
 
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
 		Relation(relQuestions).
-		Relation(relCandidateStatuses).
+		Relation(relAssessmentAttempts).
 		Returning("*").
 		Update()
 	if err != nil {
@@ -128,8 +128,8 @@ func (r *repository) DeleteAssessment(ctx context.Context, id uint64) error {
 
 /* --------------- Assessment Status --------------- */
 
-// CreateAssessmentStatus creates a new AssessmentStatus
-func (r *repository) CreateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+// CreateAssessmentAttempt creates a new AssessmentAttempt
+func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	if m == nil {
 		return nil, errors.New("Input parameter assessment status is nil")
 	}
@@ -145,10 +145,10 @@ func (r *repository) CreateAssessmentStatus(ctx context.Context, m *models.Asses
 	return m, nil
 }
 
-// UpdateAssessmentStatus updates a AssessmentStatus
-func (r *repository) UpdateAssessmentStatus(ctx context.Context, m *models.AssessmentStatus) (*models.AssessmentStatus, error) {
+// UpdateAssessmentAttempt updates a AssessmentAttempt
+func (r *repository) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	if m == nil {
-		return nil, errors.New("AssessmentStatus is nil")
+		return nil, errors.New("AssessmentAttempt is nil")
 	}
 
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
@@ -161,9 +161,9 @@ func (r *repository) UpdateAssessmentStatus(ctx context.Context, m *models.Asses
 	return m, nil
 }
 
-// DeleteAssessmentStatus deletes a AssessmentStatus by ID
-func (r *repository) DeleteAssessmentStatus(ctx context.Context, id uint64) error {
-	m := &models.AssessmentStatus{ID: id}
+// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
+func (r *repository) DeleteAssessmentAttempt(ctx context.Context, id uint64) error {
+	m := &models.AssessmentAttempt{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Cannot delete assessment status with id %v", id))

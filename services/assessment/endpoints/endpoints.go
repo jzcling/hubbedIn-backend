@@ -17,9 +17,9 @@ type Endpoints struct {
 	UpdateAssessment  endpoint.Endpoint
 	DeleteAssessment  endpoint.Endpoint
 
-	CreateAssessmentStatus endpoint.Endpoint
-	UpdateAssessmentStatus endpoint.Endpoint
-	DeleteAssessmentStatus endpoint.Endpoint
+	CreateAssessmentAttempt endpoint.Endpoint
+	UpdateAssessmentAttempt endpoint.Endpoint
+	DeleteAssessmentAttempt endpoint.Endpoint
 
 	CreateQuestion  endpoint.Endpoint
 	GetAllQuestions endpoint.Endpoint
@@ -43,9 +43,9 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		UpdateAssessment:  makeUpdateAssessmentEndpoint(s),
 		DeleteAssessment:  makeDeleteAssessmentEndpoint(s),
 
-		CreateAssessmentStatus: makeCreateAssessmentStatusEndpoint(s),
-		UpdateAssessmentStatus: makeUpdateAssessmentStatusEndpoint(s),
-		DeleteAssessmentStatus: makeDeleteAssessmentStatusEndpoint(s),
+		CreateAssessmentAttempt: makeCreateAssessmentAttemptEndpoint(s),
+		UpdateAssessmentAttempt: makeUpdateAssessmentAttemptEndpoint(s),
+		DeleteAssessmentAttempt: makeDeleteAssessmentAttemptEndpoint(s),
 
 		CreateQuestion:  makeCreateQuestionEndpoint(s),
 		GetAllQuestions: makeGetAllQuestionsEndpoint(s),
@@ -169,60 +169,60 @@ type DeleteAssessmentResponse struct {
 
 /* -------------- Assessment Status -------------- */
 
-func makeCreateAssessmentStatusEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeCreateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateAssessmentStatusRequest)
-		c, err := s.CreateAssessmentStatus(ctx, req.AssessmentStatus)
-		return CreateAssessmentStatusResponse{AssessmentStatus: c, Err: err}, nil
+		req := request.(CreateAssessmentAttemptRequest)
+		c, err := s.CreateAssessmentAttempt(ctx, req.AssessmentAttempt)
+		return CreateAssessmentAttemptResponse{AssessmentAttempt: c, Err: err}, nil
 	}
 }
 
-// CreateAssessmentStatusRequest declares the inputs required for creating a assessment status
-type CreateAssessmentStatusRequest struct {
-	AssessmentStatus *models.AssessmentStatus
+// CreateAssessmentAttemptRequest declares the inputs required for creating a assessment status
+type CreateAssessmentAttemptRequest struct {
+	AssessmentAttempt *models.AssessmentAttempt
 }
 
-// CreateAssessmentStatusResponse declares the outputs after attempting to create a assessment status
-type CreateAssessmentStatusResponse struct {
-	AssessmentStatus *models.AssessmentStatus
-	Err              error
+// CreateAssessmentAttemptResponse declares the outputs after attempting to create a assessment status
+type CreateAssessmentAttemptResponse struct {
+	AssessmentAttempt *models.AssessmentAttempt
+	Err               error
 }
 
-func makeUpdateAssessmentStatusEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeUpdateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(UpdateAssessmentStatusRequest)
-		c, err := s.UpdateAssessmentStatus(ctx, req.AssessmentStatus)
-		return UpdateAssessmentStatusResponse{AssessmentStatus: c, Err: err}, nil
+		req := request.(UpdateAssessmentAttemptRequest)
+		c, err := s.UpdateAssessmentAttempt(ctx, req.AssessmentAttempt)
+		return UpdateAssessmentAttemptResponse{AssessmentAttempt: c, Err: err}, nil
 	}
 }
 
-// UpdateAssessmentStatusRequest declares the inputs required for updating a assessment status
-type UpdateAssessmentStatusRequest struct {
-	ID               uint64
-	AssessmentStatus *models.AssessmentStatus
+// UpdateAssessmentAttemptRequest declares the inputs required for updating a assessment status
+type UpdateAssessmentAttemptRequest struct {
+	ID                uint64
+	AssessmentAttempt *models.AssessmentAttempt
 }
 
-// UpdateAssessmentStatusResponse declares the outputs after attempting to update a assessment status
-type UpdateAssessmentStatusResponse struct {
-	AssessmentStatus *models.AssessmentStatus
-	Err              error
+// UpdateAssessmentAttemptResponse declares the outputs after attempting to update a assessment status
+type UpdateAssessmentAttemptResponse struct {
+	AssessmentAttempt *models.AssessmentAttempt
+	Err               error
 }
 
-func makeDeleteAssessmentStatusEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeDeleteAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(DeleteAssessmentStatusRequest)
-		err := s.DeleteAssessmentStatus(ctx, req.ID)
-		return DeleteAssessmentStatusResponse{Err: err}, nil
+		req := request.(DeleteAssessmentAttemptRequest)
+		err := s.DeleteAssessmentAttempt(ctx, req.ID)
+		return DeleteAssessmentAttemptResponse{Err: err}, nil
 	}
 }
 
-// DeleteAssessmentStatusRequest declares the inputs required for deleting a assessment status
-type DeleteAssessmentStatusRequest struct {
+// DeleteAssessmentAttemptRequest declares the inputs required for deleting a assessment status
+type DeleteAssessmentAttemptRequest struct {
 	ID uint64
 }
 
-// DeleteAssessmentStatusResponse declares the outputs after attempting to delete a assessment status
-type DeleteAssessmentStatusResponse struct {
+// DeleteAssessmentAttemptResponse declares the outputs after attempting to delete a assessment status
+type DeleteAssessmentAttemptResponse struct {
 	Err error
 }
 

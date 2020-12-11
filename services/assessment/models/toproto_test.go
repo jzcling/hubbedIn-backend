@@ -44,7 +44,7 @@ func TestAssessmentToProto(t *testing.T) {
 				Answer:    0,
 			},
 		},
-		CandidateStatuses: []*AssessmentStatus{
+		Attempts: []*AssessmentAttempt{
 			{
 				ID:           1,
 				AssessmentID: 1,
@@ -97,7 +97,7 @@ func TestAssessmentToProto(t *testing.T) {
 				Answer:    0,
 			},
 		},
-		CandidateStatuses: []*pb.AssessmentStatus{
+		Attempts: []*pb.AssessmentAttempt{
 			{
 				Id:           1,
 				AssessmentId: 1,
@@ -123,12 +123,12 @@ func TestAssessmentToProto(t *testing.T) {
 	require.EqualValues(t, expect, got)
 }
 
-func TestAssessmentStatusToProto(t *testing.T) {
+func TestAssessmentAttemptToProto(t *testing.T) {
 	testPbTime := ptypes.TimestampNow()
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &AssessmentStatus{
+	input := &AssessmentAttempt{
 		ID:           1,
 		AssessmentID: 1,
 		CandidateID:  1,
@@ -138,7 +138,7 @@ func TestAssessmentStatusToProto(t *testing.T) {
 		Score:        5,
 	}
 
-	expect := &pb.AssessmentStatus{
+	expect := &pb.AssessmentAttempt{
 		Id:           1,
 		AssessmentId: 1,
 		CandidateId:  1,

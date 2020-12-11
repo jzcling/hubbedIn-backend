@@ -37,21 +37,21 @@ func (_m *AssessmentServiceServer) CreateAssessment(_a0 context.Context, _a1 *pb
 	return r0, r1
 }
 
-// CreateAssessmentStatus provides a mock function with given fields: _a0, _a1
-func (_m *AssessmentServiceServer) CreateAssessmentStatus(_a0 context.Context, _a1 *pb.CreateAssessmentStatusRequest) (*pb.AssessmentStatus, error) {
+// CreateAssessmentAttempt provides a mock function with given fields: _a0, _a1
+func (_m *AssessmentServiceServer) CreateAssessmentAttempt(_a0 context.Context, _a1 *pb.CreateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.AssessmentStatus
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateAssessmentStatusRequest) *pb.AssessmentStatus); ok {
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateAssessmentAttemptRequest) *pb.AssessmentAttempt); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.AssessmentStatus)
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateAssessmentStatusRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateAssessmentAttemptRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -152,21 +152,21 @@ func (_m *AssessmentServiceServer) DeleteAssessment(_a0 context.Context, _a1 *pb
 	return r0, r1
 }
 
-// DeleteAssessmentStatus provides a mock function with given fields: _a0, _a1
-func (_m *AssessmentServiceServer) DeleteAssessmentStatus(_a0 context.Context, _a1 *pb.DeleteAssessmentStatusRequest) (*pb.DeleteAssessmentStatusResponse, error) {
+// DeleteAssessmentAttempt provides a mock function with given fields: _a0, _a1
+func (_m *AssessmentServiceServer) DeleteAssessmentAttempt(_a0 context.Context, _a1 *pb.DeleteAssessmentAttemptRequest) (*pb.DeleteAssessmentAttemptResponse, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.DeleteAssessmentStatusResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteAssessmentStatusRequest) *pb.DeleteAssessmentStatusResponse); ok {
+	var r0 *pb.DeleteAssessmentAttemptResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteAssessmentAttemptRequest) *pb.DeleteAssessmentAttemptResponse); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.DeleteAssessmentStatusResponse)
+			r0 = ret.Get(0).(*pb.DeleteAssessmentAttemptResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteAssessmentStatusRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteAssessmentAttemptRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -359,21 +359,21 @@ func (_m *AssessmentServiceServer) UpdateAssessment(_a0 context.Context, _a1 *pb
 	return r0, r1
 }
 
-// UpdateAssessmentStatus provides a mock function with given fields: _a0, _a1
-func (_m *AssessmentServiceServer) UpdateAssessmentStatus(_a0 context.Context, _a1 *pb.UpdateAssessmentStatusRequest) (*pb.AssessmentStatus, error) {
+// UpdateAssessmentAttempt provides a mock function with given fields: _a0, _a1
+func (_m *AssessmentServiceServer) UpdateAssessmentAttempt(_a0 context.Context, _a1 *pb.UpdateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.AssessmentStatus
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAssessmentStatusRequest) *pb.AssessmentStatus); ok {
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAssessmentAttemptRequest) *pb.AssessmentAttempt); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.AssessmentStatus)
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentStatusRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentAttemptRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

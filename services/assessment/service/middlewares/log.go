@@ -79,24 +79,24 @@ func (mw logMiddleware) DeleteAssessment(ctx context.Context, input uint64) (err
 
 /* --------------- Assessment Status --------------- */
 
-// CreateAssessmentStatus creates a new AssessmentStatus
-func (mw logMiddleware) CreateAssessmentStatus(ctx context.Context, input *models.AssessmentStatus) (output *models.AssessmentStatus, err error) {
-	defer mw.log("CreateAssessmentStatus", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateAssessmentStatus(ctx, input)
+// CreateAssessmentAttempt creates a new AssessmentAttempt
+func (mw logMiddleware) CreateAssessmentAttempt(ctx context.Context, input *models.AssessmentAttempt) (output *models.AssessmentAttempt, err error) {
+	defer mw.log("CreateAssessmentAttempt", time.Now(), input, &output, &err)
+	output, err = mw.next.CreateAssessmentAttempt(ctx, input)
 	return
 }
 
-// UpdateAssessmentStatus updates a AssessmentStatus
-func (mw logMiddleware) UpdateAssessmentStatus(ctx context.Context, input *models.AssessmentStatus) (output *models.AssessmentStatus, err error) {
-	defer mw.log("UpdateAssessmentStatus", time.Now(), input, &output, &err)
-	output, err = mw.next.UpdateAssessmentStatus(ctx, input)
+// UpdateAssessmentAttempt updates a AssessmentAttempt
+func (mw logMiddleware) UpdateAssessmentAttempt(ctx context.Context, input *models.AssessmentAttempt) (output *models.AssessmentAttempt, err error) {
+	defer mw.log("UpdateAssessmentAttempt", time.Now(), input, &output, &err)
+	output, err = mw.next.UpdateAssessmentAttempt(ctx, input)
 	return
 }
 
-// DeleteAssessmentStatus deletes a AssessmentStatus by ID
-func (mw logMiddleware) DeleteAssessmentStatus(ctx context.Context, input uint64) (err error) {
-	defer mw.log("DeleteAssessmentStatus", time.Now(), input, nil, &err)
-	err = mw.next.DeleteAssessmentStatus(ctx, input)
+// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
+func (mw logMiddleware) DeleteAssessmentAttempt(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteAssessmentAttempt", time.Now(), input, nil, &err)
+	err = mw.next.DeleteAssessmentAttempt(ctx, input)
 	return
 }
 

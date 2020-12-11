@@ -44,7 +44,7 @@ func TestAssessmentToORM(t *testing.T) {
 				Answer:    0,
 			},
 		},
-		CandidateStatuses: []*pb.AssessmentStatus{
+		Attempts: []*pb.AssessmentAttempt{
 			{
 				Id:           1,
 				AssessmentId: 1,
@@ -97,7 +97,7 @@ func TestAssessmentToORM(t *testing.T) {
 				Answer:    0,
 			},
 		},
-		CandidateStatuses: []*AssessmentStatus{
+		Attempts: []*AssessmentAttempt{
 			{
 				ID:           1,
 				AssessmentID: 1,
@@ -123,12 +123,12 @@ func TestAssessmentToORM(t *testing.T) {
 	require.EqualValues(t, expect, got)
 }
 
-func TestAssessmentStatusToORM(t *testing.T) {
+func TestAssessmentAttemptToORM(t *testing.T) {
 	testPbTime := ptypes.TimestampNow()
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &pb.AssessmentStatus{
+	input := &pb.AssessmentAttempt{
 		Id:           1,
 		AssessmentId: 1,
 		CandidateId:  1,
@@ -138,7 +138,7 @@ func TestAssessmentStatusToORM(t *testing.T) {
 		Score:        5,
 	}
 
-	expect := &AssessmentStatus{
+	expect := &AssessmentAttempt{
 		ID:           1,
 		AssessmentID: 1,
 		CandidateID:  1,
@@ -148,7 +148,7 @@ func TestAssessmentStatusToORM(t *testing.T) {
 		Score:        5,
 	}
 
-	got := AssessmentStatusToORM(input)
+	got := AssessmentAttemptToORM(input)
 	require.EqualValues(t, expect, got)
 }
 
