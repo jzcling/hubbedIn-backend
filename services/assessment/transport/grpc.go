@@ -199,7 +199,16 @@ func (s *grpcServer) GetAllAssessments(ctx context.Context, req *pb.GetAllAssess
 // decodeGetAllAssessmentsRequest decodes the incoming grpc payload to our go kit payload
 func decodeGetAllAssessmentsRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.GetAllAssessmentsRequest)
-	return endpoints.GetAllAssessmentsRequest{ID: req.Id}, nil
+	decoded := endpoints.GetAllAssessmentsRequest{
+		ID:          req.Id,
+		Name:        req.Name,
+		Difficulty:  req.Difficulty,
+		Type:        req.Type,
+		CandidateID: req.CandidateId,
+		Status:      req.Status,
+		MinScore:    req.MinScore,
+	}
+	return decoded, nil
 }
 
 // encodeGetAllAssessmentsResponse encodes the outgoing go kit payload to the grpc payload
@@ -407,7 +416,11 @@ func (s *grpcServer) GetAllQuestions(ctx context.Context, req *pb.GetAllQuestion
 // decodeGetAllQuestionsRequest decodes the incoming grpc payload to our go kit payload
 func decodeGetAllQuestionsRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.GetAllQuestionsRequest)
-	return endpoints.GetAllQuestionsRequest{ID: req.Id}, nil
+	decoded := endpoints.GetAllQuestionsRequest{
+		ID:   req.Id,
+		Tags: req.Tags,
+	}
+	return decoded, nil
 }
 
 // encodeGetAllQuestionsResponse encodes the outgoing go kit payload to the grpc payload
