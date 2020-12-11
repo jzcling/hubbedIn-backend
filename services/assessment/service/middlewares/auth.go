@@ -3,7 +3,6 @@ package middlewares
 import (
 	"context"
 	"errors"
-	"in-backend/helpers"
 	"in-backend/services/assessment/interfaces"
 	"in-backend/services/assessment/models"
 	"strconv"
@@ -37,17 +36,23 @@ func checkAdminOrOwner(ctx context.Context, ownerID *uint64) (bool, error) {
 		return false, err
 	}
 
-	roles := claims[rolesKey].([]string)
-	if helpers.IsStringInSlice("Admin", roles) {
-		return true, nil
+	if claims[rolesKey] != nil {
+		for _, r := range claims[rolesKey].([]interface{}) {
+			role := r.(string)
+			if role == "Admin" {
+				return true, nil
+			}
+		}
 	}
 
-	id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
-	if err != nil {
-		return false, err
-	}
-	if ownerID != nil && id == *ownerID {
-		return true, nil
+	if claims[idKey] != nil {
+		id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
+		if err != nil {
+			return false, err
+		}
+		if ownerID != nil && id == *ownerID {
+			return true, nil
+		}
 	}
 
 	return false, nil
