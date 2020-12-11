@@ -13,7 +13,7 @@ import (
 )
 
 // New creates a new instance of a GRPC gateway
-func New(ctx context.Context, profileEndpoint, projectEndpoint string) (http.Handler, error) {
+func New(ctx context.Context, profileEndpoint, projectEndpoint, assessmentEndpoint string) (http.Handler, error) {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	err := profilegw.RegisterProfileServiceHandlerFromEndpoint(ctx, mux, profileEndpoint, opts)
@@ -24,7 +24,7 @@ func New(ctx context.Context, profileEndpoint, projectEndpoint string) (http.Han
 	if err != nil {
 		return nil, err
 	}
-	err = assessmentgw.RegisterAssessmentServiceHandlerFromEndpoint(ctx, mux, projectEndpoint, opts)
+	err = assessmentgw.RegisterAssessmentServiceHandlerFromEndpoint(ctx, mux, assessmentEndpoint, opts)
 	if err != nil {
 		return nil, err
 	}
