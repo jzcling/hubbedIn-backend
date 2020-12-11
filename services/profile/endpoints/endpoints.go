@@ -288,14 +288,15 @@ type CreateUserSkillResponse struct {
 func makeDeleteUserSkillEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteUserSkillRequest)
-		err := s.DeleteUserSkill(ctx, req.ID)
+		err := s.DeleteUserSkill(ctx, req.CandidateID, req.SkillID)
 		return DeleteUserSkillResponse{Err: err}, nil
 	}
 }
 
 // DeleteUserSkillRequest declares the inputs required for deleting a UserSkill
 type DeleteUserSkillRequest struct {
-	ID uint64
+	CandidateID uint64
+	SkillID     uint64
 }
 
 // DeleteUserSkillResponse declares the outputs after attempting to delete a UserSkill
@@ -487,14 +488,15 @@ type UpdateAcademicHistoryResponse struct {
 func makeDeleteAcademicHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteAcademicHistoryRequest)
-		err := s.DeleteAcademicHistory(ctx, req.ID)
+		err := s.DeleteAcademicHistory(ctx, req.CandidateID, req.AcademicHistoryID)
 		return DeleteAcademicHistoryResponse{Err: err}, nil
 	}
 }
 
 // DeleteAcademicHistoryRequest declares the inputs required for deleting a AcademicHistory
 type DeleteAcademicHistoryRequest struct {
-	ID uint64
+	CandidateID       uint64
+	AcademicHistoryID uint64
 }
 
 // DeleteAcademicHistoryResponse declares the outputs after attempting to delete a AcademicHistory
@@ -684,14 +686,15 @@ type UpdateJobHistoryResponse struct {
 func makeDeleteJobHistoryEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(DeleteJobHistoryRequest)
-		err := s.DeleteJobHistory(ctx, req.ID)
+		err := s.DeleteJobHistory(ctx, req.CandidateID, req.JobHistoryID)
 		return DeleteJobHistoryResponse{Err: err}, nil
 	}
 }
 
 // DeleteJobHistoryRequest declares the inputs required for deleting a JobHistory
 type DeleteJobHistoryRequest struct {
-	ID uint64
+	CandidateID  uint64
+	JobHistoryID uint64
 }
 
 // DeleteJobHistoryResponse declares the outputs after attempting to delete a JobHistory

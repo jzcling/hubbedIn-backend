@@ -2,8 +2,8 @@ package database
 
 import (
 	"context"
-	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/configs"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"in-backend/services/profile/tests/mocks"
 	"strings"
@@ -490,7 +490,8 @@ func testDeleteUserSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 
 	type args struct {
 		ctx context.Context
-		id  uint64
+		cid uint64
+		sid uint64
 	}
 
 	type expect struct {
@@ -502,12 +503,12 @@ func testDeleteUserSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, existing.CandidateID, existing.SkillID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteUserSkill(tt.args.ctx, tt.args.id)
+			err := r.DeleteUserSkill(tt.args.ctx, tt.args.cid, tt.args.sid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -919,8 +920,9 @@ func testDeleteAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB)
 	require.NoError(t, err)
 
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		ahid uint64
 	}
 
 	type expect struct {
@@ -932,12 +934,12 @@ func testDeleteAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB)
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, existing.CandidateID, existing.ID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteAcademicHistory(tt.args.ctx, tt.args.id)
+			err := r.DeleteAcademicHistory(tt.args.ctx, tt.args.cid, tt.args.ahid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -1344,8 +1346,9 @@ func testDeleteJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	require.NoError(t, err)
 
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		jhid uint64
 	}
 
 	type expect struct {
@@ -1357,12 +1360,12 @@ func testDeleteJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, existing.CandidateID, existing.ID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteJobHistory(tt.args.ctx, tt.args.id)
+			err := r.DeleteJobHistory(tt.args.ctx, tt.args.cid, tt.args.jhid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

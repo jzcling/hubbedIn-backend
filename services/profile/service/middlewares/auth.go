@@ -137,8 +137,19 @@ func (mw authMiddleware) CreateUserSkill(ctx context.Context, us *models.UserSki
 }
 
 // DeleteUserSkill deletes a UserSkill by ID
-func (mw authMiddleware) DeleteUserSkill(ctx context.Context, id uint64) error {
-	return mw.next.DeleteUserSkill(ctx, id)
+func (mw authMiddleware) DeleteUserSkill(ctx context.Context, cid, sid uint64) error {
+	claims, err := getClaims(ctx)
+	if err != nil {
+		return err
+	}
+	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	if err != nil {
+		return err
+	}
+	if id != cid {
+		return errAuth
+	}
+	return mw.next.DeleteUserSkill(ctx, cid, sid)
 }
 
 /* --------------- Institution --------------- */
@@ -215,8 +226,19 @@ func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, academic *mo
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (mw authMiddleware) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	return mw.next.DeleteAcademicHistory(ctx, id)
+func (mw authMiddleware) DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error {
+	claims, err := getClaims(ctx)
+	if err != nil {
+		return err
+	}
+	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	if err != nil {
+		return err
+	}
+	if id != cid {
+		return errAuth
+	}
+	return mw.next.DeleteAcademicHistory(ctx, cid, ahid)
 }
 
 /* --------------- Company --------------- */
@@ -293,6 +315,17 @@ func (mw authMiddleware) UpdateJobHistory(ctx context.Context, job *models.JobHi
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (mw authMiddleware) DeleteJobHistory(ctx context.Context, id uint64) error {
-	return mw.next.DeleteJobHistory(ctx, id)
+func (mw authMiddleware) DeleteJobHistory(ctx context.Context, cid, jhid uint64) error {
+	claims, err := getClaims(ctx)
+	if err != nil {
+		return err
+	}
+	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	if err != nil {
+		return err
+	}
+	if id != cid {
+		return errAuth
+	}
+	return mw.next.DeleteJobHistory(ctx, cid, jhid)
 }
