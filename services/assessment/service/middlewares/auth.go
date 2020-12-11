@@ -20,9 +20,8 @@ type authMiddleware struct {
 var (
 	errAuth = errors.New("Forbidden")
 
-	namespace = "https://hubbedin/"
-	idKey     = namespace + "id"
-	rolesKey  = namespace + "roles"
+	idKey    = "https://hubbedin/id"
+	rolesKey = "https://hubbedin/roles"
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the assessment Service interface
