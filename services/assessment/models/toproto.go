@@ -44,16 +44,32 @@ func (m *AssessmentAttempt) ToProto() *pb.AssessmentAttempt {
 	if m == nil {
 		return nil
 	}
+
+	var questions []*pb.Question
+	q := m.Questions
+	for _, question := range q {
+		questions = append(questions, question.ToProto())
+	}
+
+	var questionAttempts []*pb.AttemptQuestion
+	qa := m.QuestionAttempts
+	for _, attempt := range qa {
+		questionAttempts = append(questionAttempts, attempt.ToProto())
+	}
+
 	startedAt := helpers.TimeToProto(m.StartedAt)
 	completedAt := helpers.TimeToProto(m.CompletedAt)
 	return &pb.AssessmentAttempt{
-		Id:           m.ID,
-		AssessmentId: m.AssessmentID,
-		CandidateId:  m.CandidateID,
-		Status:       m.Status,
-		StartedAt:    startedAt,
-		CompletedAt:  completedAt,
-		Score:        m.Score,
+		Id:               m.ID,
+		AssessmentId:     m.AssessmentID,
+		CandidateId:      m.CandidateID,
+		Status:           m.Status,
+		StartedAt:        startedAt,
+		CompletedAt:      completedAt,
+		Score:            m.Score,
+		Assessment:       m.Assessment.ToProto(),
+		Questions:        questions,
+		QuestionAttempts: questionAttempts,
 	}
 }
 
@@ -75,6 +91,12 @@ func (m *Question) ToProto() *pb.Question {
 		assessments = append(assessments, assessment.ToProto())
 	}
 
+	var assessmentAttempts []*pb.AssessmentAttempt
+	aa := m.AssessmentAttempts
+	for _, attempt := range aa {
+		assessmentAttempts = append(assessmentAttempts, attempt.ToProto())
+	}
+
 	var attempts []*pb.AttemptQuestion
 	at := m.Attempts
 	for _, attempt := range at {
@@ -82,16 +104,17 @@ func (m *Question) ToProto() *pb.Question {
 	}
 
 	return &pb.Question{
-		Id:          m.ID,
-		CreatedBy:   m.CreatedBy,
-		Type:        m.Type,
-		Text:        m.Text,
-		ImageUrl:    m.ImageURL,
-		Options:     m.Options,
-		Answer:      m.Answer,
-		Tags:        tags,
-		Assessments: assessments,
-		Attempts:    attempts,
+		Id:                 m.ID,
+		CreatedBy:          m.CreatedBy,
+		Type:               m.Type,
+		Text:               m.Text,
+		ImageUrl:           m.ImageURL,
+		Options:            m.Options,
+		Answer:             m.Answer,
+		Tags:               tags,
+		Assessments:        assessments,
+		AssessmentAttempts: assessmentAttempts,
+		Attempts:           attempts,
 	}
 }
 

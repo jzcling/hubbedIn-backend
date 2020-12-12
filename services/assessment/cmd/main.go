@@ -57,7 +57,7 @@ func main() {
 
 	repo := database.NewRepository(db)
 	svc := service.New(repo)
-	svc = middlewares.NewAuthMiddleware(svc)
+	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)
 

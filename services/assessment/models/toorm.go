@@ -44,16 +44,32 @@ func AssessmentAttemptToORM(m *pb.AssessmentAttempt) *AssessmentAttempt {
 	if m == nil {
 		return nil
 	}
+
+	var questions []*Question
+	q := m.Questions
+	for _, question := range q {
+		questions = append(questions, QuestionToORM(question))
+	}
+
+	var questionAttempts []*AttemptQuestion
+	qa := m.QuestionAttempts
+	for _, attempt := range qa {
+		questionAttempts = append(questionAttempts, AttemptQuestionToORM(attempt))
+	}
+
 	startedAt := helpers.ProtoTimeToTime(m.StartedAt)
 	completedAt := helpers.ProtoTimeToTime(m.CompletedAt)
 	return &AssessmentAttempt{
-		ID:           m.Id,
-		AssessmentID: m.AssessmentId,
-		CandidateID:  m.CandidateId,
-		Status:       m.Status,
-		StartedAt:    startedAt,
-		CompletedAt:  completedAt,
-		Score:        m.Score,
+		ID:               m.Id,
+		AssessmentID:     m.AssessmentId,
+		CandidateID:      m.CandidateId,
+		Status:           m.Status,
+		StartedAt:        startedAt,
+		CompletedAt:      completedAt,
+		Score:            m.Score,
+		Assessment:       AssessmentToORM(m.Assessment),
+		Questions:        questions,
+		QuestionAttempts: questionAttempts,
 	}
 }
 
@@ -75,6 +91,12 @@ func QuestionToORM(m *pb.Question) *Question {
 		assessments = append(assessments, AssessmentToORM(assessment))
 	}
 
+	var assessmentAttempts []*AssessmentAttempt
+	aa := m.AssessmentAttempts
+	for _, attempt := range aa {
+		assessmentAttempts = append(assessmentAttempts, AssessmentAttemptToORM(attempt))
+	}
+
 	var attempts []*AttemptQuestion
 	at := m.Attempts
 	for _, attempt := range at {
@@ -82,16 +104,17 @@ func QuestionToORM(m *pb.Question) *Question {
 	}
 
 	return &Question{
-		ID:          m.Id,
-		CreatedBy:   m.CreatedBy,
-		Type:        m.Type,
-		Text:        m.Text,
-		ImageURL:    m.ImageUrl,
-		Options:     m.Options,
-		Answer:      m.Answer,
-		Tags:        tags,
-		Assessments: assessments,
-		Attempts:    attempts,
+		ID:                 m.Id,
+		CreatedBy:          m.CreatedBy,
+		Type:               m.Type,
+		Text:               m.Text,
+		ImageURL:           m.ImageUrl,
+		Options:            m.Options,
+		Answer:             m.Answer,
+		Tags:               tags,
+		Assessments:        assessments,
+		AssessmentAttempts: assessmentAttempts,
+		Attempts:           attempts,
 	}
 }
 

@@ -707,6 +707,21 @@
         "score": {
           "type": "integer",
           "format": "int64"
+        },
+        "assessment": {
+          "$ref": "#/definitions/pbAssessment"
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbQuestion"
+          }
+        },
+        "questionAttempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbAttemptQuestion"
+          }
         }
       }
     },
@@ -828,6 +843,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/pbAssessment"
+          }
+        },
+        "assessmentAttempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbAssessmentAttempt"
           }
         },
         "attempts": {

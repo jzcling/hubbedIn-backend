@@ -147,7 +147,10 @@ message AssessmentAttempt {
 	string status = 4;
 	google.protobuf.Timestamp started_at = 5;
 	google.protobuf.Timestamp completed_at = 6;
-	uint32 score = 7;
+    uint32 score = 7;
+    Assessment assessment = 8;
+    repeated Question questions = 9;
+    repeated AttemptQuestion question_attempts = 10;
 }
 
 message CreateAssessmentAttemptRequest {
@@ -180,8 +183,9 @@ message Question {
 	repeated string options = 6;
 	uint32 answer = 7;
 	repeated Tag tags = 8;
-	repeated Assessment assessments = 9;
-	repeated AttemptQuestion attempts = 10;
+    repeated Assessment assessments = 9;
+    repeated AssessmentAttempt assessment_attempts = 10;
+	repeated AttemptQuestion attempts = 11;
 }
 
 message CreateQuestionRequest {

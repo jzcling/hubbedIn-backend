@@ -149,8 +149,9 @@ func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.Asse
 	var aaqSlice []models.AttemptQuestion
 	for _, q := range m.Questions {
 		aaq := models.AttemptQuestion{
-			AttemptID:  m.ID,
-			QuestionID: q.ID,
+			AttemptID:   m.ID,
+			QuestionID:  q.ID,
+			CandidateID: m.CandidateID,
 		}
 		aaqSlice = append(aaqSlice, aaq)
 	}
@@ -175,8 +176,10 @@ func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.Asse
 func (r *repository) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
 	m := models.AssessmentAttempt{ID: id}
 	err := r.DB.WithContext(ctx).Model(&m).
-		Where("id = ?", id).
+		Where("aa.id = ?", id).
+		Relation(relAssessment).
 		Relation(relQuestions).
+		Relation(relQuestionAttempts).
 		Returning("*").
 		First()
 	//pg returns error when no rows in the result set
@@ -194,6 +197,8 @@ func (r *repository) UpdateAssessmentAttempt(ctx context.Context, m *models.Asse
 
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
 		Returning("*").
+		Relation(relAssessment).
+		Relation(relQuestions).
 		Update()
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Cannot update assessment attempt with id %v", m.ID))

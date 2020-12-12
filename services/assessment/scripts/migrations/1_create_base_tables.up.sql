@@ -33,8 +33,7 @@ create table if not exists questions (
 	text text,
 	image_url text,
 	options text[],
-	answer bigint,
-    tags text[]
+	answer bigint
 );
 
 create table if not exists attempts_questions (
@@ -50,7 +49,7 @@ create table if not exists attempts_questions (
 	updated_at timestamptz,
     constraint fk_assessment_attempts foreign key(attempt_id) references assessment_attempts(id) on delete cascade on update cascade,
     constraint fk_questions foreign key(question_id) references questions(id) on delete cascade on update cascade
-)
+);
 
 create index on attempts_questions (attempt_id, question_id, candidate_id);
 

@@ -25,9 +25,10 @@ var (
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the assessment Service interface
-func NewAuthMiddleware(svc interfaces.Service) interfaces.Service {
+func NewAuthMiddleware(svc interfaces.Service, r interfaces.Repository) interfaces.Service {
 	return &authMiddleware{
-		next: svc,
+		next:       svc,
+		repository: r,
 	}
 }
 

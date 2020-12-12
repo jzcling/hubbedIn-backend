@@ -1594,7 +1594,7 @@
         },
 
         {
-            "endpoint": "/v1/attemptquestions",
+            "endpoint": "/v1/attemptquestions/{id}",
             "method": "PUT",
             "output_encoding": "json",
             "headers_to_pass": [
@@ -1616,7 +1616,7 @@
                 {
                     "host": [ "gateway:8000" ],
                     "method": "PUT",
-                    "url_pattern": "/v1/attemptquestions"
+                    "url_pattern": "/v1/attemptquestions/{id}"
                 }
             ]
         }
