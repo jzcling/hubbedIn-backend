@@ -58,8 +58,7 @@ func TestAllCRUD(t *testing.T) {
 	// testCreateTag(t, s)
 	// testDeleteTag(t, s)
 
-	// testCreateResponse(t, s)
-	// testDeleteResponse(t, s)
+	// testUpdateAttemptQuestion(t, s)
 
 	r.AssertExpectations(t)
 }

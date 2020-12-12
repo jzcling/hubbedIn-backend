@@ -95,25 +95,28 @@ func (m1 *QuestionTag) IsEqual(m2 interface{}) bool {
 	return true
 }
 
-// IsEqual checks the equivalence of two Response objects
-func (m1 *Response) IsEqual(m2 interface{}) bool {
-	convertedM2 := m2.(*Response)
+// IsEqual checks the equivalence of two AttemptQuestion objects
+func (m1 *AttemptQuestion) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*AttemptQuestion)
 	isNil, resolve := checkNil(m1, m2)
 	if resolve {
 		return isNil
 	}
 
-	if (m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) {
+	if (m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) ||
+		(m1.UpdatedAt == nil) != (convertedM2.UpdatedAt == nil) {
 		return false
 	}
 
-	if m1.QuestionID != convertedM2.QuestionID ||
+	if m1.AttemptID != convertedM2.AttemptID ||
+		m1.QuestionID != convertedM2.QuestionID ||
 		m1.CandidateID != convertedM2.CandidateID ||
 		m1.Selection != convertedM2.Selection ||
 		m1.Text != convertedM2.Text ||
 		m1.Score != convertedM2.Score ||
 		m1.TimeTaken != convertedM2.TimeTaken ||
-		*m1.CreatedAt != *convertedM2.CreatedAt {
+		*m1.CreatedAt != *convertedM2.CreatedAt ||
+		*m1.UpdatedAt != *convertedM2.UpdatedAt {
 		return false
 	}
 	return true

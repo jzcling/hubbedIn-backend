@@ -30,8 +30,7 @@ type Endpoints struct {
 	CreateTag endpoint.Endpoint
 	DeleteTag endpoint.Endpoint
 
-	CreateResponse endpoint.Endpoint
-	DeleteResponse endpoint.Endpoint
+	UpdateAttemptQuestion endpoint.Endpoint
 }
 
 // MakeEndpoints initializes all Go kit endpoints for the assessment service.
@@ -56,8 +55,7 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		CreateTag: makeCreateTagEndpoint(s),
 		DeleteTag: makeDeleteTagEndpoint(s),
 
-		CreateResponse: makeCreateResponseEndpoint(s),
-		DeleteResponse: makeDeleteResponseEndpoint(s),
+		UpdateAttemptQuestion: makeUpdateAttemptQuestionEndpoint(s),
 	}
 }
 
@@ -167,7 +165,7 @@ type DeleteAssessmentResponse struct {
 	Err error
 }
 
-/* -------------- Assessment Status -------------- */
+/* -------------- Assessment Attempt -------------- */
 
 func makeCreateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
@@ -177,12 +175,12 @@ func makeCreateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint
 	}
 }
 
-// CreateAssessmentAttemptRequest declares the inputs required for creating a assessment status
+// CreateAssessmentAttemptRequest declares the inputs required for creating a assessment attempt
 type CreateAssessmentAttemptRequest struct {
 	AssessmentAttempt *models.AssessmentAttempt
 }
 
-// CreateAssessmentAttemptResponse declares the outputs after attempting to create a assessment status
+// CreateAssessmentAttemptResponse declares the outputs after attempting to create a assessment attempt
 type CreateAssessmentAttemptResponse struct {
 	AssessmentAttempt *models.AssessmentAttempt
 	Err               error
@@ -196,13 +194,13 @@ func makeUpdateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint
 	}
 }
 
-// UpdateAssessmentAttemptRequest declares the inputs required for updating a assessment status
+// UpdateAssessmentAttemptRequest declares the inputs required for updating a assessment attempt
 type UpdateAssessmentAttemptRequest struct {
 	ID                uint64
 	AssessmentAttempt *models.AssessmentAttempt
 }
 
-// UpdateAssessmentAttemptResponse declares the outputs after attempting to update a assessment status
+// UpdateAssessmentAttemptResponse declares the outputs after attempting to update a assessment attempt
 type UpdateAssessmentAttemptResponse struct {
 	AssessmentAttempt *models.AssessmentAttempt
 	Err               error
@@ -216,12 +214,12 @@ func makeDeleteAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint
 	}
 }
 
-// DeleteAssessmentAttemptRequest declares the inputs required for deleting a assessment status
+// DeleteAssessmentAttemptRequest declares the inputs required for deleting a assessment attempt
 type DeleteAssessmentAttemptRequest struct {
 	ID uint64
 }
 
-// DeleteAssessmentAttemptResponse declares the outputs after attempting to delete a assessment status
+// DeleteAssessmentAttemptResponse declares the outputs after attempting to delete a assessment attempt
 type DeleteAssessmentAttemptResponse struct {
 	Err error
 }
@@ -364,41 +362,24 @@ type DeleteTagResponse struct {
 	Err error
 }
 
-/* -------------- Response -------------- */
+/* -------------- Attempt Question -------------- */
 
-func makeCreateResponseEndpoint(s interfaces.Service) endpoint.Endpoint {
+func makeUpdateAttemptQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CreateResponseRequest)
-		c, err := s.CreateResponse(ctx, req.Response)
-		return CreateResponseResponse{Response: c, Err: err}, nil
+		req := request.(UpdateAttemptQuestionRequest)
+		c, err := s.UpdateAttemptQuestion(ctx, req.AttemptQuestion)
+		return UpdateAttemptQuestionResponse{AttemptQuestion: c, Err: err}, nil
 	}
 }
 
-// CreateResponseRequest declares the inputs required for creating a response
-type CreateResponseRequest struct {
-	Response *models.Response
+// UpdateAttemptQuestionRequest declares the inputs required for updating a AttemptQuestion
+type UpdateAttemptQuestionRequest struct {
+	ID              uint64
+	AttemptQuestion *models.AttemptQuestion
 }
 
-// CreateResponseResponse declares the outputs after attempting to create a response
-type CreateResponseResponse struct {
-	Response *models.Response
-	Err      error
-}
-
-func makeDeleteResponseEndpoint(s interfaces.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(DeleteResponseRequest)
-		err := s.DeleteResponse(ctx, req.ID)
-		return DeleteResponseResponse{Err: err}, nil
-	}
-}
-
-// DeleteResponseRequest declares the inputs required for deleting a response
-type DeleteResponseRequest struct {
-	ID uint64
-}
-
-// DeleteResponseResponse declares the outputs after attempting to delete a response
-type DeleteResponseResponse struct {
-	Err error
+// UpdateAttemptQuestionResponse declares the outputs after attempting to update a attempt question
+type UpdateAttemptQuestionResponse struct {
+	AttemptQuestion *models.AttemptQuestion
+	Err             error
 }

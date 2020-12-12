@@ -209,13 +209,14 @@ func TestQuestionTagToProto(t *testing.T) {
 	require.EqualValues(t, expect, got)
 }
 
-func TestResponseToProto(t *testing.T) {
+func TestAttemptQuestionToProto(t *testing.T) {
 	testPbTime := ptypes.TimestampNow()
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &Response{
+	input := &AttemptQuestion{
 		ID:          1,
+		AttemptID:   1,
 		QuestionID:  1,
 		CandidateID: 1,
 		Selection:   0,
@@ -223,10 +224,12 @@ func TestResponseToProto(t *testing.T) {
 		Score:       0,
 		TimeTaken:   10,
 		CreatedAt:   &testTime,
+		UpdatedAt:   &testTime,
 	}
 
-	expect := &pb.Response{
+	expect := &pb.AttemptQuestion{
 		Id:          1,
+		AttemptId:   1,
 		QuestionId:  1,
 		CandidateId: 1,
 		Selection:   0,
@@ -234,6 +237,7 @@ func TestResponseToProto(t *testing.T) {
 		Score:       0,
 		TimeTaken:   10,
 		CreatedAt:   testPbTime,
+		UpdatedAt:   testPbTime,
 	}
 
 	got := input.ToProto()

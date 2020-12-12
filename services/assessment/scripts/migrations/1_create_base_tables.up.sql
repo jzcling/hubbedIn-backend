@@ -24,7 +24,7 @@ create table if not exists assessment_attempts (
     constraint fk_assessments foreign key(assessment_id) references assessments(id) on delete cascade on update cascade
 );
 
-create index on assessment_statuses (assessment_id, candidate_id);
+create index on assessment_attempts (assessment_id, candidate_id);
 
 create table if not exists questions (
     id bigserial not null primary key,
@@ -41,9 +41,18 @@ create table if not exists attempts_questions (
 	id bigserial not null primary key,
 	attempt_id bigint not null,
 	question_id bigint not null,
+	candidate_id bigint not null,
+	selection bigint,
+	text text,
+	score bigint,
+	time_taken bigint,
+	created_at timestamptz,
+	updated_at timestamptz,
     constraint fk_assessment_attempts foreign key(attempt_id) references assessment_attempts(id) on delete cascade on update cascade,
     constraint fk_questions foreign key(question_id) references questions(id) on delete cascade on update cascade
 )
+
+create index on attempts_questions (attempt_id, question_id, candidate_id);
 
 create table if not exists tags (
     id bigserial not null primary key,
@@ -61,20 +70,6 @@ create table if not exists questions_tags (
 );
 
 create index on questions_tags (question_id, tag_id);
-
-create table if not exists responses (
-    id bigserial not null primary key,
-    question_id bigint not null,
-	candidate_id bigint not null,
-	selection bigint,
-	text text,
-	score bigint,
-	time_taken bigint,
-	created_at timestamptz,
-    constraint fk_questions foreign key(question_id) references questions(id) on delete cascade on update cascade
-);
-
-create index on responses (question_id, candidate_id);
 
 create table if not exists assessments_questions (
     id bigserial not null primary key,

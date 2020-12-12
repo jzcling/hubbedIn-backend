@@ -209,13 +209,14 @@ func TestQuestionTagToORM(t *testing.T) {
 	require.EqualValues(t, expect, got)
 }
 
-func TestResponseToORM(t *testing.T) {
+func TestAttemptQuestionToORM(t *testing.T) {
 	testPbTime := ptypes.TimestampNow()
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &pb.Response{
+	input := &pb.AttemptQuestion{
 		Id:          1,
+		AttemptId:   1,
 		QuestionId:  1,
 		CandidateId: 1,
 		Selection:   0,
@@ -223,10 +224,12 @@ func TestResponseToORM(t *testing.T) {
 		Score:       0,
 		TimeTaken:   10,
 		CreatedAt:   testPbTime,
+		UpdatedAt:   testPbTime,
 	}
 
-	expect := &Response{
+	expect := &AttemptQuestion{
 		ID:          1,
+		AttemptID:   1,
 		QuestionID:  1,
 		CandidateID: 1,
 		Selection:   0,
@@ -234,9 +237,10 @@ func TestResponseToORM(t *testing.T) {
 		Score:       0,
 		TimeTaken:   10,
 		CreatedAt:   &testTime,
+		UpdatedAt:   &testTime,
 	}
 
-	got := ResponseToORM(input)
+	got := AttemptQuestionToORM(input)
 	require.EqualValues(t, expect, got)
 }
 

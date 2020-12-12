@@ -33,8 +33,7 @@ type grpcServer struct {
 	createTag kitgrpc.Handler
 	deleteTag kitgrpc.Handler
 
-	createResponse kitgrpc.Handler
-	deleteResponse kitgrpc.Handler
+	updateAttemptQuestion kitgrpc.Handler
 
 	logger log.Logger
 }
@@ -143,16 +142,10 @@ func NewGRPCServer(
 			options...,
 		),
 
-		createResponse: kitgrpc.NewServer(
-			endpoints.CreateResponse,
-			decodeCreateResponseRequest,
-			encodeCreateResponseResponse,
-			options...,
-		),
-		deleteResponse: kitgrpc.NewServer(
-			endpoints.DeleteResponse,
-			decodeDeleteResponseRequest,
-			encodeDeleteResponseResponse,
+		updateAttemptQuestion: kitgrpc.NewServer(
+			endpoints.UpdateAttemptQuestion,
+			decodeUpdateAttemptQuestionRequest,
+			encodeUpdateAttemptQuestionResponse,
 			options...,
 		),
 
@@ -300,7 +293,7 @@ func encodeDeleteAssessmentResponse(_ context.Context, response interface{}) (in
 	return nil, err
 }
 
-/* --------------- Assessment Status --------------- */
+/* --------------- Assessment Attempt --------------- */
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (s *grpcServer) CreateAssessmentAttempt(ctx context.Context, req *pb.CreateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
@@ -564,54 +557,29 @@ func encodeDeleteTagResponse(_ context.Context, response interface{}) (interface
 	return nil, err
 }
 
-/* --------------- Response --------------- */
+/* --------------- Attempt Question --------------- */
 
-// CreateResponse creates a new Response
-func (s *grpcServer) CreateResponse(ctx context.Context, req *pb.CreateResponseRequest) (*pb.Response, error) {
-	_, rep, err := s.createResponse.ServeGRPC(ctx, req)
+// UpdateAttemptQuestion updates a AttemptQuestion
+func (s *grpcServer) UpdateAttemptQuestion(ctx context.Context, req *pb.UpdateAttemptQuestionRequest) (*pb.AttemptQuestion, error) {
+	_, rep, err := s.updateAttemptQuestion.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Response), nil
+	return rep.(*pb.AttemptQuestion), nil
 }
 
-// decodeCreateResponseRequest decodes the incoming grpc payload to our go kit payload
-func decodeCreateResponseRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.CreateResponseRequest)
-	return endpoints.CreateResponseRequest{Response: models.ResponseToORM(req.Response)}, nil
+// decodeUpdateAttemptQuestionRequest decodes the incoming grpc payload to our go kit payload
+func decodeUpdateAttemptQuestionRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.UpdateAttemptQuestionRequest)
+	return endpoints.UpdateAttemptQuestionRequest{ID: req.Id, AttemptQuestion: models.AttemptQuestionToORM(req.AttemptQuestion)}, nil
 }
 
-// encodeCreateResponseResponse encodes the outgoing go kit payload to the grpc payload
-func encodeCreateResponseResponse(_ context.Context, response interface{}) (interface{}, error) {
-	res := response.(endpoints.CreateResponseResponse)
+// encodeUpdateAttemptQuestionResponse encodes the outgoing go kit payload to the grpc payload
+func encodeUpdateAttemptQuestionResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.UpdateAttemptQuestionResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return res.Response.ToProto(), nil
-	}
-	return nil, err
-}
-
-// DeleteResponse deletes a Response by ID
-func (s *grpcServer) DeleteResponse(ctx context.Context, req *pb.DeleteResponseRequest) (*pb.DeleteResponseResponse, error) {
-	_, rep, err := s.deleteResponse.ServeGRPC(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return rep.(*pb.DeleteResponseResponse), nil
-}
-
-// decodeDeleteResponseRequest decodes the incoming grpc payload to our go kit payload
-func decodeDeleteResponseRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.DeleteResponseRequest)
-	return endpoints.DeleteResponseRequest{ID: req.Id}, nil
-}
-
-// encodeDeleteResponseResponse encodes the outgoing go kit payload to the grpc payload
-func encodeDeleteResponseResponse(_ context.Context, response interface{}) (interface{}, error) {
-	res := response.(endpoints.DeleteResponseResponse)
-	err := getError(res.Err)
-	if err == nil {
-		return &pb.DeleteResponseResponse{}, nil
+		return res.AttemptQuestion.ToProto(), nil
 	}
 	return nil, err
 }

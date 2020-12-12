@@ -60,11 +60,8 @@ type Repository interface {
 	// DeleteTag deletes a Tag by ID
 	DeleteTag(ctx context.Context, id uint64) error
 
-	/* --------------- Response --------------- */
+	/* --------------- Attempt Question --------------- */
 
-	// CreateResponse creates a new Response
-	CreateResponse(ctx context.Context, m *models.Response) (*models.Response, error)
-
-	// DeleteResponse deletes a Response by ID
-	DeleteResponse(ctx context.Context, id uint64) error
+	// UpdateAttemptQuestion updates a AttemptQuestion
+	UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error)
 }

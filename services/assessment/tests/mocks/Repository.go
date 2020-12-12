@@ -84,29 +84,6 @@ func (_m *Repository) CreateQuestion(ctx context.Context, m *models.Question) (*
 	return r0, r1
 }
 
-// CreateResponse provides a mock function with given fields: ctx, m
-func (_m *Repository) CreateResponse(ctx context.Context, m *models.Response) (*models.Response, error) {
-	ret := _m.Called(ctx, m)
-
-	var r0 *models.Response
-	if rf, ok := ret.Get(0).(func(context.Context, *models.Response) *models.Response); ok {
-		r0 = rf(ctx, m)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Response)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *models.Response) error); ok {
-		r1 = rf(ctx, m)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // CreateTag provides a mock function with given fields: ctx, m
 func (_m *Repository) CreateTag(ctx context.Context, m *models.Tag) (*models.Tag, error) {
 	ret := _m.Called(ctx, m)
@@ -160,20 +137,6 @@ func (_m *Repository) DeleteAssessmentAttempt(ctx context.Context, id uint64) er
 
 // DeleteQuestion provides a mock function with given fields: ctx, id
 func (_m *Repository) DeleteQuestion(ctx context.Context, id uint64) error {
-	ret := _m.Called(ctx, id)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, uint64) error); ok {
-		r0 = rf(ctx, id)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// DeleteResponse provides a mock function with given fields: ctx, id
-func (_m *Repository) DeleteResponse(ctx context.Context, id uint64) error {
 	ret := _m.Called(ctx, id)
 
 	var r0 error
@@ -330,6 +293,29 @@ func (_m *Repository) UpdateAssessmentAttempt(ctx context.Context, m *models.Ass
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *models.AssessmentAttempt) error); ok {
+		r1 = rf(ctx, m)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateAttemptQuestion provides a mock function with given fields: ctx, m
+func (_m *Repository) UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error) {
+	ret := _m.Called(ctx, m)
+
+	var r0 *models.AttemptQuestion
+	if rf, ok := ret.Get(0).(func(context.Context, *models.AttemptQuestion) *models.AttemptQuestion); ok {
+		r0 = rf(ctx, m)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AttemptQuestion)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.AttemptQuestion) error); ok {
 		r1 = rf(ctx, m)
 	} else {
 		r1 = ret.Error(1)

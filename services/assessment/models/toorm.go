@@ -75,10 +75,10 @@ func QuestionToORM(m *pb.Question) *Question {
 		assessments = append(assessments, AssessmentToORM(assessment))
 	}
 
-	var responses []*Response
-	r := m.Responses
-	for _, response := range r {
-		responses = append(responses, ResponseToORM(response))
+	var attempts []*AttemptQuestion
+	at := m.Attempts
+	for _, attempt := range at {
+		attempts = append(attempts, AttemptQuestionToORM(attempt))
 	}
 
 	return &Question{
@@ -91,7 +91,7 @@ func QuestionToORM(m *pb.Question) *Question {
 		Answer:      m.Answer,
 		Tags:        tags,
 		Assessments: assessments,
-		Responses:   responses,
+		Attempts:    attempts,
 	}
 }
 
@@ -118,16 +118,18 @@ func QuestionTagToORM(m *pb.QuestionTag) *QuestionTag {
 	}
 }
 
-// ResponseToORM maps the proto Response model to the ORM model
-func ResponseToORM(m *pb.Response) *Response {
+// AttemptQuestionToORM maps the proto AttemptQuestion model to the ORM model
+func AttemptQuestionToORM(m *pb.AttemptQuestion) *AttemptQuestion {
 	if m == nil {
 		return nil
 	}
 
 	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
 
-	return &Response{
+	return &AttemptQuestion{
 		ID:          m.Id,
+		AttemptID:   m.AttemptId,
 		QuestionID:  m.QuestionId,
 		CandidateID: m.CandidateId,
 		Selection:   m.Selection,
@@ -135,6 +137,7 @@ func ResponseToORM(m *pb.Response) *Response {
 		Score:       m.Score,
 		TimeTaken:   m.TimeTaken,
 		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
 	}
 }
 

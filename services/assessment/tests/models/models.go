@@ -34,8 +34,9 @@ var (
 		ID: 999,
 	}
 
-	// ResponseNoQuestionID is a mock Response with no QuestionID
-	ResponseNoQuestionID = models.Response{
+	// AttemptQuestionNoQuestionID is a mock AttemptQuestion with no QuestionID
+	AttemptQuestionNoQuestionID = models.AttemptQuestion{
+		AttemptID:   1,
 		CandidateID: 1,
 		Text:        "code",
 		Score:       0,

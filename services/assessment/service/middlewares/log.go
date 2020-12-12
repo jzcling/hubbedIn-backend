@@ -77,7 +77,7 @@ func (mw logMiddleware) DeleteAssessment(ctx context.Context, input uint64) (err
 	return
 }
 
-/* --------------- Assessment Status --------------- */
+/* --------------- Assessment Attempt --------------- */
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (mw logMiddleware) CreateAssessmentAttempt(ctx context.Context, input *models.AssessmentAttempt) (output *models.AssessmentAttempt, err error) {
@@ -153,18 +153,11 @@ func (mw logMiddleware) DeleteTag(ctx context.Context, input uint64) (err error)
 	return
 }
 
-/* --------------- Response --------------- */
+/* --------------- Attempt Question --------------- */
 
-// CreateResponse creates a new Response
-func (mw logMiddleware) CreateResponse(ctx context.Context, input *models.Response) (output *models.Response, err error) {
-	defer mw.log("CreateResponse", time.Now(), input, &output, &err)
-	output, err = mw.next.CreateResponse(ctx, input)
-	return
-}
-
-// DeleteResponse deletes a Response by ID
-func (mw logMiddleware) DeleteResponse(ctx context.Context, input uint64) (err error) {
-	defer mw.log("DeleteResponse", time.Now(), input, nil, &err)
-	err = mw.next.DeleteResponse(ctx, input)
+// UpdateAttemptQuestion updates a AttemptQuestion
+func (mw logMiddleware) UpdateAttemptQuestion(ctx context.Context, input *models.AttemptQuestion) (output *models.AttemptQuestion, err error) {
+	defer mw.log("UpdateAttemptQuestion", time.Now(), input, &output, &err)
+	output, err = mw.next.UpdateAttemptQuestion(ctx, input)
 	return
 }

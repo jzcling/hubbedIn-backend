@@ -107,36 +107,6 @@ func (_m *AssessmentServiceClient) CreateQuestion(ctx context.Context, in *pb.Cr
 	return r0, r1
 }
 
-// CreateResponse provides a mock function with given fields: ctx, in, opts
-func (_m *AssessmentServiceClient) CreateResponse(ctx context.Context, in *pb.CreateResponseRequest, opts ...grpc.CallOption) (*pb.Response, error) {
-	_va := make([]interface{}, len(opts))
-	for _i := range opts {
-		_va[_i] = opts[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, in)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	var r0 *pb.Response
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateResponseRequest, ...grpc.CallOption) *pb.Response); ok {
-		r0 = rf(ctx, in, opts...)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Response)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateResponseRequest, ...grpc.CallOption) error); ok {
-		r1 = rf(ctx, in, opts...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // CreateTag provides a mock function with given fields: ctx, in, opts
 func (_m *AssessmentServiceClient) CreateTag(ctx context.Context, in *pb.CreateTagRequest, opts ...grpc.CallOption) (*pb.Tag, error) {
 	_va := make([]interface{}, len(opts))
@@ -249,36 +219,6 @@ func (_m *AssessmentServiceClient) DeleteQuestion(ctx context.Context, in *pb.De
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteQuestionRequest, ...grpc.CallOption) error); ok {
-		r1 = rf(ctx, in, opts...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// DeleteResponse provides a mock function with given fields: ctx, in, opts
-func (_m *AssessmentServiceClient) DeleteResponse(ctx context.Context, in *pb.DeleteResponseRequest, opts ...grpc.CallOption) (*pb.DeleteResponseResponse, error) {
-	_va := make([]interface{}, len(opts))
-	for _i := range opts {
-		_va[_i] = opts[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, in)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	var r0 *pb.DeleteResponseResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteResponseRequest, ...grpc.CallOption) *pb.DeleteResponseResponse); ok {
-		r0 = rf(ctx, in, opts...)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.DeleteResponseResponse)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteResponseRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -489,6 +429,36 @@ func (_m *AssessmentServiceClient) UpdateAssessmentAttempt(ctx context.Context, 
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentAttemptRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateAttemptQuestion provides a mock function with given fields: ctx, in, opts
+func (_m *AssessmentServiceClient) UpdateAttemptQuestion(ctx context.Context, in *pb.UpdateAttemptQuestionRequest, opts ...grpc.CallOption) (*pb.AttemptQuestion, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.AttemptQuestion
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAttemptQuestionRequest, ...grpc.CallOption) *pb.AttemptQuestion); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.AttemptQuestion)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAttemptQuestionRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)

@@ -75,10 +75,10 @@ func (m *Question) ToProto() *pb.Question {
 		assessments = append(assessments, assessment.ToProto())
 	}
 
-	var responses []*pb.Response
-	r := m.Responses
-	for _, response := range r {
-		responses = append(responses, response.ToProto())
+	var attempts []*pb.AttemptQuestion
+	at := m.Attempts
+	for _, attempt := range at {
+		attempts = append(attempts, attempt.ToProto())
 	}
 
 	return &pb.Question{
@@ -91,7 +91,7 @@ func (m *Question) ToProto() *pb.Question {
 		Answer:      m.Answer,
 		Tags:        tags,
 		Assessments: assessments,
-		Responses:   responses,
+		Attempts:    attempts,
 	}
 }
 
@@ -118,16 +118,18 @@ func (m *QuestionTag) ToProto() *pb.QuestionTag {
 	}
 }
 
-// ToProto maps the ORM Response model to the proto model
-func (m *Response) ToProto() *pb.Response {
+// ToProto maps the ORM AttemptQuestion model to the proto model
+func (m *AttemptQuestion) ToProto() *pb.AttemptQuestion {
 	if m == nil {
 		return nil
 	}
 
 	createdAt := helpers.TimeToProto(m.CreatedAt)
+	updatedAt := helpers.TimeToProto(m.UpdatedAt)
 
-	return &pb.Response{
+	return &pb.AttemptQuestion{
 		Id:          m.ID,
+		AttemptId:   m.AttemptID,
 		QuestionId:  m.QuestionID,
 		CandidateId: m.CandidateID,
 		Selection:   m.Selection,
@@ -135,6 +137,7 @@ func (m *Response) ToProto() *pb.Response {
 		Score:       m.Score,
 		TimeTaken:   m.TimeTaken,
 		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
 	}
 }
 

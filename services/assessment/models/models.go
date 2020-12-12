@@ -49,26 +49,32 @@ type AssessmentAttempt struct {
 type Question struct {
 	tableName struct{} `pg:"questions,alias:q"`
 
-	ID          uint64               `json:"id"`
-	CreatedBy   uint64               `json:"created_by"`
-	Type        string               `json:"type" pg:",notnull"`
-	Text        string               `json:"text"`
-	ImageURL    string               `json:"image_url" pg:"image_url"`
-	Options     []string             `json:"options" pg:",array"`
-	Answer      uint32               `json:"answer" pg:",use_zero"`
-	Tags        []*Tag               `json:"tags" pg:"rel:has-many"`
-	Assessments []*Assessment        `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
-	Responses   []*Response          `json:"responses,omitempty" pg:"rel:has-many"`
-	Attempts    []*AssessmentAttempt `json:"attempts,omitempty" pg:"many2many:attempts_questions,fk:question_id,joinFK:attempt_id"`
+	ID          uint64             `json:"id"`
+	CreatedBy   uint64             `json:"created_by"`
+	Type        string             `json:"type" pg:",notnull"`
+	Text        string             `json:"text"`
+	ImageURL    string             `json:"image_url" pg:"image_url"`
+	Options     []string           `json:"options" pg:",array"`
+	Answer      uint32             `json:"answer" pg:",use_zero"`
+	Tags        []*Tag             `json:"tags" pg:"rel:has-many"`
+	Assessments []*Assessment      `json:"assessments,omitempty" pg:"many2many:assessments_questions"`
+	Attempts    []*AttemptQuestion `json:"attempts,omitempty" pg:"many2many:attempts_questions,fk:question_id,joinFK:attempt_id"`
 }
 
 // AttemptQuestion declares the model for AttemptQuestion
 type AttemptQuestion struct {
 	tableName struct{} `pg:"attempts_questions,alias:aaq"`
 
-	ID         uint64 `json:"id"`
-	AttemptID  uint64 `json:"attempt_id"`
-	QuestionID uint64 `json:"question_id"`
+	ID          uint64     `json:"id"`
+	AttemptID   uint64     `json:"attempt_id"`
+	QuestionID  uint64     `json:"question_id"`
+	CandidateID uint64     `json:"candidate_id" pg:"candidate_id,notnull"`
+	Selection   uint32     `json:"selection" pg:",use_zero"`
+	Text        string     `json:"text"`
+	Score       uint32     `json:"score,omitempty" pg:",use_zero"`
+	TimeTaken   uint64     `json:"time_taken,omitempty"`
+	CreatedAt   *time.Time `json:"created_at"`
+	UpdatedAt   *time.Time `json:"updated_at"`
 }
 
 // Tag declares the model for Tag
@@ -86,20 +92,6 @@ type QuestionTag struct {
 	ID         uint64 `json:"id"`
 	QuestionID uint64 `json:"question_id" pg:"question_id,notnull"`
 	TagID      uint64 `json:"tag_id" pg:"tag_id,notnull"`
-}
-
-// Response declares the model for Response
-type Response struct {
-	tableName struct{} `pg:"responses,alias:r"`
-
-	ID          uint64     `json:"id"`
-	QuestionID  uint64     `json:"question_id" pg:"question_id,notnull"`
-	CandidateID uint64     `json:"candidate_id" pg:"candidate_id,notnull"`
-	Selection   uint32     `json:"selection" pg:",use_zero"`
-	Text        string     `json:"text"`
-	Score       uint32     `json:"score,omitempty" pg:",use_zero"`
-	TimeTaken   uint64     `json:"time_taken,omitempty"`
-	CreatedAt   *time.Time `json:"created_at"`
 }
 
 // AssessmentQuestion declares the model for the pivot AssessmentQuestion

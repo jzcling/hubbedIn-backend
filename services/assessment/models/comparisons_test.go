@@ -80,10 +80,11 @@ func TestQuestionTagIsEqual(t *testing.T) {
 	testIsEqual(t, m1, m2, m3)
 }
 
-func TestResponseIsEqual(t *testing.T) {
+func TestAttemptQuestionIsEqual(t *testing.T) {
 	timeAt := time.Date(2020, 11, 10, 13, 0, 0, 0, time.Local)
-	m1 := (*Response)(nil)
-	m2 := &Response{
+	m1 := (*AttemptQuestion)(nil)
+	m2 := &AttemptQuestion{
+		AttemptID:   1,
 		QuestionID:  1,
 		CandidateID: 1,
 		Selection:   0,
@@ -91,8 +92,9 @@ func TestResponseIsEqual(t *testing.T) {
 		Score:       0,
 		TimeTaken:   10,
 		CreatedAt:   &timeAt,
+		UpdatedAt:   &timeAt,
 	}
-	m3 := &Response{}
+	m3 := &AttemptQuestion{}
 
 	testIsEqual(t, m1, m2, m3)
 }

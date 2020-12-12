@@ -5,5 +5,5 @@ const (
 	relAssessmentAttempts string = "AssessmentAttempts"
 	relTags               string = "Tags"
 	relAssessments        string = "Assessments"
-	relResponses          string = "Responses"
+	relAttempts           string = "Attempts"
 )

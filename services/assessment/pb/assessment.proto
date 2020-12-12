@@ -79,14 +79,11 @@ service AssessmentService {
         option (google.api.http) = { delete: "/v1/tags/{id}" };
     };
 
-    rpc CreateResponse(CreateResponseRequest) returns (Response) {
+    rpc UpdateAttemptQuestion(UpdateAttemptQuestionRequest) returns (AttemptQuestion) {
         option (google.api.http) = { 
-            post: "/v1/responses" 
-            body: "response"
+            post: "/v1/attemptquestions/{id}" 
+            body: "attempt_question"
         };
-    };
-    rpc DeleteResponse(DeleteResponseRequest) returns (DeleteResponseResponse) {
-        option (google.api.http) = { delete: "/v1/responses/{id}" };
     };
 } 
 
@@ -177,7 +174,7 @@ message Question {
 	uint32 answer = 7;
 	repeated Tag tags = 8;
 	repeated Assessment assessments = 9;
-	repeated Response responses = 10;
+	repeated AttemptQuestion attempts = 10;
 }
 
 message CreateQuestionRequest {
@@ -233,27 +230,22 @@ message QuestionTag {
     uint64 tag_id = 3;
 }
 
-message Response {
+message AttemptQuestion {
     uint64 id = 1;
-    uint64 question_id = 2;
-	uint64 candidate_id = 3;
-	uint32 selection = 4;
-	string text = 5;
-	uint32 score = 6;
-	uint64 time_taken = 7;
-    google.protobuf.Timestamp created_at = 8;
+    uint64 attempt_id = 2;
+    uint64 question_id = 3;
+	uint64 candidate_id = 4;
+	uint32 selection = 5;
+	string text = 6;
+	uint32 score = 7;
+	uint64 time_taken = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
 }
 
-message CreateResponseRequest {
-    Response response = 1;
-}
-
-message DeleteResponseRequest {
+message UpdateAttemptQuestionRequest {
     uint64 id = 1;
-}
-
-message DeleteResponseResponse {
-    // Empty
+    AttemptQuestion attempt_question = 2;
 }
 
 message AssessmentQuestion {

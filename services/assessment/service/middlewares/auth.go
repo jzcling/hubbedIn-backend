@@ -132,7 +132,7 @@ func (mw authMiddleware) DeleteAssessment(ctx context.Context, id uint64) error 
 	return mw.next.DeleteAssessment(ctx, id)
 }
 
-/* --------------- Assessment Status --------------- */
+/* --------------- Assessment Attempt --------------- */
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (mw authMiddleware) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
@@ -251,10 +251,10 @@ func (mw authMiddleware) DeleteTag(ctx context.Context, id uint64) error {
 	return mw.next.DeleteTag(ctx, id)
 }
 
-/* --------------- Response --------------- */
+/* --------------- Attempt Question --------------- */
 
-// CreateResponse creates a new Response
-func (mw authMiddleware) CreateResponse(ctx context.Context, m *models.Response) (*models.Response, error) {
+// UpdateAttemptQuestion updates a AttemptQuestion
+func (mw authMiddleware) UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error) {
 	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
@@ -262,17 +262,5 @@ func (mw authMiddleware) CreateResponse(ctx context.Context, m *models.Response)
 	if !owns {
 		return nil, errAuth
 	}
-	return mw.next.CreateResponse(ctx, m)
-}
-
-// DeleteResponse deletes a Response by ID
-func (mw authMiddleware) DeleteResponse(ctx context.Context, id uint64) error {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
-	if err != nil {
-		return err
-	}
-	if !isAdmin {
-		return errAuth
-	}
-	return mw.next.DeleteResponse(ctx, id)
+	return mw.next.UpdateAttemptQuestion(ctx, m)
 }

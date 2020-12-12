@@ -1567,8 +1567,8 @@
         },
 
         {
-            "endpoint": "/v1/responses",
-            "method": "POST",
+            "endpoint": "/v1/attemptquestions",
+            "method": "PUT",
             "output_encoding": "json",
             "headers_to_pass": [
                 "Authorization"
@@ -1588,35 +1588,8 @@
             "backend": [
                 {
                     "host": [ "gateway:8000" ],
-                    "method": "POST",
-                    "url_pattern": "/v1/responses"
-                }
-            ]
-        },
-        {
-            "endpoint": "/v1/responses/{id}",
-            "method": "DELETE",
-            "output_encoding": "json",
-            "headers_to_pass": [
-                "Authorization"
-            ],
-            "extra_config": {
-                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
-                    "maxRate": 100,
-                    "clientMaxRate": 5,
-                    "strategy": "ip"
-                },
-                "github.com/devopsfaith/krakend-jose/validator": {
-                    "alg": "RS256",
-                    "audience": ["https://api.hubbedin.com"],
-                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
-                }
-            },
-            "backend": [
-                {
-                    "host": [ "gateway:8000" ],
-                    "method": "DELETE",
-                    "url_pattern": "/v1/responses/{id}"
+                    "method": "PUT",
+                    "url_pattern": "/v1/attemptquestions"
                 }
             ]
         }

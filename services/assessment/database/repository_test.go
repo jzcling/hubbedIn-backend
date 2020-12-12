@@ -66,8 +66,7 @@ func TestAllCRUD(t *testing.T) {
 	testCreateTag(t, r, db)
 	testDeleteTag(t, r, db)
 
-	testCreateResponse(t, r, db)
-	testDeleteResponse(t, r, db)
+	testUpdateAttemptQuestion(t, r, db)
 }
 
 /* --------------- Assessment --------------- */
@@ -267,7 +266,7 @@ func testDeleteAssessment(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 }
 
-/* --------------- Assessment Status --------------- */
+/* --------------- Assessment Attempt --------------- */
 
 func testCreateAssessmentAttempt(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoAssessmentID := &testmodels.AssessmentAttemptNoAssessmentID
@@ -290,8 +289,8 @@ func testCreateAssessmentAttempt(t *testing.T, r interfaces.Repository, db *pg.D
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter assessment status is nil")}},
-		{"failed not null", args{ctx, testNoAssessmentID}, expect{nil, errors.New("Failed to insert assessment status")}},
+		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter assessment attempt is nil")}},
+		{"failed not null", args{ctx, testNoAssessmentID}, expect{nil, errors.New("Failed to insert assessment attempt")}},
 		{"valid", args{ctx, &test}, expect{&test, nil}},
 	}
 
@@ -333,7 +332,7 @@ func testUpdateAssessmentAttempt(t *testing.T, r interfaces.Repository, db *pg.D
 	}{
 		{"nil", args{ctx, nil}, expect{nil, errors.New("AssessmentAttempt is nil")}},
 		{"id existing", args{ctx, &updated}, expect{&updated, nil}},
-		{"id 10000", args{ctx, &models.AssessmentAttempt{ID: 10000}}, expect{nil, errors.New("Cannot update assessment status with id")}},
+		{"id 10000", args{ctx, &models.AssessmentAttempt{ID: 10000}}, expect{nil, errors.New("Cannot update assessment attempt with id")}},
 	}
 
 	for _, tt := range tests {
@@ -653,21 +652,23 @@ func testDeleteTag(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 }
 
-/* --------------- Response --------------- */
+/* --------------- Attempt Question --------------- */
 
-func testCreateResponse(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	testNoQuestionID := &testmodels.ResponseNoQuestionID
+func testUpdateAttemptQuestion(t *testing.T, r interfaces.Repository, db *pg.DB) {
+	existing := &models.AttemptQuestion{}
+	err := db.WithContext(ctx).Model(existing).First()
+	require.NoError(t, err)
 
-	test := *testNoQuestionID
-	test.QuestionID = 1
+	updated := *existing
+	updated.Text = "new"
 
 	type args struct {
 		ctx   context.Context
-		input *models.Response
+		input *models.AttemptQuestion
 	}
 
 	type expect struct {
-		output *models.Response
+		output *models.AttemptQuestion
 		err    error
 	}
 
@@ -676,49 +677,15 @@ func testCreateResponse(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter response is nil")}},
-		{"failed not null", args{ctx, testNoQuestionID}, expect{nil, errors.New("Failed to insert response")}},
-		{"valid", args{ctx, &test}, expect{&test, nil}},
+		{"nil", args{ctx, nil}, expect{nil, errors.New("AttemptQuestion is nil")}},
+		{"id existing", args{ctx, &updated}, expect{&updated, nil}},
+		{"id 10000", args{ctx, &models.AttemptQuestion{ID: 10000}}, expect{nil, errors.New("Cannot update attempt question with id")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.CreateResponse(tt.args.ctx, tt.args.input)
+			got, err := r.UpdateAttemptQuestion(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
-			if tt.exp.err != nil && err != nil {
-				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
-			} else {
-				assert.Equal(t, tt.exp.err, err)
-			}
-		})
-	}
-}
-
-func testDeleteResponse(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	existing := &models.Response{}
-	err := db.WithContext(ctx).Model(existing).First()
-	require.NoError(t, err)
-
-	type args struct {
-		ctx context.Context
-		id  uint64
-	}
-
-	type expect struct {
-		err error
-	}
-
-	var tests = []struct {
-		name string
-		args args
-		exp  expect
-	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteResponse(tt.args.ctx, tt.args.id)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

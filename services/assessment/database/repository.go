@@ -126,19 +126,45 @@ func (r *repository) DeleteAssessment(ctx context.Context, id uint64) error {
 	return nil
 }
 
-/* --------------- Assessment Status --------------- */
+/* --------------- Assessment Attempt --------------- */
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	if m == nil {
-		return nil, errors.New("Input parameter assessment status is nil")
+		return nil, errors.New("Input parameter assessment attempt is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).
+	tx, err := r.DB.BeginContext(ctx)
+	defer tx.Close()
+
+	_, err = tx.Model(m).
 		Returning("*").
 		Insert()
 	if err != nil {
-		err = errors.Wrapf(err, "Failed to insert assessment status %v", m)
+		err = errors.Wrapf(err, "Failed to insert assessment attempt %v", m)
+		tx.Rollback()
+		return nil, err
+	}
+
+	var aaqSlice []models.AttemptQuestion
+	for _, q := range m.Questions {
+		aaq := models.AttemptQuestion{
+			AttemptID:  m.ID,
+			QuestionID: q.ID,
+		}
+		aaqSlice = append(aaqSlice, aaq)
+	}
+
+	_, err = tx.Model(&aaqSlice).
+		Returning("*").
+		Insert()
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to insert questions for assessment attempt")
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
 
@@ -155,7 +181,7 @@ func (r *repository) UpdateAssessmentAttempt(ctx context.Context, m *models.Asse
 		Returning("*").
 		Update()
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Cannot update assessment status with id %v", m.ID))
+		return nil, errors.Wrap(err, fmt.Sprintf("Cannot update assessment attempt with id %v", m.ID))
 	}
 
 	return m, nil
@@ -166,7 +192,7 @@ func (r *repository) DeleteAssessmentAttempt(ctx context.Context, id uint64) err
 	m := &models.AssessmentAttempt{ID: id}
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete assessment status with id %v", id))
+		return errors.Wrap(err, fmt.Sprintf("Cannot delete assessment attempt with id %v", id))
 	}
 	return nil
 }
@@ -182,7 +208,7 @@ func (r *repository) CreateQuestion(ctx context.Context, m *models.Question) (*m
 	_, err := r.DB.WithContext(ctx).Model(m).
 		Relation(relTags).
 		Relation(relAssessments).
-		Relation(relResponses).
+		Relation(relAttempts).
 		Returning("*").
 		Insert()
 	if err != nil {
@@ -205,7 +231,7 @@ func (r *repository) GetAllQuestions(ctx context.Context, f models.QuestionFilte
 	}
 	err := q.Relation(relTags).
 		Relation(relAssessments).
-		Relation(relResponses).
+		Relation(relAttempts).
 		Returning("*").
 		Select()
 	return m, err
@@ -218,7 +244,7 @@ func (r *repository) GetQuestionByID(ctx context.Context, id uint64) (*models.Qu
 		Where("id = ?", id).
 		Relation(relTags).
 		Relation(relAssessments).
-		Relation(relResponses).
+		Relation(relAttempts).
 		Returning("*").
 		First()
 	//pg returns error when no rows in the result set
@@ -237,7 +263,7 @@ func (r *repository) UpdateQuestion(ctx context.Context, m *models.Question) (*m
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
 		Relation(relTags).
 		Relation(relAssessments).
-		Relation(relResponses).
+		Relation(relAttempts).
 		Returning("*").
 		Update()
 	if err != nil {
@@ -288,31 +314,21 @@ func (r *repository) DeleteTag(ctx context.Context, id uint64) error {
 	return nil
 }
 
-/* --------------- Response --------------- */
+/* --------------- Attempt Question --------------- */
 
-// CreateResponse creates a new Response
-func (r *repository) CreateResponse(ctx context.Context, m *models.Response) (*models.Response, error) {
+// UpdateAttemptQuestion updates a Attempt Question
+func (r *repository) UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error) {
 	if m == nil {
-		return nil, errors.New("Input parameter response is nil")
+		return nil, errors.New("AttemptQuestion is nil")
 	}
 
 	_, err := r.DB.WithContext(ctx).Model(m).
 		Returning("*").
 		Insert()
 	if err != nil {
-		err = errors.Wrapf(err, "Failed to insert response %v", m)
+		err = errors.Wrapf(err, "Failed to update attempt question %v", m)
 		return nil, err
 	}
 
 	return m, nil
-}
-
-// DeleteResponse deletes a Response by ID
-func (r *repository) DeleteResponse(ctx context.Context, id uint64) error {
-	m := &models.Response{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete response with id %v", id))
-	}
-	return nil
 }

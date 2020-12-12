@@ -67,7 +67,7 @@ func (s *service) DeleteAssessment(ctx context.Context, id uint64) error {
 	return err
 }
 
-/* --------------- Assessment Status --------------- */
+/* --------------- Assessment Attempt --------------- */
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (s *service) CreateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
@@ -166,23 +166,13 @@ func (s *service) DeleteTag(ctx context.Context, id uint64) error {
 	return err
 }
 
-/* --------------- Response --------------- */
+/* --------------- Attempt Question --------------- */
 
-// CreateResponse creates a new Response
-func (s *service) CreateResponse(ctx context.Context, model *models.Response) (*models.Response, error) {
-	m, err := s.repository.CreateResponse(ctx, model)
+// UpdateAttemptQuestion updates a AttemptQuestion
+func (s *service) UpdateAttemptQuestion(ctx context.Context, model *models.AttemptQuestion) (*models.AttemptQuestion, error) {
+	m, err := s.repository.UpdateAttemptQuestion(ctx, model)
 	if err != nil {
 		return nil, err
 	}
-
 	return m, err
-}
-
-// DeleteResponse deletes a Response by ID
-func (s *service) DeleteResponse(ctx context.Context, id uint64) error {
-	err := s.repository.DeleteResponse(ctx, id)
-	if err != nil {
-		return err
-	}
-	return err
 }
