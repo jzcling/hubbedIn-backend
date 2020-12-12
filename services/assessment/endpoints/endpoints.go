@@ -17,9 +17,10 @@ type Endpoints struct {
 	UpdateAssessment  endpoint.Endpoint
 	DeleteAssessment  endpoint.Endpoint
 
-	CreateAssessmentAttempt endpoint.Endpoint
-	UpdateAssessmentAttempt endpoint.Endpoint
-	DeleteAssessmentAttempt endpoint.Endpoint
+	CreateAssessmentAttempt  endpoint.Endpoint
+	GetAssessmentAttemptByID endpoint.Endpoint
+	UpdateAssessmentAttempt  endpoint.Endpoint
+	DeleteAssessmentAttempt  endpoint.Endpoint
 
 	CreateQuestion  endpoint.Endpoint
 	GetAllQuestions endpoint.Endpoint
@@ -42,9 +43,10 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		UpdateAssessment:  makeUpdateAssessmentEndpoint(s),
 		DeleteAssessment:  makeDeleteAssessmentEndpoint(s),
 
-		CreateAssessmentAttempt: makeCreateAssessmentAttemptEndpoint(s),
-		UpdateAssessmentAttempt: makeUpdateAssessmentAttemptEndpoint(s),
-		DeleteAssessmentAttempt: makeDeleteAssessmentAttemptEndpoint(s),
+		CreateAssessmentAttempt:  makeCreateAssessmentAttemptEndpoint(s),
+		GetAssessmentAttemptByID: makeGetAssessmentAttemptByIDEndpoint(s),
+		UpdateAssessmentAttempt:  makeUpdateAssessmentAttemptEndpoint(s),
+		DeleteAssessmentAttempt:  makeDeleteAssessmentAttemptEndpoint(s),
 
 		CreateQuestion:  makeCreateQuestionEndpoint(s),
 		GetAllQuestions: makeGetAllQuestionsEndpoint(s),
@@ -64,8 +66,8 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 func makeCreateAssessmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateAssessmentRequest)
-		c, err := s.CreateAssessment(ctx, req.Assessment)
-		return CreateAssessmentResponse{Assessment: c, Err: err}, nil
+		m, err := s.CreateAssessment(ctx, req.Assessment)
+		return CreateAssessmentResponse{Assessment: m, Err: err}, nil
 	}
 }
 
@@ -84,8 +86,8 @@ func makeGetAllAssessmentsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllAssessmentsRequest)
 		f := models.AssessmentFilters(req)
-		c, err := s.GetAllAssessments(ctx, f, nil)
-		return GetAllAssessmentsResponse{Assessments: c, Err: err}, nil
+		m, err := s.GetAllAssessments(ctx, f, nil)
+		return GetAllAssessmentsResponse{Assessments: m, Err: err}, nil
 	}
 }
 
@@ -111,8 +113,8 @@ type GetAllAssessmentsResponse struct {
 func makeGetAssessmentByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAssessmentByIDRequest)
-		c, err := s.GetAssessmentByID(ctx, req.ID, nil)
-		return GetAssessmentByIDResponse{Assessment: c, Err: err}, nil
+		m, err := s.GetAssessmentByID(ctx, req.ID, nil)
+		return GetAssessmentByIDResponse{Assessment: m, Err: err}, nil
 	}
 }
 
@@ -130,8 +132,8 @@ type GetAssessmentByIDResponse struct {
 func makeUpdateAssessmentEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateAssessmentRequest)
-		c, err := s.UpdateAssessment(ctx, req.Assessment)
-		return UpdateAssessmentResponse{Assessment: c, Err: err}, nil
+		m, err := s.UpdateAssessment(ctx, req.Assessment)
+		return UpdateAssessmentResponse{Assessment: m, Err: err}, nil
 	}
 }
 
@@ -170,8 +172,8 @@ type DeleteAssessmentResponse struct {
 func makeCreateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateAssessmentAttemptRequest)
-		c, err := s.CreateAssessmentAttempt(ctx, req.AssessmentAttempt)
-		return CreateAssessmentAttemptResponse{AssessmentAttempt: c, Err: err}, nil
+		m, err := s.CreateAssessmentAttempt(ctx, req.AssessmentAttempt)
+		return CreateAssessmentAttemptResponse{AssessmentAttempt: m, Err: err}, nil
 	}
 }
 
@@ -186,11 +188,30 @@ type CreateAssessmentAttemptResponse struct {
 	Err               error
 }
 
+func makeGetAssessmentAttemptByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetAssessmentAttemptByIDRequest)
+		m, err := s.GetAssessmentAttemptByID(ctx, req.ID)
+		return GetAssessmentAttemptByIDResponse{AssessmentAttempt: m, Err: err}, nil
+	}
+}
+
+// GetAssessmentAttemptByIDRequest declares the inputs required for getting a single assessment attempt by ID
+type GetAssessmentAttemptByIDRequest struct {
+	ID uint64
+}
+
+// GetAssessmentAttemptByIDResponse declares the outputs after attempting to get a single assessment attempt by ID
+type GetAssessmentAttemptByIDResponse struct {
+	AssessmentAttempt *models.AssessmentAttempt
+	Err               error
+}
+
 func makeUpdateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateAssessmentAttemptRequest)
-		c, err := s.UpdateAssessmentAttempt(ctx, req.AssessmentAttempt)
-		return UpdateAssessmentAttemptResponse{AssessmentAttempt: c, Err: err}, nil
+		m, err := s.UpdateAssessmentAttempt(ctx, req.AssessmentAttempt)
+		return UpdateAssessmentAttemptResponse{AssessmentAttempt: m, Err: err}, nil
 	}
 }
 
@@ -229,8 +250,8 @@ type DeleteAssessmentAttemptResponse struct {
 func makeCreateQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateQuestionRequest)
-		c, err := s.CreateQuestion(ctx, req.Question)
-		return CreateQuestionResponse{Question: c, Err: err}, nil
+		m, err := s.CreateQuestion(ctx, req.Question)
+		return CreateQuestionResponse{Question: m, Err: err}, nil
 	}
 }
 
@@ -249,8 +270,8 @@ func makeGetAllQuestionsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllQuestionsRequest)
 		f := models.QuestionFilters(req)
-		c, err := s.GetAllQuestions(ctx, f)
-		return GetAllQuestionsResponse{Questions: c, Err: err}, nil
+		m, err := s.GetAllQuestions(ctx, f)
+		return GetAllQuestionsResponse{Questions: m, Err: err}, nil
 	}
 }
 
@@ -269,8 +290,8 @@ type GetAllQuestionsResponse struct {
 func makeGetQuestionByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetQuestionByIDRequest)
-		c, err := s.GetQuestionByID(ctx, req.ID)
-		return GetQuestionByIDResponse{Question: c, Err: err}, nil
+		m, err := s.GetQuestionByID(ctx, req.ID)
+		return GetQuestionByIDResponse{Question: m, Err: err}, nil
 	}
 }
 
@@ -288,8 +309,8 @@ type GetQuestionByIDResponse struct {
 func makeUpdateQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateQuestionRequest)
-		c, err := s.UpdateQuestion(ctx, req.Question)
-		return UpdateQuestionResponse{Question: c, Err: err}, nil
+		m, err := s.UpdateQuestion(ctx, req.Question)
+		return UpdateQuestionResponse{Question: m, Err: err}, nil
 	}
 }
 
@@ -328,8 +349,8 @@ type DeleteQuestionResponse struct {
 func makeCreateTagEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateTagRequest)
-		c, err := s.CreateTag(ctx, req.Tag)
-		return CreateTagResponse{Tag: c, Err: err}, nil
+		m, err := s.CreateTag(ctx, req.Tag)
+		return CreateTagResponse{Tag: m, Err: err}, nil
 	}
 }
 
@@ -367,8 +388,8 @@ type DeleteTagResponse struct {
 func makeUpdateAttemptQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateAttemptQuestionRequest)
-		c, err := s.UpdateAttemptQuestion(ctx, req.AttemptQuestion)
-		return UpdateAttemptQuestionResponse{AttemptQuestion: c, Err: err}, nil
+		m, err := s.UpdateAttemptQuestion(ctx, req.AttemptQuestion)
+		return UpdateAttemptQuestionResponse{AttemptQuestion: m, Err: err}, nil
 	}
 }
 

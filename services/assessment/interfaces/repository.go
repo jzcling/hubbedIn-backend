@@ -29,6 +29,9 @@ type Repository interface {
 	// CreateAssessmentAttempt creates a new AssessmentAttempt
 	CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 
+	// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
+	GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error)
+
 	// UpdateAssessmentAttempt updates a AssessmentAttempt
 	UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 
@@ -61,6 +64,9 @@ type Repository interface {
 	DeleteTag(ctx context.Context, id uint64) error
 
 	/* --------------- Attempt Question --------------- */
+
+	// GetAttemptQuestionByID returns a AttemptQuestion by ID
+	GetAttemptQuestionByID(ctx context.Context, id uint64) (*models.AttemptQuestion, error)
 
 	// UpdateAttemptQuestion updates a AttemptQuestion
 	UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error)

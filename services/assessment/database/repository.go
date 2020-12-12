@@ -171,6 +171,21 @@ func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.Asse
 	return m, nil
 }
 
+// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
+func (r *repository) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	m := models.AssessmentAttempt{ID: id}
+	err := r.DB.WithContext(ctx).Model(&m).
+		Where("id = ?", id).
+		Relation(relQuestions).
+		Returning("*").
+		First()
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+	return &m, err
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (r *repository) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	if m == nil {
@@ -315,6 +330,20 @@ func (r *repository) DeleteTag(ctx context.Context, id uint64) error {
 }
 
 /* --------------- Attempt Question --------------- */
+
+// GetAttemptQuestionByID returns a AttemptQuestion by ID
+func (r *repository) GetAttemptQuestionByID(ctx context.Context, id uint64) (*models.AttemptQuestion, error) {
+	m := models.AttemptQuestion{ID: id}
+	err := r.DB.WithContext(ctx).Model(&m).
+		Where("id = ?", id).
+		Returning("*").
+		First()
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+	return &m, err
+}
 
 // UpdateAttemptQuestion updates a Attempt Question
 func (r *repository) UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error) {

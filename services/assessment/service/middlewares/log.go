@@ -86,6 +86,13 @@ func (mw logMiddleware) CreateAssessmentAttempt(ctx context.Context, input *mode
 	return
 }
 
+// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
+func (mw logMiddleware) GetAssessmentAttemptByID(ctx context.Context, input uint64) (output *models.AssessmentAttempt, err error) {
+	defer mw.log("GetAssessmentAttemptByID", time.Now(), input, &output, &err)
+	output, err = mw.next.GetAssessmentAttemptByID(ctx, input)
+	return
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (mw logMiddleware) UpdateAssessmentAttempt(ctx context.Context, input *models.AssessmentAttempt) (output *models.AssessmentAttempt, err error) {
 	defer mw.log("UpdateAssessmentAttempt", time.Now(), input, &output, &err)

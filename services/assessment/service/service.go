@@ -79,6 +79,15 @@ func (s *service) CreateAssessmentAttempt(ctx context.Context, model *models.Ass
 	return m, err
 }
 
+// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
+func (s *service) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	m, err := s.repository.GetAssessmentAttemptByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return m, err
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (s *service) UpdateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	m, err := s.repository.UpdateAssessmentAttempt(ctx, model)

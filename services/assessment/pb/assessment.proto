@@ -37,6 +37,9 @@ service AssessmentService {
             body: "assessment_attempt"
         };
     };
+    rpc GetAssessmentAttemptByID(GetAssessmentAttemptByIDRequest) returns (AssessmentAttempt) {
+        option (google.api.http) = { get: "/v1/assessmentattempts/{id}" };
+    };
     rpc UpdateAssessmentAttempt(UpdateAssessmentAttemptRequest) returns (AssessmentAttempt) {
         option (google.api.http) = {
             put: "/v1/assessmentattempts/{id}"
@@ -149,6 +152,10 @@ message AssessmentAttempt {
 
 message CreateAssessmentAttemptRequest {
     AssessmentAttempt assessment_attempt = 1;
+}
+
+message GetAssessmentAttemptByIDRequest {
+    uint64 id = 1;
 }
 
 message UpdateAssessmentAttemptRequest {

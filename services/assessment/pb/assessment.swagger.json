@@ -44,6 +44,35 @@
       }
     },
     "/v1/assessmentattempts/{id}": {
+      "get": {
+        "operationId": "AssessmentService_GetAssessmentAttemptByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssessmentAttempt"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "AssessmentService"
+        ]
+      },
       "delete": {
         "operationId": "AssessmentService_DeleteAssessmentAttempt",
         "responses": {

@@ -13,7 +13,8 @@ import (
 )
 
 type authMiddleware struct {
-	next interfaces.Service
+	next       interfaces.Service
+	repository interfaces.Repository
 }
 
 var (
@@ -146,9 +147,29 @@ func (mw authMiddleware) CreateAssessmentAttempt(ctx context.Context, m *models.
 	return mw.next.CreateAssessmentAttempt(ctx, m)
 }
 
+// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
+func (mw authMiddleware) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	aa, err := mw.repository.GetAssessmentAttemptByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	owns, err := checkAdminOrOwner(ctx, &aa.CandidateID)
+	if err != nil {
+		return nil, err
+	}
+	if !owns {
+		return nil, errAuth
+	}
+	return mw.next.GetAssessmentAttemptByID(ctx, id)
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (mw authMiddleware) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
-	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
+	aa, err := mw.repository.GetAssessmentAttemptByID(ctx, m.ID)
+	if err != nil {
+		return nil, err
+	}
+	owns, err := checkAdminOrOwner(ctx, &aa.CandidateID)
 	if err != nil {
 		return nil, err
 	}
@@ -255,7 +276,11 @@ func (mw authMiddleware) DeleteTag(ctx context.Context, id uint64) error {
 
 // UpdateAttemptQuestion updates a AttemptQuestion
 func (mw authMiddleware) UpdateAttemptQuestion(ctx context.Context, m *models.AttemptQuestion) (*models.AttemptQuestion, error) {
-	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
+	aq, err := mw.repository.GetAttemptQuestionByID(ctx, m.ID)
+	if err != nil {
+		return nil, err
+	}
+	owns, err := checkAdminOrOwner(ctx, &aq.CandidateID)
 	if err != nil {
 		return nil, err
 	}

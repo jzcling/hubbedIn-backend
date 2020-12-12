@@ -209,6 +209,29 @@ func (_m *Repository) GetAllQuestions(ctx context.Context, f models.QuestionFilt
 	return r0, r1
 }
 
+// GetAssessmentAttemptByID provides a mock function with given fields: ctx, id
+func (_m *Repository) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *models.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.AssessmentAttempt); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetAssessmentByID provides a mock function with given fields: ctx, id, admin
 func (_m *Repository) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
 	ret := _m.Called(ctx, id, admin)
@@ -225,6 +248,29 @@ func (_m *Repository) GetAssessmentByID(ctx context.Context, id uint64, admin *b
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, uint64, *bool) error); ok {
 		r1 = rf(ctx, id, admin)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetAttemptQuestionByID provides a mock function with given fields: ctx, id
+func (_m *Repository) GetAttemptQuestionByID(ctx context.Context, id uint64) (*models.AttemptQuestion, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *models.AttemptQuestion
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.AttemptQuestion); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AttemptQuestion)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}

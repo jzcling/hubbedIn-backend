@@ -29,6 +29,9 @@ type Service interface {
 	// CreateAssessmentAttempt creates a new AssessmentAttempt
 	CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 
+	// GetAssessmentAttemptByID finds and returns a AssessmentAttempt by ID
+	GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error)
+
 	// UpdateAssessmentAttempt updates a AssessmentAttempt
 	UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 

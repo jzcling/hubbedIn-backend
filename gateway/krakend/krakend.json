@@ -1318,6 +1318,33 @@
         },
         {
             "endpoint": "/v1/assessmentattempts/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/assessmentattempts/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/assessmentattempts/{id}",
             "method": "PUT",
             "output_encoding": "json",
             "headers_to_pass": [

@@ -20,9 +20,10 @@ type grpcServer struct {
 	updateAssessment  kitgrpc.Handler
 	deleteAssessment  kitgrpc.Handler
 
-	createAssessmentAttempt kitgrpc.Handler
-	updateAssessmentAttempt kitgrpc.Handler
-	deleteAssessmentAttempt kitgrpc.Handler
+	createAssessmentAttempt  kitgrpc.Handler
+	getAssessmentAttemptByID kitgrpc.Handler
+	updateAssessmentAttempt  kitgrpc.Handler
+	deleteAssessmentAttempt  kitgrpc.Handler
 
 	createQuestion  kitgrpc.Handler
 	getAllQuestions kitgrpc.Handler
@@ -83,6 +84,12 @@ func NewGRPCServer(
 			endpoints.CreateAssessmentAttempt,
 			decodeCreateAssessmentAttemptRequest,
 			encodeCreateAssessmentAttemptResponse,
+			options...,
+		),
+		getAssessmentAttemptByID: kitgrpc.NewServer(
+			endpoints.GetAssessmentAttemptByID,
+			decodeGetAssessmentAttemptByIDRequest,
+			encodeGetAssessmentAttemptByIDResponse,
 			options...,
 		),
 		updateAssessmentAttempt: kitgrpc.NewServer(
@@ -313,6 +320,31 @@ func decodeCreateAssessmentAttemptRequest(_ context.Context, request interface{}
 // encodeCreateAssessmentAttemptResponse encodes the outgoing go kit payload to the grpc payload
 func encodeCreateAssessmentAttemptResponse(_ context.Context, response interface{}) (interface{}, error) {
 	res := response.(endpoints.CreateAssessmentAttemptResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return res.AssessmentAttempt.ToProto(), nil
+	}
+	return nil, err
+}
+
+// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
+func (s *grpcServer) GetAssessmentAttemptByID(ctx context.Context, req *pb.GetAssessmentAttemptByIDRequest) (*pb.AssessmentAttempt, error) {
+	_, rep, err := s.getAssessmentAttemptByID.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.AssessmentAttempt), nil
+}
+
+// decodeGetAssessmentAttemptByIDRequest decodes the incoming grpc payload to our go kit payload
+func decodeGetAssessmentAttemptByIDRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.GetAssessmentAttemptByIDRequest)
+	return endpoints.GetAssessmentAttemptByIDRequest{ID: req.Id}, nil
+}
+
+// encodeGetAssessmentAttemptByIDResponse encodes the outgoing go kit payload to the grpc payload
+func encodeGetAssessmentAttemptByIDResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.GetAssessmentAttemptByIDResponse)
 	err := getError(res.Err)
 	if err == nil {
 		return res.AssessmentAttempt.ToProto(), nil
