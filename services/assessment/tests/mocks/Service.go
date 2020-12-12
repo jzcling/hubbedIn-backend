@@ -163,13 +163,13 @@ func (_m *Service) DeleteTag(ctx context.Context, id uint64) error {
 	return r0
 }
 
-// GetAllAssessments provides a mock function with given fields: ctx, f, admin
-func (_m *Service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error) {
-	ret := _m.Called(ctx, f, admin)
+// GetAllAssessments provides a mock function with given fields: ctx, f, role, cid
+func (_m *Service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, role *string, cid *uint64) ([]*models.Assessment, error) {
+	ret := _m.Called(ctx, f, role, cid)
 
 	var r0 []*models.Assessment
-	if rf, ok := ret.Get(0).(func(context.Context, models.AssessmentFilters, *bool) []*models.Assessment); ok {
-		r0 = rf(ctx, f, admin)
+	if rf, ok := ret.Get(0).(func(context.Context, models.AssessmentFilters, *string, *uint64) []*models.Assessment); ok {
+		r0 = rf(ctx, f, role, cid)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*models.Assessment)
@@ -177,8 +177,8 @@ func (_m *Service) GetAllAssessments(ctx context.Context, f models.AssessmentFil
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, models.AssessmentFilters, *bool) error); ok {
-		r1 = rf(ctx, f, admin)
+	if rf, ok := ret.Get(1).(func(context.Context, models.AssessmentFilters, *string, *uint64) error); ok {
+		r1 = rf(ctx, f, role, cid)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -232,13 +232,13 @@ func (_m *Service) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*mo
 	return r0, r1
 }
 
-// GetAssessmentByID provides a mock function with given fields: ctx, id, admin
-func (_m *Service) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
-	ret := _m.Called(ctx, id, admin)
+// GetAssessmentByID provides a mock function with given fields: ctx, id, role, cid
+func (_m *Service) GetAssessmentByID(ctx context.Context, id uint64, role *string, cid *uint64) (*models.Assessment, error) {
+	ret := _m.Called(ctx, id, role, cid)
 
 	var r0 *models.Assessment
-	if rf, ok := ret.Get(0).(func(context.Context, uint64, *bool) *models.Assessment); ok {
-		r0 = rf(ctx, id, admin)
+	if rf, ok := ret.Get(0).(func(context.Context, uint64, *string, *uint64) *models.Assessment); ok {
+		r0 = rf(ctx, id, role, cid)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.Assessment)
@@ -246,8 +246,8 @@ func (_m *Service) GetAssessmentByID(ctx context.Context, id uint64, admin *bool
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, uint64, *bool) error); ok {
-		r1 = rf(ctx, id, admin)
+	if rf, ok := ret.Get(1).(func(context.Context, uint64, *string, *uint64) error); ok {
+		r1 = rf(ctx, id, role, cid)
 	} else {
 		r1 = ret.Error(1)
 	}

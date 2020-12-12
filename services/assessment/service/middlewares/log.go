@@ -50,16 +50,16 @@ func (mw logMiddleware) CreateAssessment(ctx context.Context, input *models.Asse
 }
 
 // GetAllAssessments returns all Assessments
-func (mw logMiddleware) GetAllAssessments(ctx context.Context, input models.AssessmentFilters, admin *bool) (output []*models.Assessment, err error) {
+func (mw logMiddleware) GetAllAssessments(ctx context.Context, input models.AssessmentFilters, role *string, cid *uint64) (output []*models.Assessment, err error) {
 	defer mw.log("GetAllAssessments", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAllAssessments(ctx, input, admin)
+	output, err = mw.next.GetAllAssessments(ctx, input, role, cid)
 	return
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (mw logMiddleware) GetAssessmentByID(ctx context.Context, input uint64, admin *bool) (output *models.Assessment, err error) {
+func (mw logMiddleware) GetAssessmentByID(ctx context.Context, input uint64, role *string, cid *uint64) (output *models.Assessment, err error) {
 	defer mw.log("GetAssessmentByID", time.Now(), input, &output, &err)
-	output, err = mw.next.GetAssessmentByID(ctx, input, admin)
+	output, err = mw.next.GetAssessmentByID(ctx, input, role, cid)
 	return
 }
 

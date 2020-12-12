@@ -32,32 +32,35 @@ func NewAuthMiddleware(svc interfaces.Service, r interfaces.Repository) interfac
 	}
 }
 
-func checkAdminOrOwner(ctx context.Context, ownerID *uint64) (bool, error) {
+func getRoleAndID(ctx context.Context, ownerID *uint64) (*string, *uint64, error) {
 	claims, err := getClaims(ctx)
 	if err != nil {
-		return false, err
+		return nil, nil, err
+	}
+
+	// this should come first so that role gets overwritten if owner is also an admin
+	var role string
+	var id uint64
+	if claims[idKey] != nil {
+		id, err = strconv.ParseUint(claims[idKey].(string), 10, 64)
+		if err != nil {
+			return nil, nil, err
+		}
+		if ownerID != nil && id == *ownerID {
+			role = "Owner"
+		}
 	}
 
 	if claims[rolesKey] != nil {
 		for _, r := range claims[rolesKey].([]interface{}) {
-			role := r.(string)
-			if role == "Admin" {
-				return true, nil
+			roleCast := r.(string)
+			if roleCast == "Admin" {
+				role = "Admin"
 			}
 		}
 	}
 
-	if claims[idKey] != nil {
-		id, err := strconv.ParseUint(claims[idKey].(string), 10, 64)
-		if err != nil {
-			return false, err
-		}
-		if ownerID != nil && id == *ownerID {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return &role, &id, nil
 }
 
 func getClaims(ctx context.Context) (jwt.MapClaims, error) {
@@ -82,41 +85,41 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 
 // CreateAssessment creates a new Assessment
 func (mw authMiddleware) CreateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return nil, errAuth
 	}
 	return mw.next.CreateAssessment(ctx, m)
 }
 
 // GetAllAssessments returns all Assessments
-func (mw authMiddleware) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, _ *bool) ([]*models.Assessment, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+func (mw authMiddleware) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, _ *string, _ *uint64) ([]*models.Assessment, error) {
+	role, cid, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	return mw.next.GetAllAssessments(ctx, f, &isAdmin)
+	return mw.next.GetAllAssessments(ctx, f, role, cid)
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (mw authMiddleware) GetAssessmentByID(ctx context.Context, id uint64, _ *bool) (*models.Assessment, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+func (mw authMiddleware) GetAssessmentByID(ctx context.Context, id uint64, _ *string, _ *uint64) (*models.Assessment, error) {
+	role, cid, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	return mw.next.GetAssessmentByID(ctx, id, &isAdmin)
+	return mw.next.GetAssessmentByID(ctx, id, role, cid)
 }
 
 // UpdateAssessment updates a Assessment
 func (mw authMiddleware) UpdateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return nil, errAuth
 	}
 	return mw.next.UpdateAssessment(ctx, m)
@@ -124,11 +127,11 @@ func (mw authMiddleware) UpdateAssessment(ctx context.Context, m *models.Assessm
 
 // DeleteAssessment deletes a Assessment by ID
 func (mw authMiddleware) DeleteAssessment(ctx context.Context, id uint64) error {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return errAuth
 	}
 	return mw.next.DeleteAssessment(ctx, id)
@@ -138,11 +141,11 @@ func (mw authMiddleware) DeleteAssessment(ctx context.Context, id uint64) error 
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (mw authMiddleware) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
-	owns, err := checkAdminOrOwner(ctx, &m.CandidateID)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !owns {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
 	return mw.next.CreateAssessmentAttempt(ctx, m)
@@ -154,11 +157,11 @@ func (mw authMiddleware) GetAssessmentAttemptByID(ctx context.Context, id uint64
 	if err != nil {
 		return nil, err
 	}
-	owns, err := checkAdminOrOwner(ctx, &aa.CandidateID)
+	role, _, err := getRoleAndID(ctx, &aa.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	if !owns {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
 	return mw.next.GetAssessmentAttemptByID(ctx, id)
@@ -170,11 +173,11 @@ func (mw authMiddleware) UpdateAssessmentAttempt(ctx context.Context, m *models.
 	if err != nil {
 		return nil, err
 	}
-	owns, err := checkAdminOrOwner(ctx, &aa.CandidateID)
+	role, _, err := getRoleAndID(ctx, &aa.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	if !owns {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
 	return mw.next.UpdateAssessmentAttempt(ctx, m)
@@ -182,11 +185,11 @@ func (mw authMiddleware) UpdateAssessmentAttempt(ctx context.Context, m *models.
 
 // DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
 func (mw authMiddleware) DeleteAssessmentAttempt(ctx context.Context, id uint64) error {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return errAuth
 	}
 	return mw.next.DeleteAssessmentAttempt(ctx, id)
@@ -196,11 +199,11 @@ func (mw authMiddleware) DeleteAssessmentAttempt(ctx context.Context, id uint64)
 
 // CreateQuestion creates a new Question
 func (mw authMiddleware) CreateQuestion(ctx context.Context, m *models.Question) (*models.Question, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return nil, errAuth
 	}
 	return mw.next.CreateQuestion(ctx, m)
@@ -208,11 +211,11 @@ func (mw authMiddleware) CreateQuestion(ctx context.Context, m *models.Question)
 
 // GetAllQuestions returns all Questions
 func (mw authMiddleware) GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return nil, errAuth
 	}
 	return mw.next.GetAllQuestions(ctx, f)
@@ -220,11 +223,11 @@ func (mw authMiddleware) GetAllQuestions(ctx context.Context, f models.QuestionF
 
 // GetQuestionByID returns a Question by ID
 func (mw authMiddleware) GetQuestionByID(ctx context.Context, id uint64) (*models.Question, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return nil, errAuth
 	}
 	return mw.next.GetQuestionByID(ctx, id)
@@ -232,11 +235,11 @@ func (mw authMiddleware) GetQuestionByID(ctx context.Context, id uint64) (*model
 
 // UpdateQuestion updates a Question
 func (mw authMiddleware) UpdateQuestion(ctx context.Context, m *models.Question) (*models.Question, error) {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return nil, errAuth
 	}
 	return mw.next.UpdateQuestion(ctx, m)
@@ -244,11 +247,11 @@ func (mw authMiddleware) UpdateQuestion(ctx context.Context, m *models.Question)
 
 // DeleteQuestion deletes a Question by ID
 func (mw authMiddleware) DeleteQuestion(ctx context.Context, id uint64) error {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return errAuth
 	}
 	return mw.next.DeleteQuestion(ctx, id)
@@ -263,11 +266,11 @@ func (mw authMiddleware) CreateTag(ctx context.Context, m *models.Tag) (*models.
 
 // DeleteTag deletes a Tag by ID
 func (mw authMiddleware) DeleteTag(ctx context.Context, id uint64) error {
-	isAdmin, err := checkAdminOrOwner(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if !isAdmin {
+	if *role != "Admin" {
 		return errAuth
 	}
 	return mw.next.DeleteTag(ctx, id)
@@ -281,11 +284,11 @@ func (mw authMiddleware) UpdateAttemptQuestion(ctx context.Context, m *models.At
 	if err != nil {
 		return nil, err
 	}
-	owns, err := checkAdminOrOwner(ctx, &aq.CandidateID)
+	role, _, err := getRoleAndID(ctx, &aq.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	if !owns {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
 	return mw.next.UpdateAttemptQuestion(ctx, m)

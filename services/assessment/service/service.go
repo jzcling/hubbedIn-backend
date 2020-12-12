@@ -32,8 +32,8 @@ func (s *service) CreateAssessment(ctx context.Context, model *models.Assessment
 }
 
 // GetAllAssessments returns all Assessments
-func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error) {
-	m, err := s.repository.GetAllAssessments(ctx, f, admin)
+func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, role *string, cid *uint64) ([]*models.Assessment, error) {
+	m, err := s.repository.GetAllAssessments(ctx, f, role, cid)
 	if err != nil {
 		return nil, err
 	}
@@ -41,8 +41,8 @@ func (s *service) GetAllAssessments(ctx context.Context, f models.AssessmentFilt
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (s *service) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
-	m, err := s.repository.GetAssessmentByID(ctx, id, admin)
+func (s *service) GetAssessmentByID(ctx context.Context, id uint64, role *string, cid *uint64) (*models.Assessment, error) {
+	m, err := s.repository.GetAssessmentByID(ctx, id, role, cid)
 	if err != nil {
 		return nil, err
 	}

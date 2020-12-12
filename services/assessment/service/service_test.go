@@ -112,9 +112,10 @@ func testGetAllAssessments(t *testing.T, s interfaces.Service) {
 	}
 
 	type args struct {
-		ctx   context.Context
-		f     *models.AssessmentFilters
-		admin bool
+		ctx  context.Context
+		f    *models.AssessmentFilters
+		role string
+		cid  uint64
 	}
 
 	type expect struct {
@@ -127,15 +128,15 @@ func testGetAllAssessments(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{nil, nil, true}, expect{nil, errors.New("Context cannot be nil")}},
-		{"no filter", args{ctx, nil, true}, expect{mockRes, nil}},
+		{"nil", args{nil, nil, "Admin", 0}, expect{nil, errors.New("Context cannot be nil")}},
+		{"no filter", args{ctx, nil, "Admin", 0}, expect{mockRes, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAllAssessments", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAllAssessments(tt.args.ctx, *tt.args.f, &tt.args.admin)
+			got, err := s.GetAllAssessments(tt.args.ctx, *tt.args.f, &tt.args.role, &tt.args.cid)
 			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -148,9 +149,10 @@ func testGetAllAssessments(t *testing.T, s interfaces.Service) {
 
 func testGetAssessmentByID(t *testing.T, s interfaces.Service) {
 	type args struct {
-		ctx   context.Context
-		id    uint64
-		admin bool
+		ctx  context.Context
+		id   uint64
+		role string
+		cid  uint64
 	}
 
 	type expect struct {
@@ -163,15 +165,15 @@ func testGetAssessmentByID(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"id 1", args{ctx, 1, true}, expect{&models.Assessment{ID: 1}, nil}},
-		{"error", args{ctx, 10000, true}, expect{nil, errors.New("mock error")}},
+		{"id 1", args{ctx, 1, "Admin", 0}, expect{&models.Assessment{ID: 1}, nil}},
+		{"error", args{ctx, 10000, "Admin", 0}, expect{nil, errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r.On("GetAssessmentByID", tt.args.ctx, tt.args.id).Return(tt.exp.output, tt.exp.err)
 
-			got, err := s.GetAssessmentByID(tt.args.ctx, tt.args.id, &tt.args.admin)
+			got, err := s.GetAssessmentByID(tt.args.ctx, tt.args.id, &tt.args.role, &tt.args.cid)
 			if tt.exp.output != nil && got != nil {
 				assert.Equal(t, tt.exp.output.ID, got.ID)
 			} else {

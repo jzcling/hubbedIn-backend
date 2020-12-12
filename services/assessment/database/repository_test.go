@@ -118,9 +118,10 @@ func testGetAllAssessments(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	require.NoError(t, err)
 
 	type args struct {
-		ctx   context.Context
-		f     *models.AssessmentFilters
-		admin bool
+		ctx  context.Context
+		f    *models.AssessmentFilters
+		role string
+		cid  uint64
 	}
 
 	type expect struct {
@@ -133,12 +134,12 @@ func testGetAllAssessments(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, &models.AssessmentFilters{}, true}, expect{count, nil}},
+		{"no filter", args{ctx, &models.AssessmentFilters{}, "Admin", 0}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllAssessments(tt.args.ctx, *tt.args.f, &tt.args.admin)
+			got, err := r.GetAllAssessments(tt.args.ctx, *tt.args.f, &tt.args.role, &tt.args.cid)
 			assert.Equal(t, tt.exp.cnt, len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -155,9 +156,10 @@ func testGetAssessmentByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	require.NoError(t, err)
 
 	type args struct {
-		ctx   context.Context
-		id    uint64
-		admin bool
+		ctx  context.Context
+		id   uint64
+		role string
+		cid  uint64
 	}
 
 	type expect struct {
@@ -170,13 +172,13 @@ func testGetAssessmentByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id exists", args{ctx, existing.ID, true}, expect{&models.Assessment{ID: existing.ID}, nil}},
-		{"id 10000", args{ctx, 10000, true}, expect{nil, nil}},
+		{"id exists", args{ctx, existing.ID, "Admin", 0}, expect{&models.Assessment{ID: existing.ID}, nil}},
+		{"id 10000", args{ctx, 10000, "Admin", 0}, expect{nil, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAssessmentByID(tt.args.ctx, tt.args.id, &tt.args.admin)
+			got, err := r.GetAssessmentByID(tt.args.ctx, tt.args.id, &tt.args.role, &tt.args.cid)
 			if tt.exp.output != nil && got != nil {
 				assert.Equal(t, tt.exp.output.ID, got.ID)
 			} else {

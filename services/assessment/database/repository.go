@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 	"github.com/pkg/errors"
 
 	"in-backend/services/assessment/interfaces"
@@ -48,7 +49,7 @@ func (r *repository) CreateAssessment(ctx context.Context, m *models.Assessment)
 }
 
 // GetAllAssessments returns all Assessments
-func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, admin *bool) ([]*models.Assessment, error) {
+func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentFilters, role *string, cid *uint64) ([]*models.Assessment, error) {
 	var m []*models.Assessment
 	q := r.DB.WithContext(ctx).Model(&m)
 	if len(f.ID) > 0 {
@@ -72,8 +73,14 @@ func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentF
 	if f.MinScore > 0 {
 		q = q.Where("as.score >= ?", f.MinScore)
 	}
-	if *admin {
+
+	if *role == "Admin" {
 		q = q.Relation(relAssessmentAttempts)
+	}
+	if *role == "Owner" {
+		q = q.Relation(relAssessmentAttempts, func(q *orm.Query) (*orm.Query, error) {
+			return q.Where("aa.candidate_id = ?", *cid), nil
+		})
 	}
 	err := q.Relation(relQuestions).
 		Returning("*").
@@ -82,13 +89,18 @@ func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentF
 }
 
 // GetAssessmentByID returns a Assessment by ID
-func (r *repository) GetAssessmentByID(ctx context.Context, id uint64, admin *bool) (*models.Assessment, error) {
+func (r *repository) GetAssessmentByID(ctx context.Context, id uint64, role *string, cid *uint64) (*models.Assessment, error) {
 	m := models.Assessment{ID: id}
 	q := r.DB.WithContext(ctx).Model(&m).
 		Where("id = ?", id).
 		Relation(relQuestions)
-	if *admin {
+	if *role == "Admin" {
 		q = q.Relation(relAssessmentAttempts)
+	}
+	if *role == "Owner" {
+		q = q.Relation(relAssessmentAttempts, func(q *orm.Query) (*orm.Query, error) {
+			return q.Where("aa.candidate_id = ?", *cid), nil
+		})
 	}
 	err := q.Returning("*").First()
 	//pg returns error when no rows in the result set

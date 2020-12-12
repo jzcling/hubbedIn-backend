@@ -86,7 +86,7 @@ func makeGetAllAssessmentsEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAllAssessmentsRequest)
 		f := models.AssessmentFilters(req)
-		m, err := s.GetAllAssessments(ctx, f, nil)
+		m, err := s.GetAllAssessments(ctx, f, nil, nil)
 		return GetAllAssessmentsResponse{Assessments: m, Err: err}, nil
 	}
 }
@@ -113,7 +113,7 @@ type GetAllAssessmentsResponse struct {
 func makeGetAssessmentByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetAssessmentByIDRequest)
-		m, err := s.GetAssessmentByID(ctx, req.ID, nil)
+		m, err := s.GetAssessmentByID(ctx, req.ID, nil, nil)
 		return GetAssessmentByIDResponse{Assessment: m, Err: err}, nil
 	}
 }
