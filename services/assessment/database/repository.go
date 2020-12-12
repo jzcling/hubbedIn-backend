@@ -201,6 +201,21 @@ func (r *repository) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*
 	return &m, err
 }
 
+// GetLatestAssessmentAttemptByCandidate returns the latest AssessmentAttempt by a Candidate
+func (r *repository) GetLatestAssessmentAttemptByCandidate(ctx context.Context, cid uint64) (*models.AssessmentAttempt, error) {
+	m := models.AssessmentAttempt{}
+	err := r.DB.WithContext(ctx).Model(&m).
+		Where("aa.candidate_id = ?", cid).
+		Order("aa.started_at desc").
+		Returning("*").
+		First()
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+	return &m, err
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (r *repository) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	if m == nil {

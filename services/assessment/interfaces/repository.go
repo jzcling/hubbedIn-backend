@@ -32,6 +32,9 @@ type Repository interface {
 	// GetAssessmentAttemptByID returns a AssessmentAttempt by ID
 	GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error)
 
+	// GetAssessmentAttemptByID returns the latest AssessmentAttempt by a Candidate
+	GetLatestAssessmentAttemptByCandidate(ctx context.Context, cid uint64) (*models.AssessmentAttempt, error)
+
 	// UpdateAssessmentAttempt updates a AssessmentAttempt
 	UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 

@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"errors"
+	"time"
 
+	"in-backend/helpers"
 	"in-backend/services/assessment/interfaces"
 	"in-backend/services/assessment/models"
 )
@@ -71,6 +74,16 @@ func (s *service) DeleteAssessment(ctx context.Context, id uint64) error {
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (s *service) CreateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
+	aa, err := s.repository.GetLatestAssessmentAttemptByCandidate(ctx, model.CandidateID)
+	if err != nil {
+		return nil, err
+	}
+
+	_, months, _, _, _, _ := helpers.TimeDiff(time.Now(), *aa.StartedAt)
+	if months < 3 {
+		return nil, errors.New("Minimum of 3 months between attempts")
+	}
+
 	m, err := s.repository.CreateAssessmentAttempt(ctx, model)
 	if err != nil {
 		return nil, err

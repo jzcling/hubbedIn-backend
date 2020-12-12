@@ -141,7 +141,7 @@ func (mw authMiddleware) DeleteAssessment(ctx context.Context, id uint64) error 
 
 // CreateAssessmentAttempt creates a new AssessmentAttempt
 func (mw authMiddleware) CreateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
-	role, _, err := getRoleAndID(ctx, nil)
+	role, _, err := getRoleAndID(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
 	}
