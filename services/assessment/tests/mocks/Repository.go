@@ -278,6 +278,29 @@ func (_m *Repository) GetAttemptQuestionByID(ctx context.Context, id uint64) (*m
 	return r0, r1
 }
 
+// GetLatestAssessmentAttemptByCandidate provides a mock function with given fields: ctx, cid
+func (_m *Repository) GetLatestAssessmentAttemptByCandidate(ctx context.Context, cid uint64) (*models.AssessmentAttempt, error) {
+	ret := _m.Called(ctx, cid)
+
+	var r0 *models.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.AssessmentAttempt); ok {
+		r0 = rf(ctx, cid)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(ctx, cid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetQuestionByID provides a mock function with given fields: ctx, id
 func (_m *Repository) GetQuestionByID(ctx context.Context, id uint64) (*models.Question, error) {
 	ret := _m.Called(ctx, id)
