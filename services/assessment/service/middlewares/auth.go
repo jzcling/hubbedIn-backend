@@ -38,9 +38,10 @@ func getRoleAndID(ctx context.Context, ownerID *uint64) (*string, *uint64, error
 		return nil, nil, err
 	}
 
+	var role string = ""
+	var id uint64 = 0
+
 	// this should come first so that role gets overwritten if owner is also an admin
-	var role string
-	var id uint64
 	if claims[idKey] != nil {
 		id, err = strconv.ParseUint(claims[idKey].(string), 10, 64)
 		if err != nil {

@@ -95,11 +95,10 @@ func (r *repository) GetAssessmentByID(ctx context.Context, id uint64, role *str
 		Where("id = ?", id).
 		Relation(relQuestions)
 	if *role == "Admin" {
-		q = q.Relation(relAssessmentAttempts)
-	}
-	if *role == "Owner" {
-		q = q.Relation(relAssessmentAttempts, func(q *orm.Query) (*orm.Query, error) {
-			return q.Where("aa.candidate_id = ?", *cid), nil
+		q = q.Relation(relAttempts)
+	} else {
+		q = q.Relation(relAttempts, func(q *orm.Query) (*orm.Query, error) {
+			return q.Where("aa.candidate_id = ?", *cid).Order("aa.started_at desc"), nil
 		})
 	}
 	err := q.Returning("*").First()
