@@ -57,7 +57,8 @@ type Question struct {
 	CreatedBy          uint64               `json:"created_by"`
 	Type               string               `json:"type" pg:",notnull"`
 	Text               string               `json:"text"`
-	ImageURL           string               `json:"image_url" pg:"image_url"`
+	MediaURL           string               `json:"image_url" pg:"media_url"`
+	Code               string               `json:"code"`
 	Options            []string             `json:"options" pg:",array"`
 	Answer             uint32               `json:"answer" pg:",use_zero"`
 	Tags               []*Tag               `json:"tags" pg:"rel:has-many"`
@@ -76,6 +77,7 @@ type AttemptQuestion struct {
 	CandidateID uint64     `json:"candidate_id" pg:"candidate_id,notnull"`
 	Selection   uint32     `json:"selection" pg:",use_zero"`
 	Text        string     `json:"text"`
+	CMMode      string     `json:"cm_mode"`
 	Score       uint32     `json:"score,omitempty" pg:",use_zero"`
 	TimeTaken   uint64     `json:"time_taken,omitempty"`
 	CreatedAt   *time.Time `json:"created_at"`

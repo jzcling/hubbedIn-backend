@@ -179,13 +179,14 @@ message Question {
     uint64 created_by = 2;
 	string type = 3;
 	string text = 4;
-	string image_url = 5;
-	repeated string options = 6;
-	uint32 answer = 7;
-	repeated Tag tags = 8;
-    repeated Assessment assessments = 9;
-    repeated AssessmentAttempt assessment_attempts = 10;
-	repeated AttemptQuestion attempts = 11;
+    string media_url = 5;
+    string code = 6;
+	repeated string options = 7;
+	uint32 answer = 8;
+	repeated Tag tags = 9;
+    repeated Assessment assessments = 10;
+    repeated AssessmentAttempt assessment_attempts = 11;
+	repeated AttemptQuestion attempts = 12;
 }
 
 message CreateQuestionRequest {
@@ -247,11 +248,12 @@ message AttemptQuestion {
     uint64 question_id = 3;
 	uint64 candidate_id = 4;
 	uint32 selection = 5;
-	string text = 6;
-	uint32 score = 7;
-	uint64 time_taken = 8;
-    google.protobuf.Timestamp created_at = 9;
-    google.protobuf.Timestamp updated_at = 10;
+    string text = 6;
+    string cm_mode = 7;
+	uint32 score = 8;
+	uint64 time_taken = 9;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
 }
 
 message UpdateAttemptQuestionRequest {

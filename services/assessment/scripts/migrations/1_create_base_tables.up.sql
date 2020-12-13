@@ -31,7 +31,8 @@ create table if not exists questions (
     created_by bigint,
 	type text not null,
 	text text,
-	image_url text,
+	media_url text,
+	code text,
 	options text[],
 	answer bigint
 );
@@ -43,6 +44,7 @@ create table if not exists attempts_questions (
 	candidate_id bigint not null,
 	selection bigint,
 	text text,
+	cm_mode text,
 	score bigint,
 	time_taken bigint,
 	created_at timestamptz,

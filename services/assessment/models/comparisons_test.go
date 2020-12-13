@@ -50,7 +50,8 @@ func TestQuestionIsEqual(t *testing.T) {
 		CreatedBy: 1,
 		Type:      "Open",
 		Text:      "text",
-		ImageURL:  "image",
+		MediaURL:  "image",
+		Code:      "code",
 		Options:   []string{"test", "test2"},
 		Answer:    0,
 	}
@@ -89,6 +90,7 @@ func TestAttemptQuestionIsEqual(t *testing.T) {
 		CandidateID: 1,
 		Selection:   0,
 		Text:        "text",
+		CMMode:      "text/javascript",
 		Score:       0,
 		TimeTaken:   10,
 		CreatedAt:   &timeAt,

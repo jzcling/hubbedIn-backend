@@ -751,6 +751,9 @@
         "text": {
           "type": "string"
         },
+        "cmMode": {
+          "type": "string"
+        },
         "score": {
           "type": "integer",
           "format": "int64"
@@ -820,7 +823,10 @@
         "text": {
           "type": "string"
         },
-        "imageUrl": {
+        "mediaUrl": {
+          "type": "string"
+        },
+        "code": {
           "type": "string"
         },
         "options": {

@@ -52,7 +52,8 @@ func (m1 *Question) IsEqual(m2 interface{}) bool {
 	if m1.CreatedBy != convertedM2.CreatedBy ||
 		m1.Type != convertedM2.Type ||
 		m1.Text != convertedM2.Text ||
-		m1.ImageUrl != convertedM2.ImageUrl ||
+		m1.MediaUrl != convertedM2.MediaUrl ||
+		m1.Code != convertedM2.Code ||
 		testSliceEqual(m1.Options, convertedM2.Options) ||
 		m1.Answer != convertedM2.Answer ||
 		m1.Type != convertedM2.Type {
@@ -103,6 +104,7 @@ func (m1 *AttemptQuestion) IsEqual(m2 interface{}) bool {
 		m1.CandidateId != convertedM2.CandidateId ||
 		m1.Selection != convertedM2.Selection ||
 		m1.Text != convertedM2.Text ||
+		m1.CmMode != convertedM2.CmMode ||
 		m1.Score != convertedM2.Score ||
 		m1.TimeTaken != convertedM2.TimeTaken ||
 		m1.CreatedAt.AsTime() != convertedM2.CreatedAt.AsTime() ||
