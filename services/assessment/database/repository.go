@@ -382,9 +382,9 @@ func (r *repository) UpdateAttemptQuestion(ctx context.Context, m *models.Attemp
 		return nil, errors.New("AttemptQuestion is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).
+	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
 		Returning("*").
-		Insert()
+		Update()
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to update attempt question %v", m)
 		return nil, err

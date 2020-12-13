@@ -84,7 +84,7 @@ service AssessmentService {
 
     rpc UpdateAttemptQuestion(UpdateAttemptQuestionRequest) returns (AttemptQuestion) {
         option (google.api.http) = { 
-            post: "/v1/attemptquestions/{id}" 
+            put: "/v1/attemptquestions/{id}" 
             body: "attempt_question"
         };
     };

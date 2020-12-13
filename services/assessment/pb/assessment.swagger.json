@@ -353,7 +353,7 @@
       }
     },
     "/v1/attemptquestions/{id}": {
-      "post": {
+      "put": {
         "operationId": "AssessmentService_UpdateAttemptQuestion",
         "responses": {
           "200": {
