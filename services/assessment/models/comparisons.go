@@ -16,7 +16,8 @@ func (m1 *Assessment) IsEqual(m2 interface{}) bool {
 		m1.TimeAllowed != convertedM2.TimeAllowed ||
 		m1.Type != convertedM2.Type ||
 		m1.Randomise != convertedM2.Randomise ||
-		m1.NumQuestions != convertedM2.NumQuestions {
+		m1.NumQuestions != convertedM2.NumQuestions ||
+		m1.CanGoBack != convertedM2.CanGoBack {
 		return false
 	}
 	return true
@@ -38,9 +39,10 @@ func (m1 *AssessmentAttempt) IsEqual(m2 interface{}) bool {
 	if m1.AssessmentID != convertedM2.AssessmentID ||
 		m1.CandidateID != convertedM2.CandidateID ||
 		m1.Status != convertedM2.Status ||
-		m1.Score != convertedM2.Score ||
 		*m1.StartedAt != *convertedM2.StartedAt ||
-		*m1.CompletedAt != *convertedM2.CompletedAt {
+		*m1.CompletedAt != *convertedM2.CompletedAt ||
+		m1.CurrentQuestion != convertedM2.CurrentQuestion ||
+		m1.Score != convertedM2.Score {
 		return false
 	}
 	return true

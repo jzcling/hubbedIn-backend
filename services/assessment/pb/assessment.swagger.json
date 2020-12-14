@@ -664,6 +664,9 @@
           "type": "integer",
           "format": "int64"
         },
+        "canGoBack": {
+          "type": "boolean"
+        },
         "questions": {
           "type": "array",
           "items": {
@@ -703,6 +706,10 @@
         "completedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "currentQuestion": {
+          "type": "string",
+          "format": "uint64"
         },
         "score": {
           "type": "string",

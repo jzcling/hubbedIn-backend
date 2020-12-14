@@ -102,9 +102,10 @@ message Assessment {
 	uint64 time_allowed = 7;
 	string type = 8;
 	bool randomise = 9;
-	uint32 num_questions = 10;
-	repeated Question questions = 11;
-    repeated AssessmentAttempt attempts = 12;
+    uint32 num_questions = 10;
+    bool can_go_back = 11;
+	repeated Question questions = 12;
+    repeated AssessmentAttempt attempts = 13;
 }
 
 message CreateAssessmentRequest {
@@ -148,11 +149,12 @@ message AssessmentAttempt {
 	uint64 candidate_id = 3;
 	string status = 4;
 	google.protobuf.Timestamp started_at = 5;
-	google.protobuf.Timestamp completed_at = 6;
-    int64 score = 7;
-    Assessment assessment = 8;
-    repeated Question questions = 9;
-    repeated AttemptQuestion question_attempts = 10;
+    google.protobuf.Timestamp completed_at = 6;
+    uint64 current_question = 7;
+    int64 score = 8;
+    Assessment assessment = 9;
+    repeated Question questions = 10;
+    repeated AttemptQuestion question_attempts = 11;
 }
 
 message CreateAssessmentAttemptRequest {

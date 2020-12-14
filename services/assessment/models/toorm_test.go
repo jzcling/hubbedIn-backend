@@ -24,6 +24,7 @@ func TestAssessmentToORM(t *testing.T) {
 		Type:         "Multiple Choice",
 		Randomise:    true,
 		NumQuestions: 10,
+		CanGoBack:    false,
 		Questions: []*pb.Question{
 			{
 				Id:        1,
@@ -79,6 +80,7 @@ func TestAssessmentToORM(t *testing.T) {
 		Type:         "Multiple Choice",
 		Randomise:    true,
 		NumQuestions: 10,
+		CanGoBack:    false,
 		Questions: []*Question{
 			{
 				ID:        1,
@@ -103,22 +105,24 @@ func TestAssessmentToORM(t *testing.T) {
 		},
 		Attempts: []*AssessmentAttempt{
 			{
-				ID:           1,
-				AssessmentID: 1,
-				CandidateID:  1,
-				Status:       "Completed",
-				StartedAt:    &testTime,
-				CompletedAt:  &testTime,
-				Score:        5,
+				ID:              1,
+				AssessmentID:    1,
+				CandidateID:     1,
+				Status:          "Completed",
+				StartedAt:       &testTime,
+				CompletedAt:     &testTime,
+				CurrentQuestion: 1,
+				Score:           5,
 			},
 			{
-				ID:           2,
-				AssessmentID: 1,
-				CandidateID:  1,
-				Status:       "Completed",
-				StartedAt:    &testTime,
-				CompletedAt:  &testTime,
-				Score:        5,
+				ID:              2,
+				AssessmentID:    1,
+				CandidateID:     1,
+				Status:          "Completed",
+				StartedAt:       &testTime,
+				CompletedAt:     &testTime,
+				CurrentQuestion: 1,
+				Score:           5,
 			},
 		},
 	}
@@ -133,23 +137,25 @@ func TestAssessmentAttemptToORM(t *testing.T) {
 	require.NoError(t, err)
 
 	input := &pb.AssessmentAttempt{
-		Id:           1,
-		AssessmentId: 1,
-		CandidateId:  1,
-		Status:       "Completed",
-		StartedAt:    testPbTime,
-		CompletedAt:  testPbTime,
-		Score:        5,
+		Id:              1,
+		AssessmentId:    1,
+		CandidateId:     1,
+		Status:          "Completed",
+		StartedAt:       testPbTime,
+		CompletedAt:     testPbTime,
+		CurrentQuestion: 1,
+		Score:           5,
 	}
 
 	expect := &AssessmentAttempt{
-		ID:           1,
-		AssessmentID: 1,
-		CandidateID:  1,
-		Status:       "Completed",
-		StartedAt:    &testTime,
-		CompletedAt:  &testTime,
-		Score:        5,
+		ID:              1,
+		AssessmentID:    1,
+		CandidateID:     1,
+		Status:          "Completed",
+		StartedAt:       &testTime,
+		CompletedAt:     &testTime,
+		CurrentQuestion: 1,
+		Score:           5,
 	}
 
 	got := AssessmentAttemptToORM(input)

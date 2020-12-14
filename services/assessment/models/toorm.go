@@ -34,6 +34,7 @@ func AssessmentToORM(m *pb.Assessment) *Assessment {
 		Type:         m.Type,
 		Randomise:    m.Randomise,
 		NumQuestions: m.NumQuestions,
+		CanGoBack:    m.CanGoBack,
 		Questions:    questions,
 		Attempts:     attempts,
 	}
@@ -66,6 +67,7 @@ func AssessmentAttemptToORM(m *pb.AssessmentAttempt) *AssessmentAttempt {
 		Status:           m.Status,
 		StartedAt:        startedAt,
 		CompletedAt:      completedAt,
+		CurrentQuestion:  m.CurrentQuestion,
 		Score:            m.Score,
 		Assessment:       AssessmentToORM(m.Assessment),
 		Questions:        questions,

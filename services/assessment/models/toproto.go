@@ -34,6 +34,7 @@ func (m *Assessment) ToProto() *pb.Assessment {
 		Type:         m.Type,
 		Randomise:    m.Randomise,
 		NumQuestions: m.NumQuestions,
+		CanGoBack:    m.CanGoBack,
 		Questions:    questions,
 		Attempts:     attempts,
 	}
@@ -66,6 +67,7 @@ func (m *AssessmentAttempt) ToProto() *pb.AssessmentAttempt {
 		Status:           m.Status,
 		StartedAt:        startedAt,
 		CompletedAt:      completedAt,
+		CurrentQuestion:  m.CurrentQuestion,
 		Score:            m.Score,
 		Assessment:       m.Assessment.ToProto(),
 		Questions:        questions,

@@ -29,6 +29,7 @@ type Assessment struct {
 	Type         string               `json:"type"`
 	Randomise    bool                 `json:"randomise"`
 	NumQuestions uint32               `json:"num_questions"`
+	CanGoBack    bool                 `json:"can_go_back"`
 	Questions    []*Question          `json:"questions,omitempty" pg:"many2many:assessments_questions"`
 	Attempts     []*AssessmentAttempt `json:"assessment_attempts,omitempty" pg:"rel:has-many"`
 }
@@ -43,6 +44,7 @@ type AssessmentAttempt struct {
 	Status           string             `json:"string" pg:",notnull"`
 	StartedAt        *time.Time         `json:"started_at,omitempty"`
 	CompletedAt      *time.Time         `json:"completed_at,omitempty"`
+	CurrentQuestion  uint64             `json:"current_question"`
 	Score            int64              `json:"score,omitempty" pg:",use_zero"`
 	Assessment       *Assessment        `json:"assessment" pg:"rel:has-one"`
 	Questions        []*Question        `json:"questions" pg:",many2many:attempts_questions,fk:attempt_id,join_fk:question_id"`
