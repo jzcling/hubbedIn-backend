@@ -101,7 +101,7 @@ type GetAllAssessmentsRequest struct {
 	// relation filters
 	CandidateID uint64
 	Status      []string
-	MinScore    uint32
+	MinScore    int64
 }
 
 // GetAllAssessmentsResponse declares the outputs after attempting to get all assessments

@@ -18,9 +18,28 @@ import (
 	"github.com/go-kit/kit/log/level"
 	kitoc "github.com/go-kit/kit/tracing/opencensus"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
+	"github.com/gocraft/work"
+	"github.com/gomodule/redigo/redis"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+)
+
+// Make a redis pool
+var redisPool = &redis.Pool{
+	MaxActive: 5,
+	MaxIdle:   5,
+	Wait:      true,
+	Dial: func() (redis.Conn, error) {
+		return redis.Dial("tcp", "redis:6379")
+	},
+}
+
+type Context struct {
+}
+
+const (
+	appName string = "hubbedin"
 )
 
 func main() {
@@ -51,12 +70,14 @@ func main() {
 	db := database.NewDatabase(opt)
 	defer db.Close()
 
+	enqueuer := work.NewEnqueuer(appName, redisPool)
+
 	// Build the layers of the service "onion" from the inside out. First, the
 	// business logic service; then, the set of endpoints that wrap the service;
 	// and finally, a series of concrete transport adapters
 
 	repo := database.NewRepository(db)
-	svc := service.New(repo)
+	svc := service.New(repo, enqueuer)
 	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)

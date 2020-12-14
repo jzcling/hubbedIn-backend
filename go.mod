@@ -4,11 +4,15 @@ go 1.15
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/go-co-op/gocron v0.4.0
 	github.com/go-kit/kit v0.10.0
 	github.com/go-pg/migrations/v8 v8.0.1
 	github.com/go-pg/pg/v10 v10.6.2
+	github.com/go-redis/redis/v8 v8.4.2
+	github.com/gocraft/work v0.5.1 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.4.3
+	github.com/gomodule/redigo v1.8.3 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
 	github.com/jinzhu/copier v0.0.0-20201025035756-632e723a6687
 	github.com/lib/pq v1.8.0 // indirect
@@ -16,6 +20,7 @@ require (
 	github.com/oklog/oklog v0.3.2
 	github.com/ory/dockertest/v3 v3.6.2
 	github.com/pkg/errors v0.9.1
+	github.com/robfig/cron v1.2.0 // indirect
 	github.com/sethvargo/go-password v0.2.0
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/spf13/viper v1.7.1

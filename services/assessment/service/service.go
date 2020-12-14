@@ -8,17 +8,21 @@ import (
 	"in-backend/helpers"
 	"in-backend/services/assessment/interfaces"
 	"in-backend/services/assessment/models"
+
+	"github.com/gocraft/work"
 )
 
 // Service implements the assessment Service interface
 type service struct {
 	repository interfaces.Repository
+	enqueuer   *work.Enqueuer
 }
 
 // New creates and returns a new Service that implements the assessment Service interface
-func New(r interfaces.Repository) interfaces.Service {
+func New(r interfaces.Repository, e *work.Enqueuer) interfaces.Service {
 	return &service{
 		repository: r,
+		enqueuer:   e,
 	}
 }
 
@@ -89,7 +93,17 @@ func (s *service) CreateAssessmentAttempt(ctx context.Context, model *models.Ass
 		return nil, err
 	}
 
+	s.scheduleAssessmentAttemptEnd(m)
+
 	return m, err
+}
+
+func (s *service) scheduleAssessmentAttemptEnd(m *models.AssessmentAttempt) error {
+	if m.Assessment != nil {
+		_, err := s.enqueuer.EnqueueIn("end_assessment_attempt", int64(m.Assessment.TimeAllowed), work.Q{"id": m.ID})
+		return err
+	}
+	return nil
 }
 
 // GetAssessmentAttemptByID returns a AssessmentAttempt by ID

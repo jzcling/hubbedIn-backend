@@ -116,7 +116,7 @@ message GetAllAssessmentsRequest {
 	repeated string type = 4;
 	uint64 candidate_id = 5;
 	repeated string status = 6;
-	uint32 min_score = 7;
+	int64 min_score = 7;
 }
 
 message GetAllAssessmentsResponse {
@@ -147,7 +147,7 @@ message AssessmentAttempt {
 	string status = 4;
 	google.protobuf.Timestamp started_at = 5;
 	google.protobuf.Timestamp completed_at = 6;
-    uint32 score = 7;
+    int64 score = 7;
     Assessment assessment = 8;
     repeated Question questions = 9;
     repeated AttemptQuestion question_attempts = 10;
@@ -182,7 +182,7 @@ message Question {
     string media_url = 5;
     string code = 6;
 	repeated string options = 7;
-	uint32 answer = 8;
+	int64 answer = 8;
 	repeated Tag tags = 9;
     repeated Assessment assessments = 10;
     repeated AssessmentAttempt assessment_attempts = 11;
@@ -247,10 +247,10 @@ message AttemptQuestion {
     uint64 attempt_id = 2;
     uint64 question_id = 3;
 	uint64 candidate_id = 4;
-	uint32 selection = 5;
+	int64 selection = 5;
     string text = 6;
     string cm_mode = 7;
-	uint32 score = 8;
+	int64 score = 8;
 	uint64 time_taken = 9;
     google.protobuf.Timestamp created_at = 10;
     google.protobuf.Timestamp updated_at = 11;

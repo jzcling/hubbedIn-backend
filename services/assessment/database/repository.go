@@ -149,6 +149,7 @@ func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.Asse
 	defer tx.Close()
 
 	_, err = tx.Model(m).
+		Relation("Assessment").
 		Returning("*").
 		Insert()
 	if err != nil {
@@ -163,6 +164,8 @@ func (r *repository) CreateAssessmentAttempt(ctx context.Context, m *models.Asse
 			AttemptID:   m.ID,
 			QuestionID:  q.ID,
 			CandidateID: m.CandidateID,
+			Selection:   -1,
+			Score:       -1,
 		}
 		aaqSlice = append(aaqSlice, aaq)
 	}

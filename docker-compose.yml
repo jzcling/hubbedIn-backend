@@ -62,6 +62,14 @@ services:
             - postgresql:/var/lib/postgresql
         networks:
             - backend
+    redis:
+        image: redis:alpine
+        container_name: redis
+        restart: always
+        ports:
+            - ${REDIS_PORT}:${REDIS_PORT}
+        networks:
+            - backend
     gateway:
         build: 
             context: .
@@ -86,6 +94,17 @@ services:
         networks: 
             - backend
             - frontend
+    scheduler-worker:
+        build: 
+            context: .
+            dockerfile: ./scheduler/Dockerfile
+        image: scheduler-worker
+        container_name: scheduler-worker
+        restart: always
+        depends_on:
+            - redis
+        networks:
+            - backend
     sonarqube:
         image: sonarqube:community
         container_name: sonarqube

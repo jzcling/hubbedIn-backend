@@ -216,7 +216,7 @@
             "name": "minScore",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           }
         ],
@@ -705,7 +705,7 @@
           "format": "date-time"
         },
         "score": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "assessment": {
@@ -745,7 +745,7 @@
           "format": "uint64"
         },
         "selection": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "text": {
@@ -755,7 +755,7 @@
           "type": "string"
         },
         "score": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "timeTaken": {
@@ -836,7 +836,7 @@
           }
         },
         "answer": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "tags": {

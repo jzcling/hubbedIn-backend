@@ -10,7 +10,7 @@ type AssessmentFilters struct {
 	// relation filters
 	CandidateID uint64
 	Status      []string
-	MinScore    uint32
+	MinScore    int64
 }
 
 // QuestionFilters define filters for Question model
