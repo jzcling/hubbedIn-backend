@@ -407,6 +407,66 @@ func (_m *AssessmentServiceClient) GetQuestionByID(ctx context.Context, in *pb.G
 	return r0, r1
 }
 
+// LocalGetAssessmentAttemptByID provides a mock function with given fields: ctx, in, opts
+func (_m *AssessmentServiceClient) LocalGetAssessmentAttemptByID(ctx context.Context, in *pb.GetAssessmentAttemptByIDRequest, opts ...grpc.CallOption) (*pb.AssessmentAttempt, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetAssessmentAttemptByIDRequest, ...grpc.CallOption) *pb.AssessmentAttempt); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetAssessmentAttemptByIDRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LocalUpdateAssessmentAttempt provides a mock function with given fields: ctx, in, opts
+func (_m *AssessmentServiceClient) LocalUpdateAssessmentAttempt(ctx context.Context, in *pb.UpdateAssessmentAttemptRequest, opts ...grpc.CallOption) (*pb.AssessmentAttempt, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAssessmentAttemptRequest, ...grpc.CallOption) *pb.AssessmentAttempt); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentAttemptRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateAssessment provides a mock function with given fields: ctx, in, opts
 func (_m *AssessmentServiceClient) UpdateAssessment(ctx context.Context, in *pb.UpdateAssessmentRequest, opts ...grpc.CallOption) (*pb.Assessment, error) {
 	_va := make([]interface{}, len(opts))

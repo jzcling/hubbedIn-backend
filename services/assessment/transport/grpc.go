@@ -20,10 +20,12 @@ type grpcServer struct {
 	updateAssessment  kitgrpc.Handler
 	deleteAssessment  kitgrpc.Handler
 
-	createAssessmentAttempt  kitgrpc.Handler
-	getAssessmentAttemptByID kitgrpc.Handler
-	updateAssessmentAttempt  kitgrpc.Handler
-	deleteAssessmentAttempt  kitgrpc.Handler
+	createAssessmentAttempt       kitgrpc.Handler
+	getAssessmentAttemptByID      kitgrpc.Handler
+	localGetAssessmentAttemptByID kitgrpc.Handler
+	updateAssessmentAttempt       kitgrpc.Handler
+	localUpdateAssessmentAttempt  kitgrpc.Handler
+	deleteAssessmentAttempt       kitgrpc.Handler
 
 	createQuestion  kitgrpc.Handler
 	getAllQuestions kitgrpc.Handler
@@ -92,8 +94,20 @@ func NewGRPCServer(
 			encodeGetAssessmentAttemptByIDResponse,
 			options...,
 		),
+		localGetAssessmentAttemptByID: kitgrpc.NewServer(
+			endpoints.LocalGetAssessmentAttemptByID,
+			decodeGetAssessmentAttemptByIDRequest,
+			encodeGetAssessmentAttemptByIDResponse,
+			options...,
+		),
 		updateAssessmentAttempt: kitgrpc.NewServer(
 			endpoints.UpdateAssessmentAttempt,
+			decodeUpdateAssessmentAttemptRequest,
+			encodeUpdateAssessmentAttemptResponse,
+			options...,
+		),
+		localUpdateAssessmentAttempt: kitgrpc.NewServer(
+			endpoints.LocalUpdateAssessmentAttempt,
 			decodeUpdateAssessmentAttemptRequest,
 			encodeUpdateAssessmentAttemptResponse,
 			options...,
@@ -336,6 +350,15 @@ func (s *grpcServer) GetAssessmentAttemptByID(ctx context.Context, req *pb.GetAs
 	return rep.(*pb.AssessmentAttempt), nil
 }
 
+// LocalGetAssessmentAttemptByID returns a AssessmentAttempt by ID
+func (s *grpcServer) LocalGetAssessmentAttemptByID(ctx context.Context, req *pb.GetAssessmentAttemptByIDRequest) (*pb.AssessmentAttempt, error) {
+	_, rep, err := s.localGetAssessmentAttemptByID.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.AssessmentAttempt), nil
+}
+
 // decodeGetAssessmentAttemptByIDRequest decodes the incoming grpc payload to our go kit payload
 func decodeGetAssessmentAttemptByIDRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.GetAssessmentAttemptByIDRequest)
@@ -355,6 +378,15 @@ func encodeGetAssessmentAttemptByIDResponse(_ context.Context, response interfac
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (s *grpcServer) UpdateAssessmentAttempt(ctx context.Context, req *pb.UpdateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
 	_, rep, err := s.updateAssessmentAttempt.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.AssessmentAttempt), nil
+}
+
+// LocalUpdateAssessmentAttempt updates a AssessmentAttempt
+func (s *grpcServer) LocalUpdateAssessmentAttempt(ctx context.Context, req *pb.UpdateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
+	_, rep, err := s.localUpdateAssessmentAttempt.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}

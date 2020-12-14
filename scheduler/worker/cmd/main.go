@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strconv"
 
 	"github.com/gocraft/work"
 	"github.com/golang/protobuf/ptypes"
@@ -21,7 +20,7 @@ var redisPool = &redis.Pool{
 	MaxIdle:   5,
 	Wait:      true,
 	Dial: func() (redis.Conn, error) {
-		return redis.Dial("tcp", ":6379")
+		return redis.Dial("tcp", "redis:6379")
 	},
 }
 
@@ -63,13 +62,9 @@ func (c *Context) Log(job *work.Job, next work.NextMiddlewareFunc) error {
 // EndAssessmentAttempt sets an AssessmentAttempt to Complete
 func (c *Context) EndAssessmentAttempt(job *work.Job) error {
 	// Extract arguments:
-	argID := job.ArgString("id")
+	attemptID := job.ArgInt64("id")
 	if err := job.ArgError(); err != nil {
-		return err
-	}
-
-	attemptID, err := strconv.ParseUint(argID, 10, 64)
-	if err != nil {
+		fmt.Println("Error parsing args: ", err)
 		return err
 	}
 
@@ -82,9 +77,10 @@ func (c *Context) EndAssessmentAttempt(job *work.Job) error {
 	ctx := context.Background()
 
 	client := assessmentPb.NewAssessmentServiceClient(conn)
-	getReq := assessmentPb.GetAssessmentAttemptByIDRequest{Id: attemptID}
-	aa, err := client.GetAssessmentAttemptByID(ctx, &getReq)
+	getReq := assessmentPb.GetAssessmentAttemptByIDRequest{Id: uint64(attemptID)}
+	aa, err := client.LocalGetAssessmentAttemptByID(ctx, &getReq)
 	if err != nil {
+		fmt.Println("Failed to get assessment attempt: ", err)
 		return err
 	}
 
@@ -92,11 +88,14 @@ func (c *Context) EndAssessmentAttempt(job *work.Job) error {
 		aa.CompletedAt = ptypes.TimestampNow()
 		aa.Status = "Completed"
 		updateReq := assessmentPb.UpdateAssessmentAttemptRequest{
-			Id:                attemptID,
+			Id:                uint64(attemptID),
 			AssessmentAttempt: aa,
 		}
-		_, err := client.UpdateAssessmentAttempt(ctx, &updateReq)
-		return err
+		_, err := client.LocalUpdateAssessmentAttempt(ctx, &updateReq)
+		if err != nil {
+			fmt.Println("Failed to update assessment attempt: ", err)
+			return err
+		}
 	}
 	return nil
 }

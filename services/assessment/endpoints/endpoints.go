@@ -17,10 +17,12 @@ type Endpoints struct {
 	UpdateAssessment  endpoint.Endpoint
 	DeleteAssessment  endpoint.Endpoint
 
-	CreateAssessmentAttempt  endpoint.Endpoint
-	GetAssessmentAttemptByID endpoint.Endpoint
-	UpdateAssessmentAttempt  endpoint.Endpoint
-	DeleteAssessmentAttempt  endpoint.Endpoint
+	CreateAssessmentAttempt       endpoint.Endpoint
+	GetAssessmentAttemptByID      endpoint.Endpoint
+	LocalGetAssessmentAttemptByID endpoint.Endpoint
+	UpdateAssessmentAttempt       endpoint.Endpoint
+	LocalUpdateAssessmentAttempt  endpoint.Endpoint
+	DeleteAssessmentAttempt       endpoint.Endpoint
 
 	CreateQuestion  endpoint.Endpoint
 	GetAllQuestions endpoint.Endpoint
@@ -43,10 +45,12 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		UpdateAssessment:  makeUpdateAssessmentEndpoint(s),
 		DeleteAssessment:  makeDeleteAssessmentEndpoint(s),
 
-		CreateAssessmentAttempt:  makeCreateAssessmentAttemptEndpoint(s),
-		GetAssessmentAttemptByID: makeGetAssessmentAttemptByIDEndpoint(s),
-		UpdateAssessmentAttempt:  makeUpdateAssessmentAttemptEndpoint(s),
-		DeleteAssessmentAttempt:  makeDeleteAssessmentAttemptEndpoint(s),
+		CreateAssessmentAttempt:       makeCreateAssessmentAttemptEndpoint(s),
+		GetAssessmentAttemptByID:      makeGetAssessmentAttemptByIDEndpoint(s),
+		LocalGetAssessmentAttemptByID: makeLocalGetAssessmentAttemptByIDEndpoint(s),
+		UpdateAssessmentAttempt:       makeUpdateAssessmentAttemptEndpoint(s),
+		LocalUpdateAssessmentAttempt:  makeLocalUpdateAssessmentAttemptEndpoint(s),
+		DeleteAssessmentAttempt:       makeDeleteAssessmentAttemptEndpoint(s),
 
 		CreateQuestion:  makeCreateQuestionEndpoint(s),
 		GetAllQuestions: makeGetAllQuestionsEndpoint(s),
@@ -196,6 +200,14 @@ func makeGetAssessmentAttemptByIDEndpoint(s interfaces.Service) endpoint.Endpoin
 	}
 }
 
+func makeLocalGetAssessmentAttemptByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetAssessmentAttemptByIDRequest)
+		m, err := s.LocalGetAssessmentAttemptByID(ctx, req.ID)
+		return GetAssessmentAttemptByIDResponse{AssessmentAttempt: m, Err: err}, nil
+	}
+}
+
 // GetAssessmentAttemptByIDRequest declares the inputs required for getting a single assessment attempt by ID
 type GetAssessmentAttemptByIDRequest struct {
 	ID uint64
@@ -211,6 +223,14 @@ func makeUpdateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateAssessmentAttemptRequest)
 		m, err := s.UpdateAssessmentAttempt(ctx, req.AssessmentAttempt)
+		return UpdateAssessmentAttemptResponse{AssessmentAttempt: m, Err: err}, nil
+	}
+}
+
+func makeLocalUpdateAssessmentAttemptEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateAssessmentAttemptRequest)
+		m, err := s.LocalUpdateAssessmentAttempt(ctx, req.AssessmentAttempt)
 		return UpdateAssessmentAttemptResponse{AssessmentAttempt: m, Err: err}, nil
 	}
 }

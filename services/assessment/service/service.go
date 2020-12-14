@@ -93,17 +93,19 @@ func (s *service) CreateAssessmentAttempt(ctx context.Context, model *models.Ass
 		return nil, err
 	}
 
-	s.scheduleAssessmentAttemptEnd(m)
+	role := "Admin"
+	a, err := s.repository.GetAssessmentByID(ctx, m.AssessmentID, &role, nil)
+	if err != nil {
+		return nil, err
+	}
+	s.scheduleAssessmentAttemptEnd(int64(m.ID), int64(a.TimeAllowed))
 
 	return m, err
 }
 
-func (s *service) scheduleAssessmentAttemptEnd(m *models.AssessmentAttempt) error {
-	if m.Assessment != nil {
-		_, err := s.enqueuer.EnqueueIn("end_assessment_attempt", int64(m.Assessment.TimeAllowed), work.Q{"id": m.ID})
-		return err
-	}
-	return nil
+func (s *service) scheduleAssessmentAttemptEnd(id int64, ta int64) error {
+	_, err := s.enqueuer.EnqueueIn("end_assessment_attempt", ta, work.Q{"id": id})
+	return err
 }
 
 // GetAssessmentAttemptByID returns a AssessmentAttempt by ID
@@ -115,8 +117,28 @@ func (s *service) GetAssessmentAttemptByID(ctx context.Context, id uint64) (*mod
 	return m, err
 }
 
+// LocalGetAssessmentAttemptByID returns a AssessmentAttempt by ID
+// This method is only for local server to server communication
+func (s *service) LocalGetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	m, err := s.repository.GetAssessmentAttemptByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return m, err
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (s *service) UpdateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
+	m, err := s.repository.UpdateAssessmentAttempt(ctx, model)
+	if err != nil {
+		return nil, err
+	}
+	return m, err
+}
+
+// LocalUpdateAssessmentAttempt updates a AssessmentAttempt
+// This method is only for local server to server communication
+func (s *service) LocalUpdateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	m, err := s.repository.UpdateAssessmentAttempt(ctx, model)
 	if err != nil {
 		return nil, err

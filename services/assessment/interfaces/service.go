@@ -32,8 +32,16 @@ type Service interface {
 	// GetAssessmentAttemptByID finds and returns a AssessmentAttempt by ID
 	GetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error)
 
+	// LocalGetAssessmentAttemptByID returns a AssessmentAttempt by ID
+	// This method is only for local server to server communication
+	LocalGetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error)
+
 	// UpdateAssessmentAttempt updates a AssessmentAttempt
 	UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
+
+	// LocalUpdateAssessmentAttempt updates a AssessmentAttempt
+	// This method is only for local server to server communication
+	LocalUpdateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error)
 
 	// DeleteAssessmentAttempt deletes a AssessmentAttempt by ID
 	DeleteAssessmentAttempt(ctx context.Context, id uint64) error

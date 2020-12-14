@@ -278,6 +278,52 @@ func (_m *Service) GetQuestionByID(ctx context.Context, id uint64) (*models.Ques
 	return r0, r1
 }
 
+// LocalGetAssessmentAttemptByID provides a mock function with given fields: ctx, id
+func (_m *Service) LocalGetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *models.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.AssessmentAttempt); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LocalUpdateAssessmentAttempt provides a mock function with given fields: ctx, model
+func (_m *Service) LocalUpdateAssessmentAttempt(ctx context.Context, model *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
+	ret := _m.Called(ctx, model)
+
+	var r0 *models.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *models.AssessmentAttempt) *models.AssessmentAttempt); ok {
+		r0 = rf(ctx, model)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.AssessmentAttempt) error); ok {
+		r1 = rf(ctx, model)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateAssessment provides a mock function with given fields: ctx, m
 func (_m *Service) UpdateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error) {
 	ret := _m.Called(ctx, m)

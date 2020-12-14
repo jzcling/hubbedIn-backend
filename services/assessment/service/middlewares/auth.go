@@ -168,6 +168,12 @@ func (mw authMiddleware) GetAssessmentAttemptByID(ctx context.Context, id uint64
 	return mw.next.GetAssessmentAttemptByID(ctx, id)
 }
 
+// LocalGetAssessmentAttemptByID returns a AssessmentAttempt by ID
+// This method is only for local server to server communication
+func (mw authMiddleware) LocalGetAssessmentAttemptByID(ctx context.Context, id uint64) (*models.AssessmentAttempt, error) {
+	return mw.next.LocalGetAssessmentAttemptByID(ctx, id)
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (mw authMiddleware) UpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
 	aa, err := mw.repository.GetAssessmentAttemptByID(ctx, m.ID)
@@ -182,6 +188,12 @@ func (mw authMiddleware) UpdateAssessmentAttempt(ctx context.Context, m *models.
 		return nil, errAuth
 	}
 	return mw.next.UpdateAssessmentAttempt(ctx, m)
+}
+
+// LocalUpdateAssessmentAttempt updates a AssessmentAttempt
+// This method is only for local server to server communication
+func (mw authMiddleware) LocalUpdateAssessmentAttempt(ctx context.Context, m *models.AssessmentAttempt) (*models.AssessmentAttempt, error) {
+	return mw.next.LocalUpdateAssessmentAttempt(ctx, m)
 }
 
 // DeleteAssessmentAttempt deletes a AssessmentAttempt by ID

@@ -97,7 +97,7 @@ services:
     scheduler-worker:
         build: 
             context: .
-            dockerfile: ./scheduler/Dockerfile
+            dockerfile: ./scheduler/worker/Dockerfile
         image: scheduler-worker
         container_name: scheduler-worker
         restart: always

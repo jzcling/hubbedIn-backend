@@ -93,10 +93,26 @@ func (mw logMiddleware) GetAssessmentAttemptByID(ctx context.Context, input uint
 	return
 }
 
+// LocalGetAssessmentAttemptByID returns a AssessmentAttempt by ID
+// This method is only for local server to server communication
+func (mw logMiddleware) LocalGetAssessmentAttemptByID(ctx context.Context, input uint64) (output *models.AssessmentAttempt, err error) {
+	defer mw.log("GetAssessmentAttemptByID", time.Now(), input, &output, &err)
+	output, err = mw.next.LocalGetAssessmentAttemptByID(ctx, input)
+	return
+}
+
 // UpdateAssessmentAttempt updates a AssessmentAttempt
 func (mw logMiddleware) UpdateAssessmentAttempt(ctx context.Context, input *models.AssessmentAttempt) (output *models.AssessmentAttempt, err error) {
 	defer mw.log("UpdateAssessmentAttempt", time.Now(), input, &output, &err)
 	output, err = mw.next.UpdateAssessmentAttempt(ctx, input)
+	return
+}
+
+// LocalUpdateAssessmentAttempt updates a AssessmentAttempt
+// This method is only for local server to server communication
+func (mw logMiddleware) LocalUpdateAssessmentAttempt(ctx context.Context, input *models.AssessmentAttempt) (output *models.AssessmentAttempt, err error) {
+	defer mw.log("UpdateAssessmentAttempt", time.Now(), input, &output, &err)
+	output, err = mw.next.LocalUpdateAssessmentAttempt(ctx, input)
 	return
 }
 

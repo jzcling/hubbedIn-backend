@@ -7,6 +7,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./scheduler/worker ./scheduler/worker
+COPY ./services/assessment/pb ./services/assessment/pb
 RUN cd scheduler/worker/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \

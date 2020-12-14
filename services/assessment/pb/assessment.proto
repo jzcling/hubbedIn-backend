@@ -40,12 +40,14 @@ service AssessmentService {
     rpc GetAssessmentAttemptByID(GetAssessmentAttemptByIDRequest) returns (AssessmentAttempt) {
         option (google.api.http) = { get: "/v1/assessmentattempts/{id}" };
     };
+    rpc LocalGetAssessmentAttemptByID(GetAssessmentAttemptByIDRequest) returns (AssessmentAttempt);
     rpc UpdateAssessmentAttempt(UpdateAssessmentAttemptRequest) returns (AssessmentAttempt) {
         option (google.api.http) = {
             put: "/v1/assessmentattempts/{id}"
             body: "assessment_attempt"
         };
     };
+    rpc LocalUpdateAssessmentAttempt(UpdateAssessmentAttemptRequest) returns (AssessmentAttempt);
     rpc DeleteAssessmentAttempt(DeleteAssessmentAttemptRequest) returns (DeleteAssessmentAttemptResponse) {
         option (google.api.http) = { delete: "/v1/assessmentattempts/{id}" };
     };

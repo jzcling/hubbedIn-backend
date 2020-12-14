@@ -313,6 +313,52 @@ func (_m *AssessmentServiceServer) GetQuestionByID(_a0 context.Context, _a1 *pb.
 	return r0, r1
 }
 
+// LocalGetAssessmentAttemptByID provides a mock function with given fields: _a0, _a1
+func (_m *AssessmentServiceServer) LocalGetAssessmentAttemptByID(_a0 context.Context, _a1 *pb.GetAssessmentAttemptByIDRequest) (*pb.AssessmentAttempt, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetAssessmentAttemptByIDRequest) *pb.AssessmentAttempt); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetAssessmentAttemptByIDRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LocalUpdateAssessmentAttempt provides a mock function with given fields: _a0, _a1
+func (_m *AssessmentServiceServer) LocalUpdateAssessmentAttempt(_a0 context.Context, _a1 *pb.UpdateAssessmentAttemptRequest) (*pb.AssessmentAttempt, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.AssessmentAttempt
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateAssessmentAttemptRequest) *pb.AssessmentAttempt); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.AssessmentAttempt)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateAssessmentAttemptRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateAssessment provides a mock function with given fields: _a0, _a1
 func (_m *AssessmentServiceServer) UpdateAssessment(_a0 context.Context, _a1 *pb.UpdateAssessmentRequest) (*pb.Assessment, error) {
 	ret := _m.Called(_a0, _a1)
