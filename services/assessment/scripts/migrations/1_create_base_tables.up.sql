@@ -8,7 +8,8 @@ create table if not exists assessments (
 	time_allowed bigint,
 	type text,
 	randomise boolean,
-	num_questions bigint
+	num_questions bigint,
+	can_go_back boolean
 );
 
 create index on assessments (name);
@@ -20,6 +21,7 @@ create table if not exists assessment_attempts (
 	status text not null,
 	started_at timestamptz,
 	completed_at timestamptz,
+	current_question bigint,
 	score bigint,
     constraint fk_assessments foreign key(assessment_id) references assessments(id) on delete cascade on update cascade
 );
