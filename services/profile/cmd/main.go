@@ -63,7 +63,7 @@ func main() {
 	klenty := providers.NewKlenty(cfg, client)
 	repo := database.NewRepository(db, auth0, hubbedlearn, klenty)
 	svc := service.New(repo)
-	svc = middlewares.NewAuthMiddleware(svc)
+	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)
 

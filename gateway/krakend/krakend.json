@@ -28,7 +28,9 @@
         "github_com/devopsfaith/krakend-cors": {
             "allow_origins": [
                 "https://hubbedin.dev:3000",
-                "https://candidate.hubbedin.com"
+                "https://candidate.hubbedin.com",
+                "https://hubbedin.admin:3001",
+                "https://admin.hubbedin.com"
             ],
             "expose_headers": [
                 "Content-Length",
