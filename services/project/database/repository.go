@@ -161,7 +161,7 @@ func (r *repository) GetCandidateProjectByID(ctx context.Context, id uint64) (*m
 
 // GetCandidateProject gets a CandidateProject by Candidate ID and Project ID
 func (r *repository) GetCandidateProject(ctx context.Context, cid, pid uint64) (*models.CandidateProject, error) {
-	m := &models.CandidateProject{ID: id}
+	m := &models.CandidateProject{CandidateID: cid, ProjectID: pid}
 	err := r.DB.WithContext(ctx).Model(m).
 		Where("candidate_id", cid).
 		Where("projecT_id", pid).
