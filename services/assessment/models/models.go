@@ -23,7 +23,7 @@ type Assessment struct {
 	Name         string               `json:"name" pg:",notnull,unique"`
 	Description  string               `json:"description"`
 	Notes        string               `json:"notes"`
-	ImageURL     string               `json:"image_url" pg:"image_url"`
+	ImageURL     string               `json:"media_url" pg:"image_url"`
 	Difficulty   string               `json:"difficulty"`
 	TimeAllowed  uint64               `json:"time_allowed"`
 	Type         string               `json:"type"`
@@ -63,7 +63,7 @@ type Question struct {
 	Code               string               `json:"code"`
 	Options            []string             `json:"options" pg:",array"`
 	Answer             int64                `json:"answer" pg:",use_zero"`
-	Tags               []*Tag               `json:"tags" pg:"rel:has-many"`
+	Tags               []*Tag               `json:"tags" pg:"many2many:questions_tags"`
 	Assessments        []*Assessment        `json:"assessments" pg:"many2many:assessments_questions"`
 	AssessmentAttempts []*AssessmentAttempt `json:"assessment_attempts" pg:",many2many:attempts_questions,fk:question_id,join_fk:attempt_id"`
 	Attempts           []*AttemptQuestion   `json:"attempts" pg:"rel:has-many"`

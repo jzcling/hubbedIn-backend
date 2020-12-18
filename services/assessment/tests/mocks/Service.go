@@ -15,6 +15,29 @@ type Service struct {
 	mock.Mock
 }
 
+// BulkCreateQuestion provides a mock function with given fields: ctx, m
+func (_m *Service) BulkCreateQuestion(ctx context.Context, m []*models.Question) ([]*models.Question, error) {
+	ret := _m.Called(ctx, m)
+
+	var r0 []*models.Question
+	if rf, ok := ret.Get(0).(func(context.Context, []*models.Question) []*models.Question); ok {
+		r0 = rf(ctx, m)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*models.Question)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []*models.Question) error); ok {
+		r1 = rf(ctx, m)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateAssessment provides a mock function with given fields: ctx, m
 func (_m *Service) CreateAssessment(ctx context.Context, m *models.Assessment) (*models.Assessment, error) {
 	ret := _m.Called(ctx, m)

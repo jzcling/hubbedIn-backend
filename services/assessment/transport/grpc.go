@@ -2,6 +2,7 @@ package transport
 
 import (
 	"context"
+	"fmt"
 	"in-backend/services/assessment/endpoints"
 	"in-backend/services/assessment/models"
 	"in-backend/services/assessment/pb"
@@ -27,11 +28,12 @@ type grpcServer struct {
 	localUpdateAssessmentAttempt  kitgrpc.Handler
 	deleteAssessmentAttempt       kitgrpc.Handler
 
-	createQuestion  kitgrpc.Handler
-	getAllQuestions kitgrpc.Handler
-	getQuestionByID kitgrpc.Handler
-	updateQuestion  kitgrpc.Handler
-	deleteQuestion  kitgrpc.Handler
+	createQuestion     kitgrpc.Handler
+	bulkCreateQuestion kitgrpc.Handler
+	getAllQuestions    kitgrpc.Handler
+	getQuestionByID    kitgrpc.Handler
+	updateQuestion     kitgrpc.Handler
+	deleteQuestion     kitgrpc.Handler
 
 	createTag kitgrpc.Handler
 	deleteTag kitgrpc.Handler
@@ -123,6 +125,12 @@ func NewGRPCServer(
 			endpoints.CreateQuestion,
 			decodeCreateQuestionRequest,
 			encodeCreateQuestionResponse,
+			options...,
+		),
+		bulkCreateQuestion: kitgrpc.NewServer(
+			endpoints.BulkCreateQuestion,
+			decodeBulkCreateQuestionRequest,
+			encodeBulkCreateQuestionResponse,
 			options...,
 		),
 		getAllQuestions: kitgrpc.NewServer(
@@ -230,11 +238,11 @@ func encodeGetAllAssessmentsResponse(_ context.Context, response interface{}) (i
 	res := response.(endpoints.GetAllAssessmentsResponse)
 	err := getError(res.Err)
 	if err == nil {
-		var candidates []*pb.Assessment
-		for _, candidate := range res.Assessments {
-			candidates = append(candidates, candidate.ToProto())
+		var assessments []*pb.Assessment
+		for _, assessment := range res.Assessments {
+			assessments = append(assessments, assessment.ToProto())
 		}
-		return &pb.GetAllAssessmentsResponse{Assessments: candidates}, nil
+		return &pb.GetAllAssessmentsResponse{Assessments: assessments}, nil
 	}
 	return nil, err
 }
@@ -461,6 +469,40 @@ func encodeCreateQuestionResponse(_ context.Context, response interface{}) (inte
 	return nil, err
 }
 
+// BulkCreateQuestion creates a multiple new Questions
+func (s *grpcServer) BulkCreateQuestion(ctx context.Context, req *pb.BulkCreateQuestionRequest) (*pb.BulkCreateQuestionResponse, error) {
+	_, rep, err := s.bulkCreateQuestion.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.BulkCreateQuestionResponse), nil
+}
+
+// decodeBulkCreateQuestionRequest decodes the incoming grpc payload to our go kit payload
+func decodeBulkCreateQuestionRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.BulkCreateQuestionRequest)
+	var questions []*models.Question
+	for _, question := range req.Questions {
+		fmt.Printf("question: %v\n", question)
+		questions = append(questions, models.QuestionToORM(question))
+	}
+	return endpoints.BulkCreateQuestionRequest{Questions: questions}, nil
+}
+
+// encodeBulkCreateQuestionsResponse encodes the outgoing go kit payload to the grpc payload
+func encodeBulkCreateQuestionResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.BulkCreateQuestionResponse)
+	err := getError(res.Err)
+	if err == nil {
+		var questions []*pb.Question
+		for _, question := range res.Questions {
+			questions = append(questions, question.ToProto())
+		}
+		return &pb.BulkCreateQuestionResponse{Questions: questions}, nil
+	}
+	return nil, err
+}
+
 // GetAllQuestions returns all Questions
 func (s *grpcServer) GetAllQuestions(ctx context.Context, req *pb.GetAllQuestionsRequest) (*pb.GetAllQuestionsResponse, error) {
 	_, rep, err := s.getAllQuestions.ServeGRPC(ctx, req)
@@ -485,11 +527,11 @@ func encodeGetAllQuestionsResponse(_ context.Context, response interface{}) (int
 	res := response.(endpoints.GetAllQuestionsResponse)
 	err := getError(res.Err)
 	if err == nil {
-		var candidates []*pb.Question
-		for _, candidate := range res.Questions {
-			candidates = append(candidates, candidate.ToProto())
+		var questions []*pb.Question
+		for _, question := range res.Questions {
+			questions = append(questions, question.ToProto())
 		}
-		return &pb.GetAllQuestionsResponse{Questions: candidates}, nil
+		return &pb.GetAllQuestionsResponse{Questions: questions}, nil
 	}
 	return nil, err
 }

@@ -24,11 +24,12 @@ type Endpoints struct {
 	LocalUpdateAssessmentAttempt  endpoint.Endpoint
 	DeleteAssessmentAttempt       endpoint.Endpoint
 
-	CreateQuestion  endpoint.Endpoint
-	GetAllQuestions endpoint.Endpoint
-	GetQuestionByID endpoint.Endpoint
-	UpdateQuestion  endpoint.Endpoint
-	DeleteQuestion  endpoint.Endpoint
+	CreateQuestion     endpoint.Endpoint
+	BulkCreateQuestion endpoint.Endpoint
+	GetAllQuestions    endpoint.Endpoint
+	GetQuestionByID    endpoint.Endpoint
+	UpdateQuestion     endpoint.Endpoint
+	DeleteQuestion     endpoint.Endpoint
 
 	CreateTag endpoint.Endpoint
 	DeleteTag endpoint.Endpoint
@@ -52,11 +53,12 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		LocalUpdateAssessmentAttempt:  makeLocalUpdateAssessmentAttemptEndpoint(s),
 		DeleteAssessmentAttempt:       makeDeleteAssessmentAttemptEndpoint(s),
 
-		CreateQuestion:  makeCreateQuestionEndpoint(s),
-		GetAllQuestions: makeGetAllQuestionsEndpoint(s),
-		GetQuestionByID: makeGetQuestionByIDEndpoint(s),
-		UpdateQuestion:  makeUpdateQuestionEndpoint(s),
-		DeleteQuestion:  makeDeleteQuestionEndpoint(s),
+		CreateQuestion:     makeCreateQuestionEndpoint(s),
+		BulkCreateQuestion: makeBulkCreateQuestionEndpoint(s),
+		GetAllQuestions:    makeGetAllQuestionsEndpoint(s),
+		GetQuestionByID:    makeGetQuestionByIDEndpoint(s),
+		UpdateQuestion:     makeUpdateQuestionEndpoint(s),
+		DeleteQuestion:     makeDeleteQuestionEndpoint(s),
 
 		CreateTag: makeCreateTagEndpoint(s),
 		DeleteTag: makeDeleteTagEndpoint(s),
@@ -284,6 +286,25 @@ type CreateQuestionRequest struct {
 type CreateQuestionResponse struct {
 	Question *models.Question
 	Err      error
+}
+
+func makeBulkCreateQuestionEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(BulkCreateQuestionRequest)
+		m, err := s.BulkCreateQuestion(ctx, req.Questions)
+		return BulkCreateQuestionResponse{Questions: m, Err: err}, nil
+	}
+}
+
+// BulkCreateQuestionRequest declares the inputs required for creating a question
+type BulkCreateQuestionRequest struct {
+	Questions []*models.Question
+}
+
+// BulkCreateQuestionResponse declares the outputs after attempting to create a question
+type BulkCreateQuestionResponse struct {
+	Questions []*models.Question
+	Err       error
 }
 
 func makeGetAllQuestionsEndpoint(s interfaces.Service) endpoint.Endpoint {

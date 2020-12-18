@@ -391,6 +391,38 @@
         ]
       }
     },
+    "/v1/bulk/questions": {
+      "post": {
+        "operationId": "AssessmentService_BulkCreateQuestion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbBulkCreateQuestionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbBulkCreateQuestionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AssessmentService"
+        ]
+      }
+    },
     "/v1/questions": {
       "get": {
         "operationId": "AssessmentService_GetAllQuestions",
@@ -776,6 +808,28 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbBulkCreateQuestionRequest": {
+      "type": "object",
+      "properties": {
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbQuestion"
+          }
+        }
+      }
+    },
+    "pbBulkCreateQuestionResponse": {
+      "type": "object",
+      "properties": {
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbQuestion"
+          }
         }
       }
     },

@@ -35,7 +35,7 @@ func (r *repository) CreateAssessment(ctx context.Context, m *models.Assessment)
 
 	_, err := r.DB.WithContext(ctx).Model(m).
 		Relation(relQuestions).
-		Relation(relAssessmentAttempts).
+		Relation(relAttempts).
 		Returning("*").
 		Where("name = ?", m.Name).
 		OnConflict("DO NOTHING").
@@ -75,10 +75,10 @@ func (r *repository) GetAllAssessments(ctx context.Context, f models.AssessmentF
 	}
 
 	if *role == "Admin" {
-		q = q.Relation(relAssessmentAttempts)
+		q = q.Relation(relAttempts)
 	}
 	if *role == "Owner" {
-		q = q.Relation(relAssessmentAttempts, func(q *orm.Query) (*orm.Query, error) {
+		q = q.Relation(relAttempts, func(q *orm.Query) (*orm.Query, error) {
 			return q.Where("aa.candidate_id = ?", *cid), nil
 		})
 	}
@@ -117,7 +117,7 @@ func (r *repository) UpdateAssessment(ctx context.Context, m *models.Assessment)
 
 	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
 		Relation(relQuestions).
-		Relation(relAssessmentAttempts).
+		Relation(relAttempts).
 		Returning("*").
 		Update()
 	if err != nil {
@@ -267,12 +267,116 @@ func (r *repository) CreateQuestion(ctx context.Context, m *models.Question) (*m
 	return m, nil
 }
 
+// BulkCreateQuestion creates a new Question
+func (r *repository) BulkCreateQuestion(ctx context.Context, m []*models.Question) ([]*models.Question, error) {
+	empty := []*models.Question{}
+	if len(m) == 0 {
+		return empty, errors.New("Input parameter questions is empty")
+	}
+
+	// get all tag names first before creating questions
+	// this is because the tags are lost after inserting questions with go-pg
+	tags := make(map[int]([]string))
+	for i, q := range m {
+		var names []string
+		for _, t := range q.Tags {
+			names = append(names, t.Name)
+		}
+		tags[i] = names
+	}
+
+	tx, err := r.DB.BeginContext(ctx)
+	defer tx.Close()
+
+	_, err = tx.Model(&m).
+		Returning("*").
+		Insert()
+	if err != nil {
+		tx.Rollback()
+		err = errors.Wrapf(err, "Failed to insert questions %v", m)
+		return empty, err
+	}
+
+	// get all assessment questions for bulk insert later
+	var assessmentQuestions []*models.AssessmentQuestion
+	// get all question tags for bulk insert later
+	var questionTags []*models.QuestionTag
+	// get all question IDs to pull data to return later
+	var qid []uint64
+	for i, q := range m {
+		aq := &models.AssessmentQuestion{
+			AssessmentID: q.Assessments[0].ID,
+			QuestionID:   q.ID,
+		}
+		assessmentQuestions = append(assessmentQuestions, aq)
+
+		if len(tags[i]) > 0 {
+			for _, n := range tags[i] {
+				// create tag if it doesn't exist
+				tag := &models.Tag{Name: n}
+				_, err = tx.Model(tag).
+					Where("name = ?", tag.Name).
+					OnConflict("DO NOTHING").
+					Returning("*").
+					SelectOrInsert()
+				if err != nil {
+					tx.Rollback()
+					err = errors.Wrapf(err, "Failed to insert tag %v", tag)
+					return empty, err
+				}
+
+				qt := &models.QuestionTag{
+					QuestionID: q.ID,
+					TagID:      tag.ID,
+				}
+				questionTags = append(questionTags, qt)
+			}
+		}
+
+		qid = append(qid, q.ID)
+	}
+
+	if len(assessmentQuestions) > 0 {
+		_, err = tx.Model(&assessmentQuestions).
+			Returning("*").
+			Insert()
+		if err != nil {
+			tx.Rollback()
+			err = errors.Wrapf(err, "Failed to insert assessment questions %v", assessmentQuestions)
+			return empty, err
+		}
+	}
+
+	if len(questionTags) > 0 {
+		_, err = tx.Model(&questionTags).
+			Returning("*").
+			Insert()
+		if err != nil {
+			tx.Rollback()
+			err = errors.Wrapf(err, "Failed to insert question tags %v", questionTags)
+			return empty, err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return empty, err
+	}
+
+	f := models.QuestionFilters{ID: qid}
+	questions, err := r.GetAllQuestions(ctx, f)
+	if err != nil {
+		return m, nil
+	}
+
+	return questions, nil
+}
+
 // GetAllQuestions returns all Questions
 func (r *repository) GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error) {
 	var m []*models.Question
 	q := r.DB.WithContext(ctx).Model(&m)
 	if len(f.ID) > 0 {
-		q = q.Where("a.id in (?)", pg.In(f.ID))
+		q = q.Where("q.id in (?)", pg.In(f.ID))
 	}
 	if len(f.Tags) > 0 {
 		q = q.Where("t.name in (?)", pg.In(f.Tags))

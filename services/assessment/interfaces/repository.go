@@ -46,6 +46,9 @@ type Repository interface {
 	// CreateQuestion creates a new Question
 	CreateQuestion(ctx context.Context, m *models.Question) (*models.Question, error)
 
+	// BulkCreateQuestion creates a new Question
+	BulkCreateQuestion(ctx context.Context, m []*models.Question) ([]*models.Question, error)
+
 	// GetAllQuestions returns all Questions
 	GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error)
 

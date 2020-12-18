@@ -167,6 +167,16 @@ func (s *service) CreateQuestion(ctx context.Context, model *models.Question) (*
 	return m, err
 }
 
+// BulkCreateQuestion creates a new Question
+func (s *service) BulkCreateQuestion(ctx context.Context, m []*models.Question) ([]*models.Question, error) {
+	m, err := s.repository.BulkCreateQuestion(ctx, m)
+	if err != nil {
+		return nil, err
+	}
+
+	return m, err
+}
+
 // GetAllQuestions returns all Questions
 func (s *service) GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error) {
 	m, err := s.repository.GetAllQuestions(ctx, f)

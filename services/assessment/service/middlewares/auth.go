@@ -222,6 +222,18 @@ func (mw authMiddleware) CreateQuestion(ctx context.Context, m *models.Question)
 	return mw.next.CreateQuestion(ctx, m)
 }
 
+// BulkCreateQuestion creates a new Question
+func (mw authMiddleware) BulkCreateQuestion(ctx context.Context, m []*models.Question) ([]*models.Question, error) {
+	role, _, err := getRoleAndID(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	if *role != "Admin" {
+		return nil, errAuth
+	}
+	return mw.next.BulkCreateQuestion(ctx, m)
+}
+
 // GetAllQuestions returns all Questions
 func (mw authMiddleware) GetAllQuestions(ctx context.Context, f models.QuestionFilters) ([]*models.Question, error) {
 	role, _, err := getRoleAndID(ctx, nil)

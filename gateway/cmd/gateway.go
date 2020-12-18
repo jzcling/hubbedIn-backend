@@ -56,7 +56,7 @@ func main() {
 		}
 	}()
 
-	glog.Info("Starting listening at %s", srvAddr)
+	glog.Info("Starting listening at ", srvAddr)
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
 		glog.Fatal("Failed to listen and serve: %v", err)
 	}

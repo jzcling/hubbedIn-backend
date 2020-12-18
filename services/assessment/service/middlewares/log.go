@@ -132,6 +132,13 @@ func (mw logMiddleware) CreateQuestion(ctx context.Context, input *models.Questi
 	return
 }
 
+// BulkCreateQuestion creates a new Question
+func (mw logMiddleware) BulkCreateQuestion(ctx context.Context, input []*models.Question) (output []*models.Question, err error) {
+	defer mw.log("BulkCreateQuestion", time.Now(), input, output, &err)
+	output, err = mw.next.BulkCreateQuestion(ctx, input)
+	return
+}
+
 // GetAllQuestions returns all Questions
 func (mw logMiddleware) GetAllQuestions(ctx context.Context, input models.QuestionFilters) (output []*models.Question, err error) {
 	defer mw.log("GetAllQuestions", time.Now(), input, &output, &err)

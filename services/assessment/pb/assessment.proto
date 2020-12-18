@@ -58,6 +58,12 @@ service AssessmentService {
             body: "question"
         };
     };
+    rpc BulkCreateQuestion(BulkCreateQuestionRequest) returns (BulkCreateQuestionResponse) {
+        option (google.api.http) = { 
+            post: "/v1/bulk/questions" 
+            body: "*"
+        };
+    };
     rpc GetAllQuestions(GetAllQuestionsRequest) returns (GetAllQuestionsResponse) {
         option (google.api.http) = { get: "/v1/questions" };
     };
@@ -195,6 +201,14 @@ message Question {
 
 message CreateQuestionRequest {
     Question question = 1;
+}
+
+message BulkCreateQuestionRequest {
+    repeated Question questions = 1;
+}
+
+message BulkCreateQuestionResponse {
+    repeated Question questions = 1;
 }
 
 message GetAllQuestionsRequest {
