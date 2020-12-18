@@ -33,6 +33,7 @@ func TestCandidateIsEqual(t *testing.T) {
 		Summary:                "summary",
 		Birthday:               &birthday,
 		NoticePeriod:           2,
+		PreferredRoles:         []string{"backend"},
 		CreatedAt:              &timeAt,
 		UpdatedAt:              &timeAt,
 		DeletedAt:              &timeAt,

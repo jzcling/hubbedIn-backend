@@ -38,6 +38,7 @@ type Candidate struct {
 	Summary                string             `json:"summary,omitempty"`
 	Birthday               *time.Time         `json:"birthday,omitempty"`
 	NoticePeriod           uint32             `json:"notice_period,omitempty"`
+	PreferredRoles         []string           `json:"preferred_roles" pg:",array"`
 	Skills                 []*Skill           `json:"skills,omitempty" pg:"many2many:users_skills"`
 	Academics              []*AcademicHistory `json:"academics,omitempty" pg:"rel:has-many"`
 	Jobs                   []*JobHistory      `json:"jobs,omitempty" pg:"rel:has-many"`

@@ -1,2 +1,2 @@
 alter table academic_histories
-add grade text;
+drop column grade;

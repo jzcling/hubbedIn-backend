@@ -139,6 +139,7 @@ type GetAllCandidatesRequest struct {
 	MaxSalary       uint32
 	EducationLevel  []string
 	MaxNoticePeriod uint32
+	Roles           []string
 }
 
 // GetAllCandidatesResponse declares the outputs after attempting to get all candidates

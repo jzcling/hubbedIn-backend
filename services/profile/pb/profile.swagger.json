@@ -1201,6 +1201,12 @@
           "type": "integer",
           "format": "int64"
         },
+        "preferredRoles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "skills": {
           "type": "array",
           "items": {

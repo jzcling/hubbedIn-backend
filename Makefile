@@ -35,3 +35,14 @@ push:
 	docker push gcr.io/${PROJECT_ID}/scheduler-worker:$(scheduler_worker_version)
 	docker push gcr.io/${PROJECT_ID}/gateway:$(gateway_version)
 	docker push gcr.io/${PROJECT_ID}/api-gateway:$(api_gateway_version)
+
+update:
+	kubectl set image deployment profile-service profile-service-sha256-1=profile-service:$(profile_service_version)
+	kubectl set image deployment project-service project-service-sha256-1=project-service:$(project_service_version)
+	kubectl set image deployment assessment-service assessment-service-sha256-1=assessment-service:$(assessment_service_version)
+	kubectl set image deployment scheduler-worker scheduler-worker-sha256-1=scheduler-worker:$(scheduler_worker_version)
+	kubectl set image deployment gateway gateway-sha256-1=gateway:$(gateway_version)
+	kubectl set image deployment api-gateway api-gateway-sha256-1=api-gateway:$(api_gateway_version)
+
+delete-evicted:
+	kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pods

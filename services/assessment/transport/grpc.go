@@ -2,7 +2,6 @@ package transport
 
 import (
 	"context"
-	"fmt"
 	"in-backend/services/assessment/endpoints"
 	"in-backend/services/assessment/models"
 	"in-backend/services/assessment/pb"
@@ -483,7 +482,6 @@ func decodeBulkCreateQuestionRequest(_ context.Context, request interface{}) (in
 	req := request.(*pb.BulkCreateQuestionRequest)
 	var questions []*models.Question
 	for _, question := range req.Questions {
-		fmt.Printf("question: %v\n", question)
 		questions = append(questions, models.QuestionToORM(question))
 	}
 	return endpoints.BulkCreateQuestionRequest{Questions: questions}, nil

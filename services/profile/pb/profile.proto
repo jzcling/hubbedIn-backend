@@ -174,12 +174,13 @@ message Candidate {
     string summary = 17;
     google.protobuf.Timestamp birthday = 18;
     uint32 notice_period = 19;
-    repeated Skill skills = 20;
-    repeated AcademicHistory academics = 21;
-    repeated JobHistory jobs = 22;
-    google.protobuf.Timestamp created_at = 23;
-    google.protobuf.Timestamp updated_at = 24;
-    google.protobuf.Timestamp deleted_at = 25;
+    repeated string preferred_roles = 20;
+    repeated Skill skills = 21;
+    repeated AcademicHistory academics = 22;
+    repeated JobHistory jobs = 23;
+    google.protobuf.Timestamp created_at = 24;
+    google.protobuf.Timestamp updated_at = 25;
+    google.protobuf.Timestamp deleted_at = 26;
 }
 
 message CreateCandidateRequest {

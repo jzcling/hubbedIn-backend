@@ -41,6 +41,34 @@ func IsStringInSlice(s string, list []string) bool {
 	return false
 }
 
+// Equal tells whether slices a and b contain the same string elements.
+// A nil argument is equivalent to an empty slice.
+func Equal(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// CheckNil checks whether two interfaces are nil
+func CheckNil(m1, m2 interface{}) (isNil bool, resolve bool) {
+	// if both nil, return true and resolve
+	if m1 == nil && m2 == nil {
+		return true, true
+	}
+	// if one is nil and the other not, return false and resolve
+	if (m1 == nil) != (m2 == nil) {
+		return false, true
+	}
+	// both are not nil, return false and don't resolve
+	return false, false
+}
+
 // TimeDiff gives the time between two time.Time
 func TimeDiff(a, b time.Time) (year, month, day, hour, min, sec int) {
 	if a.Location() != b.Location() {

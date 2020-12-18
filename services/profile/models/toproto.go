@@ -54,6 +54,7 @@ func (m *Candidate) ToProto() *pb.Candidate {
 		Summary:                m.Summary,
 		Birthday:               birthday,
 		NoticePeriod:           m.NoticePeriod,
+		PreferredRoles:         m.PreferredRoles,
 		Skills:                 skills,
 		Academics:              academics,
 		Jobs:                   jobs,

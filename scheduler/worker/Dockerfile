@@ -6,6 +6,7 @@ WORKDIR /go/src/in-backend/
 COPY go.mod go.sum ./
 RUN go mod download
 
+COPY ./helpers/ ./helpers/
 COPY ./scheduler/worker ./scheduler/worker
 COPY ./services/assessment/pb ./services/assessment/pb
 RUN cd scheduler/worker/cmd && \

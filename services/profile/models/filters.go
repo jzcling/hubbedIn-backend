@@ -14,6 +14,7 @@ type CandidateFilters struct {
 	MaxSalary       uint32
 	EducationLevel  []string
 	MaxNoticePeriod uint32
+	Roles           []string
 }
 
 // SkillFilters define filters for Skill model

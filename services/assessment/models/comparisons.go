@@ -1,9 +1,11 @@
 package models
 
+import "in-backend/helpers"
+
 // IsEqual checks the equivalence of two Assessment objects
 func (m1 *Assessment) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*Assessment)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -26,7 +28,7 @@ func (m1 *Assessment) IsEqual(m2 interface{}) bool {
 // IsEqual checks the equivalence of two AssessmentAttempt objects
 func (m1 *AssessmentAttempt) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*AssessmentAttempt)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -51,7 +53,7 @@ func (m1 *AssessmentAttempt) IsEqual(m2 interface{}) bool {
 // IsEqual checks the equivalence of two Question objects
 func (m1 *Question) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*Question)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -72,7 +74,7 @@ func (m1 *Question) IsEqual(m2 interface{}) bool {
 // IsEqual checks the equivalence of two Tag objects
 func (m1 *Tag) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*Tag)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -86,7 +88,7 @@ func (m1 *Tag) IsEqual(m2 interface{}) bool {
 // IsEqual checks the equivalence of two QuestionTag objects
 func (m1 *QuestionTag) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*QuestionTag)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -101,7 +103,7 @@ func (m1 *QuestionTag) IsEqual(m2 interface{}) bool {
 // IsEqual checks the equivalence of two AttemptQuestion objects
 func (m1 *AttemptQuestion) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*AttemptQuestion)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -129,7 +131,7 @@ func (m1 *AttemptQuestion) IsEqual(m2 interface{}) bool {
 // IsEqual checks the equivalence of two AssessmentQuestion objects
 func (m1 *AssessmentQuestion) IsEqual(m2 interface{}) bool {
 	convertedM2 := m2.(*AssessmentQuestion)
-	isNil, resolve := checkNil(m1, m2)
+	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
 	}
@@ -158,17 +160,4 @@ func testSliceEqual(a, b []string) bool {
 	}
 
 	return true
-}
-
-func checkNil(m1, m2 interface{}) (isNil bool, resolve bool) {
-	// if both nil, return true and resolve
-	if m1 == nil && m2 == nil {
-		return true, true
-	}
-	// if one is nil and the other not, return false and resolve
-	if (m1 == nil) != (m2 == nil) {
-		return false, true
-	}
-	// both are not nil, return false and don't resolve
-	return false, false
 }
