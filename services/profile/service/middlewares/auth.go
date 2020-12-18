@@ -13,20 +13,55 @@ import (
 )
 
 type authMiddleware struct {
-	next interfaces.Service
+	next       interfaces.Service
+	repository interfaces.Repository
 }
 
 var (
 	errAuth = errors.New("Forbidden")
 
-	namespace = "https://hubbedin/id"
+	idKey    = "https://hubbedin/id"
+	rolesKey = "https://hubbedin/roles"
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the profile Service interface
-func NewAuthMiddleware(svc interfaces.Service) interfaces.Service {
+func NewAuthMiddleware(svc interfaces.Service, r interfaces.Repository) interfaces.Service {
 	return &authMiddleware{
-		next: svc,
+		next:       svc,
+		repository: r,
 	}
+}
+
+func getRoleAndID(ctx context.Context, ownerID *uint64) (*string, *uint64, error) {
+	claims, err := getClaims(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var role string = ""
+	var id uint64 = 0
+
+	// this should come first so that role gets overwritten if owner is also an admin
+	if claims[idKey] != nil {
+		id, err = strconv.ParseUint(claims[idKey].(string), 10, 64)
+		if err != nil {
+			return nil, nil, err
+		}
+		if ownerID != nil && id == *ownerID {
+			role = "Owner"
+		}
+	}
+
+	if claims[rolesKey] != nil {
+		for _, r := range claims[rolesKey].([]interface{}) {
+			roleCast := r.(string)
+			if roleCast == "Admin" {
+				role = "Admin"
+			}
+		}
+	}
+
+	return &role, &id, nil
 }
 
 func getClaims(ctx context.Context) (jwt.MapClaims, error) {
@@ -56,47 +91,52 @@ func (mw authMiddleware) CreateCandidate(ctx context.Context, candidate *models.
 
 // GetAllCandidates returns all Candidates
 func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
+	role, _, err := getRoleAndID(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	if *role != "Admin" {
+		return nil, errAuth
+	}
 	return mw.next.GetAllCandidates(ctx, f)
 }
 
 // GetCandidateByID returns a Candidate by ID
 func (mw authMiddleware) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
-	claims, err := getClaims(ctx)
+	role, _, err := getRoleAndID(ctx, &id)
 	if err != nil {
 		return nil, err
 	}
-	id, err = strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
+	if *role != "Admin" && *role != "Owner" {
+		return nil, errAuth
 	}
 	return mw.next.GetCandidateByID(ctx, id)
 }
 
 // UpdateCandidate updates a Candidate
-func (mw authMiddleware) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
-	claims, err := getClaims(ctx)
+func (mw authMiddleware) UpdateCandidate(ctx context.Context, m *models.Candidate) (*models.Candidate, error) {
+	c, err := mw.repository.GetCandidateByID(ctx, m.ID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	role, _, err := getRoleAndID(ctx, &c.ID)
 	if err != nil {
 		return nil, err
 	}
-	if id != candidate.ID {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
-	return mw.next.UpdateCandidate(ctx, candidate)
+	return mw.next.UpdateCandidate(ctx, m)
 }
 
 // DeleteCandidate deletes a Candidate by ID
 func (mw authMiddleware) DeleteCandidate(ctx context.Context, id uint64) error {
-	claims, err := getClaims(ctx)
+	role, _, err := getRoleAndID(ctx, &id)
 	if err != nil {
 		return err
 	}
-	id, err = strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return err
+	if *role != "Admin" && *role != "Owner" {
+		return errAuth
 	}
 	return mw.next.DeleteCandidate(ctx, id)
 }
@@ -121,32 +161,24 @@ func (mw authMiddleware) GetAllSkills(ctx context.Context, f models.SkillFilters
 /* --------------- User Skill --------------- */
 
 // CreateUserSkill creates a new UserSkill
-func (mw authMiddleware) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error) {
-	claims, err := getClaims(ctx)
+func (mw authMiddleware) CreateUserSkill(ctx context.Context, m *models.UserSkill) (*models.UserSkill, error) {
+	role, _, err := getRoleAndID(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != us.CandidateID {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
-	return mw.next.CreateUserSkill(ctx, us)
+	return mw.next.CreateUserSkill(ctx, m)
 }
 
 // DeleteUserSkill deletes a UserSkill by ID
 func (mw authMiddleware) DeleteUserSkill(ctx context.Context, cid, sid uint64) error {
-	claims, err := getClaims(ctx)
+	role, _, err := getRoleAndID(ctx, &cid)
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return err
-	}
-	if id != cid {
+	if *role != "Admin" && *role != "Owner" {
 		return errAuth
 	}
 	return mw.next.DeleteUserSkill(ctx, cid, sid)
@@ -189,53 +221,56 @@ func (mw authMiddleware) GetAllCourses(ctx context.Context, f models.CourseFilte
 /* --------------- Academic History --------------- */
 
 // CreateAcademicHistory creates a new AcademicHistory
-func (mw authMiddleware) CreateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
-	claims, err := getClaims(ctx)
+func (mw authMiddleware) CreateAcademicHistory(ctx context.Context, m *models.AcademicHistory) (*models.AcademicHistory, error) {
+	role, _, err := getRoleAndID(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != academic.CandidateID {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
-	return mw.next.CreateAcademicHistory(ctx, academic)
+	return mw.next.CreateAcademicHistory(ctx, m)
 }
 
 // GetAcademicHistory returns a AcademicHistory by ID
 func (mw authMiddleware) GetAcademicHistory(ctx context.Context, id uint64) (*models.AcademicHistory, error) {
+	ah, err := mw.repository.GetAcademicHistory(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	role, _, err := getRoleAndID(ctx, &ah.CandidateID)
+	if err != nil {
+		return nil, err
+	}
+	if *role != "Admin" && *role != "Owner" {
+		return nil, errAuth
+	}
 	return mw.next.GetAcademicHistory(ctx, id)
 }
 
 // UpdateAcademicHistory updates a AcademicHistory
-func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, academic *models.AcademicHistory) (*models.AcademicHistory, error) {
-	claims, err := getClaims(ctx)
+func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, m *models.AcademicHistory) (*models.AcademicHistory, error) {
+	ah, err := mw.repository.GetAcademicHistory(ctx, m.ID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	role, _, err := getRoleAndID(ctx, &ah.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	if id != academic.CandidateID {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
-	return mw.next.UpdateAcademicHistory(ctx, academic)
+	return mw.next.UpdateAcademicHistory(ctx, m)
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
 func (mw authMiddleware) DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error {
-	claims, err := getClaims(ctx)
+	role, _, err := getRoleAndID(ctx, &cid)
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return err
-	}
-	if id != cid {
+	if *role != "Admin" && *role != "Owner" {
 		return errAuth
 	}
 	return mw.next.DeleteAcademicHistory(ctx, cid, ahid)
@@ -278,53 +313,56 @@ func (mw authMiddleware) GetAllDepartments(ctx context.Context, f models.Departm
 /* --------------- Job History --------------- */
 
 // CreateJobHistory creates a new JobHistory
-func (mw authMiddleware) CreateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
-	claims, err := getClaims(ctx)
+func (mw authMiddleware) CreateJobHistory(ctx context.Context, m *models.JobHistory) (*models.JobHistory, error) {
+	role, _, err := getRoleAndID(ctx, &m.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	if id != job.CandidateID {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
-	return mw.next.CreateJobHistory(ctx, job)
+	return mw.next.CreateJobHistory(ctx, m)
 }
 
 // GetJobHistory returns a JobHistory by ID
 func (mw authMiddleware) GetJobHistory(ctx context.Context, id uint64) (*models.JobHistory, error) {
+	jh, err := mw.repository.GetJobHistory(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	role, _, err := getRoleAndID(ctx, &jh.CandidateID)
+	if err != nil {
+		return nil, err
+	}
+	if *role != "Admin" && *role != "Owner" {
+		return nil, errAuth
+	}
 	return mw.next.GetJobHistory(ctx, id)
 }
 
 // UpdateJobHistory updates a JobHistory
-func (mw authMiddleware) UpdateJobHistory(ctx context.Context, job *models.JobHistory) (*models.JobHistory, error) {
-	claims, err := getClaims(ctx)
+func (mw authMiddleware) UpdateJobHistory(ctx context.Context, m *models.JobHistory) (*models.JobHistory, error) {
+	jh, err := mw.repository.GetJobHistory(ctx, m.ID)
 	if err != nil {
 		return nil, err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
+	role, _, err := getRoleAndID(ctx, &jh.CandidateID)
 	if err != nil {
 		return nil, err
 	}
-	if id != job.CandidateID {
+	if *role != "Admin" && *role != "Owner" {
 		return nil, errAuth
 	}
-	return mw.next.UpdateJobHistory(ctx, job)
+	return mw.next.UpdateJobHistory(ctx, m)
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
 func (mw authMiddleware) DeleteJobHistory(ctx context.Context, cid, jhid uint64) error {
-	claims, err := getClaims(ctx)
+	role, _, err := getRoleAndID(ctx, &cid)
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseUint(claims[namespace].(string), 10, 64)
-	if err != nil {
-		return err
-	}
-	if id != cid {
+	if *role != "Admin" && *role != "Owner" {
 		return errAuth
 	}
 	return mw.next.DeleteJobHistory(ctx, cid, jhid)

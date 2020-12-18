@@ -59,7 +59,7 @@ func main() {
 	repo := database.NewRepository(db)
 	client := &http.Client{}
 	svc := service.New(repo, client, logger)
-	svc = middlewares.NewAuthMiddleware(svc)
+	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)
 

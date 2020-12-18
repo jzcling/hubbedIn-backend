@@ -39,10 +39,6 @@ spec:
                 name: db-secret
                 key: username
           image: sonarqube:community
-          lifecycle: 
-            postStart:
-              exec:
-                command: ["/bin/sh", "-c", "sysctl -w vm.max_map_count=262144; sysctl -w fs.file-max=65536; ulimit -n 65536; ulimit -u 4096"]
           name: sonarqube
           ports:
             - containerPort: 9000
@@ -56,6 +52,16 @@ spec:
               name: sonarqube-logs
             - mountPath: /opt/sonarqube/temp
               name: sonarqube-temp
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
       restartPolicy: Always
       volumes:
         - name: sonarqube-data

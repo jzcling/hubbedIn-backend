@@ -88,8 +88,8 @@ func (r *repository) GetAllProjects(ctx context.Context, f models.ProjectFilters
 
 // GetProjectByID returns a Project by ID
 func (r *repository) GetProjectByID(ctx context.Context, id uint64) (*models.Project, error) {
-	m := models.Project{ID: id}
-	err := r.DB.WithContext(ctx).Model(&m).
+	m := &models.Project{ID: id}
+	err := r.DB.WithContext(ctx).Model(m).
 		Where(filProjectID, id).
 		Relation(relProjectRating).
 		Returning("*").
@@ -98,7 +98,7 @@ func (r *repository) GetProjectByID(ctx context.Context, id uint64) (*models.Pro
 	if err == pg.ErrNoRows {
 		return nil, nil
 	}
-	return &m, err
+	return m, err
 }
 
 // UpdateProject updates a Project
@@ -142,6 +142,37 @@ func (r *repository) CreateCandidateProject(ctx context.Context, m *models.Candi
 	}
 
 	return nil
+}
+
+// GetCandidateProjectByID gets a CandidateProject by ID
+func (r *repository) GetCandidateProjectByID(ctx context.Context, id uint64) (*models.CandidateProject, error) {
+	m := &models.CandidateProject{ID: id}
+	err := r.DB.WithContext(ctx).Model(m).
+		Where(filID, id).
+		Returning("*").
+		First()
+
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+	return m, err
+}
+
+// GetCandidateProject gets a CandidateProject by Candidate ID and Project ID
+func (r *repository) GetCandidateProject(ctx context.Context, cid, pid uint64) (*models.CandidateProject, error) {
+	m := &models.CandidateProject{CandidateID: cid, ProjectID: pid}
+	err := r.DB.WithContext(ctx).Model(m).
+		Where("candidate_id", cid).
+		Where("projecT_id", pid).
+		Returning("*").
+		First()
+
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+	return m, err
 }
 
 // DeleteCandidateProject deletes a CandidateProject by ID

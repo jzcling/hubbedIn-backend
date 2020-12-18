@@ -29,6 +29,12 @@ type Repository interface {
 	// CreateCandidateProject creates a new Candidate Project
 	CreateCandidateProject(ctx context.Context, m *models.CandidateProject) error
 
+	// GetCandidateProjectByID gets a CandidateProject by ID
+	GetCandidateProjectByID(ctx context.Context, id uint64) (*models.CandidateProject, error)
+
+	// GetCandidateProject gets a CandidateProject by Candidate ID and Project ID
+	GetCandidateProject(ctx context.Context, cid, pid uint64) (*models.CandidateProject, error)
+
 	// DeleteCandidateroject deletes a Candidate Project
 	DeleteCandidateProject(ctx context.Context, id uint64) error
 

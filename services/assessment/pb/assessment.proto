@@ -1,0 +1,286 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "services/assessment/pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// ------------ Assessment Service ------------
+
+service AssessmentService {
+    rpc CreateAssessment(CreateAssessmentRequest) returns (Assessment) {
+        option (google.api.http) = { 
+            post: "/v1/assessments" 
+            body: "assessment"
+        };
+    };
+    rpc GetAllAssessments(GetAllAssessmentsRequest) returns (GetAllAssessmentsResponse) {
+        option (google.api.http) = { get: "/v1/assessments" };
+    };
+    rpc GetAssessmentByID(GetAssessmentByIDRequest) returns (Assessment) {
+        option (google.api.http) = { get: "/v1/assessments/{id}" };
+    };
+    rpc UpdateAssessment(UpdateAssessmentRequest) returns (Assessment) {
+        option (google.api.http) = { 
+            put: "/v1/assessments/{id}"
+            body: "assessment"
+        };
+    };
+    rpc DeleteAssessment(DeleteAssessmentRequest) returns (DeleteAssessmentResponse) {
+        option (google.api.http) = { delete: "/v1/assessments/{id}" };
+    };
+
+    rpc CreateAssessmentAttempt(CreateAssessmentAttemptRequest) returns (AssessmentAttempt) {
+        option (google.api.http) = { 
+            post: "/v1/assessmentattempts" 
+            body: "assessment_attempt"
+        };
+    };
+    rpc GetAssessmentAttemptByID(GetAssessmentAttemptByIDRequest) returns (AssessmentAttempt) {
+        option (google.api.http) = { get: "/v1/assessmentattempts/{id}" };
+    };
+    rpc LocalGetAssessmentAttemptByID(GetAssessmentAttemptByIDRequest) returns (AssessmentAttempt);
+    rpc UpdateAssessmentAttempt(UpdateAssessmentAttemptRequest) returns (AssessmentAttempt) {
+        option (google.api.http) = {
+            put: "/v1/assessmentattempts/{id}"
+            body: "assessment_attempt"
+        };
+    };
+    rpc LocalUpdateAssessmentAttempt(UpdateAssessmentAttemptRequest) returns (AssessmentAttempt);
+    rpc DeleteAssessmentAttempt(DeleteAssessmentAttemptRequest) returns (DeleteAssessmentAttemptResponse) {
+        option (google.api.http) = { delete: "/v1/assessmentattempts/{id}" };
+    };
+
+    rpc CreateQuestion(CreateQuestionRequest) returns (Question) {
+        option (google.api.http) = { 
+            post: "/v1/questions" 
+            body: "question"
+        };
+    };
+    rpc BulkCreateQuestion(BulkCreateQuestionRequest) returns (BulkCreateQuestionResponse) {
+        option (google.api.http) = { 
+            post: "/v1/bulk/questions" 
+            body: "*"
+        };
+    };
+    rpc GetAllQuestions(GetAllQuestionsRequest) returns (GetAllQuestionsResponse) {
+        option (google.api.http) = { get: "/v1/questions" };
+    };
+    rpc GetQuestionByID(GetQuestionByIDRequest) returns (Question) {
+        option (google.api.http) = { get: "/v1/questions/{id}" };
+    };
+    rpc UpdateQuestion(UpdateQuestionRequest) returns (Question) {
+        option (google.api.http) = { 
+            put: "/v1/questions/{id}"
+            body: "question"
+        };
+    };
+    rpc DeleteQuestion(DeleteQuestionRequest) returns (DeleteQuestionResponse) {
+        option (google.api.http) = { delete: "/v1/questions/{id}" };
+    };
+
+    rpc CreateTag(CreateTagRequest) returns (Tag) {
+        option (google.api.http) = { 
+            post: "/v1/tags" 
+            body: "tag"
+        };
+    };
+    rpc DeleteTag(DeleteTagRequest) returns (DeleteTagResponse) {
+        option (google.api.http) = { delete: "/v1/tags/{id}" };
+    };
+
+    rpc UpdateAttemptQuestion(UpdateAttemptQuestionRequest) returns (AttemptQuestion) {
+        option (google.api.http) = { 
+            put: "/v1/attemptquestions/{id}" 
+            body: "attempt_question"
+        };
+    };
+} 
+
+message Assessment {
+    uint64 id = 1;
+    string name = 2;
+	string description = 3;
+	string notes = 4;
+	string image_url = 5;
+	string difficulty = 6;
+	uint64 time_allowed = 7;
+	string type = 8;
+	bool randomise = 9;
+    uint32 num_questions = 10;
+    bool can_go_back = 11;
+	repeated Question questions = 12;
+    repeated AssessmentAttempt attempts = 13;
+}
+
+message CreateAssessmentRequest {
+    Assessment assessment = 1;
+}
+
+message GetAllAssessmentsRequest {
+    repeated uint64 id = 1;
+	string name = 2;
+	repeated string difficulty = 3;
+	repeated string type = 4;
+	uint64 candidate_id = 5;
+	repeated string status = 6;
+	int64 min_score = 7;
+}
+
+message GetAllAssessmentsResponse {
+    repeated Assessment assessments = 1;
+}
+
+message GetAssessmentByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateAssessmentRequest {
+    uint64 id = 1;
+    Assessment assessment = 2;
+}
+
+message DeleteAssessmentRequest {
+    uint64 id = 1;
+}
+
+message DeleteAssessmentResponse {
+    // Empty
+}
+
+message AssessmentAttempt {
+    uint64 id = 1;
+    uint64 assessment_id = 2;
+	uint64 candidate_id = 3;
+	string status = 4;
+	google.protobuf.Timestamp started_at = 5;
+    google.protobuf.Timestamp completed_at = 6;
+    uint64 current_question = 7;
+    int64 score = 8;
+    Assessment assessment = 9;
+    repeated Question questions = 10;
+    repeated AttemptQuestion question_attempts = 11;
+}
+
+message CreateAssessmentAttemptRequest {
+    AssessmentAttempt assessment_attempt = 1;
+}
+
+message GetAssessmentAttemptByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateAssessmentAttemptRequest {
+    uint64 id = 1;
+    AssessmentAttempt assessment_attempt = 2;
+}
+
+message DeleteAssessmentAttemptRequest {
+    uint64 id = 1;
+}
+
+message DeleteAssessmentAttemptResponse {
+    // Empty
+}
+
+message Question {
+    uint64 id = 1;
+    uint64 created_by = 2;
+	string type = 3;
+	string text = 4;
+    string media_url = 5;
+    string code = 6;
+	repeated string options = 7;
+	int64 answer = 8;
+	repeated Tag tags = 9;
+    repeated Assessment assessments = 10;
+    repeated AssessmentAttempt assessment_attempts = 11;
+	repeated AttemptQuestion attempts = 12;
+}
+
+message CreateQuestionRequest {
+    Question question = 1;
+}
+
+message BulkCreateQuestionRequest {
+    repeated Question questions = 1;
+}
+
+message BulkCreateQuestionResponse {
+    repeated Question questions = 1;
+}
+
+message GetAllQuestionsRequest {
+    repeated uint64 id = 1;
+	repeated string tags = 2;
+}
+
+message GetAllQuestionsResponse {
+    repeated Question questions = 1;
+}
+
+message GetQuestionByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateQuestionRequest {
+    uint64 id = 1;
+    Question question = 2;
+}
+
+message DeleteQuestionRequest {
+    uint64 id = 1;
+}
+
+message DeleteQuestionResponse {
+    // Empty
+}
+
+message Tag {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message CreateTagRequest {
+    Tag tag = 1;
+}
+
+message DeleteTagRequest {
+    uint64 id = 1;
+}
+
+message DeleteTagResponse {
+    // Empty
+}
+
+message QuestionTag {
+    uint64 id = 1;
+    uint64 question_id = 2;
+    uint64 tag_id = 3;
+}
+
+message AttemptQuestion {
+    uint64 id = 1;
+    uint64 attempt_id = 2;
+    uint64 question_id = 3;
+	uint64 candidate_id = 4;
+	int64 selection = 5;
+    string text = 6;
+    string cm_mode = 7;
+	int64 score = 8;
+	uint64 time_taken = 9;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
+}
+
+message UpdateAttemptQuestionRequest {
+    uint64 id = 1;
+    AttemptQuestion attempt_question = 2;
+}
+
+message AssessmentQuestion {
+    uint64 id = 1;
+    uint64 assessment_id = 2;
+    uint64 question_id = 3;
+}

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 )
 
 type logMiddleware struct {
@@ -24,7 +25,13 @@ func NewLogMiddleware(logger log.Logger, svc project.Service) project.Service {
 }
 
 func (mw logMiddleware) log(method string, begin time.Time, input, output interface{}, err *error) {
-	mw.logger.Log(
+	var logger log.Logger
+	if err != nil {
+		logger = level.Error(mw.logger)
+	} else {
+		logger = level.Info(mw.logger)
+	}
+	logger.Log(
 		"method", method,
 		"input", fmt.Sprintf("%v", input),
 		"output", fmt.Sprintf("%v", output),
