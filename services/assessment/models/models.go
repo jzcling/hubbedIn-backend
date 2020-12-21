@@ -23,7 +23,7 @@ type Assessment struct {
 	Name         string               `json:"name" pg:",notnull,unique"`
 	Description  string               `json:"description"`
 	Notes        string               `json:"notes"`
-	ImageURL     string               `json:"media_url" pg:"image_url"`
+	ImageURL     string               `json:"image_url" pg:"image_url"`
 	Difficulty   string               `json:"difficulty"`
 	TimeAllowed  uint64               `json:"time_allowed"`
 	Type         string               `json:"type"`
