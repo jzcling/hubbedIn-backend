@@ -8,6 +8,7 @@ import (
 	"in-backend/services/profile/pb"
 	"in-backend/services/profile/providers"
 	"in-backend/services/profile/service"
+	"in-backend/services/profile/service/middlewares"
 	"in-backend/services/profile/transport"
 	"net"
 	"net/http"
@@ -56,10 +57,14 @@ func main() {
 	// business logic service; then, the set of endpoints that wrap the service;
 	// and finally, a series of concrete transport adapters
 
-	repo := database.NewRepository(db)
 	client := &http.Client{}
 	auth0 := providers.NewAuth0(cfg, client)
-	svc := service.New(repo, logger, auth0)
+	hubbedlearn := providers.NewHubbedLearn(cfg, client)
+	klenty := providers.NewKlenty(cfg, client)
+	repo := database.NewRepository(db, auth0, hubbedlearn, klenty)
+	svc := service.New(repo)
+	svc = middlewares.NewAuthMiddleware(svc, repo)
+	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)
 
 	// set-up grpc transport

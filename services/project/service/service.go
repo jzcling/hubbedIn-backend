@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+
 	"github.com/mitchellh/mapstructure"
 
 	"in-backend/services/project"
@@ -22,8 +22,8 @@ import (
 // Service implements the project Service interface
 type service struct {
 	repository project.Repository
-	logger     log.Logger
 	client     HTTPClient
+	logger     log.Logger
 }
 
 // HTTPClient describes a default http client
@@ -45,11 +45,11 @@ type Measure struct {
 }
 
 // New creates and returns a new Service that implements the project Service interface
-func New(r project.Repository, l log.Logger, c HTTPClient) project.Service {
+func New(r project.Repository, c HTTPClient, l log.Logger) project.Service {
 	return &service{
 		repository: r,
-		logger:     l,
 		client:     c,
+		logger:     l,
 	}
 }
 
@@ -57,14 +57,11 @@ func New(r project.Repository, l log.Logger, c HTTPClient) project.Service {
 
 // CreateProject creates a new Project
 func (s *service) CreateProject(ctx context.Context, model *models.Project, cid uint64) (*models.Project, error) {
-	logger := log.With(s.logger, "method", "CreateProject")
-
 	f := models.ProjectFilters{
 		RepoURL: model.RepoURL,
 	}
 	existing, err := s.repository.GetAllProjects(ctx, f)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return nil, err
 	}
 
@@ -72,7 +69,6 @@ func (s *service) CreateProject(ctx context.Context, model *models.Project, cid 
 	if existing == nil {
 		m, err = s.repository.CreateProject(ctx, model)
 		if err != nil {
-			level.Error(logger).Log("err", err)
 			return nil, err
 		}
 	} else {
@@ -85,7 +81,6 @@ func (s *service) CreateProject(ctx context.Context, model *models.Project, cid 
 	}
 	err = s.repository.CreateCandidateProject(ctx, cp)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return nil, err
 	}
 
@@ -94,76 +89,52 @@ func (s *service) CreateProject(ctx context.Context, model *models.Project, cid 
 
 // GetAllProjects returns all Projects
 func (s *service) GetAllProjects(ctx context.Context, f models.ProjectFilters) ([]*models.Project, error) {
-	logger := log.With(s.logger, "method", "GetAllProjects")
-
 	m, err := s.repository.GetAllProjects(ctx, f)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
 	return m, err
 }
 
 // GetProjectByID returns a Project by ID
 func (s *service) GetProjectByID(ctx context.Context, id uint64) (*models.Project, error) {
-	logger := log.With(s.logger, "method", "GetProjectByID")
-
 	m, err := s.repository.GetProjectByID(ctx, id)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
 	return m, err
 }
 
 // UpdateProject updates a Project
 func (s *service) UpdateProject(ctx context.Context, model *models.Project) (*models.Project, error) {
-	logger := log.With(s.logger, "method", "UpdateProject")
-
 	m, err := s.repository.UpdateProject(ctx, model)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
 	return m, err
 }
 
 // DeleteProject deletes a Project by ID
 func (s *service) DeleteProject(ctx context.Context, id uint64) error {
-	logger := log.With(s.logger, "method", "DeleteProject")
-
 	err := s.repository.DeleteProject(ctx, id)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
 	return err
 }
 
 // ScanProject scans a Project using sonarqube
 func (s *service) ScanProject(ctx context.Context, id uint64) error {
-	logger := log.With(s.logger, "method", "ScanProject")
-
 	m, err := s.GetProjectByID(ctx, id)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return err
 	}
 
-	go s.scanAndStoreResult(m, logger)
+	go s.scanAndStoreResult(m)
 
 	return nil
 }
 
-func (s *service) scanAndStoreResult(m *models.Project, logger log.Logger) error {
+func (s *service) scanAndStoreResult(m *models.Project) error {
 	name := strings.ToLower(m.Name)
 	name = strings.ReplaceAll(name, " ", "_")
 	name = name + "_" + strconv.FormatUint(m.ID, 10)
 	_, err := exec.Command("/bin/sh", "-c", "./scan.sh -u "+m.RepoURL+" -n "+name).Output()
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return err
 	}
 
-	jsonBody, err := s.getRatingMeasures(name, logger)
+	jsonBody, err := s.getRatingMeasures(name)
 	if err != nil {
-		level.Error(logger).Log("err", err)
+		s.logger.Log("method", "getRatingMeasures", "err", err)
 		return err
 	}
 	var component Component
@@ -179,49 +150,49 @@ func (s *service) scanAndStoreResult(m *models.Project, logger log.Logger) error
 		case "reliability_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseReliabilityRating", "err", err)
 				return err
 			}
 			r.ReliabilityRating = int32(v)
 		case "sqale_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseMaintainabilityRating", "err", err)
 				return err
 			}
 			r.MaintainabilityRating = int32(v)
 		case "security_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseSecurityRating", "err", err)
 				return err
 			}
 			r.SecurityRating = int32(v)
 		case "security_review_rating":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseSecurityReviewRating", "err", err)
 				return err
 			}
 			r.SecurityReviewRating = int32(v)
 		case "coverage":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseCoverage", "err", err)
 				return err
 			}
 			r.Coverage = float32(v)
 		case "duplicated_lines_density":
 			v, err := strconv.ParseFloat(measure.Value, 32)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseDuplications", "err", err)
 				return err
 			}
 			r.Duplications = float32(v)
 		case "ncloc":
 			r.Lines, err = strconv.ParseUint(measure.Value, 10, 64)
 			if err != nil {
-				level.Error(logger).Log("err", err)
+				s.logger.Log("method", "parseLines", "err", err)
 				return err
 			}
 		}
@@ -229,13 +200,13 @@ func (s *service) scanAndStoreResult(m *models.Project, logger log.Logger) error
 
 	err = s.CreateRating(context.Background(), r)
 	if err != nil {
-		level.Error(logger).Log("err", err)
+		s.logger.Log("method", "CreateRating", "err", err)
 		return err
 	}
 	return nil
 }
 
-func (s *service) getRatingMeasures(name string, logger log.Logger) (map[string]interface{}, error) {
+func (s *service) getRatingMeasures(name string) (map[string]interface{}, error) {
 	metrics := []string{
 		"reliability_rating",
 		"sqale_rating",
@@ -251,27 +222,23 @@ func (s *service) getRatingMeasures(name string, logger log.Logger) (map[string]
 	payload.Add("metricKeys", strings.Join(metrics, ","))
 	req, err := http.NewRequest("GET", "http://sonarqube:9000/api/measures/component?"+payload.Encode(), nil)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return nil, err
 	}
 
 	res, err := s.client.Do(req)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return nil, err
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return nil, err
 	}
 
 	jsonBody := make(map[string]interface{})
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
-		level.Error(logger).Log("err", err)
 		return nil, err
 	}
 
@@ -282,24 +249,13 @@ func (s *service) getRatingMeasures(name string, logger log.Logger) (map[string]
 
 // CreateCandidateProject creates a new CandidateProject
 func (s *service) CreateCandidateProject(ctx context.Context, m *models.CandidateProject) error {
-	logger := log.With(s.logger, "method", "CreateCandidateProject")
-
 	err := s.repository.CreateCandidateProject(ctx, m)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
-
 	return err
 }
 
 // DeleteCandidateProject deletes a CandidateProject by ID
 func (s *service) DeleteCandidateProject(ctx context.Context, id uint64) error {
-	logger := log.With(s.logger, "method", "DeleteCandidateProject")
-
 	err := s.repository.DeleteCandidateProject(ctx, id)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
 	return err
 }
 
@@ -307,23 +263,12 @@ func (s *service) DeleteCandidateProject(ctx context.Context, id uint64) error {
 
 // CreateRating creates a new Rating
 func (s *service) CreateRating(ctx context.Context, m *models.Rating) error {
-	logger := log.With(s.logger, "method", "CreateRating")
-
 	err := s.repository.CreateRating(ctx, m)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
-
 	return err
 }
 
 // DeleteRating deletes a Rating by Candidate ID and Project ID
 func (s *service) DeleteRating(ctx context.Context, id uint64) error {
-	logger := log.With(s.logger, "method", "DeleteRating")
-
 	err := s.repository.DeleteRating(ctx, id)
-	if err != nil {
-		level.Error(logger).Log("err", err)
-	}
 	return err
 }

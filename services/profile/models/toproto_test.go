@@ -33,6 +33,7 @@ func TestCandidateToProto(t *testing.T) {
 		Summary:                "summary",
 		Birthday:               &testTime,
 		NoticePeriod:           1,
+		PreferredRoles:         []string{"backend"},
 		Skills: []*Skill{
 			{
 				ID:   1,
@@ -50,6 +51,7 @@ func TestCandidateToProto(t *testing.T) {
 				InstitutionID: 1,
 				CourseID:      1,
 				YearObtained:  2020,
+				Grade:         "first",
 				CreatedAt:     &testTime,
 				UpdatedAt:     &testTime,
 				DeletedAt:     &testTime,
@@ -60,6 +62,7 @@ func TestCandidateToProto(t *testing.T) {
 				InstitutionID: 1,
 				CourseID:      2,
 				YearObtained:  2020,
+				Grade:         "first",
 				CreatedAt:     &testTime,
 				UpdatedAt:     &testTime,
 				DeletedAt:     &testTime,
@@ -126,6 +129,7 @@ func TestCandidateToProto(t *testing.T) {
 		Summary:                "summary",
 		Birthday:               testPbTime,
 		NoticePeriod:           1,
+		PreferredRoles:         []string{"backend"},
 		Skills: []*pb.Skill{
 			{
 				Id:   1,

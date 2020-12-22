@@ -2,9 +2,10 @@ package database
 
 import (
 	"context"
-	"in-backend/services/profile"
 	"in-backend/services/profile/configs"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
+	"in-backend/services/profile/tests/mocks"
 	"strings"
 	"testing"
 	"time"
@@ -16,16 +17,22 @@ import (
 )
 
 var (
-	ctx context.Context = context.Background()
-	now time.Time       = time.Now()
+	ctx context.Context            = context.Background()
+	now time.Time                  = time.Now()
+	a   *mocks.Auth0Provider       = &mocks.Auth0Provider{}
+	hl  *mocks.HubbedLearnProvider = &mocks.HubbedLearnProvider{}
+	k   *mocks.KlentyProvider      = &mocks.KlentyProvider{}
 )
 
 func TestNewRepository(t *testing.T) {
 	want := &repository{
-		DB: &pg.DB{},
+		DB:          &pg.DB{},
+		auth0:       a,
+		hubbedlearn: hl,
+		klenty:      k,
 	}
 
-	got := NewRepository(&pg.DB{})
+	got := NewRepository(&pg.DB{}, a, hl, k)
 
 	require.EqualValues(t, want, got)
 }
@@ -40,9 +47,11 @@ func TestAllCRUD(t *testing.T) {
 	require.NoError(t, err)
 
 	db, err := setupDB(c, opt, "../scripts/migrations/")
+	defer cleanDb(db)
+	defer cleanContainer(c)
 	require.NoError(t, err)
 
-	r := NewRepository(db)
+	r := NewRepository(db, a, hl, k)
 
 	testCreateCandidate(t, r, db)
 	testGetAllCandidates(t, r, db)
@@ -82,14 +91,11 @@ func TestAllCRUD(t *testing.T) {
 	testGetJobHistory(t, r, db)
 	testUpdateJobHistory(t, r, db)
 	testDeleteJobHistory(t, r, db)
-
-	cleanDb(db)
-	cleanContainer(c)
 }
 
 /* --------------- Candidate --------------- */
 
-func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoAuthID := &models.Candidate{
 		FirstName:     "first",
 		LastName:      "last",
@@ -104,21 +110,26 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 
 	testDupEmail := test
 
-	// this is required to insert 2 candidates so that one can be used
-	// for other tests after the first gets deleted
 	test2 := test
 	test2.AuthID = "authId2"
 	test2.Email = "test@test.com"
 	test2.ContactNumber = "+6587654321"
 
+	auth0GetOutput := make(map[string]interface{})
+	auth0GetOutput["access_token"] = "test"
+	auth0UpdateInput := "test"
+
 	type args struct {
-		ctx   context.Context
-		input *models.Candidate
+		ctx              context.Context
+		input            *models.Candidate
+		auth0UpdateInput string
 	}
 
 	type expect struct {
-		output *models.Candidate
-		err    error
+		output            *models.Candidate
+		err               error
+		auth0GetOutput    map[string]interface{}
+		auth0UpdateOutput error
 	}
 
 	var tests = []struct {
@@ -126,15 +137,17 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter candidate is nil")}},
-		{"failed not null", args{ctx, testNoAuthID}, expect{nil, errors.New("Failed to insert candidate")}},
-		{"valid", args{ctx, &test}, expect{&test, nil}},
-		{"failed unique", args{ctx, &testDupEmail}, expect{nil, errors.New("Failed to insert candidate")}},
-		{"valid2", args{ctx, &test2}, expect{&test2, nil}},
+		{"nil", args{ctx, nil, auth0UpdateInput}, expect{nil, errors.New("Input parameter candidate is nil"), auth0GetOutput, nil}},
+		{"failed not null", args{ctx, testNoAuthID, auth0UpdateInput}, expect{nil, errors.New("Failed to insert candidate"), auth0GetOutput, nil}},
+		{"valid", args{ctx, &test, auth0UpdateInput}, expect{&test, nil, auth0GetOutput, nil}},
+		{"failed unique", args{ctx, &testDupEmail, auth0UpdateInput}, expect{nil, errors.New("Failed to insert candidate"), auth0GetOutput, nil}},
+		{"invalid auth0", args{ctx, &test2, auth0UpdateInput}, expect{nil, errors.New("Failed to update auth0 user"), auth0GetOutput, errors.New("Failed to update auth0 user")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			a.On("GetAuth0Token").Return(tt.exp.auth0GetOutput, nil)
+			a.On("UpdateAuth0User", tt.args.auth0UpdateInput, tt.args.input).Return(tt.exp.auth0UpdateOutput)
 			got, err := r.CreateCandidate(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
@@ -146,7 +159,7 @@ func testCreateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllCandidates(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Candidate)(nil)).Count()
 	require.NoError(t, err)
 
@@ -165,7 +178,7 @@ func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.CandidateFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -181,7 +194,7 @@ func testGetAllCandidates(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetCandidateByID(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetCandidateByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -222,7 +235,7 @@ func testGetCandidateByID(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
+func testUpdateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -263,7 +276,7 @@ func testUpdateCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -299,7 +312,7 @@ func testDeleteCandidate(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Skill --------------- */
 
-func testCreateSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Skill{
 		ID: 1,
 	}
@@ -341,7 +354,7 @@ func testCreateSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllSkills(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Skill)(nil)).Count()
 	require.NoError(t, err)
 
@@ -360,7 +373,7 @@ func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.SkillFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -376,7 +389,7 @@ func testGetAllSkills(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Skill{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -419,7 +432,7 @@ func testGetSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- User Skill --------------- */
 
-func testCreateUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateUserSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existingC := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existingC).First()
 	require.NoError(t, err)
@@ -470,14 +483,15 @@ func testCreateUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteUserSkill(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.UserSkill{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
 
 	type args struct {
 		ctx context.Context
-		id  uint64
+		cid uint64
+		sid uint64
 	}
 
 	type expect struct {
@@ -489,12 +503,12 @@ func testDeleteUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, existing.CandidateID, existing.SkillID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteUserSkill(tt.args.ctx, tt.args.id)
+			err := r.DeleteUserSkill(tt.args.ctx, tt.args.cid, tt.args.sid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -506,7 +520,7 @@ func testDeleteUserSkill(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Institution --------------- */
 
-func testCreateInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateInstitution(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Institution{
 		ID: 1,
 	}
@@ -549,7 +563,7 @@ func testCreateInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllInstitutions(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Institution)(nil)).Count()
 	require.NoError(t, err)
 
@@ -568,7 +582,7 @@ func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.InstitutionFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -584,7 +598,7 @@ func testGetAllInstitutions(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetInstitution(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Institution{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -627,7 +641,7 @@ func testGetInstitution(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Course --------------- */
 
-func testCreateCourse(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateCourse(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Course{
 		ID: 1,
 	}
@@ -670,7 +684,7 @@ func testCreateCourse(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllCourses(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Course)(nil)).Count()
 	require.NoError(t, err)
 
@@ -689,7 +703,7 @@ func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.CourseFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -705,7 +719,7 @@ func testGetAllCourses(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetCourse(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetCourse(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Course{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -748,7 +762,7 @@ func testGetCourse(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- AcademicHistory --------------- */
 
-func testCreateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existingC := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existingC).First()
 	require.NoError(t, err)
@@ -818,7 +832,7 @@ func testCreateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.AcademicHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -859,7 +873,7 @@ func testGetAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testUpdateAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.AcademicHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -900,14 +914,15 @@ func testUpdateAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteAcademicHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.AcademicHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
 
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		ahid uint64
 	}
 
 	type expect struct {
@@ -919,12 +934,12 @@ func testDeleteAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, existing.CandidateID, existing.ID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteAcademicHistory(tt.args.ctx, tt.args.id)
+			err := r.DeleteAcademicHistory(tt.args.ctx, tt.args.cid, tt.args.ahid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -936,7 +951,7 @@ func testDeleteAcademicHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Company --------------- */
 
-func testCreateCompany(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateCompany(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Company{
 		ID: 1,
 	}
@@ -978,7 +993,7 @@ func testCreateCompany(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllCompanies(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Company)(nil)).Count()
 	require.NoError(t, err)
 
@@ -997,7 +1012,7 @@ func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.CompanyFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -1013,7 +1028,7 @@ func testGetAllCompanies(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetCompany(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetCompany(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Company{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1056,7 +1071,7 @@ func testGetCompany(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- Department --------------- */
 
-func testCreateDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateDepartment(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	testNoName := &models.Department{
 		ID: 1,
 	}
@@ -1098,7 +1113,7 @@ func testCreateDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetAllDepartments(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	count, err := db.WithContext(ctx).Model((*models.Department)(nil)).Count()
 	require.NoError(t, err)
 
@@ -1117,7 +1132,7 @@ func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, nil}, expect{count, nil}},
+		{"no filter", args{ctx, &models.DepartmentFilters{}}, expect{count, nil}},
 	}
 
 	for _, tt := range tests {
@@ -1133,7 +1148,7 @@ func testGetAllDepartments(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetDepartment(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.Department{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1176,7 +1191,7 @@ func testGetDepartment(t *testing.T, r profile.Repository, db *pg.DB) {
 
 /* --------------- JobHistory --------------- */
 
-func testCreateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testCreateJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existingC := &models.Candidate{}
 	err := db.WithContext(ctx).Model(existingC).First()
 	require.NoError(t, err)
@@ -1243,7 +1258,7 @@ func testCreateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testGetJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testGetJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.JobHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1284,7 +1299,7 @@ func testGetJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testUpdateJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.JobHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
@@ -1325,14 +1340,15 @@ func testUpdateJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
+func testDeleteJobHistory(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	existing := &models.JobHistory{}
 	err := db.WithContext(ctx).Model(existing).First()
 	require.NoError(t, err)
 
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		jhid uint64
 	}
 
 	type expect struct {
@@ -1344,12 +1360,12 @@ func testDeleteJobHistory(t *testing.T, r profile.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, existing.CandidateID, existing.ID}, expect{nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteJobHistory(tt.args.ctx, tt.args.id)
+			err := r.DeleteJobHistory(tt.args.ctx, tt.args.cid, tt.args.jhid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

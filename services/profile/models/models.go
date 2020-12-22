@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 
 	"github.com/go-pg/pg/v10/orm"
@@ -37,12 +38,26 @@ type Candidate struct {
 	Summary                string             `json:"summary,omitempty"`
 	Birthday               *time.Time         `json:"birthday,omitempty"`
 	NoticePeriod           uint32             `json:"notice_period,omitempty"`
+	PreferredRoles         []string           `json:"preferred_roles" pg:",array"`
 	Skills                 []*Skill           `json:"skills,omitempty" pg:"many2many:users_skills"`
 	Academics              []*AcademicHistory `json:"academics,omitempty" pg:"rel:has-many"`
 	Jobs                   []*JobHistory      `json:"jobs,omitempty" pg:"rel:has-many"`
 	CreatedAt              *time.Time         `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt              *time.Time         `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt              *time.Time         `json:"deleted_at,omitempty" pg:",soft_delete"`
+}
+
+func (m *Candidate) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
+	return ctx, nil
+}
+
+func (m *Candidate) BeforeUpdate(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return ctx, nil
 }
 
 // Skill declares the model for Skill
@@ -63,6 +78,19 @@ type UserSkill struct {
 	SkillID     uint64     `json:"skill_id" pg:",notnull"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" pg:"default:now()"`
+}
+
+func (m *UserSkill) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
+	return ctx, nil
+}
+
+func (m *UserSkill) BeforeUpdate(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return ctx, nil
 }
 
 // Institution declares the model for Institution
@@ -106,9 +134,23 @@ type AcademicHistory struct {
 	CourseID      uint64       `json:"-" pg:",notnull"`
 	Course        *Course      `json:"course,omitempty" pg:"rel:has-one"`
 	YearObtained  uint32       `json:"year_obtained,omitempty"`
+	Grade         string       `json:"grade,omitempty"`
 	CreatedAt     *time.Time   `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt     *time.Time   `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt     *time.Time   `json:"deleted_at,omitempty" pg:",soft_delete"`
+}
+
+func (m *AcademicHistory) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
+	return ctx, nil
+}
+
+func (m *AcademicHistory) BeforeUpdate(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return ctx, nil
 }
 
 // Company declares the model for Company
@@ -160,4 +202,17 @@ type JobHistory struct {
 	CreatedAt      *time.Time  `json:"created_at,omitempty" pg:"default:now()"`
 	UpdatedAt      *time.Time  `json:"updated_at,omitempty" pg:"default:now()"`
 	DeletedAt      *time.Time  `json:"deleted_at,omitempty" pg:",soft_delete"`
+}
+
+func (m *JobHistory) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
+	return ctx, nil
+}
+
+func (m *JobHistory) BeforeUpdate(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return ctx, nil
 }

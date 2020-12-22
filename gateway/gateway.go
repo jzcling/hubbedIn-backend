@@ -7,12 +7,13 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 
+	assessmentgw "in-backend/services/assessment/pb"
 	profilegw "in-backend/services/profile/pb"
 	projectgw "in-backend/services/project/pb"
 )
 
 // New creates a new instance of a GRPC gateway
-func New(ctx context.Context, profileEndpoint, projectEndpoint string) (http.Handler, error) {
+func New(ctx context.Context, profileEndpoint, projectEndpoint, assessmentEndpoint string) (http.Handler, error) {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	err := profilegw.RegisterProfileServiceHandlerFromEndpoint(ctx, mux, profileEndpoint, opts)
@@ -20,6 +21,10 @@ func New(ctx context.Context, profileEndpoint, projectEndpoint string) (http.Han
 		return nil, err
 	}
 	err = projectgw.RegisterProjectServiceHandlerFromEndpoint(ctx, mux, projectEndpoint, opts)
+	if err != nil {
+		return nil, err
+	}
+	err = assessmentgw.RegisterAssessmentServiceHandlerFromEndpoint(ctx, mux, assessmentEndpoint, opts)
 	if err != nil {
 		return nil, err
 	}

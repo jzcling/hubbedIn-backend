@@ -51,7 +51,10 @@ service ProfileService {
         };
     };
     rpc DeleteUserSkill(DeleteUserSkillRequest) returns (DeleteUserSkillResponse) {
-        option (google.api.http) = { delete: "/v1/userskills/{id}" };
+        option (google.api.http) = { 
+            delete: "/v1/userskills"
+            body: "*"
+        };
     };
 
     rpc CreateInstitution(CreateInstitutionRequest) returns (Institution) {
@@ -96,7 +99,10 @@ service ProfileService {
         };
     };
     rpc DeleteAcademicHistory(DeleteAcademicHistoryRequest) returns (DeleteAcademicHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/candidates/{id}" };
+        option (google.api.http) = { 
+            delete: "/v1/academichistories/{id}" 
+            body: "*"
+        };
     };
 
     rpc CreateCompany(CreateCompanyRequest) returns (Company) {
@@ -141,7 +147,10 @@ service ProfileService {
         };
     };
     rpc DeleteJobHistory(DeleteJobHistoryRequest) returns (DeleteJobHistoryResponse) {
-        option (google.api.http) = { delete: "/v1/jobhistories/{id}" };
+        option (google.api.http) = { 
+            delete: "/v1/jobhistories/{id}"
+            body: "*"
+        };
     };
 } 
 
@@ -165,12 +174,13 @@ message Candidate {
     string summary = 17;
     google.protobuf.Timestamp birthday = 18;
     uint32 notice_period = 19;
-    repeated Skill skills = 20;
-    repeated AcademicHistory academics = 21;
-    repeated JobHistory jobs = 22;
-    google.protobuf.Timestamp created_at = 23;
-    google.protobuf.Timestamp updated_at = 24;
-    google.protobuf.Timestamp deleted_at = 25;
+    repeated string preferred_roles = 20;
+    repeated Skill skills = 21;
+    repeated AcademicHistory academics = 22;
+    repeated JobHistory jobs = 23;
+    google.protobuf.Timestamp created_at = 24;
+    google.protobuf.Timestamp updated_at = 25;
+    google.protobuf.Timestamp deleted_at = 26;
 }
 
 message CreateCandidateRequest {
@@ -247,7 +257,8 @@ message CreateUserSkillRequest {
 }
 
 message DeleteUserSkillRequest {
-    uint64 id = 1;
+    uint64 candidate_id = 1;
+    uint64 skill_id = 2;
 }
 
 message DeleteUserSkillResponse {
@@ -313,9 +324,10 @@ message AcademicHistory {
     uint64 course_id = 5;
     Course course = 6;
     uint32 year_obtained = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+    string grade = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp deleted_at = 11;
 }
 
 message CreateAcademicHistoryRequest {
@@ -333,6 +345,7 @@ message UpdateAcademicHistoryRequest {
 
 message DeleteAcademicHistoryRequest {
     uint64 id = 1;
+    uint64 candidate_id = 2;
 }
 
 message DeleteAcademicHistoryResponse {
@@ -422,6 +435,7 @@ message UpdateJobHistoryRequest {
 
 message DeleteJobHistoryRequest {
     uint64 id = 1;
+    uint64 candidate_id = 2;
 }
 
 message DeleteJobHistoryResponse {

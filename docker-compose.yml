@@ -27,6 +27,19 @@ services:
             - ${PROJECT_SERVICE_PORT}:${PROJECT_SERVICE_PORT}
         networks:
             - backend
+    assessment-service:
+        build: 
+            context: .
+            dockerfile: ./services/assessment/Dockerfile
+        image: assessment-service
+        container_name: assessment-service
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - ${ASSESSMENT_SERVICE_PORT}:${ASSESSMENT_SERVICE_PORT}
+        networks:
+            - backend
     db:
         image: postgres:13-alpine
         container_name: db
@@ -47,6 +60,14 @@ services:
             - ./scripts/migrations/:/docker-entrypoint-initdb.d/
             - db-data:/var/lib/postgresql/data
             - postgresql:/var/lib/postgresql
+        networks:
+            - backend
+    redis:
+        image: redis:alpine
+        container_name: redis
+        restart: always
+        ports:
+            - ${REDIS_PORT}:${REDIS_PORT}
         networks:
             - backend
     gateway:
@@ -73,10 +94,21 @@ services:
         networks: 
             - backend
             - frontend
+    scheduler-worker:
+        build: 
+            context: .
+            dockerfile: ./scheduler/worker/Dockerfile
+        image: scheduler-worker
+        container_name: scheduler-worker
+        restart: always
+        depends_on:
+            - redis
+        networks:
+            - backend
     sonarqube:
         image: sonarqube:community
         container_name: sonarqube
-        restart: always
+        restart: unless-stopped
         environment:
             SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
             SONAR_JDBC_USERNAME: ${POSTGRES_USER}
@@ -90,6 +122,10 @@ services:
             - sonarqube-temp:/opt/sonarqube/temp
         networks: 
             - backend
+        ulimits:
+            nofile:
+                soft: 65536
+                hard: 65536
   
 
 networks:

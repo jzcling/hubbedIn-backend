@@ -1,5 +1,7 @@
 package models
 
+import "in-backend/helpers"
+
 // Comparator compares whether two models are equal
 type Comparator interface {
 	IsEqual(m2 interface{}) bool
@@ -13,6 +15,13 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 
 	if (m1 == nil && m2.(*Candidate) != nil) ||
 		(m1 != nil && m2.(*Candidate) == nil) {
+		return false
+	}
+
+	if ((m1.Birthday != nil && m2.(*Candidate).Birthday == nil) || (m1.Birthday == nil && m2.(*Candidate).Birthday != nil)) ||
+		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt == nil) || (m1.CreatedAt == nil && m2.(*Candidate).CreatedAt != nil)) ||
+		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt == nil) || (m1.UpdatedAt == nil && m2.(*Candidate).UpdatedAt != nil)) ||
+		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt == nil) || (m1.DeletedAt == nil && m2.(*Candidate).DeletedAt != nil)) {
 		return false
 	}
 
@@ -32,11 +41,12 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 		m1.WebsiteURL != m2.(*Candidate).WebsiteURL ||
 		m1.EducationLevel != m2.(*Candidate).EducationLevel ||
 		m1.Summary != m2.(*Candidate).Summary ||
-		*m1.Birthday != *m2.(*Candidate).Birthday ||
+		((m1.Birthday != nil && m2.(*Candidate).Birthday != nil) && (*m1.Birthday != *m2.(*Candidate).Birthday)) ||
 		m1.NoticePeriod != m2.(*Candidate).NoticePeriod ||
-		*m1.CreatedAt != *m2.(*Candidate).CreatedAt ||
-		*m1.UpdatedAt != *m2.(*Candidate).UpdatedAt ||
-		*m1.DeletedAt != *m2.(*Candidate).DeletedAt {
+		!helpers.Equal(m1.PreferredRoles, m2.(*Candidate).PreferredRoles) ||
+		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt != nil) && (*m1.CreatedAt != *m2.(*Candidate).CreatedAt)) ||
+		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt != nil) && (*m1.UpdatedAt != *m2.(*Candidate).UpdatedAt)) ||
+		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt != nil) && (*m1.DeletedAt != *m2.(*Candidate).DeletedAt)) {
 		return false
 	}
 	return true
@@ -130,6 +140,7 @@ func (m1 *AcademicHistory) IsEqual(m2 interface{}) bool {
 		m1.InstitutionID != m2.(*AcademicHistory).InstitutionID ||
 		m1.CourseID != m2.(*AcademicHistory).CourseID ||
 		m1.YearObtained != m2.(*AcademicHistory).YearObtained ||
+		m1.Grade != m2.(*AcademicHistory).Grade ||
 		*m1.CreatedAt != *m2.(*AcademicHistory).CreatedAt ||
 		*m1.UpdatedAt != *m2.(*AcademicHistory).UpdatedAt ||
 		*m1.DeletedAt != *m2.(*AcademicHistory).DeletedAt {

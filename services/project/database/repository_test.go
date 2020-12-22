@@ -63,6 +63,7 @@ func TestAllCRUD(t *testing.T) {
 	// run all tests in test suite
 	for _, test := range testRoutine {
 		tx, err := db.Begin()
+		defer tx.Close()
 		require.NoError(t, err)
 
 		test(t, r, db)

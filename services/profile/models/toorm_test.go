@@ -33,6 +33,7 @@ func TestCandidateToORM(t *testing.T) {
 		Summary:                "summary",
 		Birthday:               testPbTime,
 		NoticePeriod:           1,
+		PreferredRoles:         []string{"backend"},
 		Skills: []*pb.Skill{
 			{
 				Id:   1,
@@ -50,6 +51,7 @@ func TestCandidateToORM(t *testing.T) {
 				InstitutionId: 1,
 				CourseId:      1,
 				YearObtained:  2020,
+				Grade:         "first",
 				CreatedAt:     testPbTime,
 				UpdatedAt:     testPbTime,
 				DeletedAt:     testPbTime,
@@ -60,6 +62,7 @@ func TestCandidateToORM(t *testing.T) {
 				InstitutionId: 1,
 				CourseId:      2,
 				YearObtained:  2020,
+				Grade:         "first",
 				CreatedAt:     testPbTime,
 				UpdatedAt:     testPbTime,
 				DeletedAt:     testPbTime,
@@ -126,6 +129,7 @@ func TestCandidateToORM(t *testing.T) {
 		Summary:                "summary",
 		Birthday:               &testTime,
 		NoticePeriod:           1,
+		PreferredRoles:         []string{"backend"},
 		Skills: []*Skill{
 			{
 				ID:   1,

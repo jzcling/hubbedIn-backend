@@ -8,19 +8,26 @@ import (
 	pg "github.com/go-pg/pg/v10"
 	"github.com/pkg/errors"
 
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
+	"in-backend/services/profile/providers"
 )
 
 // Repository implements the profile Repository interface
 type repository struct {
-	DB *pg.DB
+	DB          *pg.DB
+	auth0       providers.Auth0Provider
+	hubbedlearn providers.HubbedLearnProvider
+	klenty      providers.KlentyProvider
 }
 
 // NewRepository declares a new Repository that implements profile Repository
-func NewRepository(db *pg.DB) profile.Repository {
+func NewRepository(db *pg.DB, a providers.Auth0Provider, hl providers.HubbedLearnProvider, k providers.KlentyProvider) interfaces.Repository {
 	return &repository{
-		DB: db,
+		DB:          db,
+		auth0:       a,
+		hubbedlearn: hl,
+		klenty:      k,
 	}
 }
 
@@ -37,12 +44,70 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
 		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
 		Returning("*").
-		Insert()
+		Where("c.email = ?", m.Email).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to insert candidate %v", m)
+		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
+		return nil, err
+	}
+
+	err = r.updateAuth0User(m)
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to update auth0 user %v", m.AuthID)
+		return nil, err
+	}
+
+	pw, err := r.createHubbedLearnUser(m)
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to create Hubbed Learn user %v", m.Email)
+		return nil, err
+	}
+
+	err = r.triggerCRMRegistrationWorkflow(m, *pw)
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to trigger CRM workflow %v", m.Email)
+		return nil, err
 	}
 
 	return m, nil
+}
+
+func (r *repository) updateAuth0User(m *models.Candidate) error {
+	token, err := r.auth0.GetToken()
+	if err != nil {
+		return err
+	}
+	t := token["access_token"].(string)
+	err = r.auth0.UpdateUser(t, m)
+	if err != nil {
+		return err
+	}
+	err = r.auth0.SetUserRole(t, m.AuthID, "Candidate")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *repository) createHubbedLearnUser(m *models.Candidate) (*string, error) {
+	pw, err := r.hubbedlearn.CreateUser(m)
+	if err != nil {
+		return nil, err
+	}
+	return pw, nil
+}
+
+func (r *repository) triggerCRMRegistrationWorkflow(m *models.Candidate, pw string) error {
+	err := r.klenty.CreateProspect(m, pw)
+	if err != nil {
+		return err
+	}
+	err = r.klenty.StartCadence(m.Email)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetAllCandidates returns all Candidates
@@ -147,7 +212,10 @@ func (r *repository) CreateSkill(ctx context.Context, m *models.Skill) (*models.
 		return nil, errors.New("Input parameter skill is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert skill %v", m)
 	}
@@ -185,7 +253,11 @@ func (r *repository) CreateUserSkill(ctx context.Context, us *models.UserSkill) 
 		return nil, errors.New("Input parameter user skill is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(us).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(us).Returning("*").
+		Where("candidate_id = ?", us.CandidateID).
+		Where("skill_id = ?", us.SkillID).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert user skill %v", us)
 	}
@@ -194,11 +266,14 @@ func (r *repository) CreateUserSkill(ctx context.Context, us *models.UserSkill) 
 }
 
 // DeleteUserSkill deletes a UserSkill by ID
-func (r *repository) DeleteUserSkill(ctx context.Context, id uint64) error {
-	us := &models.UserSkill{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(us).WherePK().Delete()
+func (r *repository) DeleteUserSkill(ctx context.Context, cid, sid uint64) error {
+	us := &models.UserSkill{}
+	_, err := r.DB.WithContext(ctx).Model(us).
+		Where("candidate_id = ?", cid).
+		Where("skill_id = ?", sid).
+		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete user skill with id %v", id))
+		return errors.Wrap(err, "Cannot delete user skill")
 	}
 	return nil
 }
@@ -211,7 +286,11 @@ func (r *repository) CreateInstitution(ctx context.Context, m *models.Institutio
 		return nil, errors.New("Input parameter institution is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		Where(filCountryEquals, m.Country).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert institution %v", m)
 	}
@@ -252,7 +331,11 @@ func (r *repository) CreateCourse(ctx context.Context, m *models.Course) (*model
 		return nil, errors.New("Input parameter course is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		Where(filLevelEquals, m.Level).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert course %v", m)
 	}
@@ -339,11 +422,14 @@ func (r *repository) UpdateAcademicHistory(ctx context.Context, m *models.Academ
 }
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
-func (r *repository) DeleteAcademicHistory(ctx context.Context, id uint64) error {
-	m := &models.AcademicHistory{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
+func (r *repository) DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error {
+	m := &models.AcademicHistory{}
+	_, err := r.DB.WithContext(ctx).Model(m).
+		Where("candidate_id = ?", cid).
+		Where("id = ?", ahid).
+		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete academic history with id %v", id))
+		return errors.Wrap(err, "Cannot delete academic history")
 	}
 	return nil
 }
@@ -356,7 +442,10 @@ func (r *repository) CreateCompany(ctx context.Context, m *models.Company) (*mod
 		return nil, errors.New("Input parameter company is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert company %v", m)
 	}
@@ -394,7 +483,10 @@ func (r *repository) CreateDepartment(ctx context.Context, m *models.Department)
 		return nil, errors.New("Input parameter department is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").Insert()
+	_, err := r.DB.WithContext(ctx).Model(m).Returning("*").
+		Where(filNameEquals, m.Name).
+		OnConflict("DO NOTHING").
+		SelectOrInsert()
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to insert department %v", m)
 	}
@@ -477,11 +569,14 @@ func (r *repository) UpdateJobHistory(ctx context.Context, m *models.JobHistory)
 }
 
 // DeleteJobHistory deletes a JobHistory by ID
-func (r *repository) DeleteJobHistory(ctx context.Context, id uint64) error {
-	m := &models.JobHistory{ID: id}
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
+func (r *repository) DeleteJobHistory(ctx context.Context, cid, jhid uint64) error {
+	m := &models.JobHistory{}
+	_, err := r.DB.WithContext(ctx).Model(m).
+		Where("candidate_id = ?", cid).
+		Where("id = ?", jhid).
+		Delete()
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Cannot delete job history with id %v", id))
+		return errors.Wrap(err, "Cannot delete job history")
 	}
 	return nil
 }

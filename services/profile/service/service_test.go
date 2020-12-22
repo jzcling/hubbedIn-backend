@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"in-backend/services/profile"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"in-backend/services/profile/tests/mocks"
 	"io"
@@ -18,10 +18,8 @@ import (
 )
 
 var (
-	r *mocks.Repository    = &mocks.Repository{}
-	w io.Writer            = log.NewSyncWriter(os.Stderr)
-	l log.Logger           = log.NewLogfmtLogger(w)
-	a *mocks.Auth0Provider = &mocks.Auth0Provider{}
+	r *mocks.Repository = &mocks.Repository{}
+	w io.Writer         = log.NewSyncWriter(os.Stderr)
 
 	ctx context.Context = context.Background()
 	now time.Time       = time.Now()
@@ -30,17 +28,15 @@ var (
 func TestNew(t *testing.T) {
 	expect := &service{
 		repository: r,
-		logger:     l,
-		auth0:      a,
 	}
 
-	got := New(r, l, a)
+	got := New(r)
 
 	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	s := New(r, l, a)
+	s := New(r)
 
 	testCreateCandidate(t, s)
 	testGetAllCandidates(t, s)
@@ -86,7 +82,7 @@ func TestAllCRUD(t *testing.T) {
 
 /* --------------- Candidate --------------- */
 
-func testCreateCandidate(t *testing.T, s profile.Service) {
+func testCreateCandidate(t *testing.T, s interfaces.Service) {
 	testNoFirstName := &models.Candidate{
 		LastName:      "last",
 		Email:         "first@last.com",
@@ -132,7 +128,7 @@ func testCreateCandidate(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAllCandidates(t *testing.T, s profile.Service) {
+func testGetAllCandidates(t *testing.T, s interfaces.Service) {
 	mockRes := []*models.Candidate{
 		{},
 		{},
@@ -172,7 +168,7 @@ func testGetAllCandidates(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetCandidateByID(t *testing.T, s profile.Service) {
+func testGetCandidateByID(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -211,7 +207,7 @@ func testGetCandidateByID(t *testing.T, s profile.Service) {
 	}
 }
 
-func testUpdateCandidate(t *testing.T, s profile.Service) {
+func testUpdateCandidate(t *testing.T, s interfaces.Service) {
 	updated := models.Candidate{
 		ID:        1,
 		FirstName: "new",
@@ -253,7 +249,7 @@ func testUpdateCandidate(t *testing.T, s profile.Service) {
 	}
 }
 
-func testDeleteCandidate(t *testing.T, s profile.Service) {
+func testDeleteCandidate(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -288,7 +284,7 @@ func testDeleteCandidate(t *testing.T, s profile.Service) {
 
 /* --------------- Skill --------------- */
 
-func testCreateSkill(t *testing.T, s profile.Service) {
+func testCreateSkill(t *testing.T, s interfaces.Service) {
 	testNoName := &models.Skill{
 		ID: 1,
 	}
@@ -331,7 +327,7 @@ func testCreateSkill(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAllSkills(t *testing.T, s profile.Service) {
+func testGetAllSkills(t *testing.T, s interfaces.Service) {
 	mockRes := []*models.Skill{
 		{},
 		{},
@@ -371,7 +367,7 @@ func testGetAllSkills(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetSkill(t *testing.T, s profile.Service) {
+func testGetSkill(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -412,7 +408,7 @@ func testGetSkill(t *testing.T, s profile.Service) {
 
 /* --------------- User Skill --------------- */
 
-func testCreateUserSkill(t *testing.T, s profile.Service) {
+func testCreateUserSkill(t *testing.T, s interfaces.Service) {
 	testNoCID := &models.UserSkill{
 		CandidateID: 1,
 	}
@@ -456,10 +452,11 @@ func testCreateUserSkill(t *testing.T, s profile.Service) {
 	}
 }
 
-func testDeleteUserSkill(t *testing.T, s profile.Service) {
+func testDeleteUserSkill(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
-		id  uint64
+		cid uint64
+		sid uint64
 	}
 
 	type expect struct {
@@ -471,15 +468,15 @@ func testDeleteUserSkill(t *testing.T, s profile.Service) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1}, expect{nil}},
-		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, 1}, expect{nil}},
+		{"error", args{ctx, 10000, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r.On("DeleteUserSkill", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+			r.On("DeleteUserSkill", tt.args.ctx, tt.args.cid, tt.args.sid).Return(tt.exp.err)
 
-			err := s.DeleteUserSkill(tt.args.ctx, tt.args.id)
+			err := s.DeleteUserSkill(tt.args.ctx, tt.args.cid, tt.args.sid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -491,7 +488,7 @@ func testDeleteUserSkill(t *testing.T, s profile.Service) {
 
 /* --------------- Institution --------------- */
 
-func testCreateInstitution(t *testing.T, s profile.Service) {
+func testCreateInstitution(t *testing.T, s interfaces.Service) {
 	testNoName := &models.Institution{
 		ID: 1,
 	}
@@ -535,7 +532,7 @@ func testCreateInstitution(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAllInstitutions(t *testing.T, s profile.Service) {
+func testGetAllInstitutions(t *testing.T, s interfaces.Service) {
 	mockRes := []*models.Institution{
 		{},
 		{},
@@ -575,7 +572,7 @@ func testGetAllInstitutions(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetInstitution(t *testing.T, s profile.Service) {
+func testGetInstitution(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -616,7 +613,7 @@ func testGetInstitution(t *testing.T, s profile.Service) {
 
 /* --------------- Course --------------- */
 
-func testCreateCourse(t *testing.T, s profile.Service) {
+func testCreateCourse(t *testing.T, s interfaces.Service) {
 	testNoName := &models.Course{
 		ID: 1,
 	}
@@ -660,7 +657,7 @@ func testCreateCourse(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAllCourses(t *testing.T, s profile.Service) {
+func testGetAllCourses(t *testing.T, s interfaces.Service) {
 	mockRes := []*models.Course{
 		{},
 		{},
@@ -700,7 +697,7 @@ func testGetAllCourses(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetCourse(t *testing.T, s profile.Service) {
+func testGetCourse(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -742,7 +739,7 @@ func testGetCourse(t *testing.T, s profile.Service) {
 
 /* --------------- AcademicHistory --------------- */
 
-func testCreateAcademicHistory(t *testing.T, s profile.Service) {
+func testCreateAcademicHistory(t *testing.T, s interfaces.Service) {
 	testNoCID := &models.AcademicHistory{
 		InstitutionID: 1,
 		CourseID:      1,
@@ -787,7 +784,7 @@ func testCreateAcademicHistory(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAcademicHistory(t *testing.T, s profile.Service) {
+func testGetAcademicHistory(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -826,7 +823,7 @@ func testGetAcademicHistory(t *testing.T, s profile.Service) {
 	}
 }
 
-func testUpdateAcademicHistory(t *testing.T, s profile.Service) {
+func testUpdateAcademicHistory(t *testing.T, s interfaces.Service) {
 	updated := models.AcademicHistory{
 		ID:           1,
 		YearObtained: 2020,
@@ -866,10 +863,11 @@ func testUpdateAcademicHistory(t *testing.T, s profile.Service) {
 	}
 }
 
-func testDeleteAcademicHistory(t *testing.T, s profile.Service) {
+func testDeleteAcademicHistory(t *testing.T, s interfaces.Service) {
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		ahid uint64
 	}
 
 	type expect struct {
@@ -881,15 +879,15 @@ func testDeleteAcademicHistory(t *testing.T, s profile.Service) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1}, expect{nil}},
-		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, 1}, expect{nil}},
+		{"error", args{ctx, 10000, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r.On("DeleteAcademicHistory", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+			r.On("DeleteAcademicHistory", tt.args.ctx, tt.args.cid, tt.args.ahid).Return(tt.exp.err)
 
-			err := s.DeleteAcademicHistory(tt.args.ctx, tt.args.id)
+			err := s.DeleteAcademicHistory(tt.args.ctx, tt.args.cid, tt.args.ahid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -901,7 +899,7 @@ func testDeleteAcademicHistory(t *testing.T, s profile.Service) {
 
 /* --------------- Company --------------- */
 
-func testCreateCompany(t *testing.T, s profile.Service) {
+func testCreateCompany(t *testing.T, s interfaces.Service) {
 	testNoName := &models.Company{
 		ID: 1,
 	}
@@ -944,7 +942,7 @@ func testCreateCompany(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAllCompanies(t *testing.T, s profile.Service) {
+func testGetAllCompanies(t *testing.T, s interfaces.Service) {
 	mockRes := []*models.Company{
 		{},
 		{},
@@ -984,7 +982,7 @@ func testGetAllCompanies(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetCompany(t *testing.T, s profile.Service) {
+func testGetCompany(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -1025,7 +1023,7 @@ func testGetCompany(t *testing.T, s profile.Service) {
 
 /* --------------- Department --------------- */
 
-func testCreateDepartment(t *testing.T, s profile.Service) {
+func testCreateDepartment(t *testing.T, s interfaces.Service) {
 	testNoName := &models.Department{
 		ID: 1,
 	}
@@ -1068,7 +1066,7 @@ func testCreateDepartment(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetAllDepartments(t *testing.T, s profile.Service) {
+func testGetAllDepartments(t *testing.T, s interfaces.Service) {
 	mockRes := []*models.Department{
 		{},
 		{},
@@ -1108,7 +1106,7 @@ func testGetAllDepartments(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetDepartment(t *testing.T, s profile.Service) {
+func testGetDepartment(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -1149,7 +1147,7 @@ func testGetDepartment(t *testing.T, s profile.Service) {
 
 /* --------------- JobHistory --------------- */
 
-func testCreateJobHistory(t *testing.T, s profile.Service) {
+func testCreateJobHistory(t *testing.T, s interfaces.Service) {
 	start := time.Date(2020, 11, 10, 13, 0, 0, 0, time.Local)
 
 	testNoCID := &models.JobHistory{
@@ -1199,7 +1197,7 @@ func testCreateJobHistory(t *testing.T, s profile.Service) {
 	}
 }
 
-func testGetJobHistory(t *testing.T, s profile.Service) {
+func testGetJobHistory(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -1238,7 +1236,7 @@ func testGetJobHistory(t *testing.T, s profile.Service) {
 	}
 }
 
-func testUpdateJobHistory(t *testing.T, s profile.Service) {
+func testUpdateJobHistory(t *testing.T, s interfaces.Service) {
 	updated := models.JobHistory{
 		ID:      1,
 		Country: "indonesia",
@@ -1278,10 +1276,11 @@ func testUpdateJobHistory(t *testing.T, s profile.Service) {
 	}
 }
 
-func testDeleteJobHistory(t *testing.T, s profile.Service) {
+func testDeleteJobHistory(t *testing.T, s interfaces.Service) {
 	type args struct {
-		ctx context.Context
-		id  uint64
+		ctx  context.Context
+		cid  uint64
+		jhid uint64
 	}
 
 	type expect struct {
@@ -1293,15 +1292,15 @@ func testDeleteJobHistory(t *testing.T, s profile.Service) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, 1}, expect{nil}},
-		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
+		{"id existing", args{ctx, 1, 1}, expect{nil}},
+		{"error", args{ctx, 10000, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r.On("DeleteJobHistory", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+			r.On("DeleteJobHistory", tt.args.ctx, tt.args.cid, tt.args.jhid).Return(tt.exp.err)
 
-			err := s.DeleteJobHistory(tt.args.ctx, tt.args.id)
+			err := s.DeleteJobHistory(tt.args.ctx, tt.args.cid, tt.args.jhid)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

@@ -7,8 +7,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./gateway/ ./gateway/
+COPY ./helpers/ ./helpers/
 COPY ./services/profile/pb ./services/profile/pb
 COPY ./services/project/pb ./services/project/pb
+COPY ./services/assessment/pb ./services/assessment/pb
 RUN cd gateway/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \

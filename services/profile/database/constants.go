@@ -21,5 +21,9 @@ const (
 
 	filNameIn    string = "lower(name) in (?)"
 	filLevelIn   string = "lower(level) in (?)"
-	filCountryIn string = "lower(ountry) in (?)"
+	filCountryIn string = "lower(country) in (?)"
+
+	filNameEquals    string = "lower(name) = ?"
+	filLevelEquals   string = "lower(level) = ?"
+	filCountryEquals string = "lower(country) = ?"
 )

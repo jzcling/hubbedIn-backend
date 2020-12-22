@@ -7,6 +7,7 @@ import (
 	"in-backend/services/project/endpoints"
 	"in-backend/services/project/pb"
 	"in-backend/services/project/service"
+	"in-backend/services/project/service/middlewares"
 	"in-backend/services/project/transport"
 	"net"
 	"net/http"
@@ -57,7 +58,9 @@ func main() {
 
 	repo := database.NewRepository(db)
 	client := &http.Client{}
-	svc := service.New(repo, logger, client)
+	svc := service.New(repo, client, logger)
+	svc = middlewares.NewAuthMiddleware(svc, repo)
+	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)
 
 	// set-up grpc transport

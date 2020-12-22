@@ -1,5 +1,7 @@
 package pb
 
+import "in-backend/helpers"
+
 // IsEqual checks the equivalence of two Candidate objects
 func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 	if c1 == nil && c2 == nil {
@@ -11,7 +13,8 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		return false
 	}
 
-	if c1.FirstName != c2.FirstName ||
+	if c1.AuthId != c2.AuthId ||
+		c1.FirstName != c2.FirstName ||
 		c1.LastName != c2.LastName ||
 		c1.Email != c2.Email ||
 		c1.ContactNumber != c2.ContactNumber ||
@@ -28,6 +31,7 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.Summary != c2.Summary ||
 		c1.Birthday.AsTime() != c2.Birthday.AsTime() ||
 		c1.NoticePeriod != c2.NoticePeriod ||
+		!helpers.Equal(c1.PreferredRoles, c2.PreferredRoles) ||
 		c1.CreatedAt.AsTime() != c2.CreatedAt.AsTime() ||
 		c1.UpdatedAt.AsTime() != c2.UpdatedAt.AsTime() ||
 		c1.DeletedAt.AsTime() != c2.DeletedAt.AsTime() {
@@ -124,6 +128,7 @@ func (a1 *AcademicHistory) IsEqual(a2 *AcademicHistory) bool {
 		a1.InstitutionId != a2.InstitutionId ||
 		a1.CourseId != a2.CourseId ||
 		a1.YearObtained != a2.YearObtained ||
+		a1.Grade != a2.Grade ||
 		a1.CreatedAt.AsTime() != a2.CreatedAt.AsTime() ||
 		a1.UpdatedAt.AsTime() != a2.UpdatedAt.AsTime() ||
 		a1.DeletedAt.AsTime() != a2.DeletedAt.AsTime() {

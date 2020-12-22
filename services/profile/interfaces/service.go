@@ -1,12 +1,12 @@
-package profile
+package interfaces
 
 import (
 	"context"
 	"in-backend/services/profile/models"
 )
 
-// Repository declares the repository for candidate profiles
-type Repository interface {
+// Service describes the Profile Service
+type Service interface {
 	/* --------------- Candidate --------------- */
 
 	// CreateCandidate creates a new candidate
@@ -41,7 +41,7 @@ type Repository interface {
 	CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error)
 
 	// DeleteUserSkill deletes a UserSkill by ID
-	DeleteUserSkill(ctx context.Context, id uint64) error
+	DeleteUserSkill(ctx context.Context, cid, sid uint64) error
 
 	/* --------------- Institution --------------- */
 
@@ -77,7 +77,7 @@ type Repository interface {
 	UpdateAcademicHistory(ctx context.Context, a *models.AcademicHistory) (*models.AcademicHistory, error)
 
 	// DeleteAcademicHistory deletes a AcademicHistory by ID
-	DeleteAcademicHistory(ctx context.Context, id uint64) error
+	DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error
 
 	/* --------------- Company --------------- */
 
@@ -113,5 +113,5 @@ type Repository interface {
 	UpdateJobHistory(ctx context.Context, j *models.JobHistory) (*models.JobHistory, error)
 
 	// DeleteJobHistory deletes a JobHistory by ID
-	DeleteJobHistory(ctx context.Context, id uint64) error
+	DeleteJobHistory(ctx context.Context, cid, jhid uint64) error
 }
