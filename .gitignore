@@ -19,3 +19,4 @@ vendor/
 
 # vscode launch file
 launch.json
+deployments/db-secret.yaml
