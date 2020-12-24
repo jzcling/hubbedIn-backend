@@ -31,7 +31,7 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 		c1.Summary != c2.Summary ||
 		c1.Birthday.AsTime() != c2.Birthday.AsTime() ||
 		c1.NoticePeriod != c2.NoticePeriod ||
-		!helpers.Equal(c1.PreferredRoles, c2.PreferredRoles) ||
+		!helpers.IsStringSliceEqual(c1.PreferredRoles, c2.PreferredRoles) ||
 		c1.CreatedAt.AsTime() != c2.CreatedAt.AsTime() ||
 		c1.UpdatedAt.AsTime() != c2.UpdatedAt.AsTime() ||
 		c1.DeletedAt.AsTime() != c2.DeletedAt.AsTime() {

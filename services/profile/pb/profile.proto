@@ -237,7 +237,8 @@ message GetSkillRequest {
 }
 
 message GetAllSkillsRequest {
-    repeated string name = 1;
+    repeated uint64 id = 1;
+    repeated string name = 2;
 }
 
 message GetAllSkillsResponse {

@@ -7,9 +7,9 @@ import (
 	"in-backend/services/joblisting/endpoints"
 	"in-backend/services/joblisting/pb"
 	"in-backend/services/joblisting/service"
+	"in-backend/services/joblisting/service/middlewares"
 	"in-backend/services/joblisting/transport"
 	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,9 +18,27 @@ import (
 	"github.com/go-kit/kit/log/level"
 	kitoc "github.com/go-kit/kit/tracing/opencensus"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
+	"github.com/gomodule/redigo/redis"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+)
+
+// Make a redis pool
+var redisPool = &redis.Pool{
+	MaxActive: 5,
+	MaxIdle:   5,
+	Wait:      true,
+	Dial: func() (redis.Conn, error) {
+		return redis.Dial("tcp", "redis:6379")
+	},
+}
+
+type Context struct {
+}
+
+const (
+	appName string = "hubbedin"
 )
 
 func main() {
@@ -56,8 +74,9 @@ func main() {
 	// and finally, a series of concrete transport adapters
 
 	repo := database.NewRepository(db)
-	client := &http.Client{}
-	svc := service.New(repo, logger, client)
+	svc := service.New(repo)
+	svc = middlewares.NewAuthMiddleware(svc, repo)
+	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)
 
 	// set-up grpc transport

@@ -11,6 +11,7 @@ COPY ./helpers/ ./helpers/
 COPY ./services/profile/pb ./services/profile/pb
 COPY ./services/project/pb ./services/project/pb
 COPY ./services/assessment/pb ./services/assessment/pb
+COPY ./services/joblisting/pb ./services/joblisting/pb
 RUN cd gateway/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \

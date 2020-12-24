@@ -22,6 +22,7 @@ const (
 	filNameIn    string = "lower(name) in (?)"
 	filLevelIn   string = "lower(level) in (?)"
 	filCountryIn string = "lower(country) in (?)"
+	filIDIn      string = "id in (?)"
 
 	filNameEquals    string = "lower(name) = ?"
 	filLevelEquals   string = "lower(level) = ?"

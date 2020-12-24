@@ -63,7 +63,7 @@ func (m1 *Question) IsEqual(m2 interface{}) bool {
 		m1.Text != convertedM2.Text ||
 		m1.MediaURL != convertedM2.MediaURL ||
 		m1.Code != convertedM2.Code ||
-		testSliceEqual(m1.Options, convertedM2.Options) ||
+		helpers.IsStringSliceEqual(m1.Options, convertedM2.Options) ||
 		m1.Answer != convertedM2.Answer ||
 		m1.Type != convertedM2.Type {
 		return false
@@ -140,24 +140,5 @@ func (m1 *AssessmentQuestion) IsEqual(m2 interface{}) bool {
 		m1.QuestionID != convertedM2.QuestionID {
 		return false
 	}
-	return true
-}
-
-func testSliceEqual(a, b []string) bool {
-	// if one is nil, the other must also be nil
-	if (a == nil) != (b == nil) {
-		return false
-	}
-
-	if len(a) != len(b) {
-		return false
-	}
-
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-
 	return true
 }

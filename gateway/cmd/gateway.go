@@ -17,6 +17,7 @@ var (
 	profileEndpoint    = flag.String("profile-endpoint", "profile-service:50051", "profile server endpoint")
 	projectEndpoint    = flag.String("project-endpoint", "project-service:50052", "project server endpoint")
 	assessmentEndpoint = flag.String("assessment-endpoint", "assessment-service:50053", "assessment server endpoint")
+	joblistingEndpoint = flag.String("joblisting-endpoint", "joblisting-service:50054", "joblisting server endpoint")
 )
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 
 	// Register gRPC server endpoint
 	// Note: Make sure the gRPC server is running properly and accessible
-	mux, err := gateway.New(ctx, *profileEndpoint, *projectEndpoint, *assessmentEndpoint)
+	mux, err := gateway.New(ctx, *profileEndpoint, *projectEndpoint, *assessmentEndpoint, *joblistingEndpoint)
 	if err != nil {
 		glog.Fatal(err)
 	}

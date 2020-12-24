@@ -1,62 +1,56 @@
-package database
+package service
 
 import (
 	"context"
-	"in-backend/services/joblisting/configs"
+	"errors"
 	"in-backend/services/joblisting/interfaces"
 	"in-backend/services/joblisting/models"
+	"in-backend/services/joblisting/tests/mocks"
 	testmodels "in-backend/services/joblisting/tests/models"
+	"io"
+	"os"
 	"strings"
 	"testing"
 	"time"
 
-	pg "github.com/go-pg/pg/v10"
-	"github.com/pkg/errors"
+	"github.com/go-kit/kit/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 var (
+	r *mocks.Repository = &mocks.Repository{}
+	w io.Writer         = log.NewSyncWriter(os.Stderr)
+
 	ctx context.Context = context.Background()
 	now time.Time       = time.Now()
 )
 
-func TestNewRepository(t *testing.T) {
-	want := &repository{
-		DB: &pg.DB{},
+func TestNew(t *testing.T) {
+	expect := &service{
+		repository: r,
 	}
 
-	got := NewRepository(&pg.DB{})
+	got := New(r)
 
-	require.EqualValues(t, want, got)
+	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	testConfig, err := configs.LoadConfig(configs.TestFileName)
-	require.NoError(t, err)
+	s := New(r)
 
-	opt := GetPgConnectionOptions(testConfig)
+	testCreateJobPost(t, s)
+	testGetAllJobPosts(t, s)
+	testGetJobPostByID(t, s)
+	testUpdateJobPost(t, s)
+	testDeleteJobPost(t, s)
 
-	c, err := setupPGContainer(opt)
-	require.NoError(t, err)
-
-	db, err := setupDB(c, opt, "../scripts/migrations/")
-	defer cleanDb(db)
-	defer cleanContainer(c)
-	require.NoError(t, err)
-
-	r := NewRepository(db)
-
-	testCreateJobPost(t, r, db)
-	testGetAllJobPosts(t, r, db)
-	testGetJobPostByID(t, r, db)
-	testUpdateJobPost(t, r, db)
-	testDeleteJobPost(t, r, db)
+	r.AssertExpectations(t)
 }
 
 /* --------------- Job Post --------------- */
 
-func testCreateJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
+func testCreateJobPost(t *testing.T, s interfaces.Service) {
 	testNotNull := &testmodels.JobPostNoTitle
 
 	test := *testNotNull
@@ -77,17 +71,18 @@ func testCreateJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil}, expect{nil, errors.New("Input parameter job post is nil")}},
-		{"failed not null", args{ctx, testNotNull}, expect{nil, errors.New("Failed to insert job post")}},
+		{"failed not null", args{ctx, testNotNull}, expect{nil, errors.New("Failed to insert joblisting")}},
 		{"valid", args{ctx, &test}, expect{&test, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.CreateJobPost(tt.args.ctx, tt.args.input)
+			r.On("CreateJobPost", tt.args.ctx, tt.args.input).Return(tt.exp.output, tt.exp.err)
+
+			got, err := s.CreateJobPost(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
-				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+				assert.NotNil(t, err)
 			} else {
 				assert.Equal(t, tt.exp.err, err)
 			}
@@ -95,9 +90,11 @@ func testCreateJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 }
 
-func testGetAllJobPosts(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	count, err := db.WithContext(ctx).Model((*models.JobPost)(nil)).Count()
-	require.NoError(t, err)
+func testGetAllJobPosts(t *testing.T, s interfaces.Service) {
+	mockRes := []*models.JobPost{
+		{},
+		{},
+	}
 
 	type args struct {
 		ctx context.Context
@@ -105,8 +102,8 @@ func testGetAllJobPosts(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 
 	type expect struct {
-		cnt int
-		err error
+		output []*models.JobPost
+		err    error
 	}
 
 	var tests = []struct {
@@ -114,13 +111,16 @@ func testGetAllJobPosts(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"no filter", args{ctx, &models.JobPostFilters{}}, expect{count, nil}},
+		{"nil", args{nil, nil}, expect{nil, errors.New("Context cannot be nil")}},
+		{"no filter", args{ctx, nil}, expect{mockRes, nil}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetAllJobPosts(tt.args.ctx, *tt.args.f)
-			assert.Equal(t, tt.exp.cnt, len(got))
+			r.On("GetAllJobPosts", tt.args.ctx).Return(tt.exp.output, tt.exp.err)
+
+			got, err := s.GetAllJobPosts(tt.args.ctx, *tt.args.f)
+			assert.Equal(t, len(tt.exp.output), len(got))
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {
@@ -130,11 +130,7 @@ func testGetAllJobPosts(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 }
 
-func testGetJobPostByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	existing := &models.JobPost{}
-	err := db.WithContext(ctx).Model(existing).First()
-	require.NoError(t, err)
-
+func testGetJobPostByID(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -150,13 +146,15 @@ func testGetJobPostByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id exists", args{ctx, existing.ID}, expect{&models.JobPost{ID: existing.ID}, nil}},
-		{"id 10000", args{ctx, 10000}, expect{nil, nil}},
+		{"id 1", args{ctx, 1}, expect{&models.JobPost{ID: 1}, nil}},
+		{"error", args{ctx, 10000}, expect{nil, errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.GetJobPostByID(tt.args.ctx, tt.args.id)
+			r.On("GetJobPostByID", tt.args.ctx, tt.args.id).Return(tt.exp.output, tt.exp.err)
+
+			got, err := s.GetJobPostByID(tt.args.ctx, tt.args.id)
 			if tt.exp.output != nil && got != nil {
 				assert.Equal(t, tt.exp.output.ID, got.ID)
 			} else {
@@ -171,13 +169,9 @@ func testGetJobPostByID(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 }
 
-func testUpdateJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	existing := &models.JobPost{}
-	err := db.WithContext(ctx).Model(existing).First()
-	require.NoError(t, err)
-
-	updated := *existing
-	updated.Description = "new"
+func testUpdateJobPost(t *testing.T, s interfaces.Service) {
+	updated := testmodels.JobPostNoTitle
+	updated.Title = "software engineer"
 
 	type args struct {
 		ctx   context.Context
@@ -201,7 +195,9 @@ func testUpdateJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.UpdateJobPost(tt.args.ctx, tt.args.input)
+			r.On("UpdateJobPost", tt.args.ctx, tt.args.input).Return(tt.exp.output, tt.exp.err)
+
+			got, err := s.UpdateJobPost(tt.args.ctx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -212,11 +208,7 @@ func testUpdateJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	}
 }
 
-func testDeleteJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	existing := &models.JobPost{}
-	err := db.WithContext(ctx).Model(existing).First()
-	require.NoError(t, err)
-
+func testDeleteJobPost(t *testing.T, s interfaces.Service) {
 	type args struct {
 		ctx context.Context
 		id  uint64
@@ -231,12 +223,15 @@ func testDeleteJobPost(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"id existing", args{ctx, existing.ID}, expect{nil}},
+		{"id existing", args{ctx, 1}, expect{nil}},
+		{"error", args{ctx, 10000}, expect{errors.New("mock error")}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := r.DeleteJobPost(tt.args.ctx, tt.args.id)
+			r.On("DeleteJobPost", tt.args.ctx, tt.args.id).Return(tt.exp.err)
+
+			err := s.DeleteJobPost(tt.args.ctx, tt.args.id)
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
 			} else {

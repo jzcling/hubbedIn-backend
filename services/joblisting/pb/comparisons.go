@@ -1,64 +1,122 @@
 package pb
 
-// IsEqual checks the equivalence of two Joblisting objects
-func (m1 *Joblisting) IsEqual(m2 *Joblisting) bool {
-	if m1 == nil && m2 == nil {
-		return true
+import "in-backend/helpers"
+
+// IsEqual checks the equivalence of two JobPost objects
+func (m1 *JobPost) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*JobPost)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2 != nil) ||
-		(m1 != nil && m2 == nil) {
+	if (m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) ||
+		(m1.UpdatedAt == nil) != (convertedM2.UpdatedAt == nil) ||
+		(m1.StartAt == nil) != (convertedM2.StartAt == nil) ||
+		(m1.ExpireAt == nil) != (convertedM2.ExpireAt == nil) {
 		return false
 	}
 
-	if m1.Name != m2.Name ||
-		m1.RepoUrl != m2.RepoUrl ||
-		m1.CreatedAt.AsTime() != m2.CreatedAt.AsTime() ||
-		m1.UpdatedAt.AsTime() != m2.UpdatedAt.AsTime() ||
-		m1.DeletedAt.AsTime() != m2.DeletedAt.AsTime() {
+	if m1.CompanyId != convertedM2.CompanyId ||
+		m1.HrContactId != convertedM2.HrContactId ||
+		m1.HiringManagerId != convertedM2.HiringManagerId ||
+		m1.JobPlatformId != convertedM2.JobPlatformId ||
+		m1.Title != convertedM2.Title ||
+		m1.Description != convertedM2.Description ||
+		m1.SeniorityLevel != convertedM2.SeniorityLevel ||
+		m1.YearsExperience != convertedM2.YearsExperience ||
+		m1.EmploymentType != convertedM2.EmploymentType ||
+		m1.FunctionId != convertedM2.FunctionId ||
+		m1.IndustryId != convertedM2.IndustryId ||
+		m1.Location != convertedM2.Location ||
+		m1.Remote != convertedM2.Remote ||
+		m1.SalaryCurrency != convertedM2.SalaryCurrency ||
+		m1.MinSalary != convertedM2.MinSalary ||
+		m1.MaxSalary != convertedM2.MaxSalary ||
+		m1.CreatedAt.AsTime() != convertedM2.CreatedAt.AsTime() ||
+		m1.UpdatedAt.AsTime() != convertedM2.UpdatedAt.AsTime() ||
+		m1.StartAt.AsTime() != convertedM2.StartAt.AsTime() ||
+		m1.ExpireAt.AsTime() != convertedM2.ExpireAt.AsTime() ||
+		helpers.IsUint64SliceEqual(m1.SkillId, convertedM2.SkillId) {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two CandidateJoblisting objects
-func (m1 *CandidateJoblisting) IsEqual(m2 *CandidateJoblisting) bool {
-	if m1 == nil && m2 == nil {
-		return true
+// IsEqual checks the equivalence of two Company objects
+func (m1 *Company) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*Company)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2 != nil) ||
-		(m1 != nil && m2 == nil) {
-		return false
-	}
-
-	if m1.CandidateId != m2.CandidateId ||
-		m1.JoblistingId != m2.JoblistingId {
+	if m1.Name != convertedM2.Name ||
+		m1.LogoUrl != convertedM2.LogoUrl ||
+		m1.Size != convertedM2.Size {
 		return false
 	}
 	return true
 }
 
-// IsEqual checks the equivalence of two Rating objects
-func (m1 *Rating) IsEqual(m2 *Rating) bool {
-	if m1 == nil && m2 == nil {
-		return true
+// IsEqual checks the equivalence of two Industry objects
+func (m1 *Industry) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*Industry)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2 != nil) ||
-		(m1 != nil && m2 == nil) {
+	if m1.Name != convertedM2.Name {
 		return false
 	}
+	return true
+}
 
-	if m1.JoblistingId != m2.JoblistingId ||
-		m1.ReliabilityRating != m2.ReliabilityRating ||
-		m1.MaintainabilityRating != m2.MaintainabilityRating ||
-		m1.SecurityRating != m2.SecurityRating ||
-		m1.SecurityReviewRating != m2.SecurityReviewRating ||
-		m1.Coverage != m2.Coverage ||
-		m1.Duplications != m2.Duplications ||
-		m1.Lines != m2.Lines ||
-		m1.CreatedAt != m2.CreatedAt {
+// IsEqual checks the equivalence of two KeyPerson objects
+func (m1 *KeyPerson) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*KeyPerson)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.CompanyId != convertedM2.CompanyId ||
+		m1.Name != convertedM2.Name ||
+		m1.ContactNumber != convertedM2.ContactNumber ||
+		m1.Email != convertedM2.Email ||
+		m1.JobTitle != convertedM2.JobTitle ||
+		m1.UpdatedAt != convertedM2.UpdatedAt {
+		return false
+	}
+	return true
+}
+
+// IsEqual checks the equivalence of two JobPlatform objects
+func (m1 *JobPlatform) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*JobPlatform)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.Name != convertedM2.Name ||
+		m1.BaseUrl != convertedM2.BaseUrl {
+		return false
+	}
+	return true
+}
+
+// IsEqual checks the equivalence of two CompanyIndustry objects
+func (m1 *CompanyIndustry) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*CompanyIndustry)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.CompanyId != convertedM2.CompanyId ||
+		m1.IndustryId != convertedM2.IndustryId {
 		return false
 	}
 	return true

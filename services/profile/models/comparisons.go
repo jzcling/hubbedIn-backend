@@ -43,7 +43,7 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 		m1.Summary != m2.(*Candidate).Summary ||
 		((m1.Birthday != nil && m2.(*Candidate).Birthday != nil) && (*m1.Birthday != *m2.(*Candidate).Birthday)) ||
 		m1.NoticePeriod != m2.(*Candidate).NoticePeriod ||
-		!helpers.Equal(m1.PreferredRoles, m2.(*Candidate).PreferredRoles) ||
+		!helpers.IsStringSliceEqual(m1.PreferredRoles, m2.(*Candidate).PreferredRoles) ||
 		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt != nil) && (*m1.CreatedAt != *m2.(*Candidate).CreatedAt)) ||
 		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt != nil) && (*m1.UpdatedAt != *m2.(*Candidate).UpdatedAt)) ||
 		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt != nil) && (*m1.DeletedAt != *m2.(*Candidate).DeletedAt)) {

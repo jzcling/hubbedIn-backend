@@ -58,7 +58,7 @@ func (m1 *Question) IsEqual(m2 interface{}) bool {
 		m1.Text != convertedM2.Text ||
 		m1.MediaUrl != convertedM2.MediaUrl ||
 		m1.Code != convertedM2.Code ||
-		!helpers.Equal(m1.Options, convertedM2.Options) ||
+		!helpers.IsStringSliceEqual(m1.Options, convertedM2.Options) ||
 		m1.Answer != convertedM2.Answer ||
 		m1.Type != convertedM2.Type {
 		return false

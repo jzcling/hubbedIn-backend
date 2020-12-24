@@ -256,6 +256,7 @@ func makeGetAllSkillsEndpoint(s interfaces.Service) endpoint.Endpoint {
 
 // GetAllSkillsRequest declares the inputs required for getting all skills
 type GetAllSkillsRequest struct {
+	ID   []uint64
 	Name []string
 }
 

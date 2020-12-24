@@ -9,7 +9,6 @@ RUN go mod download
 
 COPY ./helpers/ ./helpers/
 COPY ./services/joblisting/ ./services/joblisting/
-COPY ./services/profile/pb ./services/profile/pb
 RUN cd services/joblisting/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \
@@ -26,7 +25,7 @@ FROM alpine as release
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /build/dist/ .
-COPY --from=builder /go/src/in-backend/services/joblisting/configs/config.env .
+COPY --from=builder /go/src/in-backend/services/joblisting/configs/prod.env config.env
 COPY --from=builder /go/src/in-backend/services/joblisting/scripts/migrations/*.sql ./
 RUN chmod +x ./main
 EXPOSE 50051
