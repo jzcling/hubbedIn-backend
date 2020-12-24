@@ -238,6 +238,9 @@ func (r *repository) GetSkill(ctx context.Context, id uint64) (*models.Skill, er
 func (r *repository) GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*models.Skill, error) {
 	var m []*models.Skill
 	q := r.DB.WithContext(ctx).Model(&m)
+	if len(f.ID) > 0 {
+		q = q.Where(filIDIn, pg.In(f.ID))
+	}
 	if len(f.Name) > 0 {
 		q = q.Where(filNameIn, pg.In(f.Name))
 	}

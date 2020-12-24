@@ -1,0 +1,392 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "services/joblisting/pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// ------------ Joblisting Service ------------
+
+service JoblistingService {
+    rpc CreateJobPost(CreateJobPostRequest) returns (JobPost) {
+        option (google.api.http) = { 
+            post: "/v1/joblistings" 
+            body: "job_post"
+        };
+    };
+    rpc BulkCreateJobPost(BulkCreateJobPostRequest) returns (BulkCreateJobPostResponse) {
+        option (google.api.http) = { 
+            post: "/v1/bulk/joblistings" 
+            body: "*"
+        };
+    };
+    rpc GetAllJobPosts(GetAllJobPostsRequest) returns (GetAllJobPostsResponse) {
+        option (google.api.http) = { get: "/v1/joblistings" };
+    };
+    rpc GetJobPostByID(GetJobPostByIDRequest) returns (JobPost) {
+        option (google.api.http) = { get: "/v1/joblistings/{id}" };
+    };
+    rpc UpdateJobPost(UpdateJobPostRequest) returns (JobPost) {
+        option (google.api.http) = { 
+            put: "/v1/joblistings/{id}"
+            body: "job_post"
+        };
+    };
+    rpc DeleteJobPost(DeleteJobPostRequest) returns (DeleteJobPostResponse) {
+        option (google.api.http) = { delete: "/v1/joblistings/{id}" };
+    };
+
+    rpc CreateCompany(CreateCompanyRequest) returns (Company) {
+        option (google.api.http) = { 
+            post: "/v1/jobs/companies" 
+            body: "company"
+        };
+    };
+    rpc GetAllCompanies(GetAllJobCompaniesRequest) returns (GetAllJobCompaniesResponse) {
+        option (google.api.http) = { get: "/v1/jobs/companies" };
+    };
+    rpc UpdateCompany(UpdateCompanyRequest) returns (Company) {
+        option (google.api.http) = {
+            put: "/v1/jobs/companies/{id}"
+            body: "company"
+        };
+    };
+    rpc DeleteCompany(DeleteCompanyRequest) returns (DeleteCompanyResponse) {
+        option (google.api.http) = { delete: "/v1/jobs/companies/{id}" };
+    };
+
+    rpc CreateIndustry(CreateIndustryRequest) returns (Industry) {
+        option (google.api.http) = { 
+            post: "/v1/industries" 
+            body: "industry"
+        };
+    };
+    rpc GetAllIndustries(GetAllIndustriesRequest) returns (GetAllIndustriesResponse) {
+        option (google.api.http) = { get: "/v1/industries" };
+    };
+    rpc DeleteIndustry(DeleteIndustryRequest) returns (DeleteIndustryResponse) {
+        option (google.api.http) = { delete: "/v1/industries/{id}" };
+    };
+
+    rpc CreateJobFunction(CreateJobFunctionRequest) returns (JobFunction) {
+        option (google.api.http) = { 
+            post: "/v1/jobfunctions" 
+            body: "job_function"
+        };
+    };
+    rpc GetAllJobFunctions(GetAllJobFunctionsRequest) returns (GetAllJobFunctionsResponse) {
+        option (google.api.http) = { get: "/v1/jobfunctions" };
+    };
+    rpc DeleteJobFunction(DeleteJobFunctionRequest) returns (DeleteJobFunctionResponse) {
+        option (google.api.http) = { delete: "/v1/jobfunctions/{id}" };
+    };
+
+    rpc CreateKeyPerson(CreateKeyPersonRequest) returns (KeyPerson) {
+        option (google.api.http) = { 
+            post: "/v1/keypersons" 
+            body: "key_person"
+        };
+    };
+    rpc BulkCreateKeyPerson(BulkCreateKeyPersonRequest) returns (BulkCreateKeyPersonResponse) {
+        option (google.api.http) = { 
+            post: "/v1/bulk/keypersons" 
+            body: "*"
+        };
+    };
+    rpc GetAllKeyPersons(GetAllKeyPersonsRequest) returns (GetAllKeyPersonsResponse) {
+        option (google.api.http) = { get: "/v1/keypersons" };
+    };
+    rpc GetKeyPersonByID(GetKeyPersonByIDRequest) returns (KeyPerson) {
+        option (google.api.http) = { get: "/v1/keypersons/{id}" };
+    };
+    rpc UpdateKeyPerson(UpdateKeyPersonRequest) returns (KeyPerson) {
+        option (google.api.http) = { 
+            put: "/v1/keypersons" 
+            body: "key_person"
+        };
+    };
+    rpc DeleteKeyPerson(DeleteKeyPersonRequest) returns (DeleteKeyPersonResponse) {
+        option (google.api.http) = { delete: "/v1/keypersons/{id}" };
+    };
+
+    rpc CreateJobPlatform(CreateJobPlatformRequest) returns (JobPlatform) {
+        option (google.api.http) = { 
+            post: "/v1/jobplatforms" 
+            body: "job_platform"
+        };
+    };
+    rpc GetAllJobPlatforms(GetAllJobPlatformsRequest) returns (GetAllJobPlatformsResponse) {
+        option (google.api.http) = { get: "/v1/jobplatforms" };
+    };
+    rpc DeleteJobPlatform(DeleteJobPlatformRequest) returns (DeleteJobPlatformResponse) {
+        option (google.api.http) = { delete: "/v1/jobplatforms/{id}" };
+    };
+} 
+
+message JobPost {
+    uint64 id = 1;
+	uint64 company_id = 2;
+	uint64 hr_contact_id = 3;
+	uint64 hiring_manager_id = 4;
+	uint64 job_platform_id = 5;
+	string title = 6;
+	string description = 7;
+	string seniority_level = 8;
+	uint64 years_experience = 9;
+	string employment_type = 10;
+	uint64 function_id = 11;
+	uint64 industry_id = 12;
+	string location = 13;
+    bool remote = 14;
+    string salary_currency = 15;
+	uint64 min_salary = 16;
+	uint64 max_salary = 17;
+	google.protobuf.Timestamp created_at = 18;
+	google.protobuf.Timestamp updated_at = 19;
+	google.protobuf.Timestamp start_at = 20;
+	google.protobuf.Timestamp expire_at = 21;
+	repeated uint64 skill_id = 22;
+    Company company = 23;
+    JobFunction function = 24;
+    Industry industry = 25;
+    JobPlatform job_platform = 26;
+	KeyPerson hr_contact = 27;
+    KeyPerson hiring_manager = 28;
+    repeated Skill skills = 29;
+}
+
+message CreateJobPostRequest {
+    JobPost job_post = 1;
+}
+
+message BulkCreateJobPostRequest {
+    repeated JobPost job_posts = 1;
+}
+
+message BulkCreateJobPostResponse {
+    repeated JobPost job_posts = 2;
+}
+
+message GetAllJobPostsRequest {
+    repeated uint64 id = 1;
+	repeated uint64 company_id = 2;
+	repeated uint64 hr_contact_id = 3;
+	repeated uint64 hiring_manager_id = 4;
+	repeated uint64 job_platform_id = 5;
+	repeated uint64 skill_id = 6;
+	string title = 7;
+	repeated string seniority_level = 8;
+	uint64 min_years_experience = 9;
+	uint64 max_years_experience = 10;
+	repeated string employment_type = 11;
+    repeated uint64 function_id = 12;
+    repeated uint64 industry_id = 13;
+	bool remote = 14;
+	uint64 salary = 15;
+	google.protobuf.Timestamp updated_at = 16;
+	google.protobuf.Timestamp expire_at = 17;
+}
+
+message GetAllJobPostsResponse {
+    repeated JobPost job_posts = 1;
+}
+
+message GetJobPostByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateJobPostRequest {
+    uint64 id = 1;
+    JobPost job_post = 2;
+}
+
+message DeleteJobPostRequest {
+    uint64 id = 1;
+}
+
+message DeleteJobPostResponse {
+    // Empty
+}
+
+message Company {
+    uint64 id = 1;
+	string name = 2;
+    string logo_url = 3;
+    uint64 size = 4;
+	repeated Industry industries = 5;
+	repeated JobPost job_posts = 6;
+	repeated KeyPerson key_persons = 7;
+}
+
+message CreateCompanyRequest {
+    Company company = 1;
+}
+
+message GetAllJobCompaniesRequest {
+    repeated uint64 id = 1;
+    string name = 2;
+}
+
+message GetAllJobCompaniesResponse {
+    repeated Company companies = 1;
+}
+
+message UpdateCompanyRequest {
+    uint64 id = 1;
+    Company company = 2;
+}
+
+message DeleteCompanyRequest {
+    uint64 id = 1;
+}
+
+message DeleteCompanyResponse {
+    // Empty
+}
+
+message Industry {
+    uint64 id = 1;
+    string name = 2;
+    repeated Company companies = 3;
+    repeated JobPost job_posts = 4;
+}
+
+message CreateIndustryRequest {
+    Industry industry = 1;
+}
+
+message GetAllIndustriesRequest {
+    repeated uint64 id = 1;
+	string name = 2;
+}
+
+message GetAllIndustriesResponse {
+    repeated Industry industries = 1;
+}
+
+message DeleteIndustryRequest {
+    uint64 id = 1;
+}
+
+message DeleteIndustryResponse {
+    // Empty
+}
+
+message JobFunction {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message CreateJobFunctionRequest {
+    JobFunction job_function = 1;
+}
+
+message GetAllJobFunctionsRequest {
+    repeated uint64 id = 1;
+	string name = 2;
+}
+
+message GetAllJobFunctionsResponse {
+    repeated JobFunction job_functions = 1;
+}
+
+message DeleteJobFunctionRequest {
+    uint64 id = 1;
+}
+
+message DeleteJobFunctionResponse {
+    // Empty
+}
+
+message CompanyIndustry {
+    uint64 id = 1;
+    uint64 company_id = 2;
+    uint64 industry_id = 3;
+}
+
+message KeyPerson {
+    uint64 id = 1;
+    uint64 company_id = 2;
+	string name = 3;
+	string contact_number = 4;
+	string email = 5;
+	string job_title = 6;
+	google.protobuf.Timestamp updated_at = 7;
+	Company company = 8;
+}
+
+message CreateKeyPersonRequest {
+    KeyPerson key_person = 1;
+}
+
+message BulkCreateKeyPersonRequest {
+    repeated KeyPerson key_persons = 1;
+}
+
+message BulkCreateKeyPersonResponse {
+    repeated KeyPerson key_persons = 1;
+}
+
+message GetAllKeyPersonsRequest {
+    repeated uint64 id = 1;
+	repeated uint64 company_id = 2;
+	string name = 3;
+	string contact_number = 4;
+	string email = 5;
+	string job_title = 6;
+}
+
+message GetAllKeyPersonsResponse {
+    repeated KeyPerson key_persons = 1;
+}
+
+message GetKeyPersonByIDRequest {
+    uint64 id = 1;
+}
+
+message UpdateKeyPersonRequest {
+    uint64 id = 1;
+    KeyPerson key_person = 2;
+}
+
+message DeleteKeyPersonRequest {
+    uint64 id = 1;
+}
+
+message DeleteKeyPersonResponse {
+    // Empty
+}
+
+message JobPlatform {
+    uint64 id = 1;
+    string name = 2;
+	string base_url = 3;
+	repeated JobPost job_posts = 4;
+}
+
+message CreateJobPlatformRequest {
+    JobPlatform job_platform = 1;
+}
+
+message GetAllJobPlatformsRequest {
+    repeated uint64 id = 1;
+    string name = 2;
+}
+
+message GetAllJobPlatformsResponse {
+    repeated JobPlatform job_platforms = 1;
+}
+
+message DeleteJobPlatformRequest {
+    uint64 id = 1;
+}
+
+message DeleteJobPlatformResponse {
+    // Empty
+}
+
+message Skill {
+    uint64 id = 1;
+    string name = 2;
+}

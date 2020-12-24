@@ -25,7 +25,7 @@ func (r registerer) RegisterClients(f func(
 		if cfg.name != string(r) {
 			return nil, fmt.Errorf("unknown register %s", cfg.name)
 		}
-		return gateway.New(ctx, cfg.profileEndpoint, cfg.projectEndpoint, cfg.assessmentEndpoint)
+		return gateway.New(ctx, cfg.profileEndpoint, cfg.projectEndpoint, cfg.assessmentEndpoint, cfg.joblistingEndpoint)
 	})
 }
 
@@ -49,8 +49,11 @@ func parse(extra map[string]interface{}) *opts {
 	}
 
 	return &opts{
-		name:            name,
-		profileEndpoint: endpoints[0],
+		name:               name,
+		profileEndpoint:    endpoints[0],
+		projectEndpoint:    endpoints[1],
+		assessmentEndpoint: endpoints[2],
+		joblistingEndpoint: endpoints[3],
 	}
 }
 
@@ -59,4 +62,5 @@ type opts struct {
 	profileEndpoint    string
 	projectEndpoint    string
 	assessmentEndpoint string
+	joblistingEndpoint string
 }

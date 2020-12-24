@@ -19,6 +19,7 @@ type CandidateFilters struct {
 
 // SkillFilters define filters for Skill model
 type SkillFilters struct {
+	ID   []uint64
 	Name []string
 }
 

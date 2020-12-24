@@ -1147,6 +1147,730 @@
         },
 
         {
+            "endpoint": "/v1/joblistings",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/joblistings"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/bulk/joblistings",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/bulk/joblistings"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/joblistings",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/joblistings"
+                }
+            ],
+            "querystring_params": [
+                "id",
+                "companyId",
+                "hrContactId",
+                "hiringManagerId",
+                "jobPlatformId",
+                "skillId",
+                "title",
+                "seniorityLevel",
+                "minYearsExperience",
+                "maxYearsExperience",
+                "employmentType",
+                "functionId",
+                "industryId",
+                "remote",
+                "salary",
+                "updatedAt",
+                "expireAt"
+            ]
+        },
+        {
+            "endpoint": "/v1/joblistings/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/joblistings/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/joblistings/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/joblistings/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/joblistings/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/joblistings/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/jobs/companies",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/jobs/companies"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobs/companies",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/jobs/companies"
+                }
+            ],
+            "querystring_params": [
+                "id",
+                "name"
+            ]
+        },
+        {
+            "endpoint": "/v1/jobs/companies/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/jobs/companies/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobs/companies/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/jobs/companies/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/industries",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/industries"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/industries",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/industries"
+                }
+            ],
+            "querystring_params": [
+                "id",
+                "name"
+            ]
+        },
+        {
+            "endpoint": "/v1/industries/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/industries/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/jobfunctions",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/jobfunctions"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobfunctions",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/jobfunctions"
+                }
+            ],
+            "querystring_params": [
+                "id",
+                "name"
+            ]
+        },
+        {
+            "endpoint": "/v1/jobfunctions/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/jobfunctions/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/keypersons",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/keypersons"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/bulk/keypersons",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/bulk/keypersons"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/keypersons",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/keypersons"
+                }
+            ],
+            "querystring_params": [
+                "id",
+                "companyId",
+                "name",
+                "contactNumber",
+                "email",
+                "jobTitle"
+            ]
+        },
+        {
+            "endpoint": "/v1/keypersons/{id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/keypersons/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/keypersons/{id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "PUT",
+                    "url_pattern": "/v1/keypersons/{id}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/keypersons/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/keypersons/{id}"
+                }
+            ]
+        },
+
+        {
+            "endpoint": "/v1/jobplatforms",
+            "method": "POST",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "POST",
+                    "url_pattern": "/v1/jobplatforms"
+                }
+            ]
+        },
+        {
+            "endpoint": "/v1/jobplatforms",
+            "method": "GET",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "GET",
+                    "url_pattern": "/v1/jobplatforms"
+                }
+            ],
+            "querystring_params": [
+                "id",
+                "name"
+            ]
+        },
+        {
+            "endpoint": "/v1/jobplatforms/{id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "headers_to_pass": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-ratelimit/juju/router": {
+                    "maxRate": 100,
+                    "clientMaxRate": 5,
+                    "strategy": "ip"
+                },
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS256",
+                    "audience": ["https://api.hubbedin.com"],
+                    "jwk-url": "https://hubbed-in.au.auth0.com/.well-known/jwks.json"
+                }
+            },
+            "backend": [
+                {
+                    "host": [ "gateway:8000" ],
+                    "method": "DELETE",
+                    "url_pattern": "/v1/jobplatforms/{id}"
+                }
+            ]
+        },
+
+        {
             "endpoint": "/v1/assessments",
             "method": "POST",
             "output_encoding": "json",

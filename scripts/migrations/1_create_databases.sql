@@ -29,3 +29,11 @@ CREATE DATABASE assessment
     LC_COLLATE = 'en_US.utf8'
     LC_CTYPE = 'en_US.utf8'
     CONNECTION LIMIT = -1;
+
+CREATE DATABASE joblisting
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'en_US.utf8'
+    LC_CTYPE = 'en_US.utf8'
+    CONNECTION LIMIT = -1;

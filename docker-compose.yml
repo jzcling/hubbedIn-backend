@@ -27,6 +27,19 @@ services:
             - ${PROJECT_SERVICE_PORT}:${PROJECT_SERVICE_PORT}
         networks:
             - backend
+    joblisting-service:
+        build: 
+            context: .
+            dockerfile: ./services/joblisting/Dockerfile
+        image: joblisting-service
+        container_name: joblisting-service
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - ${JOBLISTING_SERVICE_PORT}:${JOBLISTING_SERVICE_PORT}
+        networks:
+            - backend
     assessment-service:
         build: 
             context: .

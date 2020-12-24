@@ -41,9 +41,23 @@ func IsStringInSlice(s string, list []string) bool {
 	return false
 }
 
-// Equal tells whether slices a and b contain the same string elements.
+// IsStringSliceEqual tells whether slices a and b contain the same string elements.
 // A nil argument is equivalent to an empty slice.
-func Equal(a, b []string) bool {
+func IsStringSliceEqual(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// IsUint64SliceEqual tells whether slices a and b contain the same uint64 elements.
+// A nil argument is equivalent to an empty slice.
+func IsUint64SliceEqual(a, b []uint64) bool {
 	if len(a) != len(b) {
 		return false
 	}
