@@ -59,9 +59,8 @@ func main() {
 
 	client := &http.Client{}
 	auth0 := providers.NewAuth0(cfg, client)
-	hubbedlearn := providers.NewHubbedLearn(cfg, client)
 	klenty := providers.NewKlenty(cfg, client)
-	repo := database.NewRepository(db, auth0, hubbedlearn, klenty)
+	repo := database.NewRepository(db, auth0, klenty)
 	svc := service.New(repo)
 	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)

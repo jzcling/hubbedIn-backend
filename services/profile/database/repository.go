@@ -15,19 +15,17 @@ import (
 
 // Repository implements the profile Repository interface
 type repository struct {
-	DB          *pg.DB
-	auth0       providers.Auth0Provider
-	hubbedlearn providers.HubbedLearnProvider
-	klenty      providers.KlentyProvider
+	DB     *pg.DB
+	auth0  providers.Auth0Provider
+	klenty providers.KlentyProvider
 }
 
 // NewRepository declares a new Repository that implements profile Repository
 func NewRepository(db *pg.DB, a providers.Auth0Provider, hl providers.HubbedLearnProvider, k providers.KlentyProvider) interfaces.Repository {
 	return &repository{
-		DB:          db,
-		auth0:       a,
-		hubbedlearn: hl,
-		klenty:      k,
+		DB:     db,
+		auth0:  a,
+		klenty: k,
 	}
 }
 
@@ -58,13 +56,7 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 		return nil, err
 	}
 
-	pw, err := r.createHubbedLearnUser(m)
-	if err != nil {
-		err = errors.Wrapf(err, "Failed to create Hubbed Learn user %v", m.Email)
-		return nil, err
-	}
-
-	err = r.triggerCRMRegistrationWorkflow(m, *pw)
+	err = r.triggerCRMRegistrationWorkflow(m)
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to trigger CRM workflow %v", m.Email)
 		return nil, err
@@ -90,16 +82,8 @@ func (r *repository) updateAuth0User(m *models.Candidate) error {
 	return nil
 }
 
-func (r *repository) createHubbedLearnUser(m *models.Candidate) (*string, error) {
-	pw, err := r.hubbedlearn.CreateUser(m)
-	if err != nil {
-		return nil, err
-	}
-	return pw, nil
-}
-
-func (r *repository) triggerCRMRegistrationWorkflow(m *models.Candidate, pw string) error {
-	err := r.klenty.CreateProspect(m, pw)
+func (r *repository) triggerCRMRegistrationWorkflow(m *models.Candidate) error {
+	err := r.klenty.CreateProspect(m)
 	if err != nil {
 		return err
 	}

@@ -17,22 +17,20 @@ import (
 )
 
 var (
-	ctx context.Context            = context.Background()
-	now time.Time                  = time.Now()
-	a   *mocks.Auth0Provider       = &mocks.Auth0Provider{}
-	hl  *mocks.HubbedLearnProvider = &mocks.HubbedLearnProvider{}
-	k   *mocks.KlentyProvider      = &mocks.KlentyProvider{}
+	ctx context.Context       = context.Background()
+	now time.Time             = time.Now()
+	a   *mocks.Auth0Provider  = &mocks.Auth0Provider{}
+	k   *mocks.KlentyProvider = &mocks.KlentyProvider{}
 )
 
 func TestNewRepository(t *testing.T) {
 	want := &repository{
-		DB:          &pg.DB{},
-		auth0:       a,
-		hubbedlearn: hl,
-		klenty:      k,
+		DB:     &pg.DB{},
+		auth0:  a,
+		klenty: k,
 	}
 
-	got := NewRepository(&pg.DB{}, a, hl, k)
+	got := NewRepository(&pg.DB{}, a, k)
 
 	require.EqualValues(t, want, got)
 }
@@ -51,7 +49,7 @@ func TestAllCRUD(t *testing.T) {
 	defer cleanContainer(c)
 	require.NoError(t, err)
 
-	r := NewRepository(db, a, hl, k)
+	r := NewRepository(db, a, k)
 
 	testCreateCandidate(t, r, db)
 	testGetAllCandidates(t, r, db)

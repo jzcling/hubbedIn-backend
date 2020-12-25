@@ -15,7 +15,7 @@ import (
 
 // KlentyProvider describes the methods to interact with the Klenty CRM platform
 type KlentyProvider interface {
-	CreateProspect(c *models.Candidate, pw string) error
+	CreateProspect(c *models.Candidate) error
 	UpdateProspect(c *models.Candidate) error
 	StartCadence(email string) error
 }
@@ -37,14 +37,14 @@ func NewKlenty(cfg configs.Config, client interfaces.HTTPClient) KlentyProvider 
 	}
 }
 
-func (p *klentyProvider) CreateProspect(c *models.Candidate, pw string) error {
+func (p *klentyProvider) CreateProspect(c *models.Candidate) error {
 	url := klentyURL + "/prospects"
 	reqBody, err := json.Marshal(map[string]interface{}{
 		"Email":     c.Email,
 		"FirstName": c.FirstName,
 		"LastName":  c.LastName,
 		"CustomFields": []map[string]string{
-			0: {"key": "hubbedlearn password", "value": pw},
+			0: {"key": "hubbedlearn password", "value": ""},
 		},
 	})
 	if err != nil {
