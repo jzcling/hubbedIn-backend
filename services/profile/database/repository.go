@@ -21,7 +21,7 @@ type repository struct {
 }
 
 // NewRepository declares a new Repository that implements profile Repository
-func NewRepository(db *pg.DB, a providers.Auth0Provider, hl providers.HubbedLearnProvider, k providers.KlentyProvider) interfaces.Repository {
+func NewRepository(db *pg.DB, a providers.Auth0Provider, k providers.KlentyProvider) interfaces.Repository {
 	return &repository{
 		DB:     db,
 		auth0:  a,

@@ -13,13 +13,13 @@ type KlentyProvider struct {
 	mock.Mock
 }
 
-// CreateProspect provides a mock function with given fields: c, pw
-func (_m *KlentyProvider) CreateProspect(c *models.Candidate, pw string) error {
-	ret := _m.Called(c, pw)
+// CreateProspect provides a mock function with given fields: c
+func (_m *KlentyProvider) CreateProspect(c *models.Candidate) error {
+	ret := _m.Called(c)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.Candidate, string) error); ok {
-		r0 = rf(c, pw)
+	if rf, ok := ret.Get(0).(func(*models.Candidate) error); ok {
+		r0 = rf(c)
 	} else {
 		r0 = ret.Error(0)
 	}
