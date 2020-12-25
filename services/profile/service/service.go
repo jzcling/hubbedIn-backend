@@ -5,17 +5,21 @@ import (
 
 	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
+
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // Service implements the profile Service interface
 type service struct {
 	repository interfaces.Repository
+	sanitizer  *bluemonday.Policy
 }
 
 // New creates and returns a new Service that implements the profile Service interface
-func New(r interfaces.Repository) interfaces.Service {
+func New(r interfaces.Repository, p *bluemonday.Policy) interfaces.Service {
 	return &service{
 		repository: r,
+		sanitizer:  p,
 	}
 }
 
@@ -23,6 +27,9 @@ func New(r interfaces.Repository) interfaces.Service {
 
 // CreateCandidate creates a new Candidate
 func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
+	// sanitize candidate summary
+	candidate.Summary = s.sanitizer.Sanitize(candidate.Summary)
+
 	c, err := s.repository.CreateCandidate(ctx, candidate)
 	if err != nil {
 		return nil, err
@@ -51,6 +58,9 @@ func (s *service) GetCandidateByID(ctx context.Context, id uint64) (*models.Cand
 
 // UpdateCandidate updates a Candidate
 func (s *service) UpdateCandidate(ctx context.Context, candidate *models.Candidate) (*models.Candidate, error) {
+	// sanitize candidate summary
+	candidate.Summary = s.sanitizer.Sanitize(candidate.Summary)
+
 	c, err := s.repository.UpdateCandidate(ctx, candidate)
 	if err != nil {
 		return nil, err

@@ -7,12 +7,14 @@ import (
 	"in-backend/services/joblisting/models"
 	profilePb "in-backend/services/profile/pb"
 
+	"github.com/microcosm-cc/bluemonday"
 	"google.golang.org/grpc"
 )
 
 // Service implements the joblisting Service interface
 type service struct {
 	repository interfaces.Repository
+	sanitizer  *bluemonday.Policy
 }
 
 var (
@@ -20,9 +22,10 @@ var (
 )
 
 // New creates and returns a new Service that implements the joblisting Service interface
-func New(r interfaces.Repository) interfaces.Service {
+func New(r interfaces.Repository, p *bluemonday.Policy) interfaces.Service {
 	return &service{
 		repository: r,
+		sanitizer:  p,
 	}
 }
 
@@ -30,6 +33,9 @@ func New(r interfaces.Repository) interfaces.Service {
 
 // CreateJobPost creates a new JobPost
 func (s *service) CreateJobPost(ctx context.Context, model *models.JobPost) (*models.JobPost, error) {
+	// sanitize job description
+	model.Description = s.sanitizer.Sanitize(model.Description)
+
 	m, err := s.repository.CreateJobPost(ctx, model)
 	if err != nil {
 		return nil, err
@@ -39,6 +45,11 @@ func (s *service) CreateJobPost(ctx context.Context, model *models.JobPost) (*mo
 
 // BulkCreateJobPost creates multiple JobPosts
 func (s *service) BulkCreateJobPost(ctx context.Context, models []*models.JobPost) ([]*models.JobPost, error) {
+	// sanitize job description
+	for _, model := range models {
+		model.Description = s.sanitizer.Sanitize(model.Description)
+	}
+
 	m, err := s.repository.BulkCreateJobPost(ctx, models)
 	if err != nil {
 		return nil, err
@@ -126,6 +137,9 @@ func (s *service) GetJobPostByID(ctx context.Context, id uint64) (*models.JobPos
 
 // UpdateJobPost updates a JobPost
 func (s *service) UpdateJobPost(ctx context.Context, model *models.JobPost) (*models.JobPost, error) {
+	// sanitize job description
+	model.Description = s.sanitizer.Sanitize(model.Description)
+
 	m, err := s.repository.UpdateJobPost(ctx, model)
 	if err != nil {
 		return nil, err

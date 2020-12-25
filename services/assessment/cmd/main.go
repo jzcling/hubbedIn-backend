@@ -20,6 +20,7 @@ import (
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
 	"github.com/gocraft/work"
 	"github.com/gomodule/redigo/redis"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -71,13 +72,14 @@ func main() {
 	defer db.Close()
 
 	enqueuer := work.NewEnqueuer(appName, redisPool)
+	p := bluemonday.UGCPolicy()
 
 	// Build the layers of the service "onion" from the inside out. First, the
 	// business logic service; then, the set of endpoints that wrap the service;
 	// and finally, a series of concrete transport adapters
 
 	repo := database.NewRepository(db)
-	svc := service.New(repo, enqueuer)
+	svc := service.New(repo, enqueuer, p)
 	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)
 	endpoints := endpoints.MakeEndpoints(svc)

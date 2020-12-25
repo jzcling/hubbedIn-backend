@@ -765,7 +765,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbDeleteCompanyResponse"
+              "$ref": "#/definitions/pbDeleteJobCompanyResponse"
             }
           },
           "default": {
@@ -1106,10 +1106,10 @@
         }
       }
     },
-    "pbDeleteCompanyResponse": {
+    "pbDeleteIndustryResponse": {
       "type": "object"
     },
-    "pbDeleteIndustryResponse": {
+    "pbDeleteJobCompanyResponse": {
       "type": "object"
     },
     "pbDeleteJobFunctionResponse": {

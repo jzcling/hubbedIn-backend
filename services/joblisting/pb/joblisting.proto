@@ -37,7 +37,7 @@ service JoblistingService {
         option (google.api.http) = { delete: "/v1/joblistings/{id}" };
     };
 
-    rpc CreateCompany(CreateCompanyRequest) returns (Company) {
+    rpc CreateCompany(CreateJobCompanyRequest) returns (Company) {
         option (google.api.http) = { 
             post: "/v1/jobs/companies" 
             body: "company"
@@ -46,13 +46,13 @@ service JoblistingService {
     rpc GetAllCompanies(GetAllJobCompaniesRequest) returns (GetAllJobCompaniesResponse) {
         option (google.api.http) = { get: "/v1/jobs/companies" };
     };
-    rpc UpdateCompany(UpdateCompanyRequest) returns (Company) {
+    rpc UpdateCompany(UpdateJobCompanyRequest) returns (Company) {
         option (google.api.http) = {
             put: "/v1/jobs/companies/{id}"
             body: "company"
         };
     };
-    rpc DeleteCompany(DeleteCompanyRequest) returns (DeleteCompanyResponse) {
+    rpc DeleteCompany(DeleteJobCompanyRequest) returns (DeleteJobCompanyResponse) {
         option (google.api.http) = { delete: "/v1/jobs/companies/{id}" };
     };
 
@@ -219,7 +219,7 @@ message Company {
 	repeated KeyPerson key_persons = 7;
 }
 
-message CreateCompanyRequest {
+message CreateJobCompanyRequest {
     Company company = 1;
 }
 
@@ -232,16 +232,16 @@ message GetAllJobCompaniesResponse {
     repeated Company companies = 1;
 }
 
-message UpdateCompanyRequest {
+message UpdateJobCompanyRequest {
     uint64 id = 1;
     Company company = 2;
 }
 
-message DeleteCompanyRequest {
+message DeleteJobCompanyRequest {
     uint64 id = 1;
 }
 
-message DeleteCompanyResponse {
+message DeleteJobCompanyResponse {
     // Empty
 }
 

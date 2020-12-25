@@ -10,19 +10,22 @@ import (
 	"in-backend/services/assessment/models"
 
 	"github.com/gocraft/work"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // Service implements the assessment Service interface
 type service struct {
 	repository interfaces.Repository
 	enqueuer   *work.Enqueuer
+	sanitizer  *bluemonday.Policy
 }
 
 // New creates and returns a new Service that implements the assessment Service interface
-func New(r interfaces.Repository, e *work.Enqueuer) interfaces.Service {
+func New(r interfaces.Repository, e *work.Enqueuer, p *bluemonday.Policy) interfaces.Service {
 	return &service{
 		repository: r,
 		enqueuer:   e,
+		sanitizer:  p,
 	}
 }
 
@@ -30,6 +33,10 @@ func New(r interfaces.Repository, e *work.Enqueuer) interfaces.Service {
 
 // CreateAssessment creates a new Assessment
 func (s *service) CreateAssessment(ctx context.Context, model *models.Assessment) (*models.Assessment, error) {
+	// sanitize assessment description and notes
+	model.Description = s.sanitizer.Sanitize(model.Description)
+	model.Notes = s.sanitizer.Sanitize(model.Notes)
+
 	m, err := s.repository.CreateAssessment(ctx, model)
 	if err != nil {
 		return nil, err
@@ -58,6 +65,10 @@ func (s *service) GetAssessmentByID(ctx context.Context, id uint64, role *string
 
 // UpdateAssessment updates a Assessment
 func (s *service) UpdateAssessment(ctx context.Context, model *models.Assessment) (*models.Assessment, error) {
+	// sanitize assessment description and notes
+	model.Description = s.sanitizer.Sanitize(model.Description)
+	model.Notes = s.sanitizer.Sanitize(model.Notes)
+
 	m, err := s.repository.UpdateAssessment(ctx, model)
 	if err != nil {
 		return nil, err

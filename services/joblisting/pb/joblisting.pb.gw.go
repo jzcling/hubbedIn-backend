@@ -308,7 +308,7 @@ func local_request_JoblistingService_DeleteJobPost_0(ctx context.Context, marsha
 }
 
 func request_JoblistingService_CreateCompany_0(ctx context.Context, marshaler runtime.Marshaler, client JoblistingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateCompanyRequest
+	var protoReq CreateJobCompanyRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -325,7 +325,7 @@ func request_JoblistingService_CreateCompany_0(ctx context.Context, marshaler ru
 }
 
 func local_request_JoblistingService_CreateCompany_0(ctx context.Context, marshaler runtime.Marshaler, server JoblistingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateCompanyRequest
+	var protoReq CreateJobCompanyRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -378,7 +378,7 @@ func local_request_JoblistingService_GetAllCompanies_0(ctx context.Context, mars
 }
 
 func request_JoblistingService_UpdateCompany_0(ctx context.Context, marshaler runtime.Marshaler, client JoblistingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateCompanyRequest
+	var protoReq UpdateJobCompanyRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -412,7 +412,7 @@ func request_JoblistingService_UpdateCompany_0(ctx context.Context, marshaler ru
 }
 
 func local_request_JoblistingService_UpdateCompany_0(ctx context.Context, marshaler runtime.Marshaler, server JoblistingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateCompanyRequest
+	var protoReq UpdateJobCompanyRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -446,7 +446,7 @@ func local_request_JoblistingService_UpdateCompany_0(ctx context.Context, marsha
 }
 
 func request_JoblistingService_DeleteCompany_0(ctx context.Context, marshaler runtime.Marshaler, client JoblistingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteCompanyRequest
+	var protoReq DeleteJobCompanyRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -472,7 +472,7 @@ func request_JoblistingService_DeleteCompany_0(ctx context.Context, marshaler ru
 }
 
 func local_request_JoblistingService_DeleteCompany_0(ctx context.Context, marshaler runtime.Marshaler, server JoblistingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteCompanyRequest
+	var protoReq DeleteJobCompanyRequest
 	var metadata runtime.ServerMetadata
 
 	var (

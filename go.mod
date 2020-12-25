@@ -14,6 +14,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
 	github.com/jinzhu/copier v0.0.0-20201025035756-632e723a6687
 	github.com/lib/pq v1.8.0 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.4 // indirect
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/oklog/oklog v0.3.2
 	github.com/ory/dockertest/v3 v3.6.2
@@ -26,8 +27,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/vmihailenco/msgpack/v5 v5.0.0-rc.2 // indirect
 	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9 // indirect
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
-	golang.org/x/sys v0.0.0-20201113233024-12cec1faf1ba // indirect
+	golang.org/x/net v0.0.0-20201224014010-6772e930b67b // indirect
 	golang.org/x/text v0.3.4 // indirect
 	google.golang.org/genproto v0.0.0-20201214200347-8c77b98c765d
 	google.golang.org/grpc v1.33.2

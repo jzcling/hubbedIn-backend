@@ -405,7 +405,7 @@ func encodeDeleteJobPostResponse(_ context.Context, response interface{}) (inter
 /* --------------- Company --------------- */
 
 // CreateCompany creates a new Company
-func (s *grpcServer) CreateCompany(ctx context.Context, req *pb.CreateCompanyRequest) (*pb.Company, error) {
+func (s *grpcServer) CreateCompany(ctx context.Context, req *pb.CreateJobCompanyRequest) (*pb.Company, error) {
 	_, rep, err := s.createCompany.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
@@ -415,7 +415,7 @@ func (s *grpcServer) CreateCompany(ctx context.Context, req *pb.CreateCompanyReq
 
 // decodeCreateCompanyRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateCompanyRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.CreateCompanyRequest)
+	req := request.(*pb.CreateJobCompanyRequest)
 	return endpoints.CreateCompanyRequest{Company: models.CompanyToORM(req.Company)}, nil
 }
 
@@ -463,7 +463,7 @@ func encodeGetAllCompaniesResponse(_ context.Context, response interface{}) (int
 }
 
 // UpdateCompany updates a Company
-func (s *grpcServer) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest) (*pb.Company, error) {
+func (s *grpcServer) UpdateCompany(ctx context.Context, req *pb.UpdateJobCompanyRequest) (*pb.Company, error) {
 	_, rep, err := s.updateCompany.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
@@ -473,7 +473,7 @@ func (s *grpcServer) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyReq
 
 // decodeUpdateCompanyRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateCompanyRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.UpdateCompanyRequest)
+	req := request.(*pb.UpdateJobCompanyRequest)
 	return endpoints.UpdateCompanyRequest{ID: req.Id, Company: models.CompanyToORM(req.Company)}, nil
 }
 
@@ -488,17 +488,17 @@ func encodeUpdateCompanyResponse(_ context.Context, response interface{}) (inter
 }
 
 // DeleteCompany deletes a Company by ID
-func (s *grpcServer) DeleteCompany(ctx context.Context, req *pb.DeleteCompanyRequest) (*pb.DeleteCompanyResponse, error) {
+func (s *grpcServer) DeleteCompany(ctx context.Context, req *pb.DeleteJobCompanyRequest) (*pb.DeleteJobCompanyResponse, error) {
 	_, rep, err := s.deleteCompany.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.DeleteCompanyResponse), nil
+	return rep.(*pb.DeleteJobCompanyResponse), nil
 }
 
 // decodeDeleteCompanyRequest decodes the incoming grpc payload to our go kit payload
 func decodeDeleteCompanyRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(*pb.DeleteCompanyRequest)
+	req := request.(*pb.DeleteJobCompanyRequest)
 	return endpoints.DeleteCompanyRequest{ID: req.Id}, nil
 }
 
@@ -507,7 +507,7 @@ func encodeDeleteCompanyResponse(_ context.Context, response interface{}) (inter
 	res := response.(endpoints.DeleteCompanyResponse)
 	err := getError(res.Err)
 	if err == nil {
-		return &pb.DeleteCompanyResponse{}, nil
+		return &pb.DeleteJobCompanyResponse{}, nil
 	}
 	return nil, err
 }
