@@ -14,11 +14,11 @@ type KlentyProvider struct {
 }
 
 // CreateProspect provides a mock function with given fields: c
-func (_m *KlentyProvider) CreateProspect(c *models.Candidate) error {
+func (_m *KlentyProvider) CreateProspect(c *models.User) error {
 	ret := _m.Called(c)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.Candidate) error); ok {
+	if rf, ok := ret.Get(0).(func(*models.User) error); ok {
 		r0 = rf(c)
 	} else {
 		r0 = ret.Error(0)
@@ -27,13 +27,13 @@ func (_m *KlentyProvider) CreateProspect(c *models.Candidate) error {
 	return r0
 }
 
-// StartCadence provides a mock function with given fields: email
-func (_m *KlentyProvider) StartCadence(email string) error {
-	ret := _m.Called(email)
+// StartCadence provides a mock function with given fields: email, role
+func (_m *KlentyProvider) StartCadence(email string, role string) error {
+	ret := _m.Called(email, role)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(email)
+	if rf, ok := ret.Get(0).(func(string, string) error); ok {
+		r0 = rf(email, role)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -42,11 +42,11 @@ func (_m *KlentyProvider) StartCadence(email string) error {
 }
 
 // UpdateProspect provides a mock function with given fields: c
-func (_m *KlentyProvider) UpdateProspect(c *models.Candidate) error {
+func (_m *KlentyProvider) UpdateProspect(c *models.User) error {
 	ret := _m.Called(c)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.Candidate) error); ok {
+	if rf, ok := ret.Get(0).(func(*models.User) error); ok {
 		r0 = rf(c)
 	} else {
 		r0 = ret.Error(0)

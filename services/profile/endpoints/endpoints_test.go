@@ -27,16 +27,73 @@ func TestMakeEndpoints(t *testing.T) {
 	assert.IsType(t, Endpoints{}, endpoints)
 }
 
-/* --------------- Candidate --------------- */
+/* --------------- User --------------- */
 
-func TestCreateCandidate(t *testing.T) {
-	test := &models.Candidate{
+func TestCreateUser(t *testing.T) {
+	test := &models.User{
 		FirstName:     "first",
 		LastName:      "last",
 		Email:         "first@last.com",
 		ContactNumber: "+6591234567",
 		CreatedAt:     &now,
 		UpdatedAt:     &now,
+	}
+	in := &CreateUserRequest{User: test}
+	svcIn := test
+	out := test
+	svcOut := test
+
+	type args struct {
+		ctx      context.Context
+		svcInput *models.User
+		input    *CreateUserRequest
+	}
+
+	type expect struct {
+		svcOutput *models.User
+		output    *models.User
+		err       error
+	}
+
+	for _, tt := range []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"error", args{ctx, &models.User{}, &CreateUserRequest{User: &models.User{}}}, expect{nil, nil, errors.New("Marshal called with nil")}},
+		{"valid", args{ctx, svcIn, in}, expect{svcOut, out, nil}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			svc.On("CreateUser", mockCtx, tt.args.svcInput).Return(tt.exp.svcOutput, tt.exp.err)
+
+			res, _ := makeCreateUserEndpoint(svc)(tt.args.ctx, *tt.args.input)
+			got := res.(CreateUserResponse).User
+			err := res.(CreateUserResponse).Err
+			if tt.exp.output != nil {
+				assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
+			} else {
+				assert.Equal(t, tt.exp.output, got)
+			}
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+	svc.AssertExpectations(t)
+}
+
+/* --------------- Candidate --------------- */
+
+func TestCreateCandidate(t *testing.T) {
+	test := &models.Candidate{
+		Nationality:            "Singapore",
+		ExpectedSalaryCurrency: "SGD",
+		ExpectedSalary:         1000,
+		PreferredRoles:         []string{"Frontend"},
+		CreatedAt:              &now,
+		UpdatedAt:              &now,
 	}
 	in := &CreateCandidateRequest{Candidate: test}
 	svcIn := test
@@ -86,12 +143,12 @@ func TestCreateCandidate(t *testing.T) {
 
 func TestGetAllCandidates(t *testing.T) {
 	test := &models.Candidate{
-		FirstName:     "first",
-		LastName:      "last",
-		Email:         "email",
-		ContactNumber: "contact",
-		CreatedAt:     &now,
-		UpdatedAt:     &now,
+		Nationality:            "Singapore",
+		ExpectedSalaryCurrency: "SGD",
+		ExpectedSalary:         1000,
+		PreferredRoles:         []string{"Frontend"},
+		CreatedAt:              &now,
+		UpdatedAt:              &now,
 	}
 	mockRes := []*models.Candidate{
 		test,
@@ -203,9 +260,9 @@ func TestGetCandidateByID(t *testing.T) {
 
 func TestUpdateCandidate(t *testing.T) {
 	updated := models.Candidate{
-		ID:        1,
-		FirstName: "new",
-		UpdatedAt: &now,
+		ID:            1,
+		ResidenceCity: "Singapore",
+		UpdatedAt:     &now,
 	}
 	svcInOut := &updated
 	in := &UpdateCandidateRequest{

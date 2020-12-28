@@ -78,7 +78,7 @@ func (_m *JoblistingServiceClient) BulkCreateKeyPerson(ctx context.Context, in *
 }
 
 // CreateCompany provides a mock function with given fields: ctx, in, opts
-func (_m *JoblistingServiceClient) CreateCompany(ctx context.Context, in *pb.CreateCompanyRequest, opts ...grpc.CallOption) (*pb.Company, error) {
+func (_m *JoblistingServiceClient) CreateCompany(ctx context.Context, in *pb.CreateJobCompanyRequest, opts ...grpc.CallOption) (*pb.JobCompany, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -88,17 +88,17 @@ func (_m *JoblistingServiceClient) CreateCompany(ctx context.Context, in *pb.Cre
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.Company
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateCompanyRequest, ...grpc.CallOption) *pb.Company); ok {
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateJobCompanyRequest, ...grpc.CallOption) *pb.JobCompany); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Company)
+			r0 = ret.Get(0).(*pb.JobCompany)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateCompanyRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateJobCompanyRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -258,7 +258,7 @@ func (_m *JoblistingServiceClient) CreateKeyPerson(ctx context.Context, in *pb.C
 }
 
 // DeleteCompany provides a mock function with given fields: ctx, in, opts
-func (_m *JoblistingServiceClient) DeleteCompany(ctx context.Context, in *pb.DeleteCompanyRequest, opts ...grpc.CallOption) (*pb.DeleteCompanyResponse, error) {
+func (_m *JoblistingServiceClient) DeleteCompany(ctx context.Context, in *pb.DeleteJobCompanyRequest, opts ...grpc.CallOption) (*pb.DeleteJobCompanyResponse, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -268,17 +268,17 @@ func (_m *JoblistingServiceClient) DeleteCompany(ctx context.Context, in *pb.Del
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.DeleteCompanyResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteCompanyRequest, ...grpc.CallOption) *pb.DeleteCompanyResponse); ok {
+	var r0 *pb.DeleteJobCompanyResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteJobCompanyRequest, ...grpc.CallOption) *pb.DeleteJobCompanyResponse); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.DeleteCompanyResponse)
+			r0 = ret.Get(0).(*pb.DeleteJobCompanyResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteCompanyRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteJobCompanyRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -438,7 +438,7 @@ func (_m *JoblistingServiceClient) DeleteKeyPerson(ctx context.Context, in *pb.D
 }
 
 // GetAllCompanies provides a mock function with given fields: ctx, in, opts
-func (_m *JoblistingServiceClient) GetAllCompanies(ctx context.Context, in *pb.GetAllCompaniesRequest, opts ...grpc.CallOption) (*pb.GetAllCompaniesResponse, error) {
+func (_m *JoblistingServiceClient) GetAllCompanies(ctx context.Context, in *pb.GetAllJobCompaniesRequest, opts ...grpc.CallOption) (*pb.GetAllJobCompaniesResponse, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -448,17 +448,17 @@ func (_m *JoblistingServiceClient) GetAllCompanies(ctx context.Context, in *pb.G
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.GetAllCompaniesResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetAllCompaniesRequest, ...grpc.CallOption) *pb.GetAllCompaniesResponse); ok {
+	var r0 *pb.GetAllJobCompaniesResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetAllJobCompaniesRequest, ...grpc.CallOption) *pb.GetAllJobCompaniesResponse); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.GetAllCompaniesResponse)
+			r0 = ret.Get(0).(*pb.GetAllJobCompaniesResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetAllCompaniesRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetAllJobCompaniesRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -677,8 +677,8 @@ func (_m *JoblistingServiceClient) GetKeyPersonByID(ctx context.Context, in *pb.
 	return r0, r1
 }
 
-// UpdateCompany provides a mock function with given fields: ctx, in, opts
-func (_m *JoblistingServiceClient) UpdateCompany(ctx context.Context, in *pb.UpdateCompanyRequest, opts ...grpc.CallOption) (*pb.Company, error) {
+// LocalCreateCompany provides a mock function with given fields: ctx, in, opts
+func (_m *JoblistingServiceClient) LocalCreateCompany(ctx context.Context, in *pb.CreateJobCompanyRequest, opts ...grpc.CallOption) (*pb.JobCompany, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -688,17 +688,77 @@ func (_m *JoblistingServiceClient) UpdateCompany(ctx context.Context, in *pb.Upd
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.Company
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateCompanyRequest, ...grpc.CallOption) *pb.Company); ok {
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateJobCompanyRequest, ...grpc.CallOption) *pb.JobCompany); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Company)
+			r0 = ret.Get(0).(*pb.JobCompany)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateCompanyRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateJobCompanyRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LocalUpdateCompany provides a mock function with given fields: ctx, in, opts
+func (_m *JoblistingServiceClient) LocalUpdateCompany(ctx context.Context, in *pb.UpdateJobCompanyRequest, opts ...grpc.CallOption) (*pb.JobCompany, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateJobCompanyRequest, ...grpc.CallOption) *pb.JobCompany); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.JobCompany)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateJobCompanyRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateCompany provides a mock function with given fields: ctx, in, opts
+func (_m *JoblistingServiceClient) UpdateCompany(ctx context.Context, in *pb.UpdateJobCompanyRequest, opts ...grpc.CallOption) (*pb.JobCompany, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateJobCompanyRequest, ...grpc.CallOption) *pb.JobCompany); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.JobCompany)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateJobCompanyRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)

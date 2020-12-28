@@ -40,6 +40,29 @@ func (mw logMiddleware) log(method string, begin time.Time, input, output interf
 	)
 }
 
+/* --------------- User --------------- */
+
+// CreateUser creates a new User
+func (mw logMiddleware) CreateUser(ctx context.Context, input *models.User) (output *models.User, err error) {
+	defer mw.log("CreateUser", time.Now(), input, output, &err)
+	output, err = mw.next.CreateUser(ctx, input)
+	return
+}
+
+// UpdateUser updates a User
+func (mw logMiddleware) UpdateUser(ctx context.Context, input *models.User) (output *models.User, err error) {
+	defer mw.log("UpdateUser", time.Now(), input, output, &err)
+	output, err = mw.next.UpdateUser(ctx, input)
+	return
+}
+
+// DeleteUser deletes a User by ID
+func (mw logMiddleware) DeleteUser(ctx context.Context, input uint64) (err error) {
+	defer mw.log("DeleteUser", time.Now(), input, nil, &err)
+	err = mw.next.DeleteUser(ctx, input)
+	return
+}
+
 /* --------------- Candidate --------------- */
 
 // CreateCandidate creates a new Candidate
@@ -50,14 +73,14 @@ func (mw logMiddleware) CreateCandidate(ctx context.Context, input *models.Candi
 }
 
 // GetAllCandidates returns all Candidates
-func (mw logMiddleware) GetAllCandidates(ctx context.Context, input models.CandidateFilters) (output []*models.Candidate, err error) {
+func (mw logMiddleware) GetAllCandidates(ctx context.Context, input models.CandidateFilters) (output []*models.User, err error) {
 	defer mw.log("GetAllCandidates", time.Now(), input, output, &err)
 	output, err = mw.next.GetAllCandidates(ctx, input)
 	return
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (mw logMiddleware) GetCandidateByID(ctx context.Context, input uint64) (output *models.Candidate, err error) {
+func (mw logMiddleware) GetCandidateByID(ctx context.Context, input uint64) (output *models.User, err error) {
 	defer mw.log("GetCandidateByID", time.Now(), input, output, &err)
 	output, err = mw.next.GetCandidateByID(ctx, input)
 	return

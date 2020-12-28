@@ -61,20 +61,20 @@ func (_m *JoblistingServiceServer) BulkCreateKeyPerson(_a0 context.Context, _a1 
 }
 
 // CreateCompany provides a mock function with given fields: _a0, _a1
-func (_m *JoblistingServiceServer) CreateCompany(_a0 context.Context, _a1 *pb.CreateCompanyRequest) (*pb.Company, error) {
+func (_m *JoblistingServiceServer) CreateCompany(_a0 context.Context, _a1 *pb.CreateJobCompanyRequest) (*pb.JobCompany, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.Company
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateCompanyRequest) *pb.Company); ok {
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateJobCompanyRequest) *pb.JobCompany); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Company)
+			r0 = ret.Get(0).(*pb.JobCompany)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateCompanyRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateJobCompanyRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -199,20 +199,20 @@ func (_m *JoblistingServiceServer) CreateKeyPerson(_a0 context.Context, _a1 *pb.
 }
 
 // DeleteCompany provides a mock function with given fields: _a0, _a1
-func (_m *JoblistingServiceServer) DeleteCompany(_a0 context.Context, _a1 *pb.DeleteCompanyRequest) (*pb.DeleteCompanyResponse, error) {
+func (_m *JoblistingServiceServer) DeleteCompany(_a0 context.Context, _a1 *pb.DeleteJobCompanyRequest) (*pb.DeleteJobCompanyResponse, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.DeleteCompanyResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteCompanyRequest) *pb.DeleteCompanyResponse); ok {
+	var r0 *pb.DeleteJobCompanyResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteJobCompanyRequest) *pb.DeleteJobCompanyResponse); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.DeleteCompanyResponse)
+			r0 = ret.Get(0).(*pb.DeleteJobCompanyResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteCompanyRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteJobCompanyRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -337,20 +337,20 @@ func (_m *JoblistingServiceServer) DeleteKeyPerson(_a0 context.Context, _a1 *pb.
 }
 
 // GetAllCompanies provides a mock function with given fields: _a0, _a1
-func (_m *JoblistingServiceServer) GetAllCompanies(_a0 context.Context, _a1 *pb.GetAllCompaniesRequest) (*pb.GetAllCompaniesResponse, error) {
+func (_m *JoblistingServiceServer) GetAllCompanies(_a0 context.Context, _a1 *pb.GetAllJobCompaniesRequest) (*pb.GetAllJobCompaniesResponse, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.GetAllCompaniesResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetAllCompaniesRequest) *pb.GetAllCompaniesResponse); ok {
+	var r0 *pb.GetAllJobCompaniesResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetAllJobCompaniesRequest) *pb.GetAllJobCompaniesResponse); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.GetAllCompaniesResponse)
+			r0 = ret.Get(0).(*pb.GetAllJobCompaniesResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetAllCompaniesRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetAllJobCompaniesRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -520,21 +520,67 @@ func (_m *JoblistingServiceServer) GetKeyPersonByID(_a0 context.Context, _a1 *pb
 	return r0, r1
 }
 
-// UpdateCompany provides a mock function with given fields: _a0, _a1
-func (_m *JoblistingServiceServer) UpdateCompany(_a0 context.Context, _a1 *pb.UpdateCompanyRequest) (*pb.Company, error) {
+// LocalCreateCompany provides a mock function with given fields: _a0, _a1
+func (_m *JoblistingServiceServer) LocalCreateCompany(_a0 context.Context, _a1 *pb.CreateJobCompanyRequest) (*pb.JobCompany, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.Company
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateCompanyRequest) *pb.Company); ok {
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateJobCompanyRequest) *pb.JobCompany); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Company)
+			r0 = ret.Get(0).(*pb.JobCompany)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateCompanyRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateJobCompanyRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LocalUpdateCompany provides a mock function with given fields: _a0, _a1
+func (_m *JoblistingServiceServer) LocalUpdateCompany(_a0 context.Context, _a1 *pb.UpdateJobCompanyRequest) (*pb.JobCompany, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateJobCompanyRequest) *pb.JobCompany); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.JobCompany)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateJobCompanyRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateCompany provides a mock function with given fields: _a0, _a1
+func (_m *JoblistingServiceServer) UpdateCompany(_a0 context.Context, _a1 *pb.UpdateJobCompanyRequest) (*pb.JobCompany, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.JobCompany
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateJobCompanyRequest) *pb.JobCompany); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.JobCompany)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateJobCompanyRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

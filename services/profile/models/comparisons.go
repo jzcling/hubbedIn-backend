@@ -7,46 +7,68 @@ type Comparator interface {
 	IsEqual(m2 interface{}) bool
 }
 
+// IsEqual checks the equivalence of two User objects
+func (m1 *User) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*User)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if (m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) ||
+		(m1.UpdatedAt == nil) != (convertedM2.UpdatedAt == nil) ||
+		(m1.DeletedAt == nil) != (convertedM2.DeletedAt == nil) {
+		return false
+	}
+
+	if m1.AuthID != convertedM2.AuthID ||
+		m1.FirstName != convertedM2.FirstName ||
+		m1.LastName != convertedM2.LastName ||
+		m1.Email != convertedM2.Email ||
+		m1.ContactNumber != convertedM2.ContactNumber ||
+		m1.Picture != convertedM2.Picture ||
+		m1.Gender != convertedM2.Gender ||
+		helpers.IsStringSliceEqual(m1.Roles, convertedM2.Roles) ||
+		m1.CandidateID != convertedM2.CandidateID ||
+		m1.JobCompanyID != convertedM2.JobCompanyID ||
+		*m1.CreatedAt != *convertedM2.CreatedAt ||
+		*m1.UpdatedAt != *convertedM2.UpdatedAt ||
+		*m1.DeletedAt != *convertedM2.DeletedAt {
+		return false
+	}
+	return true
+}
+
 // IsEqual checks the equivalence of two Candidate objects
 func (m1 *Candidate) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*Candidate) == nil {
-		return true
+	convertedM2 := m2.(*Candidate)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*Candidate) != nil) ||
-		(m1 != nil && m2.(*Candidate) == nil) {
+	if (m1.Birthday == nil) != (convertedM2.Birthday == nil) ||
+		(m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) ||
+		(m1.UpdatedAt == nil) != (convertedM2.UpdatedAt == nil) ||
+		(m1.DeletedAt == nil) != (convertedM2.DeletedAt == nil) {
 		return false
 	}
 
-	if ((m1.Birthday != nil && m2.(*Candidate).Birthday == nil) || (m1.Birthday == nil && m2.(*Candidate).Birthday != nil)) ||
-		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt == nil) || (m1.CreatedAt == nil && m2.(*Candidate).CreatedAt != nil)) ||
-		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt == nil) || (m1.UpdatedAt == nil && m2.(*Candidate).UpdatedAt != nil)) ||
-		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt == nil) || (m1.DeletedAt == nil && m2.(*Candidate).DeletedAt != nil)) {
-		return false
-	}
-
-	if m1.AuthID != m2.(*Candidate).AuthID ||
-		m1.FirstName != m2.(*Candidate).FirstName ||
-		m1.LastName != m2.(*Candidate).LastName ||
-		m1.Email != m2.(*Candidate).Email ||
-		m1.ContactNumber != m2.(*Candidate).ContactNumber ||
-		m1.Picture != m2.(*Candidate).Picture ||
-		m1.Gender != m2.(*Candidate).Gender ||
-		m1.Nationality != m2.(*Candidate).Nationality ||
-		m1.ResidenceCity != m2.(*Candidate).ResidenceCity ||
-		m1.ExpectedSalaryCurrency != m2.(*Candidate).ExpectedSalaryCurrency ||
-		m1.ExpectedSalary != m2.(*Candidate).ExpectedSalary ||
-		m1.LinkedInURL != m2.(*Candidate).LinkedInURL ||
-		m1.SCMURL != m2.(*Candidate).SCMURL ||
-		m1.WebsiteURL != m2.(*Candidate).WebsiteURL ||
-		m1.EducationLevel != m2.(*Candidate).EducationLevel ||
-		m1.Summary != m2.(*Candidate).Summary ||
-		((m1.Birthday != nil && m2.(*Candidate).Birthday != nil) && (*m1.Birthday != *m2.(*Candidate).Birthday)) ||
-		m1.NoticePeriod != m2.(*Candidate).NoticePeriod ||
-		!helpers.IsStringSliceEqual(m1.PreferredRoles, m2.(*Candidate).PreferredRoles) ||
-		((m1.CreatedAt != nil && m2.(*Candidate).CreatedAt != nil) && (*m1.CreatedAt != *m2.(*Candidate).CreatedAt)) ||
-		((m1.UpdatedAt != nil && m2.(*Candidate).UpdatedAt != nil) && (*m1.UpdatedAt != *m2.(*Candidate).UpdatedAt)) ||
-		((m1.DeletedAt != nil && m2.(*Candidate).DeletedAt != nil) && (*m1.DeletedAt != *m2.(*Candidate).DeletedAt)) {
+	if m1.Nationality != convertedM2.Nationality ||
+		m1.ResidenceCity != convertedM2.ResidenceCity ||
+		m1.ExpectedSalaryCurrency != convertedM2.ExpectedSalaryCurrency ||
+		m1.ExpectedSalary != convertedM2.ExpectedSalary ||
+		m1.LinkedInURL != convertedM2.LinkedInURL ||
+		m1.SCMURL != convertedM2.SCMURL ||
+		m1.WebsiteURL != convertedM2.WebsiteURL ||
+		m1.EducationLevel != convertedM2.EducationLevel ||
+		m1.Summary != convertedM2.Summary ||
+		*m1.Birthday != *convertedM2.Birthday ||
+		m1.NoticePeriod != convertedM2.NoticePeriod ||
+		!helpers.IsStringSliceEqual(m1.PreferredRoles, convertedM2.PreferredRoles) ||
+		*m1.CreatedAt != *convertedM2.CreatedAt ||
+		*m1.UpdatedAt != *convertedM2.UpdatedAt ||
+		*m1.DeletedAt != *convertedM2.DeletedAt {
 		return false
 	}
 	return true
@@ -54,16 +76,13 @@ func (m1 *Candidate) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two Skill objects
 func (m1 *Skill) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*Skill) == nil {
-		return true
+	convertedM2 := m2.(*Skill)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*Skill) != nil) ||
-		(m1 != nil && m2.(*Skill) == nil) {
-		return false
-	}
-
-	if m1.Name != m2.(*Skill).Name {
+	if m1.Name != convertedM2.Name {
 		return false
 	}
 	return true
@@ -71,19 +90,16 @@ func (m1 *Skill) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two UserSkill objects
 func (m1 *UserSkill) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*UserSkill) == nil {
-		return true
+	convertedM2 := m2.(*UserSkill)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*UserSkill) != nil) ||
-		(m1 != nil && m2.(*UserSkill) == nil) {
-		return false
-	}
-
-	if m1.CandidateID != m2.(*UserSkill).CandidateID ||
-		m1.SkillID != m2.(*UserSkill).SkillID ||
-		*m1.CreatedAt != *m2.(*UserSkill).CreatedAt ||
-		*m1.UpdatedAt != *m2.(*UserSkill).UpdatedAt {
+	if m1.CandidateID != convertedM2.CandidateID ||
+		m1.SkillID != convertedM2.SkillID ||
+		*m1.CreatedAt != *convertedM2.CreatedAt ||
+		*m1.UpdatedAt != *convertedM2.UpdatedAt {
 		return false
 	}
 	return true
@@ -91,17 +107,14 @@ func (m1 *UserSkill) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two Institution objects
 func (m1 *Institution) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*Institution) == nil {
-		return true
+	convertedM2 := m2.(*Institution)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*Institution) != nil) ||
-		(m1 != nil && m2.(*Institution) == nil) {
-		return false
-	}
-
-	if m1.Name != m2.(*Institution).Name ||
-		m1.Country != m2.(*Institution).Country {
+	if m1.Name != convertedM2.Name ||
+		m1.Country != convertedM2.Country {
 		return false
 	}
 	return true
@@ -109,17 +122,14 @@ func (m1 *Institution) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two Course objects
 func (m1 *Course) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*Course) == nil {
-		return true
+	convertedM2 := m2.(*Course)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*Course) != nil) ||
-		(m1 != nil && m2.(*Course) == nil) {
-		return false
-	}
-
-	if m1.Name != m2.(*Course).Name ||
-		m1.Level != m2.(*Course).Level {
+	if m1.Name != convertedM2.Name ||
+		m1.Level != convertedM2.Level {
 		return false
 	}
 	return true
@@ -127,23 +137,26 @@ func (m1 *Course) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two AcademicHistory objects
 func (m1 *AcademicHistory) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*AcademicHistory) == nil {
-		return true
+	convertedM2 := m2.(*AcademicHistory)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*AcademicHistory) != nil) ||
-		(m1 != nil && m2.(*AcademicHistory) == nil) {
+	if (m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) ||
+		(m1.UpdatedAt == nil) != (convertedM2.UpdatedAt == nil) ||
+		(m1.DeletedAt == nil) != (convertedM2.DeletedAt == nil) {
 		return false
 	}
 
-	if m1.CandidateID != m2.(*AcademicHistory).CandidateID ||
-		m1.InstitutionID != m2.(*AcademicHistory).InstitutionID ||
-		m1.CourseID != m2.(*AcademicHistory).CourseID ||
-		m1.YearObtained != m2.(*AcademicHistory).YearObtained ||
-		m1.Grade != m2.(*AcademicHistory).Grade ||
-		*m1.CreatedAt != *m2.(*AcademicHistory).CreatedAt ||
-		*m1.UpdatedAt != *m2.(*AcademicHistory).UpdatedAt ||
-		*m1.DeletedAt != *m2.(*AcademicHistory).DeletedAt {
+	if m1.CandidateID != convertedM2.CandidateID ||
+		m1.InstitutionID != convertedM2.InstitutionID ||
+		m1.CourseID != convertedM2.CourseID ||
+		m1.YearObtained != convertedM2.YearObtained ||
+		m1.Grade != convertedM2.Grade ||
+		*m1.CreatedAt != *convertedM2.CreatedAt ||
+		*m1.UpdatedAt != *convertedM2.UpdatedAt ||
+		*m1.DeletedAt != *convertedM2.DeletedAt {
 		return false
 	}
 	return true
@@ -151,16 +164,13 @@ func (m1 *AcademicHistory) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two Company objects
 func (m1 *Company) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*Company) == nil {
-		return true
+	convertedM2 := m2.(*Company)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*Company) != nil) ||
-		(m1 != nil && m2.(*Company) == nil) {
-		return false
-	}
-
-	if m1.Name != m2.(*Company).Name {
+	if m1.Name != convertedM2.Name {
 		return false
 	}
 	return true
@@ -168,16 +178,13 @@ func (m1 *Company) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two Department objects
 func (m1 *Department) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*Department) == nil {
-		return true
+	convertedM2 := m2.(*Department)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*Department) != nil) ||
-		(m1 != nil && m2.(*Department) == nil) {
-		return false
-	}
-
-	if m1.Name != m2.(*Department).Name {
+	if m1.Name != convertedM2.Name {
 		return false
 	}
 	return true
@@ -185,29 +192,50 @@ func (m1 *Department) IsEqual(m2 interface{}) bool {
 
 // IsEqual checks the equivalence of two JobHistory objects
 func (m1 *JobHistory) IsEqual(m2 interface{}) bool {
-	if m1 == nil && m2.(*JobHistory) == nil {
-		return true
+	convertedM2 := m2.(*JobHistory)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (m1 == nil && m2.(*JobHistory) != nil) ||
-		(m1 != nil && m2.(*JobHistory) == nil) {
+	if (m1.StartDate == nil) != (convertedM2.StartDate == nil) ||
+		(m1.EndDate == nil) != (convertedM2.EndDate == nil) ||
+		(m1.CreatedAt == nil) != (convertedM2.CreatedAt == nil) ||
+		(m1.UpdatedAt == nil) != (convertedM2.UpdatedAt == nil) ||
+		(m1.DeletedAt == nil) != (convertedM2.DeletedAt == nil) {
 		return false
 	}
 
-	if m1.CandidateID != m2.(*JobHistory).CandidateID ||
-		m1.CompanyID != m2.(*JobHistory).CompanyID ||
-		m1.DepartmentID != m2.(*JobHistory).DepartmentID ||
-		m1.Country != m2.(*JobHistory).Country ||
-		m1.City != m2.(*JobHistory).City ||
-		m1.Title != m2.(*JobHistory).Title ||
-		*m1.StartDate != *m2.(*JobHistory).StartDate ||
-		*m1.EndDate != *m2.(*JobHistory).EndDate ||
-		m1.SalaryCurrency != m2.(*JobHistory).SalaryCurrency ||
-		m1.Salary != m2.(*JobHistory).Salary ||
-		m1.Description != m2.(*JobHistory).Description ||
-		*m1.CreatedAt != *m2.(*JobHistory).CreatedAt ||
-		*m1.UpdatedAt != *m2.(*JobHistory).UpdatedAt ||
-		*m1.DeletedAt != *m2.(*JobHistory).DeletedAt {
+	if m1.CandidateID != convertedM2.CandidateID ||
+		m1.CompanyID != convertedM2.CompanyID ||
+		m1.DepartmentID != convertedM2.DepartmentID ||
+		m1.Country != convertedM2.Country ||
+		m1.City != convertedM2.City ||
+		m1.Title != convertedM2.Title ||
+		*m1.StartDate != *convertedM2.StartDate ||
+		*m1.EndDate != *convertedM2.EndDate ||
+		m1.SalaryCurrency != convertedM2.SalaryCurrency ||
+		m1.Salary != convertedM2.Salary ||
+		m1.Description != convertedM2.Description ||
+		*m1.CreatedAt != *convertedM2.CreatedAt ||
+		*m1.UpdatedAt != *convertedM2.UpdatedAt ||
+		*m1.DeletedAt != *convertedM2.DeletedAt {
+		return false
+	}
+	return true
+}
+
+// IsEqual checks the equivalence of two JobCompany objects
+func (m1 *JobCompany) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*JobCompany)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.Name != convertedM2.Name ||
+		m1.LogoURL != convertedM2.LogoURL ||
+		m1.Size != convertedM2.Size {
 		return false
 	}
 	return true

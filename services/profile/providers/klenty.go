@@ -15,9 +15,9 @@ import (
 
 // KlentyProvider describes the methods to interact with the Klenty CRM platform
 type KlentyProvider interface {
-	CreateProspect(c *models.Candidate) error
-	UpdateProspect(c *models.Candidate) error
-	StartCadence(email string) error
+	CreateProspect(c *models.User) error
+	UpdateProspect(c *models.User) error
+	StartCadence(email, role string) error
 }
 
 type klentyProvider struct {
@@ -37,15 +37,12 @@ func NewKlenty(cfg configs.Config, client interfaces.HTTPClient) KlentyProvider 
 	}
 }
 
-func (p *klentyProvider) CreateProspect(c *models.Candidate) error {
+func (p *klentyProvider) CreateProspect(u *models.User) error {
 	url := klentyURL + "/prospects"
 	reqBody, err := json.Marshal(map[string]interface{}{
-		"Email":     c.Email,
-		"FirstName": c.FirstName,
-		"LastName":  c.LastName,
-		"CustomFields": []map[string]string{
-			0: {"key": "hubbedlearn password", "value": ""},
-		},
+		"Email":     u.Email,
+		"FirstName": u.FirstName,
+		"LastName":  u.LastName,
 	})
 	if err != nil {
 		return err
@@ -66,15 +63,15 @@ func (p *klentyProvider) CreateProspect(c *models.Candidate) error {
 	return nil
 }
 
-func (p *klentyProvider) UpdateProspect(c *models.Candidate) error {
-	url := auth0URL + "/prospects/" + url.QueryEscape(c.Email)
+func (p *klentyProvider) UpdateProspect(u *models.User) error {
+	url := auth0URL + "/prospects/" + url.QueryEscape(u.Email)
 	reqBody, err := json.Marshal(map[string]string{
-		"FirstName":   c.FirstName,
-		"LastName":    c.LastName,
-		"Phone":       c.ContactNumber,
-		"Location":    c.ResidenceCity,
-		"Country":     c.Nationality,
-		"LinkedinURL": c.LinkedInURL,
+		"FirstName":   u.FirstName,
+		"LastName":    u.LastName,
+		"Phone":       u.ContactNumber,
+		"Location":    u.Candidate.ResidenceCity,
+		"Country":     u.Candidate.Nationality,
+		"LinkedinURL": u.Candidate.LinkedInURL,
 	})
 	if err != nil {
 		return err
@@ -95,11 +92,19 @@ func (p *klentyProvider) UpdateProspect(c *models.Candidate) error {
 	return nil
 }
 
-func (p *klentyProvider) StartCadence(email string) error {
+func (p *klentyProvider) StartCadence(email, role string) error {
+	var cadence string
+	if role == "Candidate" {
+		cadence = p.config.Klenty.CandidateSignupCadence
+	}
+	if role == "Company" {
+		cadence = p.config.Klenty.CompanySignupCadence
+	}
+
 	url := klentyURL + "/startCadence"
 	reqBody, err := json.Marshal(map[string]string{
 		"Email":       email,
-		"cadenceName": p.config.Klenty.SignupCadence,
+		"cadenceName": cadence,
 	})
 	if err != nil {
 		return err
@@ -125,7 +130,7 @@ func (p *klentyProvider) newRequest(method, url string, buf *bytes.Buffer) (*htt
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("x-api-key", p.config.Klenty.ApiKey)
+	req.Header.Add("x-api-key", p.config.Klenty.APIKey)
 	req.Header.Add("content-type", "application/json")
 	return req, nil
 }

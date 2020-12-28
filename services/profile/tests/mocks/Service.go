@@ -199,6 +199,29 @@ func (_m *Service) CreateSkill(ctx context.Context, s *models.Skill) (*models.Sk
 	return r0, r1
 }
 
+// CreateUser provides a mock function with given fields: ctx, m
+func (_m *Service) CreateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	ret := _m.Called(ctx, m)
+
+	var r0 *models.User
+	if rf, ok := ret.Get(0).(func(context.Context, *models.User) *models.User); ok {
+		r0 = rf(ctx, m)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.User) error); ok {
+		r1 = rf(ctx, m)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateUserSkill provides a mock function with given fields: ctx, us
 func (_m *Service) CreateUserSkill(ctx context.Context, us *models.UserSkill) (*models.UserSkill, error) {
 	ret := _m.Called(ctx, us)
@@ -264,6 +287,20 @@ func (_m *Service) DeleteJobHistory(ctx context.Context, cid uint64, jhid uint64
 	return r0
 }
 
+// DeleteUser provides a mock function with given fields: ctx, id
+func (_m *Service) DeleteUser(ctx context.Context, id uint64) error {
+	ret := _m.Called(ctx, id)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) error); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeleteUserSkill provides a mock function with given fields: ctx, cid, sid
 func (_m *Service) DeleteUserSkill(ctx context.Context, cid uint64, sid uint64) error {
 	ret := _m.Called(ctx, cid, sid)
@@ -302,15 +339,15 @@ func (_m *Service) GetAcademicHistory(ctx context.Context, id uint64) (*models.A
 }
 
 // GetAllCandidates provides a mock function with given fields: ctx, f
-func (_m *Service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
+func (_m *Service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.User, error) {
 	ret := _m.Called(ctx, f)
 
-	var r0 []*models.Candidate
-	if rf, ok := ret.Get(0).(func(context.Context, models.CandidateFilters) []*models.Candidate); ok {
+	var r0 []*models.User
+	if rf, ok := ret.Get(0).(func(context.Context, models.CandidateFilters) []*models.User); ok {
 		r0 = rf(ctx, f)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*models.Candidate)
+			r0 = ret.Get(0).([]*models.User)
 		}
 	}
 
@@ -440,15 +477,15 @@ func (_m *Service) GetAllSkills(ctx context.Context, f models.SkillFilters) ([]*
 }
 
 // GetCandidateByID provides a mock function with given fields: ctx, id
-func (_m *Service) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
+func (_m *Service) GetCandidateByID(ctx context.Context, id uint64) (*models.User, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *models.Candidate
-	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.Candidate); ok {
+	var r0 *models.User
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.User); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Candidate)
+			r0 = ret.Get(0).(*models.User)
 		}
 	}
 
@@ -662,6 +699,29 @@ func (_m *Service) UpdateJobHistory(ctx context.Context, j *models.JobHistory) (
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *models.JobHistory) error); ok {
 		r1 = rf(ctx, j)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateUser provides a mock function with given fields: ctx, m
+func (_m *Service) UpdateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	ret := _m.Called(ctx, m)
+
+	var r0 *models.User
+	if rf, ok := ret.Get(0).(func(context.Context, *models.User) *models.User); ok {
+		r0 = rf(ctx, m)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.User) error); ok {
+		r1 = rf(ctx, m)
 	} else {
 		r1 = ret.Error(1)
 	}

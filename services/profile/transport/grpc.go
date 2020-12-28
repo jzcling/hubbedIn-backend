@@ -14,6 +14,10 @@ import (
 
 // grpc transport service for Profile Service.
 type grpcServer struct {
+	createUser kitgrpc.Handler
+	updateUser kitgrpc.Handler
+	deleteUser kitgrpc.Handler
+
 	createCandidate  kitgrpc.Handler
 	getAllCandidates kitgrpc.Handler
 	getCandidateByID kitgrpc.Handler
@@ -66,6 +70,25 @@ func NewGRPCServer(
 	options = append(options, errorLogger)
 
 	return &grpcServer{
+		createUser: kitgrpc.NewServer(
+			endpoints.CreateUser,
+			decodeCreateUserRequest,
+			encodeCreateUserResponse,
+			options...,
+		),
+		updateUser: kitgrpc.NewServer(
+			endpoints.UpdateUser,
+			decodeUpdateUserRequest,
+			encodeUpdateUserResponse,
+			options...,
+		),
+		deleteUser: kitgrpc.NewServer(
+			endpoints.DeleteUser,
+			decodeDeleteUserRequest,
+			encodeDeleteUserResponse,
+			options...,
+		),
+
 		createCandidate: kitgrpc.NewServer(
 			endpoints.CreateCandidate,
 			decodeCreateCandidateRequest,
@@ -259,6 +282,83 @@ func NewGRPCServer(
 	}
 }
 
+/* --------------- User --------------- */
+
+// CreateUser creates a new User
+func (s *grpcServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
+	_, rep, err := s.createUser.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.User), nil
+}
+
+// decodeCreateUserRequest decodes the incoming grpc payload to our go kit payload
+func decodeCreateUserRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.CreateUserRequest)
+	return endpoints.CreateUserRequest{User: models.UserToORM(req.User)}, nil
+}
+
+// encodeCreateUserResponse encodes the outgoing go kit payload to the grpc payload
+func encodeCreateUserResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.CreateUserResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return res.User.ToProto(), nil
+	}
+	return nil, err
+}
+
+// UpdateUser updates a User
+func (s *grpcServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.User, error) {
+	_, rep, err := s.updateUser.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.User), nil
+}
+
+// decodeUpdateUserRequest decodes the incoming grpc payload to our go kit payload
+func decodeUpdateUserRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.UpdateUserRequest)
+	return endpoints.UpdateUserRequest{ID: req.Id, User: models.UserToORM(req.User)}, nil
+}
+
+// encodeUpdateUserResponse encodes the outgoing go kit payload to the grpc payload
+func encodeUpdateUserResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.UpdateUserResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return res.User.ToProto(), nil
+	}
+	return nil, err
+}
+
+// DeleteUser deletes a User by ID
+func (s *grpcServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+	_, rep, err := s.deleteUser.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.DeleteUserResponse), nil
+}
+
+// decodeDeleteUserRequest decodes the incoming grpc payload to our go kit payload
+func decodeDeleteUserRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.DeleteUserRequest)
+	return endpoints.DeleteUserRequest{ID: req.Id}, nil
+}
+
+// encodeDeleteUserResponse encodes the outgoing go kit payload to the grpc payload
+func encodeDeleteUserResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.DeleteUserResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return &pb.DeleteUserResponse{}, nil
+	}
+	return nil, err
+}
+
 /* --------------- Candidate --------------- */
 
 // CreateCandidate creates a new Candidate
@@ -306,7 +406,7 @@ func encodeGetAllCandidatesResponse(_ context.Context, response interface{}) (in
 	res := response.(endpoints.GetAllCandidatesResponse)
 	err := getError(res.Err)
 	if err == nil {
-		var candidates []*pb.Candidate
+		var candidates []*pb.User
 		for _, candidate := range res.Candidates {
 			candidates = append(candidates, candidate.ToProto())
 		}
@@ -316,12 +416,12 @@ func encodeGetAllCandidatesResponse(_ context.Context, response interface{}) (in
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (s *grpcServer) GetCandidateByID(ctx context.Context, req *pb.GetCandidateByIDRequest) (*pb.Candidate, error) {
+func (s *grpcServer) GetCandidateByID(ctx context.Context, req *pb.GetCandidateByIDRequest) (*pb.User, error) {
 	_, rep, err := s.getCandidateByID.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Candidate), nil
+	return rep.(*pb.User), nil
 }
 
 // decodeGetCandidateByIDRequest decodes the incoming grpc payload to our go kit payload

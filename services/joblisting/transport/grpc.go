@@ -22,10 +22,12 @@ type grpcServer struct {
 	updateJobPost     kitgrpc.Handler
 	deleteJobPost     kitgrpc.Handler
 
-	createCompany   kitgrpc.Handler
-	getAllCompanies kitgrpc.Handler
-	updateCompany   kitgrpc.Handler
-	deleteCompany   kitgrpc.Handler
+	createCompany      kitgrpc.Handler
+	localCreateCompany kitgrpc.Handler
+	getAllCompanies    kitgrpc.Handler
+	updateCompany      kitgrpc.Handler
+	localUpdateCompany kitgrpc.Handler
+	deleteCompany      kitgrpc.Handler
 
 	createIndustry   kitgrpc.Handler
 	getAllIndustries kitgrpc.Handler
@@ -102,6 +104,12 @@ func NewGRPCServer(
 			encodeCreateCompanyResponse,
 			options...,
 		),
+		localCreateCompany: kitgrpc.NewServer(
+			endpoints.LocalCreateCompany,
+			decodeCreateCompanyRequest,
+			encodeCreateCompanyResponse,
+			options...,
+		),
 		getAllCompanies: kitgrpc.NewServer(
 			endpoints.GetAllCompanies,
 			decodeGetAllCompaniesRequest,
@@ -110,6 +118,12 @@ func NewGRPCServer(
 		),
 		updateCompany: kitgrpc.NewServer(
 			endpoints.UpdateCompany,
+			decodeUpdateCompanyRequest,
+			encodeUpdateCompanyResponse,
+			options...,
+		),
+		localUpdateCompany: kitgrpc.NewServer(
+			endpoints.LocalUpdateCompany,
 			decodeUpdateCompanyRequest,
 			encodeUpdateCompanyResponse,
 			options...,
@@ -405,18 +419,27 @@ func encodeDeleteJobPostResponse(_ context.Context, response interface{}) (inter
 /* --------------- Company --------------- */
 
 // CreateCompany creates a new Company
-func (s *grpcServer) CreateCompany(ctx context.Context, req *pb.CreateJobCompanyRequest) (*pb.Company, error) {
+func (s *grpcServer) CreateCompany(ctx context.Context, req *pb.CreateJobCompanyRequest) (*pb.JobCompany, error) {
 	_, rep, err := s.createCompany.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Company), nil
+	return rep.(*pb.JobCompany), nil
+}
+
+// LocalCreateCompany creates a new Company
+func (s *grpcServer) LocalCreateCompany(ctx context.Context, req *pb.CreateJobCompanyRequest) (*pb.JobCompany, error) {
+	_, rep, err := s.localCreateCompany.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.JobCompany), nil
 }
 
 // decodeCreateCompanyRequest decodes the incoming grpc payload to our go kit payload
 func decodeCreateCompanyRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateJobCompanyRequest)
-	return endpoints.CreateCompanyRequest{Company: models.CompanyToORM(req.Company)}, nil
+	return endpoints.CreateCompanyRequest{Company: models.JobCompanyToORM(req.Company)}, nil
 }
 
 // encodeCreateCompanyResponse encodes the outgoing go kit payload to the grpc payload
@@ -453,7 +476,7 @@ func encodeGetAllCompaniesResponse(_ context.Context, response interface{}) (int
 	res := response.(endpoints.GetAllCompaniesResponse)
 	err := getError(res.Err)
 	if err == nil {
-		var companies []*pb.Company
+		var companies []*pb.JobCompany
 		for _, company := range res.Companies {
 			companies = append(companies, company.ToProto())
 		}
@@ -463,18 +486,27 @@ func encodeGetAllCompaniesResponse(_ context.Context, response interface{}) (int
 }
 
 // UpdateCompany updates a Company
-func (s *grpcServer) UpdateCompany(ctx context.Context, req *pb.UpdateJobCompanyRequest) (*pb.Company, error) {
+func (s *grpcServer) UpdateCompany(ctx context.Context, req *pb.UpdateJobCompanyRequest) (*pb.JobCompany, error) {
 	_, rep, err := s.updateCompany.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.Company), nil
+	return rep.(*pb.JobCompany), nil
+}
+
+// LocalUpdateCompany updates a Company
+func (s *grpcServer) LocalUpdateCompany(ctx context.Context, req *pb.UpdateJobCompanyRequest) (*pb.JobCompany, error) {
+	_, rep, err := s.localUpdateCompany.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.JobCompany), nil
 }
 
 // decodeUpdateCompanyRequest decodes the incoming grpc payload to our go kit payload
 func decodeUpdateCompanyRequest(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.UpdateJobCompanyRequest)
-	return endpoints.UpdateCompanyRequest{ID: req.Id, Company: models.CompanyToORM(req.Company)}, nil
+	return endpoints.UpdateCompanyRequest{ID: req.Id, Company: models.JobCompanyToORM(req.Company)}, nil
 }
 
 // encodeUpdateCompanyResponse encodes the outgoing go kit payload to the grpc payload

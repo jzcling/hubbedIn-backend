@@ -37,21 +37,23 @@ service JoblistingService {
         option (google.api.http) = { delete: "/v1/joblistings/{id}" };
     };
 
-    rpc CreateCompany(CreateJobCompanyRequest) returns (Company) {
+    rpc CreateCompany(CreateJobCompanyRequest) returns (JobCompany) {
         option (google.api.http) = { 
             post: "/v1/jobs/companies" 
             body: "company"
         };
     };
+    rpc LocalCreateCompany(CreateJobCompanyRequest) returns (JobCompany);
     rpc GetAllCompanies(GetAllJobCompaniesRequest) returns (GetAllJobCompaniesResponse) {
         option (google.api.http) = { get: "/v1/jobs/companies" };
     };
-    rpc UpdateCompany(UpdateJobCompanyRequest) returns (Company) {
+    rpc UpdateCompany(UpdateJobCompanyRequest) returns (JobCompany) {
         option (google.api.http) = {
             put: "/v1/jobs/companies/{id}"
             body: "company"
         };
     };
+    rpc LocalUpdateCompany(UpdateJobCompanyRequest) returns (JobCompany);
     rpc DeleteCompany(DeleteJobCompanyRequest) returns (DeleteJobCompanyResponse) {
         option (google.api.http) = { delete: "/v1/jobs/companies/{id}" };
     };
@@ -147,13 +149,13 @@ message JobPost {
 	google.protobuf.Timestamp start_at = 20;
 	google.protobuf.Timestamp expire_at = 21;
 	repeated uint64 skill_id = 22;
-    Company company = 23;
+    JobCompany company = 23;
     JobFunction function = 24;
     Industry industry = 25;
     JobPlatform job_platform = 26;
 	KeyPerson hr_contact = 27;
     KeyPerson hiring_manager = 28;
-    repeated Skill skills = 29;
+    repeated ProfileSkill skills = 29;
 }
 
 message CreateJobPostRequest {
@@ -209,7 +211,7 @@ message DeleteJobPostResponse {
     // Empty
 }
 
-message Company {
+message JobCompany {
     uint64 id = 1;
 	string name = 2;
     string logo_url = 3;
@@ -220,7 +222,7 @@ message Company {
 }
 
 message CreateJobCompanyRequest {
-    Company company = 1;
+    JobCompany company = 1;
 }
 
 message GetAllJobCompaniesRequest {
@@ -229,12 +231,12 @@ message GetAllJobCompaniesRequest {
 }
 
 message GetAllJobCompaniesResponse {
-    repeated Company companies = 1;
+    repeated JobCompany companies = 1;
 }
 
 message UpdateJobCompanyRequest {
     uint64 id = 1;
-    Company company = 2;
+    JobCompany company = 2;
 }
 
 message DeleteJobCompanyRequest {
@@ -248,7 +250,7 @@ message DeleteJobCompanyResponse {
 message Industry {
     uint64 id = 1;
     string name = 2;
-    repeated Company companies = 3;
+    repeated JobCompany companies = 3;
     repeated JobPost job_posts = 4;
 }
 
@@ -313,7 +315,7 @@ message KeyPerson {
 	string email = 5;
 	string job_title = 6;
 	google.protobuf.Timestamp updated_at = 7;
-	Company company = 8;
+	JobCompany company = 8;
 }
 
 message CreateKeyPersonRequest {
@@ -386,7 +388,7 @@ message DeleteJobPlatformResponse {
     // Empty
 }
 
-message Skill {
+message ProfileSkill {
     uint64 id = 1;
     string name = 2;
 }

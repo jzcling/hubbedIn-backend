@@ -5,6 +5,36 @@ import (
 	"in-backend/services/profile/pb"
 )
 
+// UserToORM maps the proto User model to the ORM model
+func UserToORM(m *pb.User) *User {
+	if m == nil {
+		return nil
+	}
+
+	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
+	updatedAt := helpers.ProtoTimeToTime(m.UpdatedAt)
+	deletedAt := helpers.ProtoTimeToTime(m.DeletedAt)
+
+	return &User{
+		ID:            m.Id,
+		AuthID:        m.AuthId,
+		FirstName:     m.FirstName,
+		LastName:      m.LastName,
+		Email:         m.Email,
+		ContactNumber: m.ContactNumber,
+		Picture:       m.Picture,
+		Gender:        m.Gender,
+		Roles:         m.Roles,
+		CandidateID:   m.CandidateId,
+		JobCompanyID:  m.JobCompanyId,
+		CreatedAt:     createdAt,
+		UpdatedAt:     updatedAt,
+		DeletedAt:     deletedAt,
+		Candidate:     CandidateToORM(m.Candidate),
+		JobCompany:    JoblistingCompanyToORM(m.JobCompany),
+	}
+}
+
 // CandidateToORM maps the proto Candidate model to the ORM model
 func CandidateToORM(m *pb.Candidate) *Candidate {
 	if m == nil {
@@ -36,13 +66,6 @@ func CandidateToORM(m *pb.Candidate) *Candidate {
 
 	return &Candidate{
 		ID:                     m.Id,
-		AuthID:                 m.AuthId,
-		FirstName:              m.FirstName,
-		LastName:               m.LastName,
-		Email:                  m.Email,
-		ContactNumber:          m.ContactNumber,
-		Picture:                m.Picture,
-		Gender:                 m.Gender,
 		Nationality:            m.Nationality,
 		ResidenceCity:          m.ResidenceCity,
 		ExpectedSalaryCurrency: m.ExpectedSalaryCurrency,
@@ -194,5 +217,18 @@ func JobHistoryToORM(m *pb.JobHistory) *JobHistory {
 		CreatedAt:      createdAt,
 		UpdatedAt:      updatedAt,
 		DeletedAt:      deletedAt,
+	}
+}
+
+// JoblistingCompanyToORM maps the proto JoblistingCompany model to the ORM model
+func JoblistingCompanyToORM(m *pb.JoblistingCompany) *JobCompany {
+	if m == nil {
+		return nil
+	}
+	return &JobCompany{
+		ID:      m.Id,
+		Name:    m.Name,
+		LogoURL: m.LogoUrl,
+		Size:    m.Size,
 	}
 }

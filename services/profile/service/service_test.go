@@ -30,13 +30,13 @@ func TestNew(t *testing.T) {
 		repository: r,
 	}
 
-	got := New(r)
+	got := New(r, nil)
 
 	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	s := New(r)
+	s := New(r, nil)
 
 	testCreateCandidate(t, s)
 	testGetAllCandidates(t, s)
@@ -83,16 +83,14 @@ func TestAllCRUD(t *testing.T) {
 /* --------------- Candidate --------------- */
 
 func testCreateCandidate(t *testing.T, s interfaces.Service) {
-	testNoFirstName := &models.Candidate{
-		LastName:      "last",
-		Email:         "first@last.com",
-		ContactNumber: "+6591234567",
-		CreatedAt:     &now,
-		UpdatedAt:     &now,
+	test := &models.Candidate{
+		Nationality:            "Singapore",
+		ExpectedSalaryCurrency: "SGD",
+		ExpectedSalary:         1000,
+		PreferredRoles:         []string{"Frontend"},
+		CreatedAt:              &now,
+		UpdatedAt:              &now,
 	}
-
-	test := *testNoFirstName
-	test.FirstName = "first"
 
 	type args struct {
 		ctx   context.Context
@@ -109,8 +107,7 @@ func testCreateCandidate(t *testing.T, s interfaces.Service) {
 		args args
 		exp  expect
 	}{
-		{"failed not null", args{ctx, testNoFirstName}, expect{nil, errors.New("Failed to insert candidate")}},
-		{"valid", args{ctx, &test}, expect{&test, nil}},
+		{"valid", args{ctx, test}, expect{test, nil}},
 	}
 
 	for _, tt := range tests {
@@ -209,9 +206,9 @@ func testGetCandidateByID(t *testing.T, s interfaces.Service) {
 
 func testUpdateCandidate(t *testing.T, s interfaces.Service) {
 	updated := models.Candidate{
-		ID:        1,
-		FirstName: "new",
-		UpdatedAt: &now,
+		ID:            1,
+		ResidenceCity: "Singapore",
+		UpdatedAt:     &now,
 	}
 
 	type args struct {

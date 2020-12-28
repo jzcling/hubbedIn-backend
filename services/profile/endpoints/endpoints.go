@@ -11,6 +11,10 @@ import (
 
 // Endpoints holds all Go kit endpoints for the Profile Service.
 type Endpoints struct {
+	CreateUser endpoint.Endpoint
+	UpdateUser endpoint.Endpoint
+	DeleteUser endpoint.Endpoint
+
 	CreateCandidate  endpoint.Endpoint
 	GetAllCandidates endpoint.Endpoint
 	GetCandidateByID endpoint.Endpoint
@@ -54,6 +58,10 @@ type Endpoints struct {
 // MakeEndpoints initializes all Go kit endpoints for the Profile service.
 func MakeEndpoints(s interfaces.Service) Endpoints {
 	return Endpoints{
+		CreateUser: makeCreateUserEndpoint(s),
+		UpdateUser: makeUpdateUserEndpoint(s),
+		DeleteUser: makeDeleteUserEndpoint(s),
+
 		CreateCandidate:  makeCreateCandidateEndpoint(s),
 		GetAllCandidates: makeGetAllCandidatesEndpoint(s),
 		GetCandidateByID: makeGetCandidateByIDEndpoint(s),
@@ -93,6 +101,65 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		UpdateJobHistory: makeUpdateJobHistoryEndpoint(s),
 		DeleteJobHistory: makeDeleteJobHistoryEndpoint(s),
 	}
+}
+
+/* -------------- User -------------- */
+
+func makeCreateUserEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(CreateUserRequest)
+		c, err := s.CreateUser(ctx, req.User)
+		return CreateUserResponse{User: c, Err: err}, nil
+	}
+}
+
+// CreateUserRequest declares the inputs required for creating a User
+type CreateUserRequest struct {
+	User *models.User
+}
+
+// CreateUserResponse declares the outputs after attempting to create a User
+type CreateUserResponse struct {
+	User *models.User
+	Err  error
+}
+
+func makeUpdateUserEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateUserRequest)
+		c, err := s.UpdateUser(ctx, req.User)
+		return UpdateUserResponse{User: c, Err: err}, nil
+	}
+}
+
+// UpdateUserRequest declares the inputs required for updating a User
+type UpdateUserRequest struct {
+	ID   uint64
+	User *models.User
+}
+
+// UpdateUserResponse declares the outputs after attempting to update a User
+type UpdateUserResponse struct {
+	User *models.User
+	Err  error
+}
+
+func makeDeleteUserEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteUserRequest)
+		err := s.DeleteUser(ctx, req.ID)
+		return DeleteUserResponse{Err: err}, nil
+	}
+}
+
+// DeleteUserRequest declares the inputs required for deleting a User
+type DeleteUserRequest struct {
+	ID uint64
+}
+
+// DeleteUserResponse declares the outputs after attempting to delete a User
+type DeleteUserResponse struct {
+	Err error
 }
 
 /* -------------- Candidate -------------- */
@@ -144,7 +211,7 @@ type GetAllCandidatesRequest struct {
 
 // GetAllCandidatesResponse declares the outputs after attempting to get all candidates
 type GetAllCandidatesResponse struct {
-	Candidates []*models.Candidate
+	Candidates []*models.User
 	Err        error
 }
 
@@ -163,7 +230,7 @@ type GetCandidateByIDRequest struct {
 
 // GetCandidateByIDResponse declares the outputs after attempting to get a single candidate by ID
 type GetCandidateByIDResponse struct {
-	Candidate *models.Candidate
+	Candidate *models.User
 	Err       error
 }
 

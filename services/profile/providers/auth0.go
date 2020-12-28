@@ -3,8 +3,8 @@ package providers
 import (
 	"bytes"
 	"encoding/json"
-	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/configs"
+	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"io/ioutil"
 	"net/http"
@@ -15,8 +15,8 @@ import (
 // Auth0Provider describes the methods to interact with the Auth0 identity provider
 type Auth0Provider interface {
 	GetToken() (map[string]interface{}, error)
-	UpdateUser(token string, candidate *models.Candidate) error
-	SetUserRole(token, authID, role string) error
+	UpdateUser(token string, u *models.User) error
+	SetUserRole(token, authID string, roles []string) error
 }
 
 type auth0Provider struct {
@@ -77,11 +77,11 @@ func (p *auth0Provider) GetToken() (map[string]interface{}, error) {
 	return jsonBody, nil
 }
 
-func (p *auth0Provider) UpdateUser(token string, candidate *models.Candidate) error {
-	url := auth0URL + "/api/v2/users/" + url.QueryEscape(candidate.AuthID)
+func (p *auth0Provider) UpdateUser(token string, u *models.User) error {
+	url := auth0URL + "/api/v2/users/" + url.QueryEscape(u.AuthID)
 	reqBody, err := json.Marshal(map[string](map[string]string){
 		"app_metadata": {
-			"id": strconv.FormatUint(candidate.ID, 10),
+			"id": strconv.FormatUint(u.ID, 10),
 		},
 	})
 	if err != nil {
@@ -109,15 +109,17 @@ func (p *auth0Provider) UpdateUser(token string, candidate *models.Candidate) er
 	return nil
 }
 
-func (p *auth0Provider) SetUserRole(token, authID, role string) error {
+func (p *auth0Provider) SetUserRole(token, authID string, roles []string) error {
 	var val []string
-	switch role {
-	case "Candidate":
-		val = []string{candidateRoleID}
-	case "Company":
-		val = []string{companyRoleID}
-	case "Admin":
-		val = []string{adminRoleID}
+	for _, role := range roles {
+		switch role {
+		case "Candidate":
+			val = append(val, candidateRoleID)
+		case "Company":
+			val = append(val, companyRoleID)
+		case "Admin":
+			val = append(val, adminRoleID)
+		}
 	}
 
 	url := auth0URL + "/api/v2/users/" + url.QueryEscape(authID) + "/roles"

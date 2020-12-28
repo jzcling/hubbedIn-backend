@@ -44,8 +44,8 @@ func (m1 *JobPost) IsEqual(m2 interface{}) bool {
 }
 
 // IsEqual checks the equivalence of two Company objects
-func (m1 *Company) IsEqual(m2 interface{}) bool {
-	convertedM2 := m2.(*Company)
+func (m1 *JobCompany) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*JobCompany)
 	isNil, resolve := helpers.CheckNil(m1, m2)
 	if resolve {
 		return isNil
@@ -117,6 +117,20 @@ func (m1 *CompanyIndustry) IsEqual(m2 interface{}) bool {
 
 	if m1.CompanyId != convertedM2.CompanyId ||
 		m1.IndustryId != convertedM2.IndustryId {
+		return false
+	}
+	return true
+}
+
+// IsEqual checks the equivalence of two ProfileSkill objects
+func (m1 *ProfileSkill) IsEqual(m2 interface{}) bool {
+	convertedM2 := m2.(*ProfileSkill)
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.Name != convertedM2.Name {
 		return false
 	}
 	return true

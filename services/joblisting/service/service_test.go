@@ -29,15 +29,16 @@ var (
 func TestNew(t *testing.T) {
 	expect := &service{
 		repository: r,
+		sanitizer:  nil,
 	}
 
-	got := New(r)
+	got := New(r, nil)
 
 	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	s := New(r)
+	s := New(r, nil)
 
 	testCreateJobPost(t, s)
 	testGetAllJobPosts(t, s)

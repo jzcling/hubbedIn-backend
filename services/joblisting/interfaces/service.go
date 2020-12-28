@@ -32,11 +32,17 @@ type Service interface {
 	// CreateCompany creates a new Company
 	CreateCompany(ctx context.Context, m *models.Company) (*models.Company, error)
 
+	// LocalCreateCompany creates a new Company
+	LocalCreateCompany(ctx context.Context, m *models.Company) (*models.Company, error)
+
 	// GetAllCompanies returns all Companies that match the filters
 	GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error)
 
 	// UpdateCompany updates a Company
 	UpdateCompany(ctx context.Context, m *models.Company) (*models.Company, error)
+
+	// LocalUpdateCompany updates a new Company
+	LocalUpdateCompany(ctx context.Context, m *models.Company) (*models.Company, error)
 
 	// DeleteCompany deletes a Company by ID
 	DeleteCompany(ctx context.Context, id uint64) error

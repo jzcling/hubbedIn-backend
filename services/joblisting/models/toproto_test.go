@@ -85,7 +85,7 @@ func TestJobPostToProto(t *testing.T) {
 		UpdatedAt:       testPbTime,
 		StartAt:         testPbTime,
 		ExpireAt:        testPbTime,
-		Company: &pb.Company{
+		Company: &pb.JobCompany{
 			Id:      1,
 			Name:    "hubbedin",
 			LogoUrl: "https://logo.jpg",
@@ -206,7 +206,7 @@ func TestCompanyToProto(t *testing.T) {
 		},
 	}
 
-	expect := &pb.Company{
+	expect := &pb.JobCompany{
 		Id:      1,
 		Name:    "hubbedin",
 		LogoUrl: "https://logo.jpg",
@@ -366,7 +366,7 @@ func TestIndustryToProto(t *testing.T) {
 	expect := &pb.Industry{
 		Id:   1,
 		Name: "tech",
-		Companies: []*pb.Company{
+		Companies: []*pb.JobCompany{
 			{
 				Id:      1,
 				Name:    "hubbedin",
@@ -464,7 +464,7 @@ func TestKeyPersonToProto(t *testing.T) {
 		Email:         "email",
 		JobTitle:      "cto",
 		UpdatedAt:     testPbTime,
-		Company: &pb.Company{
+		Company: &pb.JobCompany{
 			Id:      1,
 			Name:    "hubbedin",
 			LogoUrl: "https://logo.jpg",

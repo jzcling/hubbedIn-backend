@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	jlMocks "in-backend/services/joblisting/tests/mocks"
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
@@ -17,20 +18,22 @@ import (
 )
 
 var (
-	ctx context.Context       = context.Background()
-	now time.Time             = time.Now()
-	a   *mocks.Auth0Provider  = &mocks.Auth0Provider{}
-	k   *mocks.KlentyProvider = &mocks.KlentyProvider{}
+	ctx      context.Context                  = context.Background()
+	now      time.Time                        = time.Now()
+	a        *mocks.Auth0Provider             = &mocks.Auth0Provider{}
+	k        *mocks.KlentyProvider            = &mocks.KlentyProvider{}
+	jlClient *jlMocks.JoblistingServiceClient = &jlMocks.JoblistingServiceClient{}
 )
 
 func TestNewRepository(t *testing.T) {
 	want := &repository{
-		DB:     &pg.DB{},
-		auth0:  a,
-		klenty: k,
+		DB:       &pg.DB{},
+		auth0:    a,
+		klenty:   k,
+		jlClient: jlClient,
 	}
 
-	got := NewRepository(&pg.DB{}, a, k)
+	got := NewRepository(&pg.DB{}, a, k, jlClient)
 
 	require.EqualValues(t, want, got)
 }
@@ -49,7 +52,7 @@ func TestAllCRUD(t *testing.T) {
 	defer cleanContainer(c)
 	require.NoError(t, err)
 
-	r := NewRepository(db, a, k)
+	r := NewRepository(db, a, k, jlClient)
 
 	testCreateCandidate(t, r, db)
 	testGetAllCandidates(t, r, db)
@@ -91,10 +94,10 @@ func TestAllCRUD(t *testing.T) {
 	testDeleteJobHistory(t, r, db)
 }
 
-/* --------------- Candidate --------------- */
+/* --------------- User --------------- */
 
-func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
-	testNoAuthID := &models.Candidate{
+func testCreateUser(t *testing.T, r interfaces.Repository, db *pg.DB) {
+	testNoAuthID := &models.User{
 		FirstName:     "first",
 		LastName:      "last",
 		Email:         "first@last.com",
@@ -119,12 +122,12 @@ func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 
 	type args struct {
 		ctx              context.Context
-		input            *models.Candidate
+		input            *models.User
 		auth0UpdateInput string
 	}
 
 	type expect struct {
-		output            *models.Candidate
+		output            *models.User
 		err               error
 		auth0GetOutput    map[string]interface{}
 		auth0UpdateOutput error
@@ -135,10 +138,10 @@ func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		args args
 		exp  expect
 	}{
-		{"nil", args{ctx, nil, auth0UpdateInput}, expect{nil, errors.New("Input parameter candidate is nil"), auth0GetOutput, nil}},
-		{"failed not null", args{ctx, testNoAuthID, auth0UpdateInput}, expect{nil, errors.New("Failed to insert candidate"), auth0GetOutput, nil}},
+		{"nil", args{ctx, nil, auth0UpdateInput}, expect{nil, errors.New("Input parameter user is nil"), auth0GetOutput, nil}},
+		{"failed not null", args{ctx, testNoAuthID, auth0UpdateInput}, expect{nil, errors.New("Failed to insert user"), auth0GetOutput, nil}},
 		{"valid", args{ctx, &test, auth0UpdateInput}, expect{&test, nil, auth0GetOutput, nil}},
-		{"failed unique", args{ctx, &testDupEmail, auth0UpdateInput}, expect{nil, errors.New("Failed to insert candidate"), auth0GetOutput, nil}},
+		{"failed unique", args{ctx, &testDupEmail, auth0UpdateInput}, expect{nil, errors.New("Failed to insert user"), auth0GetOutput, nil}},
 		{"invalid auth0", args{ctx, &test2, auth0UpdateInput}, expect{nil, errors.New("Failed to update auth0 user"), auth0GetOutput, errors.New("Failed to update auth0 user")}},
 	}
 
@@ -146,7 +149,52 @@ func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 		t.Run(tt.name, func(t *testing.T) {
 			a.On("GetAuth0Token").Return(tt.exp.auth0GetOutput, nil)
 			a.On("UpdateAuth0User", tt.args.auth0UpdateInput, tt.args.input).Return(tt.exp.auth0UpdateOutput)
-			got, err := r.CreateCandidate(tt.args.ctx, tt.args.input)
+			got, err := r.CreateUser(tt.args.ctx, tt.args.input)
+			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+}
+
+/* --------------- Candidate --------------- */
+
+func testCreateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
+	test := &models.Candidate{
+		Nationality:            "Singapore",
+		ExpectedSalaryCurrency: "SGD",
+		ExpectedSalary:         1000,
+		PreferredRoles:         []string{"Frontend"},
+		CreatedAt:              &now,
+		UpdatedAt:              &now,
+	}
+
+	type args struct {
+		ctx   context.Context
+		tx    *pg.Tx
+		input *models.Candidate
+	}
+
+	type expect struct {
+		output *models.Candidate
+		err    error
+	}
+
+	var tests = []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"nil", args{ctx, nil, nil}, expect{nil, errors.New("Input parameter candidate is nil")}},
+		{"valid", args{ctx, nil, test}, expect{test, nil}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := r.CreateCandidate(tt.args.ctx, tt.args.tx, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
@@ -239,7 +287,7 @@ func testUpdateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 	require.NoError(t, err)
 
 	updated := *existing
-	updated.FirstName = "new"
+	updated.ResidenceCity = "Singapore"
 
 	type args struct {
 		ctx   context.Context
@@ -263,7 +311,7 @@ func testUpdateCandidate(t *testing.T, r interfaces.Repository, db *pg.DB) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := r.UpdateCandidate(tt.args.ctx, tt.args.input)
+			got, err := r.UpdateCandidate(tt.args.ctx, nil, tt.args.input)
 			assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
 			if tt.exp.err != nil && err != nil {
 				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })

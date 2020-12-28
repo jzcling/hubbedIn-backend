@@ -257,6 +257,36 @@ func (_m *ProfileServiceClient) CreateSkill(ctx context.Context, in *pb.CreateSk
 	return r0, r1
 }
 
+// CreateUser provides a mock function with given fields: ctx, in, opts
+func (_m *ProfileServiceClient) CreateUser(ctx context.Context, in *pb.CreateUserRequest, opts ...grpc.CallOption) (*pb.User, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateUserRequest, ...grpc.CallOption) *pb.User); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateUserRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateUserSkill provides a mock function with given fields: ctx, in, opts
 func (_m *ProfileServiceClient) CreateUserSkill(ctx context.Context, in *pb.CreateUserSkillRequest, opts ...grpc.CallOption) (*pb.UserSkill, error) {
 	_va := make([]interface{}, len(opts))
@@ -369,6 +399,36 @@ func (_m *ProfileServiceClient) DeleteJobHistory(ctx context.Context, in *pb.Del
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteJobHistoryRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DeleteUser provides a mock function with given fields: ctx, in, opts
+func (_m *ProfileServiceClient) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest, opts ...grpc.CallOption) (*pb.DeleteUserResponse, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.DeleteUserResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteUserRequest, ...grpc.CallOption) *pb.DeleteUserResponse); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.DeleteUserResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteUserRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -618,7 +678,7 @@ func (_m *ProfileServiceClient) GetAllSkills(ctx context.Context, in *pb.GetAllS
 }
 
 // GetCandidateByID provides a mock function with given fields: ctx, in, opts
-func (_m *ProfileServiceClient) GetCandidateByID(ctx context.Context, in *pb.GetCandidateByIDRequest, opts ...grpc.CallOption) (*pb.Candidate, error) {
+func (_m *ProfileServiceClient) GetCandidateByID(ctx context.Context, in *pb.GetCandidateByIDRequest, opts ...grpc.CallOption) (*pb.User, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -628,12 +688,12 @@ func (_m *ProfileServiceClient) GetCandidateByID(ctx context.Context, in *pb.Get
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *pb.Candidate
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetCandidateByIDRequest, ...grpc.CallOption) *pb.Candidate); ok {
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetCandidateByIDRequest, ...grpc.CallOption) *pb.User); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Candidate)
+			r0 = ret.Get(0).(*pb.User)
 		}
 	}
 
@@ -909,6 +969,36 @@ func (_m *ProfileServiceClient) UpdateJobHistory(ctx context.Context, in *pb.Upd
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateJobHistoryRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateUser provides a mock function with given fields: ctx, in, opts
+func (_m *ProfileServiceClient) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest, opts ...grpc.CallOption) (*pb.User, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateUserRequest, ...grpc.CallOption) *pb.User); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateUserRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)

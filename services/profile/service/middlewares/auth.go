@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
+	"in-backend/helpers"
 	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"strconv"
@@ -82,6 +83,78 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 	return claims, nil
 }
 
+/* --------------- User --------------- */
+
+// CreateUser creates a new User
+func (mw authMiddleware) CreateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	// Users with Company or Admin role can only be created by admins
+	if helpers.IsStringInSlice("Company", m.Roles) || helpers.IsStringInSlice("Admin", m.Roles) {
+		role, _, err := getRoleAndID(ctx, nil)
+		if err != nil {
+			return nil, err
+		}
+		if *role != "Admin" {
+			return nil, errAuth
+		}
+	}
+	// When creating a user, the candidate ID and company ID must be not be set
+	if (m.Candidate != nil && m.Candidate.ID != 0) ||
+		(m.JobCompany != nil && m.JobCompany.ID != 0) {
+		return nil, errAuth
+	}
+	return mw.next.CreateUser(ctx, m)
+}
+
+// UpdateUser updates a User
+func (mw authMiddleware) UpdateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	u, err := mw.repository.GetCandidateByID(ctx, m.ID)
+	// Existing candidate ID must be the same as updated candidate ID if exists
+	if m.Candidate != nil && m.Candidate.ID != 0 && u.Candidate.ID != m.Candidate.ID {
+		return nil, errAuth
+	}
+	// Existing company ID must be the same as updated company ID if exists
+	if m.JobCompany != nil && m.JobCompany.ID != 0 && u.JobCompany.ID != m.JobCompany.ID {
+		return nil, errAuth
+	}
+
+	// Only candidates can freely update their own details
+	// Companies must go through admin for updates
+	if helpers.IsStringInSlice("Company", m.Roles) || helpers.IsStringInSlice("Admin", m.Roles) {
+		role, _, err := getRoleAndID(ctx, nil)
+		if err != nil {
+			return nil, err
+		}
+		if *role != "Admin" {
+			return nil, errAuth
+		}
+	} else {
+		if err != nil {
+			return nil, err
+		}
+		role, _, err := getRoleAndID(ctx, &u.ID)
+		if err != nil {
+			return nil, err
+		}
+		if *role != "Admin" && *role != "Owner" {
+			return nil, errAuth
+		}
+	}
+
+	return mw.next.UpdateUser(ctx, m)
+}
+
+// DeleteUser deletes a User by ID
+func (mw authMiddleware) DeleteUser(ctx context.Context, id uint64) error {
+	role, _, err := getRoleAndID(ctx, &id)
+	if err != nil {
+		return err
+	}
+	if *role != "Admin" && *role != "Owner" {
+		return errAuth
+	}
+	return mw.next.DeleteUser(ctx, id)
+}
+
 /* --------------- Candidate --------------- */
 
 // CreateCandidate creates a new Candidate
@@ -90,7 +163,7 @@ func (mw authMiddleware) CreateCandidate(ctx context.Context, candidate *models.
 }
 
 // GetAllCandidates returns all Candidates
-func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
+func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.User, error) {
 	role, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -102,7 +175,7 @@ func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.Candidat
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (mw authMiddleware) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
+func (mw authMiddleware) GetCandidateByID(ctx context.Context, id uint64) (*models.User, error) {
 	role, _, err := getRoleAndID(ctx, &id)
 	if err != nil {
 		return nil, err

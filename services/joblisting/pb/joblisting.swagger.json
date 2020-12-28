@@ -733,7 +733,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbCompany"
+              "$ref": "#/definitions/pbJobCompany"
             }
           },
           "default": {
@@ -749,7 +749,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbCompany"
+              "$ref": "#/definitions/pbJobCompany"
             }
           }
         ],
@@ -794,7 +794,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbCompany"
+              "$ref": "#/definitions/pbJobCompany"
             }
           },
           "default": {
@@ -817,7 +817,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbCompany"
+              "$ref": "#/definitions/pbJobCompany"
             }
           }
         ],
@@ -1069,43 +1069,6 @@
         }
       }
     },
-    "pbCompany": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "name": {
-          "type": "string"
-        },
-        "logoUrl": {
-          "type": "string"
-        },
-        "size": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "industries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/pbIndustry"
-          }
-        },
-        "jobPosts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/pbJobPost"
-          }
-        },
-        "keyPersons": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/pbKeyPerson"
-          }
-        }
-      }
-    },
     "pbDeleteIndustryResponse": {
       "type": "object"
     },
@@ -1141,7 +1104,7 @@
         "companies": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/pbCompany"
+            "$ref": "#/definitions/pbJobCompany"
           }
         }
       }
@@ -1203,13 +1166,50 @@
         "companies": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/pbCompany"
+            "$ref": "#/definitions/pbJobCompany"
           }
         },
         "jobPosts": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/pbJobPost"
+          }
+        }
+      }
+    },
+    "pbJobCompany": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "logoUrl": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "industries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbIndustry"
+          }
+        },
+        "jobPosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbJobPost"
+          }
+        },
+        "keyPersons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbKeyPerson"
           }
         }
       }
@@ -1335,7 +1335,7 @@
           }
         },
         "company": {
-          "$ref": "#/definitions/pbCompany"
+          "$ref": "#/definitions/pbJobCompany"
         },
         "function": {
           "$ref": "#/definitions/pbJobFunction"
@@ -1355,7 +1355,7 @@
         "skills": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/pbSkill"
+            "$ref": "#/definitions/pbProfileSkill"
           }
         }
       }
@@ -1388,11 +1388,11 @@
           "format": "date-time"
         },
         "company": {
-          "$ref": "#/definitions/pbCompany"
+          "$ref": "#/definitions/pbJobCompany"
         }
       }
     },
-    "pbSkill": {
+    "pbProfileSkill": {
       "type": "object",
       "properties": {
         "id": {

@@ -7,16 +7,27 @@ import (
 
 // Service describes the Profile Service
 type Service interface {
+	/* --------------- User --------------- */
+
+	// CreateUser creates a new User
+	CreateUser(ctx context.Context, m *models.User) (*models.User, error)
+
+	// UpdateUser updates a User
+	UpdateUser(ctx context.Context, m *models.User) (*models.User, error)
+
+	// DeleteUser deletes a User by ID
+	DeleteUser(ctx context.Context, id uint64) error
+
 	/* --------------- Candidate --------------- */
 
 	// CreateCandidate creates a new candidate
 	CreateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)
 
 	// GetAllCandidates returns all candidates
-	GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error)
+	GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.User, error)
 
 	// GetCandidateByID finds and returns a candidate by ID
-	GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error)
+	GetCandidateByID(ctx context.Context, id uint64) (*models.User, error)
 
 	// UpdateCandidate updates a candidate
 	UpdateCandidate(ctx context.Context, c *models.Candidate) (*models.Candidate, error)

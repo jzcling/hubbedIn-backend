@@ -198,6 +198,29 @@ func (_m *ProfileServiceServer) CreateSkill(_a0 context.Context, _a1 *pb.CreateS
 	return r0, r1
 }
 
+// CreateUser provides a mock function with given fields: _a0, _a1
+func (_m *ProfileServiceServer) CreateUser(_a0 context.Context, _a1 *pb.CreateUserRequest) (*pb.User, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.CreateUserRequest) *pb.User); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.CreateUserRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateUserSkill provides a mock function with given fields: _a0, _a1
 func (_m *ProfileServiceServer) CreateUserSkill(_a0 context.Context, _a1 *pb.CreateUserSkillRequest) (*pb.UserSkill, error) {
 	ret := _m.Called(_a0, _a1)
@@ -282,6 +305,29 @@ func (_m *ProfileServiceServer) DeleteJobHistory(_a0 context.Context, _a1 *pb.De
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteJobHistoryRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DeleteUser provides a mock function with given fields: _a0, _a1
+func (_m *ProfileServiceServer) DeleteUser(_a0 context.Context, _a1 *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.DeleteUserResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.DeleteUserRequest) *pb.DeleteUserResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.DeleteUserResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.DeleteUserRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -475,15 +521,15 @@ func (_m *ProfileServiceServer) GetAllSkills(_a0 context.Context, _a1 *pb.GetAll
 }
 
 // GetCandidateByID provides a mock function with given fields: _a0, _a1
-func (_m *ProfileServiceServer) GetCandidateByID(_a0 context.Context, _a1 *pb.GetCandidateByIDRequest) (*pb.Candidate, error) {
+func (_m *ProfileServiceServer) GetCandidateByID(_a0 context.Context, _a1 *pb.GetCandidateByIDRequest) (*pb.User, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *pb.Candidate
-	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetCandidateByIDRequest) *pb.Candidate); ok {
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetCandidateByIDRequest) *pb.User); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Candidate)
+			r0 = ret.Get(0).(*pb.User)
 		}
 	}
 
@@ -696,6 +742,29 @@ func (_m *ProfileServiceServer) UpdateJobHistory(_a0 context.Context, _a1 *pb.Up
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateJobHistoryRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateUser provides a mock function with given fields: _a0, _a1
+func (_m *ProfileServiceServer) UpdateUser(_a0 context.Context, _a1 *pb.UpdateUserRequest) (*pb.User, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.UpdateUserRequest) *pb.User); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.UpdateUserRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

@@ -180,6 +180,11 @@ func (mw authMiddleware) CreateCompany(ctx context.Context, model *models.Compan
 	return mw.next.CreateCompany(ctx, model)
 }
 
+// LocalCreateCompany creates a new Company
+func (mw authMiddleware) LocalCreateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
+	return mw.next.LocalCreateCompany(ctx, model)
+}
+
 // GetAllCompanies returns all Companies that match the filters
 func (mw authMiddleware) GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error) {
 	return mw.next.GetAllCompanies(ctx, f)
@@ -195,6 +200,11 @@ func (mw authMiddleware) UpdateCompany(ctx context.Context, model *models.Compan
 		return nil, errAuth
 	}
 	return mw.next.UpdateCompany(ctx, model)
+}
+
+// LocalUpdateCompany updates a new Company
+func (mw authMiddleware) LocalUpdateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
+	return mw.next.LocalUpdateCompany(ctx, model)
 }
 
 // DeleteCompany deletes a Company by ID

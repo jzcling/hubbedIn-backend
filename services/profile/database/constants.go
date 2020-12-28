@@ -1,15 +1,24 @@
 package database
 
 const (
-	relCandidateSkill               string = "Skills"
-	relCandidateAcademic            string = "Academics"
-	relCandidateAcademicInstitution string = "Academics.Institution"
-	relCandidateAcademicCourse      string = "Academics.Course"
-	relCandidateJob                 string = "Jobs"
-	relCandidateJobCompany          string = "Jobs.Company"
-	relCandidateJobDepartment       string = "Jobs.Department"
+	relCandidate                     string = "Candidate"
+	relCandidateSkills               string = "Candidate.Skills"
+	relCandidateAcademics            string = "Candidate.Academics"
+	relCandidateAcademicsInstitution string = "Candidate.Academics.Institution"
+	relCandidateAcademicsCourse      string = "Candidate.Academics.Course"
+	relCandidateJobs                 string = "Candidate.Jobs"
+	relCandidateJobsCompany          string = "Candidate.Jobs.Company"
+	relCandidateJobsDepartment       string = "Candidate.Jobs.Department"
 
-	filCandidateID   string = "c.id = ?"
+	relSkills               string = "Skills"
+	relAcademics            string = "Academics"
+	relAcademicsInstitution string = "Academics.Institution"
+	relAcademicsCourse      string = "Academics.Course"
+	relJobs                 string = "Jobs"
+	relJobsCompany          string = "Jobs.Company"
+	relJobsDepartment       string = "Jobs.Department"
+
+	filUserID        string = "u.id = ?"
 	filSkillID       string = "s.id = ?"
 	filUserSkillID   string = "us.id = ?"
 	filInstitutionID string = "i.id = ?"

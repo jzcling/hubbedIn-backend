@@ -36,13 +36,13 @@ func (_m *Auth0Provider) GetToken() (map[string]interface{}, error) {
 	return r0, r1
 }
 
-// SetUserRole provides a mock function with given fields: token, authID, role
-func (_m *Auth0Provider) SetUserRole(token string, authID string, role string) error {
-	ret := _m.Called(token, authID, role)
+// SetUserRole provides a mock function with given fields: token, authID, roles
+func (_m *Auth0Provider) SetUserRole(token string, authID string, roles []string) error {
+	ret := _m.Called(token, authID, roles)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, string) error); ok {
-		r0 = rf(token, authID, role)
+	if rf, ok := ret.Get(0).(func(string, string, []string) error); ok {
+		r0 = rf(token, authID, roles)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -50,13 +50,13 @@ func (_m *Auth0Provider) SetUserRole(token string, authID string, role string) e
 	return r0
 }
 
-// UpdateUser provides a mock function with given fields: token, candidate
-func (_m *Auth0Provider) UpdateUser(token string, candidate *models.Candidate) error {
-	ret := _m.Called(token, candidate)
+// UpdateUser provides a mock function with given fields: token, u
+func (_m *Auth0Provider) UpdateUser(token string, u *models.User) error {
+	ret := _m.Called(token, u)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, *models.Candidate) error); ok {
-		r0 = rf(token, candidate)
+	if rf, ok := ret.Get(0).(func(string, *models.User) error); ok {
+		r0 = rf(token, u)
 	} else {
 		r0 = ret.Error(0)
 	}

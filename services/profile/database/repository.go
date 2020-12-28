@@ -6,8 +6,10 @@ import (
 	"strings"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 	"github.com/pkg/errors"
 
+	joblistingPb "in-backend/services/joblisting/pb"
 	"in-backend/services/profile/interfaces"
 	"in-backend/services/profile/models"
 	"in-backend/services/profile/providers"
@@ -15,38 +17,96 @@ import (
 
 // Repository implements the profile Repository interface
 type repository struct {
-	DB     *pg.DB
-	auth0  providers.Auth0Provider
-	klenty providers.KlentyProvider
+	DB       *pg.DB
+	auth0    providers.Auth0Provider
+	klenty   providers.KlentyProvider
+	jlClient joblistingPb.JoblistingServiceClient
 }
 
 // NewRepository declares a new Repository that implements profile Repository
-func NewRepository(db *pg.DB, a providers.Auth0Provider, k providers.KlentyProvider) interfaces.Repository {
+func NewRepository(db *pg.DB, a providers.Auth0Provider, k providers.KlentyProvider, c joblistingPb.JoblistingServiceClient) interfaces.Repository {
 	return &repository{
-		DB:     db,
-		auth0:  a,
-		klenty: k,
+		DB:       db,
+		auth0:    a,
+		klenty:   k,
+		jlClient: c,
 	}
 }
 
-/* --------------- Candidate --------------- */
+/* --------------- User --------------- */
 
-// CreateCandidate creates a new Candidate
-func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (*models.Candidate, error) {
+// CreateUser creates a new User
+func (r *repository) CreateUser(ctx context.Context, m *models.User) (*models.User, error) {
 	if m == nil {
-		return nil, errors.New("Input parameter candidate is nil")
+		return nil, errors.New("Input parameter user is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).
-		Relation(relCandidateSkill).
-		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
-		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
-		Returning("*").
-		Where("c.email = ?", m.Email).
-		OnConflict("DO NOTHING").
-		SelectOrInsert()
+	tx, err := r.DB.BeginContext(ctx)
 	if err != nil {
-		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
+		return nil, err
+	}
+
+	for _, role := range m.Roles {
+		switch role {
+		case "Candidate":
+			if m.Candidate != nil {
+				if m.Candidate.ID == 0 {
+					_, err = r.CreateCandidate(ctx, tx, m.Candidate)
+				} else {
+					_, err = r.UpdateCandidate(ctx, tx, m.Candidate)
+				}
+				if err != nil {
+					tx.Rollback()
+					err = errors.Wrapf(err, "Failed to insert candidate %v", m.Candidate)
+					return nil, err
+				}
+			}
+		case "Company":
+			if m.JobCompany != nil {
+				company := &joblistingPb.JobCompany{
+					Id:      m.JobCompany.ID,
+					Name:    m.JobCompany.Name,
+					LogoUrl: m.JobCompany.LogoURL,
+					Size:    m.JobCompany.Size,
+				}
+				var c *joblistingPb.JobCompany
+				var err error
+				if m.JobCompany.ID == 0 {
+					req := &joblistingPb.CreateJobCompanyRequest{
+						Company: company,
+					}
+					c, err = r.jlClient.LocalCreateCompany(ctx, req)
+				} else {
+					req := &joblistingPb.UpdateJobCompanyRequest{
+						Id:      m.JobCompany.ID,
+						Company: company,
+					}
+					c, err = r.jlClient.LocalUpdateCompany(ctx, req)
+				}
+				if err != nil {
+					tx.Rollback()
+					return nil, err
+				}
+				m.JobCompany = &models.JobCompany{
+					ID:      c.Id,
+					Name:    c.Name,
+					LogoURL: c.LogoUrl,
+					Size:    c.Size,
+				}
+			}
+		case "Admin":
+			// Do nothing
+		}
+	}
+
+	_, err = tx.Model(m).Insert()
+	if err != nil {
+		tx.Rollback()
+		err = errors.Wrapf(err, "Failed to insert user %v", m)
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
 
@@ -65,7 +125,7 @@ func (r *repository) CreateCandidate(ctx context.Context, m *models.Candidate) (
 	return m, nil
 }
 
-func (r *repository) updateAuth0User(m *models.Candidate) error {
+func (r *repository) updateAuth0User(m *models.User) error {
 	token, err := r.auth0.GetToken()
 	if err != nil {
 		return err
@@ -75,46 +135,165 @@ func (r *repository) updateAuth0User(m *models.Candidate) error {
 	if err != nil {
 		return err
 	}
-	err = r.auth0.SetUserRole(t, m.AuthID, "Candidate")
+	err = r.auth0.SetUserRole(t, m.AuthID, m.Roles)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *repository) triggerCRMRegistrationWorkflow(m *models.Candidate) error {
+func (r *repository) triggerCRMRegistrationWorkflow(m *models.User) error {
 	err := r.klenty.CreateProspect(m)
 	if err != nil {
 		return err
 	}
-	err = r.klenty.StartCadence(m.Email)
-	if err != nil {
-		return err
+	for _, role := range m.Roles {
+		err = r.klenty.StartCadence(m.Email, role)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
+// UpdateUser updates a User
+func (r *repository) UpdateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	if m == nil {
+		return nil, errors.New("User is nil")
+	}
+
+	tx, err := r.DB.BeginContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, role := range m.Roles {
+		switch role {
+		case "Candidate":
+			if m.Candidate != nil {
+				var c *models.Candidate
+				if m.Candidate.ID == 0 {
+					c, err = r.CreateCandidate(ctx, tx, m.Candidate)
+				} else {
+					c, err = r.UpdateCandidate(ctx, tx, m.Candidate)
+				}
+				if err != nil {
+					tx.Rollback()
+					err = errors.Wrapf(err, "Failed to update candidate %v", m.Candidate)
+					return nil, err
+				}
+				m.CandidateID = c.ID
+			}
+		case "Company":
+			if m.JobCompany != nil {
+				company := &joblistingPb.JobCompany{
+					Id:      m.JobCompany.ID,
+					Name:    m.JobCompany.Name,
+					LogoUrl: m.JobCompany.LogoURL,
+					Size:    m.JobCompany.Size,
+				}
+				var c *joblistingPb.JobCompany
+				var err error
+				if m.JobCompany.ID == 0 {
+					req := &joblistingPb.CreateJobCompanyRequest{
+						Company: company,
+					}
+					c, err = r.jlClient.LocalCreateCompany(ctx, req)
+				} else {
+					req := &joblistingPb.UpdateJobCompanyRequest{
+						Id:      m.JobCompany.ID,
+						Company: company,
+					}
+					c, err = r.jlClient.LocalUpdateCompany(ctx, req)
+				}
+				if err != nil {
+					tx.Rollback()
+					return nil, err
+				}
+				m.JobCompany = &models.JobCompany{
+					ID:      c.Id,
+					Name:    c.Name,
+					LogoURL: c.LogoUrl,
+					Size:    c.Size,
+				}
+				m.JobCompanyID = c.Id
+			}
+		case "Admin":
+			// Do nothing
+		}
+	}
+
+	_, err = tx.Model(m).WherePK().
+		Relation(relCandidate).Relation(relCandidateSkills).
+		Relation(relCandidateAcademics).Relation(relCandidateAcademicsInstitution).Relation(relCandidateAcademicsCourse).
+		Relation(relCandidateJobs).Relation(relCandidateJobsCompany).Relation(relCandidateJobsDepartment).
+		Returning("*").
+		Update()
+	if err != nil {
+		tx.Rollback()
+		return nil, errors.Wrap(err, fmt.Sprintf("Cannot update user with id %v", m.ID))
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+// DeleteUser deletes a User by ID
+func (r *repository) DeleteUser(ctx context.Context, id uint64) error {
+	m := &models.User{ID: id}
+	_, err := r.DB.WithContext(ctx).Model(m).WherePK().Delete()
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Cannot delete user with id %v", id))
+	}
+	return nil
+}
+
+/* --------------- Candidate --------------- */
+
+// CreateCandidate creates a new Candidate
+func (r *repository) CreateCandidate(ctx context.Context, tx *pg.Tx, m *models.Candidate) (*models.Candidate, error) {
+	if m == nil {
+		return nil, errors.New("Input parameter candidate is nil")
+	}
+
+	var err error
+	if tx != nil {
+		_, err = tx.Model(m).Insert()
+	} else {
+		_, err = r.DB.WithContext(ctx).Model(m).Insert()
+	}
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to insert candidate %v", m)
+		return nil, err
+	}
+
+	return m, nil
+}
+
 // GetAllCandidates returns all Candidates
-func (r *repository) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
-	var m []*models.Candidate
+func (r *repository) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.User, error) {
+	var m []*models.User
 	q := r.DB.WithContext(ctx).Model(&m)
 	if len(f.ID) > 0 {
-		q = q.Where("c.id in (?)", pg.In(f.ID))
+		q = q.Where("u.id in (?)", pg.In(f.ID))
 	}
 	if f.FirstName != "" {
-		q = q.Where("lower(c.first_name) like ?", "%"+strings.ToLower(f.FirstName)+"%")
+		q = q.Where("lower(u.first_name) like ?", "%"+strings.ToLower(f.FirstName)+"%")
 	}
 	if f.LastName != "" {
-		q = q.Where("lower(c.last_name) like ?", "%"+strings.ToLower(f.LastName)+"%")
+		q = q.Where("lower(u.last_name) like ?", "%"+strings.ToLower(f.LastName)+"%")
 	}
 	if f.Email != "" {
-		q = q.Where("lower(c.email) like ?", "%"+strings.ToLower(f.Email)+"%")
+		q = q.Where("lower(u.email) like ?", "%"+strings.ToLower(f.Email)+"%")
 	}
 	if f.ContactNumber != "" {
-		q = q.Where("lower(c.contact_number) like ?", "%"+strings.ToLower(f.ContactNumber)+"%")
+		q = q.Where("lower(u.contact_number) like ?", "%"+strings.ToLower(f.ContactNumber)+"%")
 	}
 	if len(f.Gender) > 0 {
-		q = q.Where("c.gender in (?)", pg.In(f.Gender))
+		q = q.Where("u.gender in (?)", pg.In(f.Gender))
 	}
 	if len(f.Nationality) > 0 {
 		q = q.Where("c.nationality in (?)", pg.In(f.Nationality))
@@ -134,22 +313,22 @@ func (r *repository) GetAllCandidates(ctx context.Context, f models.CandidateFil
 	if f.MaxNoticePeriod > 0 {
 		q = q.Where("c.notice_period <= ?", f.MaxNoticePeriod)
 	}
-	err := q.Relation(relCandidateSkill).
-		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
-		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
+	err := q.Relation(relCandidate).Relation(relCandidateSkills).
+		Relation(relCandidateAcademics).Relation(relCandidateAcademicsInstitution).Relation(relCandidateAcademicsCourse).
+		Relation(relCandidateJobs).Relation(relCandidateJobsCompany).Relation(relCandidateJobsDepartment).
 		Returning("*").
 		Select()
 	return m, err
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (r *repository) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
-	m := models.Candidate{ID: id}
+func (r *repository) GetCandidateByID(ctx context.Context, id uint64) (*models.User, error) {
+	m := models.User{ID: id}
 	err := r.DB.WithContext(ctx).Model(&m).
-		Where(filCandidateID, id).
-		Relation(relCandidateSkill).
-		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
-		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
+		Where(filUserID, id).
+		Relation(relCandidate).Relation(relCandidateSkills).
+		Relation(relCandidateAcademics).Relation(relCandidateAcademicsInstitution).Relation(relCandidateAcademicsCourse).
+		Relation(relCandidateJobs).Relation(relCandidateJobsCompany).Relation(relCandidateJobsDepartment).
 		Returning("*").
 		First()
 	//pg returns error when no rows in the result set
@@ -160,15 +339,21 @@ func (r *repository) GetCandidateByID(ctx context.Context, id uint64) (*models.C
 }
 
 // UpdateCandidate updates a Candidate
-func (r *repository) UpdateCandidate(ctx context.Context, m *models.Candidate) (*models.Candidate, error) {
+func (r *repository) UpdateCandidate(ctx context.Context, tx *pg.Tx, m *models.Candidate) (*models.Candidate, error) {
 	if m == nil {
 		return nil, errors.New("Candidate is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
-		Relation(relCandidateSkill).
-		Relation(relCandidateAcademic).Relation(relCandidateAcademicInstitution).Relation(relCandidateAcademicCourse).
-		Relation(relCandidateJob).Relation(relCandidateJobCompany).Relation(relCandidateJobDepartment).
+	var q *orm.Query
+	if tx != nil {
+		q = tx.Model(m)
+	} else {
+		q = r.DB.WithContext(ctx).Model(m)
+	}
+	_, err := q.Model(m).WherePK().
+		Relation(relSkills).
+		Relation(relAcademics).Relation(relAcademicsInstitution).Relation(relAcademicsCourse).
+		Relation(relJobs).Relation(relJobsCompany).Relation(relJobsDepartment).
 		Returning("*").
 		Update()
 	if err != nil {

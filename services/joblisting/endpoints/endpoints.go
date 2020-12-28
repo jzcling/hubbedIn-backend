@@ -19,10 +19,12 @@ type Endpoints struct {
 	UpdateJobPost     endpoint.Endpoint
 	DeleteJobPost     endpoint.Endpoint
 
-	CreateCompany   endpoint.Endpoint
-	GetAllCompanies endpoint.Endpoint
-	UpdateCompany   endpoint.Endpoint
-	DeleteCompany   endpoint.Endpoint
+	CreateCompany      endpoint.Endpoint
+	LocalCreateCompany endpoint.Endpoint
+	GetAllCompanies    endpoint.Endpoint
+	UpdateCompany      endpoint.Endpoint
+	LocalUpdateCompany endpoint.Endpoint
+	DeleteCompany      endpoint.Endpoint
 
 	CreateIndustry   endpoint.Endpoint
 	GetAllIndustries endpoint.Endpoint
@@ -54,10 +56,12 @@ func MakeEndpoints(s interfaces.Service) Endpoints {
 		UpdateJobPost:     makeUpdateJobPostEndpoint(s),
 		DeleteJobPost:     makeDeleteJobPostEndpoint(s),
 
-		CreateCompany:   makeCreateCompanyEndpoint(s),
-		GetAllCompanies: makeGetAllCompaniesEndpoint(s),
-		UpdateCompany:   makeUpdateCompanyEndpoint(s),
-		DeleteCompany:   makeDeleteCompanyEndpoint(s),
+		CreateCompany:      makeCreateCompanyEndpoint(s),
+		LocalCreateCompany: makeLocalCreateCompanyEndpoint(s),
+		GetAllCompanies:    makeGetAllCompaniesEndpoint(s),
+		UpdateCompany:      makeUpdateCompanyEndpoint(s),
+		LocalUpdateCompany: makeLocalUpdateCompanyEndpoint(s),
+		DeleteCompany:      makeDeleteCompanyEndpoint(s),
 
 		CreateIndustry:   makeCreateIndustryEndpoint(s),
 		GetAllIndustries: makeGetAllIndustriesEndpoint(s),
@@ -223,6 +227,14 @@ func makeCreateCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
 	}
 }
 
+func makeLocalCreateCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(CreateCompanyRequest)
+		m, err := s.LocalCreateCompany(ctx, req.Company)
+		return CreateCompanyResponse{Company: m, Err: err}, nil
+	}
+}
+
 // CreateCompanyRequest declares the inputs required for creating a joblisting
 type CreateCompanyRequest struct {
 	Company *models.Company
@@ -259,6 +271,14 @@ func makeUpdateCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateCompanyRequest)
 		m, err := s.UpdateCompany(ctx, req.Company)
+		return UpdateCompanyResponse{Company: m, Err: err}, nil
+	}
+}
+
+func makeLocalUpdateCompanyEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateCompanyRequest)
+		m, err := s.LocalUpdateCompany(ctx, req.Company)
 		return UpdateCompanyResponse{Company: m, Err: err}, nil
 	}
 }

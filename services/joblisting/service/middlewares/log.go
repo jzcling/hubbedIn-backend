@@ -93,6 +93,13 @@ func (mw logMiddleware) CreateCompany(ctx context.Context, input *models.Company
 	return
 }
 
+// LocalCreateCompany creates a new Company
+func (mw logMiddleware) LocalCreateCompany(ctx context.Context, input *models.Company) (output *models.Company, err error) {
+	defer mw.log("LocalCreateCompany", time.Now(), input, output, &err)
+	output, err = mw.next.LocalCreateCompany(ctx, input)
+	return
+}
+
 // GetAllCompanies returns all Companies that match the filters
 func (mw logMiddleware) GetAllCompanies(ctx context.Context, input models.CompanyFilters) (output []*models.Company, err error) {
 	defer mw.log("GetAllCompanies", time.Now(), input, output, &err)
@@ -104,6 +111,13 @@ func (mw logMiddleware) GetAllCompanies(ctx context.Context, input models.Compan
 func (mw logMiddleware) UpdateCompany(ctx context.Context, input *models.Company) (output *models.Company, err error) {
 	defer mw.log("UpdateCompany", time.Now(), input, output, &err)
 	output, err = mw.next.UpdateCompany(ctx, input)
+	return
+}
+
+// LocalUpdateCompany updates a Company
+func (mw logMiddleware) LocalUpdateCompany(ctx context.Context, input *models.Company) (output *models.Company, err error) {
+	defer mw.log("LocalUpdateCompany", time.Now(), input, output, &err)
+	output, err = mw.next.LocalUpdateCompany(ctx, input)
 	return
 }
 

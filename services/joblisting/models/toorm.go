@@ -14,7 +14,7 @@ func JobPostToORM(m *pb.JobPost) *JobPost {
 	var skills []*Skill
 	s := m.Skills
 	for _, skill := range s {
-		skills = append(skills, SkillToORM(skill))
+		skills = append(skills, ProfileSkillToORM(skill))
 	}
 
 	createdAt := helpers.ProtoTimeToTime(m.CreatedAt)
@@ -45,7 +45,7 @@ func JobPostToORM(m *pb.JobPost) *JobPost {
 		StartAt:         startAt,
 		ExpireAt:        expireAt,
 		SkillID:         m.SkillId,
-		Company:         CompanyToORM(m.Company),
+		Company:         JobCompanyToORM(m.Company),
 		Function:        JobFunctionToORM(m.Function),
 		Industry:        IndustryToORM(m.Industry),
 		JobPlatform:     JobPlatformToORM(m.JobPlatform),
@@ -55,8 +55,8 @@ func JobPostToORM(m *pb.JobPost) *JobPost {
 	}
 }
 
-// CompanyToORM maps the proto Company model to the ORM model
-func CompanyToORM(m *pb.Company) *Company {
+// JobCompanyToORM maps the proto JobCompany model to the ORM model
+func JobCompanyToORM(m *pb.JobCompany) *Company {
 	if m == nil {
 		return nil
 	}
@@ -99,7 +99,7 @@ func IndustryToORM(m *pb.Industry) *Industry {
 	var companies []*Company
 	c := m.Companies
 	for _, company := range c {
-		companies = append(companies, CompanyToORM(company))
+		companies = append(companies, JobCompanyToORM(company))
 	}
 
 	var jobs []*JobPost
@@ -132,7 +132,7 @@ func KeyPersonToORM(m *pb.KeyPerson) *KeyPerson {
 		Email:         "email",
 		JobTitle:      "cto",
 		UpdatedAt:     updatedAt,
-		Company:       CompanyToORM(m.Company),
+		Company:       JobCompanyToORM(m.Company),
 	}
 }
 
@@ -168,8 +168,8 @@ func JobFunctionToORM(m *pb.JobFunction) *JobFunction {
 	}
 }
 
-// SkillToORM maps the proto Skill model to the ORM model
-func SkillToORM(m *pb.Skill) *Skill {
+// ProfileSkillToORM maps the proto ProfileSkill model to the ORM model
+func ProfileSkillToORM(m *pb.ProfileSkill) *Skill {
 	if m == nil {
 		return nil
 	}

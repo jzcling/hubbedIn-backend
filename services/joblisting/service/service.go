@@ -167,6 +167,15 @@ func (s *service) CreateCompany(ctx context.Context, model *models.Company) (*mo
 	return m, err
 }
 
+// LocalCreateCompany creates a new Company
+func (s *service) LocalCreateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
+	m, err := s.repository.CreateCompany(ctx, model)
+	if err != nil {
+		return nil, err
+	}
+	return m, err
+}
+
 // GetAllCompanies returns all Companies that match the filters
 func (s *service) GetAllCompanies(ctx context.Context, f models.CompanyFilters) ([]*models.Company, error) {
 	m, err := s.repository.GetAllCompanies(ctx, f)
@@ -178,6 +187,15 @@ func (s *service) GetAllCompanies(ctx context.Context, f models.CompanyFilters) 
 
 // UpdateCompany updates a Company
 func (s *service) UpdateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
+	m, err := s.repository.UpdateCompany(ctx, model)
+	if err != nil {
+		return nil, err
+	}
+	return m, err
+}
+
+// LocalUpdateCompany updates a Company
+func (s *service) LocalUpdateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
 	m, err := s.repository.UpdateCompany(ctx, model)
 	if err != nil {
 		return nil, err

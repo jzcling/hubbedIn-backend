@@ -56,6 +56,65 @@ func setupClient(t *testing.T) (*grpc.ClientConn, pb.ProfileServiceClient) {
 	return conn, pb.NewProfileServiceClient(conn)
 }
 
+/* --------------- User --------------- */
+
+func TestCreateUser(t *testing.T) {
+	conn, client := setupClient(t)
+	defer conn.Close()
+
+	testPbTime := ptypes.TimestampNow()
+	test := &pb.User{
+		FirstName:     "first",
+		LastName:      "last",
+		Email:         "email",
+		ContactNumber: "contact",
+		CreatedAt:     testPbTime,
+		UpdatedAt:     testPbTime,
+	}
+	in := &pb.CreateUserRequest{User: test}
+	svcIn := models.UserToORM(test)
+	out := test
+	svcOut := models.UserToORM(test)
+
+	type args struct {
+		ctx      context.Context
+		svcInput *models.User
+		input    *pb.CreateUserRequest
+	}
+
+	type expect struct {
+		svcOutput *models.User
+		output    *pb.User
+		err       error
+	}
+
+	for _, tt := range []struct {
+		name string
+		args args
+		exp  expect
+	}{
+		{"error", args{ctx, &models.User{}, &pb.CreateUserRequest{User: &pb.User{}}}, expect{nil, nil, errors.New("Marshal called with nil")}},
+		{"valid", args{ctx, svcIn, in}, expect{svcOut, out, nil}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			svc.On("CreateUser", mockCtx, tt.args.svcInput).Return(tt.exp.svcOutput, tt.exp.err)
+
+			got, err := client.CreateUser(ctx, tt.args.input)
+			if tt.exp.output != nil {
+				assert.Condition(t, func() bool { return tt.exp.output.IsEqual(got) })
+			} else {
+				assert.Equal(t, tt.exp.output, got)
+			}
+			if tt.exp.err != nil && err != nil {
+				assert.Condition(t, func() bool { return strings.Contains(err.Error(), tt.exp.err.Error()) })
+			} else {
+				assert.Equal(t, tt.exp.err, err)
+			}
+		})
+	}
+	svc.AssertExpectations(t)
+}
+
 /* --------------- Candidate --------------- */
 
 func TestCreateCandidate(t *testing.T) {
@@ -64,12 +123,12 @@ func TestCreateCandidate(t *testing.T) {
 
 	testPbTime := ptypes.TimestampNow()
 	test := &pb.Candidate{
-		FirstName:     "first",
-		LastName:      "last",
-		Email:         "email",
-		ContactNumber: "contact",
-		CreatedAt:     testPbTime,
-		UpdatedAt:     testPbTime,
+		Nationality:            "Singapore",
+		ExpectedSalaryCurrency: "SGD",
+		ExpectedSalary:         1000,
+		PreferredRoles:         []string{"frontend"},
+		CreatedAt:              testPbTime,
+		UpdatedAt:              testPbTime,
 	}
 	in := &pb.CreateCandidateRequest{Candidate: test}
 	svcIn := models.CandidateToORM(test)
@@ -120,7 +179,7 @@ func TestGetAllCandidates(t *testing.T) {
 	defer conn.Close()
 
 	testPbTime := ptypes.TimestampNow()
-	test := &pb.Candidate{
+	test := &pb.User{
 		FirstName:     "first",
 		LastName:      "last",
 		Email:         "email",
@@ -128,13 +187,13 @@ func TestGetAllCandidates(t *testing.T) {
 		CreatedAt:     testPbTime,
 		UpdatedAt:     testPbTime,
 	}
-	mockRes := []*pb.Candidate{
+	mockRes := []*pb.User{
 		test,
 		test,
 	}
-	svcRes := []*models.Candidate{
-		models.CandidateToORM(test),
-		models.CandidateToORM(test),
+	svcRes := []*models.User{
+		models.UserToORM(test),
+		models.UserToORM(test),
 	}
 	in := &pb.GetAllCandidatesRequest{}
 	out := &pb.GetAllCandidatesResponse{Candidates: mockRes}
@@ -149,7 +208,7 @@ func TestGetAllCandidates(t *testing.T) {
 	}
 
 	type expect struct {
-		svcOutput []*models.Candidate
+		svcOutput []*models.User
 		output    *pb.GetAllCandidatesResponse
 		err       error
 	}
@@ -240,9 +299,9 @@ func TestUpdateCandidate(t *testing.T) {
 	defer conn.Close()
 
 	updated := pb.Candidate{
-		Id:        1,
-		FirstName: "new",
-		UpdatedAt: ptypes.TimestampNow(),
+		Id:            1,
+		ResidenceCity: "Singapore",
+		UpdatedAt:     ptypes.TimestampNow(),
 	}
 	svcInOut := models.CandidateToORM(&updated)
 	in := &pb.UpdateCandidateRequest{Id: updated.Id, Candidate: &updated}

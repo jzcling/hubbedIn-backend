@@ -23,6 +23,36 @@ func New(r interfaces.Repository, p *bluemonday.Policy) interfaces.Service {
 	}
 }
 
+/* --------------- User --------------- */
+
+// CreateUser creates a new User
+func (s *service) CreateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	c, err := s.repository.CreateUser(ctx, m)
+	if err != nil {
+		return nil, err
+	}
+
+	return c, err
+}
+
+// UpdateUser updates a User
+func (s *service) UpdateUser(ctx context.Context, m *models.User) (*models.User, error) {
+	c, err := s.repository.UpdateUser(ctx, m)
+	if err != nil {
+		return nil, err
+	}
+	return c, err
+}
+
+// DeleteUser deletes a User by ID
+func (s *service) DeleteUser(ctx context.Context, id uint64) error {
+	err := s.repository.DeleteUser(ctx, id)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 /* --------------- Candidate --------------- */
 
 // CreateCandidate creates a new Candidate
@@ -30,7 +60,7 @@ func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candida
 	// sanitize candidate summary
 	candidate.Summary = s.sanitizer.Sanitize(candidate.Summary)
 
-	c, err := s.repository.CreateCandidate(ctx, candidate)
+	c, err := s.repository.CreateCandidate(ctx, nil, candidate)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +69,7 @@ func (s *service) CreateCandidate(ctx context.Context, candidate *models.Candida
 }
 
 // GetAllCandidates returns all Candidates
-func (s *service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.Candidate, error) {
+func (s *service) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.User, error) {
 	c, err := s.repository.GetAllCandidates(ctx, f)
 	if err != nil {
 		return nil, err
@@ -48,7 +78,7 @@ func (s *service) GetAllCandidates(ctx context.Context, f models.CandidateFilter
 }
 
 // GetCandidateByID returns a Candidate by ID
-func (s *service) GetCandidateByID(ctx context.Context, id uint64) (*models.Candidate, error) {
+func (s *service) GetCandidateByID(ctx context.Context, id uint64) (*models.User, error) {
 	c, err := s.repository.GetCandidateByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -61,7 +91,7 @@ func (s *service) UpdateCandidate(ctx context.Context, candidate *models.Candida
 	// sanitize candidate summary
 	candidate.Summary = s.sanitizer.Sanitize(candidate.Summary)
 
-	c, err := s.repository.UpdateCandidate(ctx, candidate)
+	c, err := s.repository.UpdateCandidate(ctx, nil, candidate)
 	if err != nil {
 		return nil, err
 	}

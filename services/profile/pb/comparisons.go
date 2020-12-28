@@ -2,25 +2,39 @@ package pb
 
 import "in-backend/helpers"
 
-// IsEqual checks the equivalence of two Candidate objects
-func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
-	if c1 == nil && c2 == nil {
-		return true
+// IsEqual checks the equivalence of two User objects
+func (m1 *User) IsEqual(m2 *User) bool {
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
 	}
 
-	if (c1 == nil && c2 != nil) ||
-		(c1 != nil && c2 == nil) {
+	if m1.AuthId != m2.AuthId ||
+		m1.FirstName != m2.FirstName ||
+		m1.LastName != m2.LastName ||
+		m1.Email != m2.Email ||
+		m1.ContactNumber != m2.ContactNumber ||
+		m1.Picture != m2.Picture ||
+		m1.Gender != m2.Gender ||
+		helpers.IsStringSliceEqual(m1.Roles, m2.Roles) ||
+		m1.CandidateId != m2.CandidateId ||
+		m1.JobCompanyId != m2.JobCompanyId ||
+		m1.CreatedAt.AsTime() != m2.CreatedAt.AsTime() ||
+		m1.UpdatedAt.AsTime() != m2.UpdatedAt.AsTime() ||
+		m1.DeletedAt.AsTime() != m2.DeletedAt.AsTime() {
 		return false
 	}
+	return true
+}
 
-	if c1.AuthId != c2.AuthId ||
-		c1.FirstName != c2.FirstName ||
-		c1.LastName != c2.LastName ||
-		c1.Email != c2.Email ||
-		c1.ContactNumber != c2.ContactNumber ||
-		c1.Picture != c2.Picture ||
-		c1.Gender != c2.Gender ||
-		c1.Nationality != c2.Nationality ||
+// IsEqual checks the equivalence of two Candidate objects
+func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
+	isNil, resolve := helpers.CheckNil(c1, c2)
+	if resolve {
+		return isNil
+	}
+
+	if c1.Nationality != c2.Nationality ||
 		c1.ResidenceCity != c2.ResidenceCity ||
 		c1.ExpectedSalaryCurrency != c2.ExpectedSalaryCurrency ||
 		c1.ExpectedSalary != c2.ExpectedSalary ||
@@ -42,13 +56,9 @@ func (c1 *Candidate) IsEqual(c2 *Candidate) bool {
 
 // IsEqual checks the equivalence of two Skill objects
 func (s1 *Skill) IsEqual(s2 *Skill) bool {
-	if s1 == nil && s2 == nil {
-		return true
-	}
-
-	if (s1 == nil && s2 != nil) ||
-		(s1 != nil && s2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(s1, s2)
+	if resolve {
+		return isNil
 	}
 
 	if s1.Name != s2.Name {
@@ -59,13 +69,9 @@ func (s1 *Skill) IsEqual(s2 *Skill) bool {
 
 // IsEqual checks the equivalence of two UserSkill objects
 func (us1 *UserSkill) IsEqual(us2 *UserSkill) bool {
-	if us1 == nil && us2 == nil {
-		return true
-	}
-
-	if (us1 == nil && us2 != nil) ||
-		(us1 != nil && us2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(us1, us2)
+	if resolve {
+		return isNil
 	}
 
 	if us1.CandidateId != us2.CandidateId ||
@@ -79,13 +85,9 @@ func (us1 *UserSkill) IsEqual(us2 *UserSkill) bool {
 
 // IsEqual checks the equivalence of two Institution objects
 func (i1 *Institution) IsEqual(i2 *Institution) bool {
-	if i1 == nil && i2 == nil {
-		return true
-	}
-
-	if (i1 == nil && i2 != nil) ||
-		(i1 != nil && i2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(i1, i2)
+	if resolve {
+		return isNil
 	}
 
 	if i1.Name != i2.Name ||
@@ -97,13 +99,9 @@ func (i1 *Institution) IsEqual(i2 *Institution) bool {
 
 // IsEqual checks the equivalence of two Course objects
 func (c1 *Course) IsEqual(c2 *Course) bool {
-	if c1 == nil && c2 == nil {
-		return true
-	}
-
-	if (c1 == nil && c2 != nil) ||
-		(c1 != nil && c2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(c1, c2)
+	if resolve {
+		return isNil
 	}
 
 	if c1.Name != c2.Name ||
@@ -115,13 +113,9 @@ func (c1 *Course) IsEqual(c2 *Course) bool {
 
 // IsEqual checks the equivalence of two AcademicHistory objects
 func (a1 *AcademicHistory) IsEqual(a2 *AcademicHistory) bool {
-	if a1 == nil && a2 == nil {
-		return true
-	}
-
-	if (a1 == nil && a2 != nil) ||
-		(a1 != nil && a2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(a1, a2)
+	if resolve {
+		return isNil
 	}
 
 	if a1.CandidateId != a2.CandidateId ||
@@ -139,13 +133,9 @@ func (a1 *AcademicHistory) IsEqual(a2 *AcademicHistory) bool {
 
 // IsEqual checks the equivalence of two Company objects
 func (c1 *Company) IsEqual(c2 *Company) bool {
-	if c1 == nil && c2 == nil {
-		return true
-	}
-
-	if (c1 == nil && c2 != nil) ||
-		(c1 != nil && c2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(c1, c2)
+	if resolve {
+		return isNil
 	}
 
 	if c1.Name != c2.Name {
@@ -156,13 +146,9 @@ func (c1 *Company) IsEqual(c2 *Company) bool {
 
 // IsEqual checks the equivalence of two Department objects
 func (d1 *Department) IsEqual(d2 *Department) bool {
-	if d1 == nil && d2 == nil {
-		return true
-	}
-
-	if (d1 == nil && d2 != nil) ||
-		(d1 != nil && d2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(d1, d2)
+	if resolve {
+		return isNil
 	}
 
 	if d1.Name != d2.Name {
@@ -173,13 +159,9 @@ func (d1 *Department) IsEqual(d2 *Department) bool {
 
 // IsEqual checks the equivalence of two JobHistory objects
 func (j1 *JobHistory) IsEqual(j2 *JobHistory) bool {
-	if j1 == nil && j2 == nil {
-		return true
-	}
-
-	if (j1 == nil && j2 != nil) ||
-		(j1 != nil && j2 == nil) {
-		return false
+	isNil, resolve := helpers.CheckNil(j1, j2)
+	if resolve {
+		return isNil
 	}
 
 	if j1.CandidateId != j2.CandidateId ||
@@ -196,6 +178,21 @@ func (j1 *JobHistory) IsEqual(j2 *JobHistory) bool {
 		j1.CreatedAt.AsTime() != j2.CreatedAt.AsTime() ||
 		j1.UpdatedAt.AsTime() != j2.UpdatedAt.AsTime() ||
 		j1.DeletedAt.AsTime() != j2.DeletedAt.AsTime() {
+		return false
+	}
+	return true
+}
+
+// IsEqual checks the equivalence of two JoblistingCompany objects
+func (m1 *JoblistingCompany) IsEqual(m2 *JoblistingCompany) bool {
+	isNil, resolve := helpers.CheckNil(m1, m2)
+	if resolve {
+		return isNil
+	}
+
+	if m1.Name != m2.Name ||
+		m1.LogoUrl != m2.LogoUrl ||
+		m1.Size != m2.Size {
 		return false
 	}
 	return true

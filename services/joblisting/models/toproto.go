@@ -11,7 +11,7 @@ func (m *JobPost) ToProto() *pb.JobPost {
 		return nil
 	}
 
-	var skills []*pb.Skill
+	var skills []*pb.ProfileSkill
 	s := m.Skills
 	for _, skill := range s {
 		skills = append(skills, skill.ToProto())
@@ -56,7 +56,7 @@ func (m *JobPost) ToProto() *pb.JobPost {
 }
 
 // ToProto maps the ORM Company model to the proto model
-func (m *Company) ToProto() *pb.Company {
+func (m *Company) ToProto() *pb.JobCompany {
 	if m == nil {
 		return nil
 	}
@@ -79,7 +79,7 @@ func (m *Company) ToProto() *pb.Company {
 		persons = append(persons, person.ToProto())
 	}
 
-	return &pb.Company{
+	return &pb.JobCompany{
 		Id:         m.ID,
 		Name:       m.Name,
 		LogoUrl:    m.LogoURL,
@@ -96,7 +96,7 @@ func (m *Industry) ToProto() *pb.Industry {
 		return nil
 	}
 
-	var companies []*pb.Company
+	var companies []*pb.JobCompany
 	c := m.Companies
 	for _, company := range c {
 		companies = append(companies, company.ToProto())
@@ -169,12 +169,12 @@ func (m *JobFunction) ToProto() *pb.JobFunction {
 }
 
 // ToProto maps the ORM Skill model to the proto model
-func (m *Skill) ToProto() *pb.Skill {
+func (m *Skill) ToProto() *pb.ProfileSkill {
 	if m == nil {
 		return nil
 	}
 
-	return &pb.Skill{
+	return &pb.ProfileSkill{
 		Id:   m.ID,
 		Name: m.Name,
 	}

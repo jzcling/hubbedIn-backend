@@ -9,6 +9,22 @@ import "google/api/annotations.proto";
 // ------------ Profile Service ------------
 
 service ProfileService {
+    rpc CreateUser(CreateUserRequest) returns (User) {
+        option (google.api.http) = { 
+            post: "/v1/users" 
+            body: "user"
+        };
+    };
+    rpc UpdateUser(UpdateUserRequest) returns (User) {
+        option (google.api.http) = { 
+            put: "/v1/users/{id}"
+            body: "user"
+        };
+    };
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+        option (google.api.http) = { delete: "/v1/users/{id}" };
+    };
+
     rpc CreateCandidate(CreateCandidateRequest) returns (Candidate) {
         option (google.api.http) = { 
             post: "/v1/candidates" 
@@ -18,7 +34,7 @@ service ProfileService {
     rpc GetAllCandidates(GetAllCandidatesRequest) returns (GetAllCandidatesResponse) {
         option (google.api.http) = { get: "/v1/candidates" };
     };
-    rpc GetCandidateByID(GetCandidateByIDRequest) returns (Candidate) {
+    rpc GetCandidateByID(GetCandidateByIDRequest) returns (User) {
         option (google.api.http) = { get: "/v1/candidates/{id}" };
     };
     rpc UpdateCandidate(UpdateCandidateRequest) returns (Candidate) {
@@ -154,7 +170,7 @@ service ProfileService {
     };
 } 
 
-message Candidate {
+message User {
     uint64 id = 1;
     string auth_id = 2;
     string first_name = 3;
@@ -163,24 +179,53 @@ message Candidate {
     string contact_number = 6;
     string picture = 7;
     string gender = 8;
-    string nationality = 9;
-    string residence_city = 10;
-    string expected_salary_currency = 11;
-    uint32 expected_salary = 12;
-    string linked_in_url = 13;
-    string scm_url = 14;
-    string website_url = 15;
-    string education_level = 16;
-    string summary = 17;
-    google.protobuf.Timestamp birthday = 18;
-    uint32 notice_period = 19;
-    repeated string preferred_roles = 20;
-    repeated Skill skills = 21;
-    repeated AcademicHistory academics = 22;
-    repeated JobHistory jobs = 23;
-    google.protobuf.Timestamp created_at = 24;
-    google.protobuf.Timestamp updated_at = 25;
-    google.protobuf.Timestamp deleted_at = 26;
+    repeated string roles = 9;
+    uint64 candidate_id = 10;
+    uint64 job_company_id = 11;
+    google.protobuf.Timestamp created_at = 12;
+    google.protobuf.Timestamp updated_at = 13;
+    google.protobuf.Timestamp deleted_at = 14;
+    Candidate candidate = 15;
+    JoblistingCompany job_company = 16;
+}
+
+message CreateUserRequest {
+    User user = 1;
+}
+
+message UpdateUserRequest {
+    uint64 id = 1;
+    User user = 2;
+}
+
+message DeleteUserRequest {
+    uint64 id = 1;
+}
+
+message DeleteUserResponse {
+    // Empty
+}
+
+message Candidate {
+    uint64 id = 1;
+    string nationality = 2;
+    string residence_city = 3;
+    string expected_salary_currency = 4;
+    uint32 expected_salary = 5;
+    string linked_in_url = 6;
+    string scm_url = 7;
+    string website_url = 8;
+    string education_level = 9;
+    string summary = 10;
+    google.protobuf.Timestamp birthday = 11;
+    uint32 notice_period = 12;
+    repeated string preferred_roles = 13;
+    repeated Skill skills = 14;
+    repeated AcademicHistory academics =15;
+    repeated JobHistory jobs = 16;
+    google.protobuf.Timestamp created_at = 17;
+    google.protobuf.Timestamp updated_at = 18;
+    google.protobuf.Timestamp deleted_at = 19;
 }
 
 message CreateCandidateRequest {
@@ -203,7 +248,7 @@ message GetAllCandidatesRequest {
 }
 
 message GetAllCandidatesResponse {
-    repeated Candidate candidates = 1;
+    repeated User candidates = 1;
 }
 
 message GetCandidateByIDRequest {
@@ -441,4 +486,11 @@ message DeleteJobHistoryRequest {
 
 message DeleteJobHistoryResponse {
     // Empty
+}
+
+message JoblistingCompany {
+    uint64 id = 1;
+    string name = 2;
+    string logo_url = 3;
+    uint64 size = 4;
 }

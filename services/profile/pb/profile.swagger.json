@@ -305,7 +305,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbCandidate"
+              "$ref": "#/definitions/pbUser"
             }
           },
           "default": {
@@ -1038,6 +1038,106 @@
         ]
       }
     },
+    "/v1/users": {
+      "post": {
+        "operationId": "ProfileService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbUser"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/v1/users/{id}": {
+      "delete": {
+        "operationId": "ProfileService_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
+      "put": {
+        "operationId": "ProfileService_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbUser"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
     "/v1/userskills": {
       "delete": {
         "operationId": "ProfileService_DeleteUserSkill",
@@ -1154,27 +1254,6 @@
         "id": {
           "type": "string",
           "format": "uint64"
-        },
-        "authId": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "contactNumber": {
-          "type": "string"
-        },
-        "picture": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
         },
         "nationality": {
           "type": "string"
@@ -1312,6 +1391,9 @@
     "pbDeleteJobHistoryResponse": {
       "type": "object"
     },
+    "pbDeleteUserResponse": {
+      "type": "object"
+    },
     "pbDeleteUserSkillRequest": {
       "type": "object",
       "properties": {
@@ -1346,7 +1428,7 @@
         "candidates": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/pbCandidate"
+            "$ref": "#/definitions/pbUser"
           }
         }
       }
@@ -1487,6 +1569,25 @@
         }
       }
     },
+    "pbJoblistingCompany": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "logoUrl": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "pbSkill": {
       "type": "object",
       "properties": {
@@ -1496,6 +1597,68 @@
         },
         "name": {
           "type": "string"
+        }
+      }
+    },
+    "pbUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "authId": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "contactNumber": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "candidateId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "jobCompanyId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "candidate": {
+          "$ref": "#/definitions/pbCandidate"
+        },
+        "jobCompany": {
+          "$ref": "#/definitions/pbJoblistingCompany"
         }
       }
     },

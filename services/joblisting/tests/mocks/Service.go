@@ -467,6 +467,52 @@ func (_m *Service) GetKeyPersonByID(ctx context.Context, id uint64) (*models.Key
 	return r0, r1
 }
 
+// LocalCreateCompany provides a mock function with given fields: ctx, m
+func (_m *Service) LocalCreateCompany(ctx context.Context, m *models.Company) (*models.Company, error) {
+	ret := _m.Called(ctx, m)
+
+	var r0 *models.Company
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Company) *models.Company); ok {
+		r0 = rf(ctx, m)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Company)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.Company) error); ok {
+		r1 = rf(ctx, m)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LocalUpdateCompany provides a mock function with given fields: ctx, m
+func (_m *Service) LocalUpdateCompany(ctx context.Context, m *models.Company) (*models.Company, error) {
+	ret := _m.Called(ctx, m)
+
+	var r0 *models.Company
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Company) *models.Company); ok {
+		r0 = rf(ctx, m)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Company)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.Company) error); ok {
+		r1 = rf(ctx, m)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateCompany provides a mock function with given fields: ctx, m
 func (_m *Service) UpdateCompany(ctx context.Context, m *models.Company) (*models.Company, error) {
 	ret := _m.Called(ctx, m)

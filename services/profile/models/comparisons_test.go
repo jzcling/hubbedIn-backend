@@ -9,19 +9,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestUserIsEqual(t *testing.T) {
+	timeAt := time.Date(2020, 11, 10, 13, 0, 0, 0, time.Local)
+
+	m1 := (*User)(nil)
+	m2 := &User{
+		AuthID:        "authId",
+		FirstName:     "first",
+		LastName:      "last",
+		Email:         "new@email.com",
+		ContactNumber: "+6563210987",
+		Picture:       "picture",
+		Gender:        "male",
+		Roles:         []string{"Candidate", "Company"},
+		CandidateID:   1,
+		JobCompanyID:  1,
+		CreatedAt:     &timeAt,
+		UpdatedAt:     &timeAt,
+		DeletedAt:     &timeAt,
+	}
+	m3 := &User{}
+
+	testIsEqual(t, m1, m2, m3)
+}
+
 func TestCandidateIsEqual(t *testing.T) {
 	birthday := time.Date(1990, 1, 5, 0, 0, 0, 0, time.Local)
 	timeAt := time.Date(2020, 11, 10, 13, 0, 0, 0, time.Local)
 
 	m1 := (*Candidate)(nil)
 	m2 := &Candidate{
-		AuthID:                 "authId",
-		FirstName:              "first",
-		LastName:               "last",
-		Email:                  "new@email.com",
-		ContactNumber:          "+6563210987",
-		Picture:                "picture",
-		Gender:                 "male",
 		Nationality:            "singapore",
 		ResidenceCity:          "singapore",
 		ExpectedSalaryCurrency: "SGD",
@@ -186,4 +203,16 @@ func testIsEqual(t *testing.T, m1, m2 Comparator, m3 interface{}) {
 			copier.Copy(m3, m2)
 		}
 	}
+}
+
+func TestJobCompanyIsEqual(t *testing.T) {
+	m1 := (*JobCompany)(nil)
+	m2 := &JobCompany{
+		Name:    "hubbed",
+		LogoURL: "https://logo.jpg",
+		Size:    50,
+	}
+	m3 := &JobCompany{}
+
+	testIsEqual(t, m1, m2, m3)
 }

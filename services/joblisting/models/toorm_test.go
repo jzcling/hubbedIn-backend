@@ -36,7 +36,7 @@ func TestJobPostToORM(t *testing.T) {
 		UpdatedAt:       testPbTime,
 		StartAt:         testPbTime,
 		ExpireAt:        testPbTime,
-		Company: &pb.Company{
+		Company: &pb.JobCompany{
 			Id:      1,
 			Name:    "hubbedin",
 			LogoUrl: "https://logo.jpg",
@@ -120,7 +120,7 @@ func TestCompanyToORM(t *testing.T) {
 	testTime, err := ptypes.Timestamp(testPbTime)
 	require.NoError(t, err)
 
-	input := &pb.Company{
+	input := &pb.JobCompany{
 		Id:      1,
 		Name:    "hubbedin",
 		LogoUrl: "https://logo.jpg",
@@ -294,7 +294,7 @@ func TestCompanyToORM(t *testing.T) {
 		},
 	}
 
-	got := CompanyToORM(input)
+	got := JobCompanyToORM(input)
 	require.EqualValues(t, expect, got)
 }
 
@@ -306,7 +306,7 @@ func TestIndustryToORM(t *testing.T) {
 	input := &pb.Industry{
 		Id:   1,
 		Name: "tech",
-		Companies: []*pb.Company{
+		Companies: []*pb.JobCompany{
 			{
 				Id:      1,
 				Name:    "hubbedin",
@@ -458,7 +458,7 @@ func TestKeyPersonToORM(t *testing.T) {
 		Email:         "email",
 		JobTitle:      "cto",
 		UpdatedAt:     testPbTime,
-		Company: &pb.Company{
+		Company: &pb.JobCompany{
 			Id:      1,
 			Name:    "hubbedin",
 			LogoUrl: "https://logo.jpg",

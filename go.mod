@@ -14,7 +14,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
 	github.com/jinzhu/copier v0.0.0-20201025035756-632e723a6687
 	github.com/lib/pq v1.8.0 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.4 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.4
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/oklog/oklog v0.3.2
 	github.com/ory/dockertest/v3 v3.6.2

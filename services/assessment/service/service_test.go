@@ -30,15 +30,16 @@ func TestNew(t *testing.T) {
 	expect := &service{
 		repository: r,
 		enqueuer:   nil,
+		sanitizer:  nil,
 	}
 
-	got := New(r, nil)
+	got := New(r, nil, nil)
 
 	require.Equal(t, expect, got)
 }
 
 func TestAllCRUD(t *testing.T) {
-	s := New(r, nil)
+	s := New(r, nil, nil)
 
 	testCreateAssessment(t, s)
 	testGetAllAssessments(t, s)

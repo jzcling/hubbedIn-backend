@@ -15,18 +15,45 @@ func init() {
 	orm.RegisterTable((*CompanyDepartment)(nil))
 }
 
+// User declares the model for User
+type User struct {
+	tableName struct{} `pg:"users,alias:u"`
+
+	ID            uint64      `json:"id"`
+	AuthID        string      `json:"auth_id" pg:",unique,notnull"`
+	FirstName     string      `json:"first_name"`
+	LastName      string      `json:"last_name"`
+	Email         string      `json:"email" pg:",unique,notnull"`
+	ContactNumber string      `json:"contact_number" pg:",unique"`
+	Picture       string      `json:"picture,omitempty"`
+	Gender        string      `json:"gender,omitempty"`
+	Roles         []string    `json:"roles" pg:",array"`
+	CandidateID   uint64      `json:"candidate_id"`
+	JobCompanyID  uint64      `json:"job_company_id"`
+	CreatedAt     *time.Time  `json:"created_at,omitempty"`
+	UpdatedAt     *time.Time  `json:"updated_at,omitempty"`
+	DeletedAt     *time.Time  `json:"deleted_at,omitempty" pg:",soft_delete"`
+	Candidate     *Candidate  `json:"candidate" pg:"rel:has-one"`
+	JobCompany    *JobCompany `json:"job_company" pg:"-"`
+}
+
+func (m *User) BeforeInsert(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.CreatedAt = &now
+	m.UpdatedAt = &now
+	return ctx, nil
+}
+
+func (m *User) BeforeUpdate(ctx context.Context) (context.Context, error) {
+	now := time.Now()
+	m.UpdatedAt = &now
+	return ctx, nil
+}
+
 // Candidate declares the model for Candidate
 type Candidate struct {
-	tableName struct{} `pg:"candidates,alias:c"`
-
+	tableName              struct{}           `pg:"candidates,alias:c"`
 	ID                     uint64             `json:"id"`
-	AuthID                 string             `json:"auth_id" pg:",unique,notnull"`
-	FirstName              string             `json:"first_name" pg:""`
-	LastName               string             `json:"last_name" pg:""`
-	Email                  string             `json:"email" pg:",unique,notnull"`
-	ContactNumber          string             `json:"contact_number" pg:",unique"`
-	Picture                string             `json:"picture,omitempty"`
-	Gender                 string             `json:"gender,omitempty"`
 	Nationality            string             `json:"nationality,omitempty"`
 	ResidenceCity          string             `json:"residence_city,omitempty"`
 	ExpectedSalaryCurrency string             `json:"expected_salary_currency,omitempty"`
@@ -215,4 +242,12 @@ func (m *JobHistory) BeforeUpdate(ctx context.Context) (context.Context, error) 
 	now := time.Now()
 	m.UpdatedAt = &now
 	return ctx, nil
+}
+
+// JobCompany replicates the model for Company in Joblisting service
+type JobCompany struct {
+	ID      uint64 `json:"id"`
+	Name    string `json:"name"`
+	LogoURL string `json:"logo_url"`
+	Size    uint64 `json:"size"`
 }

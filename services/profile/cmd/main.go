@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	joblistingPb "in-backend/services/joblisting/pb"
 	"in-backend/services/profile/configs"
 	"in-backend/services/profile/database"
 	"in-backend/services/profile/endpoints"
@@ -24,6 +25,10 @@ import (
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+)
+
+var (
+	joblistingSvcAddr string = "joblisting-service:50054"
 )
 
 func main() {
@@ -59,11 +64,19 @@ func main() {
 	klenty := providers.NewKlenty(cfg, client)
 	p := bluemonday.UGCPolicy()
 
+	conn, err := grpc.Dial(joblistingSvcAddr, grpc.WithInsecure())
+	if err != nil {
+		level.Error(logger).Log("msg", "Failed to get Joblisting Service connection")
+	}
+	defer conn.Close()
+
+	jlClient := joblistingPb.NewJoblistingServiceClient(conn)
+
 	// Build the layers of the service "onion" from the inside out. First, the
 	// business logic service; then, the set of endpoints that wrap the service;
 	// and finally, a series of concrete transport adapters
 
-	repo := database.NewRepository(db, auth0, klenty)
+	repo := database.NewRepository(db, auth0, klenty, jlClient)
 	svc := service.New(repo, p)
 	svc = middlewares.NewAuthMiddleware(svc, repo)
 	svc = middlewares.NewLogMiddleware(logger, svc)
