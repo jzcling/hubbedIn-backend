@@ -27,6 +27,29 @@ func (_m *KlentyProvider) CreateProspect(c *models.User) error {
 	return r0
 }
 
+// GetProspect provides a mock function with given fields: c
+func (_m *KlentyProvider) GetProspect(c *models.User) (map[string]string, error) {
+	ret := _m.Called(c)
+
+	var r0 map[string]string
+	if rf, ok := ret.Get(0).(func(*models.User) map[string]string); ok {
+		r0 = rf(c)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(map[string]string)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*models.User) error); ok {
+		r1 = rf(c)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // StartCadence provides a mock function with given fields: email, role
 func (_m *KlentyProvider) StartCadence(email string, role string) error {
 	ret := _m.Called(email, role)
@@ -34,6 +57,20 @@ func (_m *KlentyProvider) StartCadence(email string, role string) error {
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string, string) error); ok {
 		r0 = rf(email, role)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdateOrCreateProspect provides a mock function with given fields: c
+func (_m *KlentyProvider) UpdateOrCreateProspect(c *models.User) error {
+	ret := _m.Called(c)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*models.User) error); ok {
+		r0 = rf(c)
 	} else {
 		r0 = ret.Error(0)
 	}

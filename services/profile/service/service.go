@@ -27,21 +27,30 @@ func New(r interfaces.Repository, p *bluemonday.Policy) interfaces.Service {
 
 // CreateUser creates a new User
 func (s *service) CreateUser(ctx context.Context, m *models.User) (*models.User, error) {
-	c, err := s.repository.CreateUser(ctx, m)
+	u, err := s.repository.CreateUser(ctx, m)
 	if err != nil {
 		return nil, err
 	}
 
-	return c, err
+	return u, err
+}
+
+// GetUserByID gets a User by ID
+func (s *service) GetUserByID(ctx context.Context, id uint64) (*models.User, error) {
+	u, err := s.repository.GetUserByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return u, err
 }
 
 // UpdateUser updates a User
 func (s *service) UpdateUser(ctx context.Context, m *models.User) (*models.User, error) {
-	c, err := s.repository.UpdateUser(ctx, m)
+	u, err := s.repository.UpdateUser(ctx, m)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+	return u, err
 }
 
 // DeleteUser deletes a User by ID

@@ -21,8 +21,9 @@ type authMiddleware struct {
 var (
 	errAuth = errors.New("Forbidden")
 
-	idKey    = "https://hubbedin/id"
-	rolesKey = "https://hubbedin/roles"
+	idKey          = "https://hubbedin/id"
+	candidateIDKey = "https://hubbedin/candidateId"
+	rolesKey       = "https://hubbedin/roles"
 )
 
 // NewAuthMiddleware creates and returns a new Auth Middleware that implements the profile Service interface
@@ -33,7 +34,7 @@ func NewAuthMiddleware(svc interfaces.Service, r interfaces.Repository) interfac
 	}
 }
 
-func getRoleAndID(ctx context.Context, ownerID *uint64) (*string, *uint64, error) {
+func getRoleAndID(ctx context.Context, ownerID *uint64, keyType string) (*string, *uint64, error) {
 	claims, err := getClaims(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -42,9 +43,16 @@ func getRoleAndID(ctx context.Context, ownerID *uint64) (*string, *uint64, error
 	var role string = ""
 	var id uint64 = 0
 
+	var key string
+	if keyType == "User" {
+		key = idKey
+	}
+	if keyType == "Candidate" {
+		key = candidateIDKey
+	}
 	// this should come first so that role gets overwritten if owner is also an admin
-	if claims[idKey] != nil {
-		id, err = strconv.ParseUint(claims[idKey].(string), 10, 64)
+	if claims[key] != nil {
+		id, err = strconv.ParseUint(claims[key].(string), 10, 64)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -70,6 +78,10 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 	if !ok {
 		return nil, errAuth
 	}
+
+	if len(headers["authorization"]) == 0 {
+		return nil, errAuth
+	}
 	tokenString := strings.Split(headers["authorization"][0], " ")[1]
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {
@@ -87,9 +99,23 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 
 // CreateUser creates a new User
 func (mw authMiddleware) CreateUser(ctx context.Context, m *models.User) (*models.User, error) {
-	// Users with Company or Admin role can only be created by admins
-	if helpers.IsStringInSlice("Company", m.Roles) || helpers.IsStringInSlice("Admin", m.Roles) {
-		role, _, err := getRoleAndID(ctx, nil)
+	u, err := mw.repository.GetUserByEmail(ctx, m.Email)
+	if err != nil {
+		return nil, err
+	}
+	// Existing candidate ID must be the same as updated candidate ID if exists
+	if m.Candidate != nil && m.Candidate.ID != 0 && u.CandidateID != m.Candidate.ID {
+		return nil, errAuth
+	}
+	// Existing company ID must be the same as updated company ID if exists
+	if m.JobCompany != nil && m.JobCompany.ID != 0 && u.JobCompanyID != m.JobCompany.ID {
+		return nil, errAuth
+	}
+
+	// Users with newly assigned Admin role can only be created by admins
+	if helpers.IsStringInSlice("Admin", m.Roles) &&
+		(u.Roles == nil || !helpers.IsStringInSlice("Admin", u.Roles)) {
+		role, _, err := getRoleAndID(ctx, nil, "User")
 		if err != nil {
 			return nil, err
 		}
@@ -97,17 +123,27 @@ func (mw authMiddleware) CreateUser(ctx context.Context, m *models.User) (*model
 			return nil, errAuth
 		}
 	}
-	// When creating a user, the candidate ID and company ID must be not be set
-	if (m.Candidate != nil && m.Candidate.ID != 0) ||
-		(m.JobCompany != nil && m.JobCompany.ID != 0) {
+	return mw.next.CreateUser(ctx, m)
+}
+
+// GetUserByID gets a User by ID
+func (mw authMiddleware) GetUserByID(ctx context.Context, id uint64) (*models.User, error) {
+	role, _, err := getRoleAndID(ctx, &id, "User")
+	if err != nil {
+		return nil, err
+	}
+	if *role != "Admin" {
 		return nil, errAuth
 	}
-	return mw.next.CreateUser(ctx, m)
+	return mw.next.GetUserByID(ctx, id)
 }
 
 // UpdateUser updates a User
 func (mw authMiddleware) UpdateUser(ctx context.Context, m *models.User) (*models.User, error) {
 	u, err := mw.repository.GetCandidateByID(ctx, m.ID)
+	if err != nil {
+		return nil, err
+	}
 	// Existing candidate ID must be the same as updated candidate ID if exists
 	if m.Candidate != nil && m.Candidate.ID != 0 && u.Candidate.ID != m.Candidate.ID {
 		return nil, errAuth
@@ -120,7 +156,7 @@ func (mw authMiddleware) UpdateUser(ctx context.Context, m *models.User) (*model
 	// Only candidates can freely update their own details
 	// Companies must go through admin for updates
 	if helpers.IsStringInSlice("Company", m.Roles) || helpers.IsStringInSlice("Admin", m.Roles) {
-		role, _, err := getRoleAndID(ctx, nil)
+		role, _, err := getRoleAndID(ctx, nil, "User")
 		if err != nil {
 			return nil, err
 		}
@@ -131,7 +167,7 @@ func (mw authMiddleware) UpdateUser(ctx context.Context, m *models.User) (*model
 		if err != nil {
 			return nil, err
 		}
-		role, _, err := getRoleAndID(ctx, &u.ID)
+		role, _, err := getRoleAndID(ctx, &u.ID, "User")
 		if err != nil {
 			return nil, err
 		}
@@ -145,7 +181,7 @@ func (mw authMiddleware) UpdateUser(ctx context.Context, m *models.User) (*model
 
 // DeleteUser deletes a User by ID
 func (mw authMiddleware) DeleteUser(ctx context.Context, id uint64) error {
-	role, _, err := getRoleAndID(ctx, &id)
+	role, _, err := getRoleAndID(ctx, &id, "User")
 	if err != nil {
 		return err
 	}
@@ -164,7 +200,7 @@ func (mw authMiddleware) CreateCandidate(ctx context.Context, candidate *models.
 
 // GetAllCandidates returns all Candidates
 func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.CandidateFilters) ([]*models.User, error) {
-	role, _, err := getRoleAndID(ctx, nil)
+	role, _, err := getRoleAndID(ctx, nil, "User")
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +212,7 @@ func (mw authMiddleware) GetAllCandidates(ctx context.Context, f models.Candidat
 
 // GetCandidateByID returns a Candidate by ID
 func (mw authMiddleware) GetCandidateByID(ctx context.Context, id uint64) (*models.User, error) {
-	role, _, err := getRoleAndID(ctx, &id)
+	role, _, err := getRoleAndID(ctx, &id, "User")
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +228,7 @@ func (mw authMiddleware) UpdateCandidate(ctx context.Context, m *models.Candidat
 	if err != nil {
 		return nil, err
 	}
-	role, _, err := getRoleAndID(ctx, &c.ID)
+	role, _, err := getRoleAndID(ctx, &c.ID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +240,7 @@ func (mw authMiddleware) UpdateCandidate(ctx context.Context, m *models.Candidat
 
 // DeleteCandidate deletes a Candidate by ID
 func (mw authMiddleware) DeleteCandidate(ctx context.Context, id uint64) error {
-	role, _, err := getRoleAndID(ctx, &id)
+	role, _, err := getRoleAndID(ctx, &id, "Candidate")
 	if err != nil {
 		return err
 	}
@@ -235,7 +271,7 @@ func (mw authMiddleware) GetAllSkills(ctx context.Context, f models.SkillFilters
 
 // CreateUserSkill creates a new UserSkill
 func (mw authMiddleware) CreateUserSkill(ctx context.Context, m *models.UserSkill) (*models.UserSkill, error) {
-	role, _, err := getRoleAndID(ctx, &m.CandidateID)
+	role, _, err := getRoleAndID(ctx, &m.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -247,7 +283,7 @@ func (mw authMiddleware) CreateUserSkill(ctx context.Context, m *models.UserSkil
 
 // DeleteUserSkill deletes a UserSkill by ID
 func (mw authMiddleware) DeleteUserSkill(ctx context.Context, cid, sid uint64) error {
-	role, _, err := getRoleAndID(ctx, &cid)
+	role, _, err := getRoleAndID(ctx, &cid, "Candidate")
 	if err != nil {
 		return err
 	}
@@ -295,7 +331,7 @@ func (mw authMiddleware) GetAllCourses(ctx context.Context, f models.CourseFilte
 
 // CreateAcademicHistory creates a new AcademicHistory
 func (mw authMiddleware) CreateAcademicHistory(ctx context.Context, m *models.AcademicHistory) (*models.AcademicHistory, error) {
-	role, _, err := getRoleAndID(ctx, &m.CandidateID)
+	role, _, err := getRoleAndID(ctx, &m.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -311,7 +347,7 @@ func (mw authMiddleware) GetAcademicHistory(ctx context.Context, id uint64) (*mo
 	if err != nil {
 		return nil, err
 	}
-	role, _, err := getRoleAndID(ctx, &ah.CandidateID)
+	role, _, err := getRoleAndID(ctx, &ah.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -327,7 +363,7 @@ func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, m *models.Ac
 	if err != nil {
 		return nil, err
 	}
-	role, _, err := getRoleAndID(ctx, &ah.CandidateID)
+	role, _, err := getRoleAndID(ctx, &ah.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +375,7 @@ func (mw authMiddleware) UpdateAcademicHistory(ctx context.Context, m *models.Ac
 
 // DeleteAcademicHistory deletes a AcademicHistory by ID
 func (mw authMiddleware) DeleteAcademicHistory(ctx context.Context, cid, ahid uint64) error {
-	role, _, err := getRoleAndID(ctx, &cid)
+	role, _, err := getRoleAndID(ctx, &cid, "Candidate")
 	if err != nil {
 		return err
 	}
@@ -387,7 +423,7 @@ func (mw authMiddleware) GetAllDepartments(ctx context.Context, f models.Departm
 
 // CreateJobHistory creates a new JobHistory
 func (mw authMiddleware) CreateJobHistory(ctx context.Context, m *models.JobHistory) (*models.JobHistory, error) {
-	role, _, err := getRoleAndID(ctx, &m.CandidateID)
+	role, _, err := getRoleAndID(ctx, &m.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -403,7 +439,7 @@ func (mw authMiddleware) GetJobHistory(ctx context.Context, id uint64) (*models.
 	if err != nil {
 		return nil, err
 	}
-	role, _, err := getRoleAndID(ctx, &jh.CandidateID)
+	role, _, err := getRoleAndID(ctx, &jh.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -419,7 +455,7 @@ func (mw authMiddleware) UpdateJobHistory(ctx context.Context, m *models.JobHist
 	if err != nil {
 		return nil, err
 	}
-	role, _, err := getRoleAndID(ctx, &jh.CandidateID)
+	role, _, err := getRoleAndID(ctx, &jh.CandidateID, "Candidate")
 	if err != nil {
 		return nil, err
 	}
@@ -431,7 +467,7 @@ func (mw authMiddleware) UpdateJobHistory(ctx context.Context, m *models.JobHist
 
 // DeleteJobHistory deletes a JobHistory by ID
 func (mw authMiddleware) DeleteJobHistory(ctx context.Context, cid, jhid uint64) error {
-	role, _, err := getRoleAndID(ctx, &cid)
+	role, _, err := getRoleAndID(ctx, &cid, "Candidate")
 	if err != nil {
 		return err
 	}

@@ -17,6 +17,12 @@ type Repository interface {
 	// UpdateUser updates a User
 	UpdateUser(ctx context.Context, c *models.User) (*models.User, error)
 
+	// GetUserByID finds and returns a user by ID
+	GetUserByID(ctx context.Context, id uint64) (*models.User, error)
+
+	// GetUserByEmail finds and returns a user by email
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+
 	// DeleteUser deletes a User by ID
 	DeleteUser(ctx context.Context, id uint64) error
 

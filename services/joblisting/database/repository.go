@@ -205,7 +205,7 @@ func (r *repository) GetAllJobPosts(ctx context.Context, f models.JobPostFilters
 func (r *repository) GetJobPostByID(ctx context.Context, id uint64) (*models.JobPost, error) {
 	m := models.JobPost{ID: id}
 	err := r.DB.WithContext(ctx).Model(&m).
-		Where("id = ?", id).
+		Where("jp.id = ?", id).
 		Relation(relCompany).
 		Relation(relFunction).
 		Relation(relIndustry).
@@ -226,7 +226,8 @@ func (r *repository) UpdateJobPost(ctx context.Context, m *models.JobPost) (*mod
 		return nil, errors.New("Job post is nil")
 	}
 
-	_, err := r.DB.WithContext(ctx).Model(m).WherePK().
+	_, err := r.DB.WithContext(ctx).Model(m).
+		Where("jp.id = ?", m.ID).
 		Relation(relCompany).
 		Relation(relFunction).
 		Relation(relIndustry).

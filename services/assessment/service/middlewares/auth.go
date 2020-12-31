@@ -69,6 +69,10 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 	if !ok {
 		return nil, errAuth
 	}
+
+	if len(headers["authorization"]) == 0 {
+		return nil, errAuth
+	}
 	tokenString := strings.Split(headers["authorization"][0], " ")[1]
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {

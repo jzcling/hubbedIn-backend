@@ -49,6 +49,13 @@ func (mw logMiddleware) CreateUser(ctx context.Context, input *models.User) (out
 	return
 }
 
+// GetUserByID gets a User by ID
+func (mw logMiddleware) GetUserByID(ctx context.Context, input uint64) (output *models.User, err error) {
+	defer mw.log("GetUserByID", time.Now(), input, output, &err)
+	output, err = mw.next.GetUserByID(ctx, input)
+	return
+}
+
 // UpdateUser updates a User
 func (mw logMiddleware) UpdateUser(ctx context.Context, input *models.User) (output *models.User, err error) {
 	defer mw.log("UpdateUser", time.Now(), input, output, &err)

@@ -12,6 +12,9 @@ type Service interface {
 	// CreateUser creates a new User
 	CreateUser(ctx context.Context, m *models.User) (*models.User, error)
 
+	// GetUserByID gets a User by ID
+	GetUserByID(ctx context.Context, id uint64) (*models.User, error)
+
 	// UpdateUser updates a User
 	UpdateUser(ctx context.Context, m *models.User) (*models.User, error)
 

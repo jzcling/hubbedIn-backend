@@ -21,7 +21,7 @@ var (
 	errAuth = errors.New("Forbidden")
 
 	idKey        = "https://hubbedin/id"
-	companyIDKey = "https://hubbedin/company-id"
+	companyIDKey = "https://hubbedin/companyId"
 	rolesKey     = "https://hubbedin/roles"
 )
 
@@ -73,6 +73,10 @@ func getRoleAndID(ctx context.Context, ownerID *uint64) (role string, id uint64,
 func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 	headers, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
+		return nil, errAuth
+	}
+
+	if len(headers["authorization"]) == 0 {
 		return nil, errAuth
 	}
 	tokenString := strings.Split(headers["authorization"][0], " ")[1]

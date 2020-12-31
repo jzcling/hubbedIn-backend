@@ -14,9 +14,10 @@ import (
 
 // grpc transport service for Profile Service.
 type grpcServer struct {
-	createUser kitgrpc.Handler
-	updateUser kitgrpc.Handler
-	deleteUser kitgrpc.Handler
+	createUser  kitgrpc.Handler
+	getUserByID kitgrpc.Handler
+	updateUser  kitgrpc.Handler
+	deleteUser  kitgrpc.Handler
 
 	createCandidate  kitgrpc.Handler
 	getAllCandidates kitgrpc.Handler
@@ -74,6 +75,12 @@ func NewGRPCServer(
 			endpoints.CreateUser,
 			decodeCreateUserRequest,
 			encodeCreateUserResponse,
+			options...,
+		),
+		getUserByID: kitgrpc.NewServer(
+			endpoints.GetUserByID,
+			decodeGetUserByIDRequest,
+			encodeGetUserByIDResponse,
 			options...,
 		),
 		updateUser: kitgrpc.NewServer(
@@ -302,6 +309,31 @@ func decodeCreateUserRequest(_ context.Context, request interface{}) (interface{
 // encodeCreateUserResponse encodes the outgoing go kit payload to the grpc payload
 func encodeCreateUserResponse(_ context.Context, response interface{}) (interface{}, error) {
 	res := response.(endpoints.CreateUserResponse)
+	err := getError(res.Err)
+	if err == nil {
+		return res.User.ToProto(), nil
+	}
+	return nil, err
+}
+
+// GetUserByID returns a User by ID
+func (s *grpcServer) GetUserByID(ctx context.Context, req *pb.GetUserByIDRequest) (*pb.User, error) {
+	_, rep, err := s.getUserByID.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.User), nil
+}
+
+// decodeGetUserByIDRequest decodes the incoming grpc payload to our go kit payload
+func decodeGetUserByIDRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.GetUserByIDRequest)
+	return endpoints.GetUserByIDRequest{ID: req.Id}, nil
+}
+
+// encodeGetUserByIDResponse encodes the outgoing go kit payload to the grpc payload
+func encodeGetUserByIDResponse(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(endpoints.GetUserByIDResponse)
 	err := getError(res.Err)
 	if err == nil {
 		return res.User.ToProto(), nil

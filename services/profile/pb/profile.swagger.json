@@ -1071,6 +1071,35 @@
       }
     },
     "/v1/users/{id}": {
+      "get": {
+        "operationId": "ProfileService_GetUserByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      },
       "delete": {
         "operationId": "ProfileService_DeleteUser",
         "responses": {

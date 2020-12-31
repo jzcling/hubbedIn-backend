@@ -887,6 +887,36 @@ func (_m *ProfileServiceClient) GetSkill(ctx context.Context, in *pb.GetSkillReq
 	return r0, r1
 }
 
+// GetUserByID provides a mock function with given fields: ctx, in, opts
+func (_m *ProfileServiceClient) GetUserByID(ctx context.Context, in *pb.GetUserByIDRequest, opts ...grpc.CallOption) (*pb.User, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *pb.User
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.GetUserByIDRequest, ...grpc.CallOption) *pb.User); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *pb.GetUserByIDRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateAcademicHistory provides a mock function with given fields: ctx, in, opts
 func (_m *ProfileServiceClient) UpdateAcademicHistory(ctx context.Context, in *pb.UpdateAcademicHistoryRequest, opts ...grpc.CallOption) (*pb.AcademicHistory, error) {
 	_va := make([]interface{}, len(opts))

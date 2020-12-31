@@ -79,10 +79,18 @@ func (p *auth0Provider) GetToken() (map[string]interface{}, error) {
 
 func (p *auth0Provider) UpdateUser(token string, u *models.User) error {
 	url := auth0URL + "/api/v2/users/" + url.QueryEscape(u.AuthID)
+
+	data := make(map[string]string)
+	data["id"] = strconv.FormatUint(u.ID, 10)
+	if u.CandidateID > 0 {
+		data["candidateId"] = strconv.FormatUint(u.CandidateID, 10)
+	}
+	if u.JobCompanyID > 0 {
+		data["companyId"] = strconv.FormatUint(u.JobCompanyID, 10)
+	}
+
 	reqBody, err := json.Marshal(map[string](map[string]string){
-		"app_metadata": {
-			"id": strconv.FormatUint(u.ID, 10),
-		},
+		"app_metadata": data,
 	})
 	if err != nil {
 		return err

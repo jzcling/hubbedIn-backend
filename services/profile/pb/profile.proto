@@ -15,6 +15,9 @@ service ProfileService {
             body: "user"
         };
     };
+    rpc GetUserByID(GetUserByIDRequest) returns (User) {
+        option (google.api.http) = { get: "/v1/users/{id}" };
+    };
     rpc UpdateUser(UpdateUserRequest) returns (User) {
         option (google.api.http) = { 
             put: "/v1/users/{id}"
@@ -191,6 +194,10 @@ message User {
 
 message CreateUserRequest {
     User user = 1;
+}
+
+message GetUserByIDRequest {
+    uint64 id = 1;
 }
 
 message UpdateUserRequest {

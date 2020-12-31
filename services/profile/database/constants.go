@@ -19,6 +19,7 @@ const (
 	relJobsDepartment       string = "Jobs.Department"
 
 	filUserID        string = "u.id = ?"
+	filUserEmail     string = "u.email = ?"
 	filSkillID       string = "s.id = ?"
 	filUserSkillID   string = "us.id = ?"
 	filInstitutionID string = "i.id = ?"

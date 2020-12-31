@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	pg "github.com/go-pg/pg/v10"
@@ -93,13 +94,21 @@ func (r *repository) CreateUser(ctx context.Context, m *models.User) (*models.Us
 					LogoURL: c.LogoUrl,
 					Size:    c.Size,
 				}
+				m.JobCompanyID = c.Id
 			}
 		case "Admin":
 			// Do nothing
 		}
 	}
 
-	_, err = tx.Model(m).Insert()
+	_, err = tx.Model(m).
+		Relation(relCandidate).Relation(relCandidateSkills).
+		Relation(relCandidateAcademics).Relation(relCandidateAcademicsInstitution).Relation(relCandidateAcademicsCourse).
+		Relation(relCandidateJobs).Relation(relCandidateJobsCompany).Relation(relCandidateJobsDepartment).
+		Returning("*").
+		OnConflict("(auth_id) DO UPDATE").
+		Set("roles = EXCLUDED.roles, candidate_id = EXCLUDED.candidate_id, job_company_id = EXCLUDED.job_company_id").
+		Insert()
 	if err != nil {
 		tx.Rollback()
 		err = errors.Wrapf(err, "Failed to insert user %v", m)
@@ -131,29 +140,102 @@ func (r *repository) updateAuth0User(m *models.User) error {
 		return err
 	}
 	t := token["access_token"].(string)
-	err = r.auth0.UpdateUser(t, m)
-	if err != nil {
-		return err
-	}
-	err = r.auth0.SetUserRole(t, m.AuthID, m.Roles)
-	if err != nil {
-		return err
-	}
+
+	go func(t string, m *models.User) {
+		err = r.auth0.UpdateUser(t, m)
+		if err != nil {
+			log.Printf("Failed to update auth0 user %s\n", m.Email)
+		}
+	}(t, m)
+
+	go func(t string, m *models.User) {
+		err = r.auth0.SetUserRole(t, m.AuthID, m.Roles)
+		if err != nil {
+			log.Printf("Failed to set auth0 roles for user %s\n", m.Email)
+		}
+	}(t, m)
+
 	return nil
 }
 
 func (r *repository) triggerCRMRegistrationWorkflow(m *models.User) error {
-	err := r.klenty.CreateProspect(m)
+	err := r.klenty.UpdateOrCreateProspect(m)
 	if err != nil {
 		return err
 	}
 	for _, role := range m.Roles {
-		err = r.klenty.StartCadence(m.Email, role)
-		if err != nil {
-			return err
-		}
+		go func(m *models.User, role string) {
+			err = r.klenty.StartCadence(m.Email, role)
+			if err != nil {
+				log.Printf("Failed to start cadence for %s, %s\n", m.Email, role)
+			}
+		}(m, role)
 	}
 	return nil
+}
+
+// GetUserByID returns a User by ID
+func (r *repository) GetUserByID(ctx context.Context, id uint64) (*models.User, error) {
+	m := models.User{ID: id}
+	err := r.DB.WithContext(ctx).Model(&m).
+		Where(filUserID, id).
+		Relation(relCandidate).Relation(relCandidateSkills).
+		Relation(relCandidateAcademics).Relation(relCandidateAcademicsInstitution).Relation(relCandidateAcademicsCourse).
+		Relation(relCandidateJobs).Relation(relCandidateJobsCompany).Relation(relCandidateJobsDepartment).
+		Returning("*").
+		First()
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+
+	// Get job company from joblisting service
+	req := &joblistingPb.GetAllJobCompaniesRequest{
+		Id: []uint64{m.JobCompanyID},
+	}
+	res, err := r.jlClient.GetAllCompanies(ctx, req)
+	if len(res.Companies) > 0 {
+		c := res.Companies[0]
+		m.JobCompany = &models.JobCompany{
+			ID:      c.Id,
+			Name:    c.Name,
+			LogoURL: c.LogoUrl,
+			Size:    c.Size,
+		}
+	}
+	return &m, err
+}
+
+// GetUserByEmail returns a User by Email
+func (r *repository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	m := models.User{Email: email}
+	err := r.DB.WithContext(ctx).Model(&m).
+		Where(filUserEmail, email).
+		Relation(relCandidate).Relation(relCandidateSkills).
+		Relation(relCandidateAcademics).Relation(relCandidateAcademicsInstitution).Relation(relCandidateAcademicsCourse).
+		Relation(relCandidateJobs).Relation(relCandidateJobsCompany).Relation(relCandidateJobsDepartment).
+		Returning("*").
+		First()
+	//pg returns error when no rows in the result set
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+
+	// Get job company from joblisting service
+	req := &joblistingPb.GetAllJobCompaniesRequest{
+		Id: []uint64{m.JobCompanyID},
+	}
+	res, err := r.jlClient.GetAllCompanies(ctx, req)
+	if len(res.Companies) > 0 {
+		c := res.Companies[0]
+		m.JobCompany = &models.JobCompany{
+			ID:      c.Id,
+			Name:    c.Name,
+			LogoURL: c.LogoUrl,
+			Size:    c.Size,
+		}
+	}
+	return &m, err
 }
 
 // UpdateUser updates a User

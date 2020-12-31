@@ -11,9 +11,10 @@ import (
 
 // Endpoints holds all Go kit endpoints for the Profile Service.
 type Endpoints struct {
-	CreateUser endpoint.Endpoint
-	UpdateUser endpoint.Endpoint
-	DeleteUser endpoint.Endpoint
+	CreateUser  endpoint.Endpoint
+	GetUserByID endpoint.Endpoint
+	UpdateUser  endpoint.Endpoint
+	DeleteUser  endpoint.Endpoint
 
 	CreateCandidate  endpoint.Endpoint
 	GetAllCandidates endpoint.Endpoint
@@ -58,9 +59,10 @@ type Endpoints struct {
 // MakeEndpoints initializes all Go kit endpoints for the Profile service.
 func MakeEndpoints(s interfaces.Service) Endpoints {
 	return Endpoints{
-		CreateUser: makeCreateUserEndpoint(s),
-		UpdateUser: makeUpdateUserEndpoint(s),
-		DeleteUser: makeDeleteUserEndpoint(s),
+		CreateUser:  makeCreateUserEndpoint(s),
+		GetUserByID: makeGetUserByIDEndpoint(s),
+		UpdateUser:  makeUpdateUserEndpoint(s),
+		DeleteUser:  makeDeleteUserEndpoint(s),
 
 		CreateCandidate:  makeCreateCandidateEndpoint(s),
 		GetAllCandidates: makeGetAllCandidatesEndpoint(s),
@@ -120,6 +122,25 @@ type CreateUserRequest struct {
 
 // CreateUserResponse declares the outputs after attempting to create a User
 type CreateUserResponse struct {
+	User *models.User
+	Err  error
+}
+
+func makeGetUserByIDEndpoint(s interfaces.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetUserByIDRequest)
+		c, err := s.GetUserByID(ctx, req.ID)
+		return GetUserByIDResponse{User: c, Err: err}, nil
+	}
+}
+
+// GetUserByIDRequest declares the inputs required for getting a single User by ID
+type GetUserByIDRequest struct {
+	ID uint64
+}
+
+// GetUserByIDResponse declares the outputs after attempting to get a single User by ID
+type GetUserByIDResponse struct {
 	User *models.User
 	Err  error
 }
