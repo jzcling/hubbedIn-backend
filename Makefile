@@ -1,4 +1,4 @@
-.PHONY: reset sonarscanner build push
+.PHONY: reset sonarscanner build push update delete-evicted
 
 reset:
 	docker-compose down -v
@@ -49,4 +49,4 @@ update:
 	kubectl set image deployment api-gateway api-gateway-sha256-1=api-gateway:$(api_gateway_version)
 
 delete-evicted:
-	kubectl get pods --all-namespaces | grep Evicted | awk '{print $2 " --namespace=" $1}' | xargs kubectl delete pod
+	kubectl get pods --all-namespaces | grep Evicted | awk '{print $$2 " --namespace=" $$1}' | xargs kubectl delete pod
