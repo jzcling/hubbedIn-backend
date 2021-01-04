@@ -9,6 +9,7 @@ RUN go mod download
 
 COPY ./helpers/ ./helpers/
 COPY ./services/joblisting/ ./services/joblisting/
+COPY ./services/profile/pb ./services/profile/pb
 RUN cd services/joblisting/cmd && \
     CGO_ENABLED=1 && \
     GOOS=linux && \
