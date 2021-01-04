@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
+	"in-backend/helpers"
 	"in-backend/services/joblisting/interfaces"
 	"in-backend/services/joblisting/models"
 	"strconv"
@@ -33,8 +34,8 @@ func NewAuthMiddleware(svc interfaces.Service, r interfaces.Repository) interfac
 	}
 }
 
-func getRoleAndID(ctx context.Context, ownerID *uint64) (role string, id uint64, owns bool, err error) {
-	role = ""
+func getRoleAndID(ctx context.Context, ownerID *uint64) (roles []string, id uint64, owns bool, err error) {
+	roles = []string{}
 	id = 0
 	owns = false
 	var companyID uint64 = 0
@@ -46,7 +47,7 @@ func getRoleAndID(ctx context.Context, ownerID *uint64) (role string, id uint64,
 
 	if claims[rolesKey] != nil {
 		for _, r := range claims[rolesKey].([]interface{}) {
-			role = r.(string)
+			roles = append(roles, r.(string))
 		}
 	}
 
@@ -96,11 +97,11 @@ func getClaims(ctx context.Context) (jwt.MapClaims, error) {
 
 // CreateJobPost creates a new JobPost
 func (mw authMiddleware) CreateJobPost(ctx context.Context, model *models.JobPost) (*models.JobPost, error) {
-	role, _, owns, err := getRoleAndID(ctx, &model.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &model.CompanyID)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.CreateJobPost(ctx, model)
@@ -108,11 +109,11 @@ func (mw authMiddleware) CreateJobPost(ctx context.Context, model *models.JobPos
 
 // BulkCreateJobPost creates multiple JobPosts
 func (mw authMiddleware) BulkCreateJobPost(ctx context.Context, models []*models.JobPost) ([]*models.JobPost, error) {
-	role, _, owns, err := getRoleAndID(ctx, nil)
+	roles, _, owns, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.BulkCreateJobPost(ctx, models)
@@ -139,11 +140,11 @@ func (mw authMiddleware) UpdateJobPost(ctx context.Context, model *models.JobPos
 		return nil, errAuth
 	}
 
-	role, _, owns, err := getRoleAndID(ctx, &j.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &j.CompanyID)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.UpdateJobPost(ctx, model)
@@ -160,11 +161,11 @@ func (mw authMiddleware) DeleteJobPost(ctx context.Context, id uint64) error {
 		return errAuth
 	}
 
-	role, _, owns, err := getRoleAndID(ctx, &j.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &j.CompanyID)
 	if err != nil {
 		return err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return errAuth
 	}
 	return mw.next.DeleteJobPost(ctx, id)
@@ -174,11 +175,11 @@ func (mw authMiddleware) DeleteJobPost(ctx context.Context, id uint64) error {
 
 // CreateCompany creates a new Company
 func (mw authMiddleware) CreateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && role != "Company" {
+	if !helpers.IsStringInSlice("Admin", roles) && !helpers.IsStringInSlice("Company", roles) {
 		return nil, errAuth
 	}
 	return mw.next.CreateCompany(ctx, model)
@@ -196,11 +197,11 @@ func (mw authMiddleware) GetAllCompanies(ctx context.Context, f models.CompanyFi
 
 // UpdateCompany updates a Company
 func (mw authMiddleware) UpdateCompany(ctx context.Context, model *models.Company) (*models.Company, error) {
-	role, _, owns, err := getRoleAndID(ctx, &model.ID)
+	roles, _, owns, err := getRoleAndID(ctx, &model.ID)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.UpdateCompany(ctx, model)
@@ -213,11 +214,11 @@ func (mw authMiddleware) LocalUpdateCompany(ctx context.Context, model *models.C
 
 // DeleteCompany deletes a Company by ID
 func (mw authMiddleware) DeleteCompany(ctx context.Context, id uint64) error {
-	role, _, owns, err := getRoleAndID(ctx, &id)
+	roles, _, owns, err := getRoleAndID(ctx, &id)
 	if err != nil {
 		return err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return errAuth
 	}
 	return mw.next.DeleteCompany(ctx, id)
@@ -227,11 +228,11 @@ func (mw authMiddleware) DeleteCompany(ctx context.Context, id uint64) error {
 
 // CreateIndustry creates a new Industry
 func (mw authMiddleware) CreateIndustry(ctx context.Context, model *models.Industry) (*models.Industry, error) {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && role != "Company" {
+	if !helpers.IsStringInSlice("Admin", roles) && !helpers.IsStringInSlice("Company", roles) {
 		return nil, errAuth
 	}
 	return mw.next.CreateIndustry(ctx, model)
@@ -244,11 +245,11 @@ func (mw authMiddleware) GetAllIndustries(ctx context.Context, f models.Industry
 
 // DeleteIndustry deletes a Industry by ID
 func (mw authMiddleware) DeleteIndustry(ctx context.Context, id uint64) error {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if role != "Admin" {
+	if !helpers.IsStringInSlice("Admin", roles) {
 		return errAuth
 	}
 	return mw.next.DeleteIndustry(ctx, id)
@@ -258,11 +259,11 @@ func (mw authMiddleware) DeleteIndustry(ctx context.Context, id uint64) error {
 
 // CreateJobFunction creates a new JobFunction
 func (mw authMiddleware) CreateJobFunction(ctx context.Context, model *models.JobFunction) (*models.JobFunction, error) {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && role != "Company" {
+	if !helpers.IsStringInSlice("Admin", roles) && !helpers.IsStringInSlice("Company", roles) {
 		return nil, errAuth
 	}
 	return mw.next.CreateJobFunction(ctx, model)
@@ -275,11 +276,11 @@ func (mw authMiddleware) GetAllJobFunctions(ctx context.Context, f models.JobFun
 
 // DeleteJobFunction deletes a JobFunction by ID
 func (mw authMiddleware) DeleteJobFunction(ctx context.Context, id uint64) error {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if role != "Admin" {
+	if !helpers.IsStringInSlice("Admin", roles) {
 		return errAuth
 	}
 	return mw.next.DeleteJobFunction(ctx, id)
@@ -289,11 +290,11 @@ func (mw authMiddleware) DeleteJobFunction(ctx context.Context, id uint64) error
 
 // CreateKeyPerson creates a new KeyPerson
 func (mw authMiddleware) CreateKeyPerson(ctx context.Context, model *models.KeyPerson) (*models.KeyPerson, error) {
-	role, _, owns, err := getRoleAndID(ctx, &model.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &model.CompanyID)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.CreateKeyPerson(ctx, model)
@@ -301,11 +302,11 @@ func (mw authMiddleware) CreateKeyPerson(ctx context.Context, model *models.KeyP
 
 // BulkCreateKeyPerson creates multiple KeyPersons
 func (mw authMiddleware) BulkCreateKeyPerson(ctx context.Context, models []*models.KeyPerson) ([]*models.KeyPerson, error) {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" {
+	if !helpers.IsStringInSlice("Admin", roles) {
 		return nil, errAuth
 	}
 	return mw.next.BulkCreateKeyPerson(ctx, models)
@@ -313,11 +314,11 @@ func (mw authMiddleware) BulkCreateKeyPerson(ctx context.Context, models []*mode
 
 // GetAllKeyPersons returns all KeyPersons that match the filters
 func (mw authMiddleware) GetAllKeyPersons(ctx context.Context, f models.KeyPersonFilters) ([]*models.KeyPerson, error) {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" {
+	if !helpers.IsStringInSlice("Admin", roles) {
 		return nil, errAuth
 	}
 	return mw.next.GetAllKeyPersons(ctx, f)
@@ -330,11 +331,11 @@ func (mw authMiddleware) GetKeyPersonByID(ctx context.Context, id uint64) (*mode
 		return nil, err
 	}
 
-	role, _, owns, err := getRoleAndID(ctx, &kp.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &kp.CompanyID)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.GetKeyPersonByID(ctx, id)
@@ -347,11 +348,11 @@ func (mw authMiddleware) UpdateKeyPerson(ctx context.Context, model *models.KeyP
 		return nil, err
 	}
 
-	role, _, owns, err := getRoleAndID(ctx, &kp.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &kp.CompanyID)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return nil, errAuth
 	}
 	return mw.next.UpdateKeyPerson(ctx, model)
@@ -364,11 +365,11 @@ func (mw authMiddleware) DeleteKeyPerson(ctx context.Context, id uint64) error {
 		return err
 	}
 
-	role, _, owns, err := getRoleAndID(ctx, &kp.CompanyID)
+	roles, _, owns, err := getRoleAndID(ctx, &kp.CompanyID)
 	if err != nil {
 		return err
 	}
-	if role != "Admin" && owns == false {
+	if !helpers.IsStringInSlice("Admin", roles) && owns == false {
 		return errAuth
 	}
 	return mw.next.DeleteKeyPerson(ctx, id)
@@ -378,11 +379,11 @@ func (mw authMiddleware) DeleteKeyPerson(ctx context.Context, id uint64) error {
 
 // CreateJobPlatform creates a new JobPlatform
 func (mw authMiddleware) CreateJobPlatform(ctx context.Context, model *models.JobPlatform) (*models.JobPlatform, error) {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if role != "Admin" {
+	if !helpers.IsStringInSlice("Admin", roles) {
 		return nil, errAuth
 	}
 	return mw.next.CreateJobPlatform(ctx, model)
@@ -395,11 +396,11 @@ func (mw authMiddleware) GetAllJobPlatforms(ctx context.Context, f models.JobPla
 
 // DeleteJobPlatform deletes a JobPlatform by ID
 func (mw authMiddleware) DeleteJobPlatform(ctx context.Context, id uint64) error {
-	role, _, _, err := getRoleAndID(ctx, nil)
+	roles, _, _, err := getRoleAndID(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if role != "Admin" {
+	if !helpers.IsStringInSlice("Admin", roles) {
 		return errAuth
 	}
 	return mw.next.DeleteJobPlatform(ctx, id)
